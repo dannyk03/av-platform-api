@@ -12,12 +12,12 @@ async function bootstrap() {
   const host: string = configService.get<string>('app.http.host');
   const port: number = configService.get<number>('app.http.port');
 
+  const logger = new Logger();
+  process.env.NODE_ENV = env;
+
   // Global Prefix
   app.setGlobalPrefix('/api');
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
-  const logger = new Logger();
-  process.env.NODE_ENV = env;
 
   await app.listen(port, host);
 
