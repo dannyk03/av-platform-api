@@ -76,6 +76,9 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
+  "moduleNameMapper": {
+    "@/(.*)": "<rootDir>/$1"
+  },
   "lint-staged": {
     "*.{js,ts}": [
       "yarn lint -- --quiet --fix"
