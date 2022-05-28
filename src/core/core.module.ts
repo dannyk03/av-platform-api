@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MiddlewareModule } from '@/middleware/middleware.module';
+import { MessageModule } from '@/message/message.module';
 import { HelperModule } from '@utils/helper/helper.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
@@ -32,6 +33,7 @@ import Configs from '@/config';
     }),
     HelperModule,
     DatabaseModule,
+    MessageModule,
   ],
 })
 export class CoreModule {}

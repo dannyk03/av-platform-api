@@ -5,10 +5,7 @@ import { CoreModule } from '@/core/core.module';
 import { AppRouterModule } from './app.router.module';
 
 @Module({
-  imports: [
-    CoreModule,
-    // AppRouterModule.register(),
-  ],
+  imports: [CoreModule, AppRouterModule.register()],
   controllers: [AppController],
   providers: [AppService],
 })
