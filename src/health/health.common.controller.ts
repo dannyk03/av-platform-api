@@ -12,8 +12,8 @@ import {
   MongooseHealthIndicator,
 } from '@nestjs/terminus';
 import { Connection } from 'mongoose';
-import { DatabaseConnection } from 'src/database/database.decorator';
-import { AwsHealthIndicator } from '../indicator/health.aws.indicator';
+import { DatabaseConnection } from '@/database/database.decorator';
+import { AwsHealthIndicator } from './indicator/health.aws.indicator';
 import { IResponse } from '@utils/response/response.interface';
 import { Response } from '@utils/response/response.decorator';
 import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
@@ -22,7 +22,7 @@ import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
   version: VERSION_NEUTRAL,
   path: 'health',
 })
-export class HealthCommonController {
+export class HealthController {
   constructor(
     @DatabaseConnection() private readonly databaseConnection: Connection,
     private readonly health: HealthCheckService,

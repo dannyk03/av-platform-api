@@ -7,8 +7,8 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { IErrorException } from './error.interface';
-import { IMessage } from 'src/message/message.interface';
-import { MessageService } from 'src/message/service/message.service';
+import { IMessage } from '@/message/message.interface';
+import { MessageService } from '@/message/service/message.service';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {

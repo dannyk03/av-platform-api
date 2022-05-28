@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { MessageService } from 'src/message/service/message.service';
+import { MessageService } from '@/message/service/message.service';
 import { ErrorHttpFilter } from './error.filter';
 
 @Module({
