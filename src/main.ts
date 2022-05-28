@@ -1,7 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
-import { Logger, RequestMethod } from '@nestjs/common';
+import {
+  Logger,
+  RequestMethod,
+  VersioningType,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
 import { useContainer } from 'class-validator';
 
 async function bootstrap() {
@@ -11,6 +16,7 @@ async function bootstrap() {
   const env: string = configService.get<string>('app.env');
   const host: string = configService.get<string>('app.http.host');
   const port: number = configService.get<number>('app.http.port');
+  const versioning: boolean = configService.get<boolean>('app.versioning');
   const logger = new Logger();
 
   process.env.NODE_ENV = env;
@@ -26,6 +32,14 @@ async function bootstrap() {
       { path: '/health/storage', method: RequestMethod.GET },
     ],
   });
+
+  // Versioning
+  if (versioning) {
+    app.enableVersioning({
+      type: VersioningType.URI,
+      defaultVersion: VERSION_NEUTRAL,
+    });
+  }
 
   await app.listen(port, host);
 
