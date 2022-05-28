@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { IMessage } from '@/message/message.interface';
-import { MessageService } from '@/message/service/message.service';
+import { MessageService } from '@/message';
 
 export function ResponseDefaultInterceptor(
   messagePath: string,

@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { Response } from '@/utils/response/response.decorator';
 import { IResponse } from '@/utils/response/response.interface';
-import { MessageService } from '../service/message.service';
+import { MessageService } from '@/message';
 
 @Controller({
   version: '1',

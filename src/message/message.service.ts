@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ENUM_MESSAGE_LANGUAGE } from '@/message/message.constant';
-import {
-  IMessage,
-  IMessageOptions,
-  IMessageSetOptions,
-} from '../message.interface';
+import { IMessage, IMessageOptions, IMessageSetOptions } from '@/message';
 import { isArray, ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 import { IErrors } from '@/utils/error/error.interface';
