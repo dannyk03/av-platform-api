@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
 import { useContainer } from 'class-validator';
 
 async function bootstrap() {
@@ -16,7 +16,9 @@ async function bootstrap() {
   process.env.NODE_ENV = env;
 
   // Global Prefix
-  app.setGlobalPrefix('/api');
+  app.setGlobalPrefix('/api', {
+    exclude: [{ path: 'health', method: RequestMethod.GET }],
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(port, host);
