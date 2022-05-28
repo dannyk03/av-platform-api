@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { RouterCommonModule } from 'src/router/router.common.module';
+import { RouterCommonModule } from '@/router/router.common.module';
 
 @Module({})
 export class AppRouterModule {
