@@ -11,15 +11,21 @@ async function bootstrap() {
   const env: string = configService.get<string>('app.env');
   const host: string = configService.get<string>('app.http.host');
   const port: number = configService.get<number>('app.http.port');
-
   const logger = new Logger();
+
   process.env.NODE_ENV = env;
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Global Prefix
   app.setGlobalPrefix('/api', {
-    exclude: [{ path: 'health', method: RequestMethod.GET }],
+    exclude: [
+      { path: '/health/aws', method: RequestMethod.GET },
+      { path: '/health/database', method: RequestMethod.GET },
+      { path: '/health/memory-heap', method: RequestMethod.GET },
+      { path: '/health/memory-rss', method: RequestMethod.GET },
+      { path: '/health/storage', method: RequestMethod.GET },
+    ],
   });
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(port, host);
 
@@ -33,7 +39,6 @@ async function bootstrap() {
     `App Debug is ${configService.get<boolean>('app.debug')}`,
     'NestApplication',
   );
-
   logger.log(
     `App Task is ${configService.get<boolean>('app.taskOn')}`,
     'NestApplication',

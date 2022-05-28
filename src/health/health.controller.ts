@@ -20,7 +20,6 @@ import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
 
 @Controller({
   version: VERSION_NEUTRAL,
-  path: 'health',
 })
 export class HealthController {
   constructor(

@@ -1,6 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { RouterCommonModule } from '@/router/router.common.module';
+import { RouterHealthModule } from '@/router/router.health.module';
 
 @Module({})
 export class AppRouterModule {
@@ -13,7 +14,12 @@ export class AppRouterModule {
         exports: [],
         imports: [
           RouterCommonModule,
+          RouterHealthModule,
           RouterModule.register([
+            {
+              path: '/health',
+              module: RouterHealthModule,
+            },
             {
               path: '/',
               module: RouterCommonModule,

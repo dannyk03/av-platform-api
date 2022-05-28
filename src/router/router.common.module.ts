@@ -1,13 +1,11 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
-import { HealthModule, HealthController } from '@/health';
 import { AppController, AppService } from '@/app';
 
 @Module({
-  controllers: [HealthController, AppController],
+  controllers: [AppController],
   providers: [AppService],
   exports: [],
-  imports: [TerminusModule, HttpModule, HealthModule],
+  imports: [HttpModule],
 })
 export class RouterCommonModule {}
