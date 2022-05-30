@@ -6,6 +6,7 @@ import {
     RouterPublicModule,
     RouterCommonModule,
     RouterCallbackModule,
+    RouterTestModule,
 } from '@/router';
 
 @Module({})
@@ -23,6 +24,7 @@ export class RouterAppModule {
                     RouterPublicModule,
                     RouterAdminModule,
                     RouterCallbackModule,
+                    RouterTestModule,
                     RouterModule.register([
                         {
                             path: '/health',
@@ -39,6 +41,10 @@ export class RouterAppModule {
                         {
                             path: '/callback',
                             module: RouterCallbackModule,
+                        },
+                        {
+                            path: '/test',
+                            module: RouterTestModule,
                         },
                         {
                             path: '/',
