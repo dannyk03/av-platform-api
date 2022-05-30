@@ -1,9 +1,9 @@
-// import { IPaginationOptions } from '@/utils/pagination/pagination.interface';
+import { IPaginationOptions } from '@/utils/pagination/pagination.interface';
 
-// export interface IDatabaseFindOneOptions {
-//   populate?: Record<string, boolean>;
-// }
+export interface IDatabaseFindOneOptions {
+  populate?: Record<string, boolean>;
+}
 
-// export interface IDatabaseFindAllOptions
-//   extends IPaginationOptions,
-//     IDatabaseFindOneOptions {}
+export interface IDatabaseFindAllOptions
+  extends IPaginationOptions,
+    IDatabaseFindOneOptions {}
