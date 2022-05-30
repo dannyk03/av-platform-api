@@ -122,11 +122,7 @@ export class UserService {
     return user.save();
   }
 
-  async checkExist(
-    email: string,
-    mobileNumber: string,
-    _id?: string,
-  ): Promise<IUserCheckExist> {
+  async checkExist(email: string, _id?: string): Promise<IUserCheckExist> {
     const existEmail: Record<string, any> = await this.userModel.exists({
       email: {
         $regex: new RegExp(email),
