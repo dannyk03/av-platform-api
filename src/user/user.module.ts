@@ -6,20 +6,20 @@ import { UserBulkService } from './service/user.bulk.service';
 import { UserDatabaseName, UserEntity, UserSchema } from './schema/user.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature(
-      [
-        {
-          name: UserEntity.name,
-          schema: UserSchema,
-          collection: UserDatabaseName,
-        },
-      ],
-      DATABASE_CONNECTION_NAME,
-    ),
-  ],
-  exports: [UserService, UserBulkService],
-  providers: [UserService, UserBulkService],
-  controllers: [],
+    imports: [
+        MongooseModule.forFeature(
+            [
+                {
+                    name: UserEntity.name,
+                    schema: UserSchema,
+                    collection: UserDatabaseName,
+                },
+            ],
+            DATABASE_CONNECTION_NAME
+        ),
+    ],
+    exports: [UserService, UserBulkService],
+    providers: [UserService, UserBulkService],
+    controllers: [],
 })
 export class UserModule {}

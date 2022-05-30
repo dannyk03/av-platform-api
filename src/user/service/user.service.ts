@@ -1,184 +1,261 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
-  IUserDocument,
-  IUserCreate,
-  IUserUpdate,
-  IUserCheckExist,
+    IUserDocument,
+    IUserCreate,
+    IUserUpdate,
+    IUserCheckExist,
 } from 'src/user/user.interface';
 import { Types } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
+import { IAwsS3Response } from 'src/aws/aws.interface';
 import { IAuthPassword } from 'src/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseEntity } from 'src/database/database.decorator';
 import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
 import { UserDocument, UserEntity } from '../schema/user.schema';
-import { IDatabaseFindAllOptions } from 'src/database/database.interface';
+import { RoleEntity } from 'src/role/schema/role.schema';
+import { PermissionEntity } from 'src/permission/schema/permission.schema';
+import {
+    IDatabaseFindAllOptions,
+    IDatabaseFindOneOptions,
+} from 'src/database/database.interface';
 import { UserProfileSerialization } from '../serialization/user.profile.serialization';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserGetSerialization } from '../serialization/user.get.serialization';
 
 @Injectable()
 export class UserService {
-  private readonly uploadPath: string;
+    private readonly uploadPath: string;
 
-  constructor(
-    @DatabaseEntity(UserEntity.name)
-    private readonly userModel: Model<UserDocument>,
-    private readonly helperStringService: HelperStringService,
-    private readonly configService: ConfigService,
-  ) {
-    this.uploadPath = this.configService.get<string>('user.uploadPath');
-  }
-
-  async findAll(
-    find?: Record<string, any>,
-    options?: IDatabaseFindAllOptions,
-  ): Promise<IUserDocument[]> {
-    const users = this.userModel.find(find);
-
-    if (options && options.limit !== undefined && options.skip !== undefined) {
-      users.limit(options.limit).skip(options.skip);
+    constructor(
+        @DatabaseEntity(UserEntity.name)
+        private readonly userModel: Model<UserDocument>,
+        private readonly helperStringService: HelperStringService,
+        private readonly configService: ConfigService
+    ) {
+        this.uploadPath = this.configService.get<string>('user.uploadPath');
     }
 
-    if (options && options.sort) {
-      users.sort(options.sort);
+    async findAll(
+        find?: Record<string, any>,
+        options?: IDatabaseFindAllOptions
+    ): Promise<IUserDocument[]> {
+        const users = this.userModel.find(find).populate({
+            path: 'role',
+            model: RoleEntity.name,
+        });
+
+        if (
+            options &&
+            options.limit !== undefined &&
+            options.skip !== undefined
+        ) {
+            users.limit(options.limit).skip(options.skip);
+        }
+
+        if (options && options.sort) {
+            users.sort(options.sort);
+        }
+
+        return users.lean();
     }
 
-    return users.lean();
-  }
+    async getTotal(find?: Record<string, any>): Promise<number> {
+        return this.userModel.countDocuments(find);
+    }
 
-  async getTotal(find?: Record<string, any>): Promise<number> {
-    return this.userModel.countDocuments(find);
-  }
+    async serializationProfile(
+        data: IUserDocument
+    ): Promise<UserProfileSerialization> {
+        return plainToInstance(UserProfileSerialization, data);
+    }
 
-  async serializationProfile(
-    data: IUserDocument,
-  ): Promise<UserProfileSerialization> {
-    return plainToInstance(UserProfileSerialization, data);
-  }
+    async serializationList(
+        data: IUserDocument[]
+    ): Promise<UserListSerialization[]> {
+        return plainToInstance(UserListSerialization, data);
+    }
 
-  async serializationList(
-    data: IUserDocument[],
-  ): Promise<UserListSerialization[]> {
-    return plainToInstance(UserListSerialization, data);
-  }
+    async serializationGet(data: IUserDocument): Promise<UserGetSerialization> {
+        return plainToInstance(UserGetSerialization, data);
+    }
 
-  async serializationGet(data: IUserDocument): Promise<UserGetSerialization> {
-    return plainToInstance(UserGetSerialization, data);
-  }
+    async findOneById<T>(
+        _id: string,
+        options?: IDatabaseFindOneOptions
+    ): Promise<T> {
+        const user = this.userModel.findById(_id);
 
-  async findOneById<T>(_id: string): Promise<T> {
-    const user = this.userModel.findById(_id);
+        if (options && options.populate && options.populate.role) {
+            user.populate({
+                path: 'role',
+                model: RoleEntity.name,
+            });
 
-    return user.lean();
-  }
+            if (options.populate.permission) {
+                user.populate({
+                    path: 'role',
+                    model: RoleEntity.name,
+                    populate: {
+                        path: 'permissions',
+                        model: PermissionEntity.name,
+                    },
+                });
+            }
+        }
 
-  async findOne<T>(find?: Record<string, any>): Promise<T> {
-    const user = this.userModel.findOne(find);
+        return user.lean();
+    }
 
-    return user.lean();
-  }
+    async findOne<T>(
+        find?: Record<string, any>,
+        options?: IDatabaseFindOneOptions
+    ): Promise<T> {
+        const user = this.userModel.findOne(find);
 
-  async create({
-    firstName,
-    lastName,
-    password,
-    passwordExpired,
-    salt,
-    email,
-  }: IUserCreate): Promise<UserDocument> {
-    const user: UserEntity = {
-      firstName,
-      email,
-      password,
-      isActive: true,
-      lastName: lastName || undefined,
-      salt,
-      passwordExpired,
-    };
+        if (options && options.populate && options.populate.role) {
+            user.populate({
+                path: 'role',
+                model: RoleEntity.name,
+            });
 
-    const create: UserDocument = new this.userModel(user);
-    return create.save();
-  }
+            if (options.populate.permission) {
+                user.populate({
+                    path: 'role',
+                    model: RoleEntity.name,
+                    populate: {
+                        path: 'permissions',
+                        model: PermissionEntity.name,
+                    },
+                });
+            }
+        }
 
-  async deleteOneById(_id: string): Promise<UserDocument> {
-    return this.userModel.findByIdAndDelete(_id);
-  }
+        return user.lean();
+    }
 
-  async deleteOne(find: Record<string, any>): Promise<UserDocument> {
-    return this.userModel.findOneAndDelete(find);
-  }
+    async create({
+        firstName,
+        lastName,
+        password,
+        passwordExpired,
+        salt,
+        email,
+        mobileNumber,
+        role,
+    }: IUserCreate): Promise<UserDocument> {
+        const user: UserEntity = {
+            firstName,
+            email,
+            mobileNumber,
+            password,
+            role: new Types.ObjectId(role),
+            isActive: true,
+            lastName: lastName || undefined,
+            salt,
+            passwordExpired,
+        };
 
-  async updateOneById(
-    _id: string,
-    { firstName, lastName }: IUserUpdate,
-  ): Promise<UserDocument> {
-    const user: UserDocument = await this.userModel.findById(_id);
+        const create: UserDocument = new this.userModel(user);
+        return create.save();
+    }
 
-    user.firstName = firstName;
-    user.lastName = lastName || undefined;
+    async deleteOneById(_id: string): Promise<UserDocument> {
+        return this.userModel.findByIdAndDelete(_id);
+    }
 
-    return user.save();
-  }
+    async deleteOne(find: Record<string, any>): Promise<UserDocument> {
+        return this.userModel.findOneAndDelete(find);
+    }
 
-  async checkExist(email: string, _id?: string): Promise<IUserCheckExist> {
-    const existEmail: Record<string, any> = await this.userModel.exists({
-      email: {
-        $regex: new RegExp(email),
-        $options: 'i',
-      },
-      _id: { $nin: [new Types.ObjectId(_id)] },
-    });
+    async updateOneById(
+        _id: string,
+        { firstName, lastName }: IUserUpdate
+    ): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findById(_id);
 
-    return {
-      email: existEmail ? true : false,
-    };
-  }
+        user.firstName = firstName;
+        user.lastName = lastName || undefined;
 
-  async createRandomFilename(): Promise<Record<string, any>> {
-    const filename: string = this.helperStringService.random(20);
+        return user.save();
+    }
 
-    return {
-      path: this.uploadPath,
-      filename: filename,
-    };
-  }
+    async checkExist(
+        email: string,
+        mobileNumber: string,
+        _id?: string
+    ): Promise<IUserCheckExist> {
+        const existEmail: Record<string, any> = await this.userModel.exists({
+            email: {
+                $regex: new RegExp(email),
+                $options: 'i',
+            },
+            _id: { $nin: [new Types.ObjectId(_id)] },
+        });
 
-  async updatePassword(
-    _id: string,
-    { salt, passwordHash, passwordExpired }: IAuthPassword,
-  ): Promise<UserDocument> {
-    const auth: UserDocument = await this.userModel.findById(_id);
+        const existMobileNumber: Record<string, any> =
+            await this.userModel.exists({
+                mobileNumber,
+                _id: { $nin: [new Types.ObjectId(_id)] },
+            });
 
-    auth.password = passwordHash;
-    auth.passwordExpired = passwordExpired;
-    auth.salt = salt;
+        return {
+            email: existEmail ? true : false,
+            mobileNumber: existMobileNumber ? true : false,
+        };
+    }
 
-    return auth.save();
-  }
+    async updatePhoto(_id: string, aws: IAwsS3Response): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findById(_id);
+        user.photo = aws;
 
-  async updatePasswordExpired(
-    _id: string,
-    passwordExpired: Date,
-  ): Promise<UserDocument> {
-    const auth: UserDocument = await this.userModel.findById(_id);
-    auth.passwordExpired = passwordExpired;
+        return user.save();
+    }
 
-    return auth.save();
-  }
+    async createRandomFilename(): Promise<Record<string, any>> {
+        const filename: string = this.helperStringService.random(20);
 
-  async inactive(_id: string): Promise<UserDocument> {
-    const user: UserDocument = await this.userModel.findById(_id);
+        return {
+            path: this.uploadPath,
+            filename: filename,
+        };
+    }
 
-    user.isActive = false;
-    return user.save();
-  }
+    async updatePassword(
+        _id: string,
+        { salt, passwordHash, passwordExpired }: IAuthPassword
+    ): Promise<UserDocument> {
+        const auth: UserDocument = await this.userModel.findById(_id);
 
-  async active(_id: string): Promise<UserDocument> {
-    const user: UserDocument = await this.userModel.findById(_id);
+        auth.password = passwordHash;
+        auth.passwordExpired = passwordExpired;
+        auth.salt = salt;
 
-    user.isActive = true;
-    return user.save();
-  }
+        return auth.save();
+    }
+
+    async updatePasswordExpired(
+        _id: string,
+        passwordExpired: Date
+    ): Promise<UserDocument> {
+        const auth: UserDocument = await this.userModel.findById(_id);
+        auth.passwordExpired = passwordExpired;
+
+        return auth.save();
+    }
+
+    async inactive(_id: string): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findById(_id);
+
+        user.isActive = false;
+        return user.save();
+    }
+
+    async active(_id: string): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findById(_id);
+
+        user.isActive = true;
+        return user.save();
+    }
 }

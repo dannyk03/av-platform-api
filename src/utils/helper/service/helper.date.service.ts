@@ -2,106 +2,110 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import moment from 'moment-timezone';
 import {
-  ENUM_HELPER_DATE_DIFF,
-  ENUM_HELPER_DATE_FORMAT,
-  IHelperDateFormatOptions,
+    ENUM_HELPER_DATE_DIFF,
+    ENUM_HELPER_DATE_FORMAT,
+    IHelperDateFormatOptions,
 } from '../helper.constant';
 
 @Injectable()
 export class HelperDateService {
-  private readonly tz: string;
+    private readonly tz: string;
 
-  constructor(private readonly configService: ConfigService) {
-    this.tz = this.configService.get<string>('app.timezone');
-  }
-
-  calculateAge(dateOfBirth: Date): number {
-    return moment().diff(dateOfBirth, 'years');
-  }
-
-  diff(dateOne: Date, dateTwo: Date, format?: ENUM_HELPER_DATE_DIFF): number {
-    const mDateOne = moment(dateOne);
-    const mDateTwo = moment(dateTwo);
-    const diff = moment.duration(mDateTwo.diff(mDateOne));
-
-    if (format === 'milis') {
-      return diff.asMilliseconds();
-    } else if (format === 'seconds') {
-      return diff.asSeconds();
-    } else if (format === 'hours') {
-      return diff.asHours();
-    } else if (format === 'days') {
-      return diff.asDays();
-    } else {
-      return diff.asMinutes();
+    constructor(private readonly configService: ConfigService) {
+        this.tz = this.configService.get<string>('app.timezone');
     }
-  }
 
-  check(date: string | number): boolean {
-    return moment(date, true).isValid();
-  }
+    calculateAge(dateOfBirth: Date): number {
+        return moment().diff(dateOfBirth, 'years');
+    }
 
-  create(date?: string | Date | number): Date {
-    return moment(date, true).toDate();
-  }
+    diff(dateOne: Date, dateTwo: Date, format?: ENUM_HELPER_DATE_DIFF): number {
+        const mDateOne = moment(dateOne);
+        const mDateTwo = moment(dateTwo);
+        const diff = moment.duration(mDateTwo.diff(mDateOne));
 
-  timestamp(date?: string | Date): number {
-    return moment(date, true).valueOf();
-  }
+        if (format === 'milis') {
+            return diff.asMilliseconds();
+        } else if (format === 'seconds') {
+            return diff.asSeconds();
+        } else if (format === 'hours') {
+            return diff.asHours();
+        } else if (format === 'days') {
+            return diff.asDays();
+        } else {
+            return diff.asMinutes();
+        }
+    }
 
-  format(date: Date, options?: IHelperDateFormatOptions): string {
-    return moment(date)
-      .tz(options?.timezone ? options.timezone : this.tz)
-      .format(options?.format ? options.format : ENUM_HELPER_DATE_FORMAT.DATE);
-  }
+    check(date: string | number): boolean {
+        return moment(date, true).isValid();
+    }
 
-  forwardInMinutes(minutes: number, fromDate?: Date): Date {
-    return moment(fromDate, true).add(minutes, 'm').toDate();
-  }
+    create(date?: string | Date | number): Date {
+        return moment(date, true).toDate();
+    }
 
-  backwardInMinutes(minutes: number, fromDate?: Date): Date {
-    return moment(fromDate, true).subtract(minutes, 'm').toDate();
-  }
+    timestamp(date?: string | Date): number {
+        return moment(date, true).valueOf();
+    }
 
-  forwardInDays(days: number, fromDate?: Date): Date {
-    return moment(fromDate, true).add(days, 'd').toDate();
-  }
+    format(date: Date, options?: IHelperDateFormatOptions): string {
+        return moment(date)
+            .tz(options && options.timezone ? options.timezone : this.tz)
+            .format(
+                options && options.format
+                    ? options.format
+                    : ENUM_HELPER_DATE_FORMAT.DATE
+            );
+    }
 
-  backwardInDays(days: number, fromDate?: Date): Date {
-    return moment(fromDate, true).subtract(days, 'd').toDate();
-  }
+    forwardInMinutes(minutes: number, fromDate?: Date): Date {
+        return moment(fromDate, true).add(minutes, 'm').toDate();
+    }
 
-  forwardInMonths(months: number, fromDate?: Date): Date {
-    return moment(fromDate, true).add(months, 'M').toDate();
-  }
+    backwardInMinutes(minutes: number, fromDate?: Date): Date {
+        return moment(fromDate, true).subtract(minutes, 'm').toDate();
+    }
 
-  backwardInMonths(months: number, fromDate?: Date): Date {
-    return moment(fromDate, true).subtract(months, 'M').toDate();
-  }
+    forwardInDays(days: number, fromDate?: Date): Date {
+        return moment(fromDate, true).add(days, 'd').toDate();
+    }
 
-  endOfMonth(month: number, year?: number): Date {
-    year = year || moment().year();
-    return moment()
-      .year(year)
-      .month(month - 1)
-      .endOf('month')
-      .toDate();
-  }
+    backwardInDays(days: number, fromDate?: Date): Date {
+        return moment(fromDate, true).subtract(days, 'd').toDate();
+    }
 
-  startOfMonth(month: number, year?: number): Date {
-    year = year || moment().year();
-    return moment()
-      .year(year)
-      .month(month - 1)
-      .startOf('month')
-      .toDate();
-  }
+    forwardInMonths(months: number, fromDate?: Date): Date {
+        return moment(fromDate, true).add(months, 'M').toDate();
+    }
 
-  endOfYear(year: number): Date {
-    return moment().year(year).endOf('year').toDate();
-  }
+    backwardInMonths(months: number, fromDate?: Date): Date {
+        return moment(fromDate, true).subtract(months, 'M').toDate();
+    }
 
-  startOfYear(year: number): Date {
-    return moment().year(year).startOf('year').toDate();
-  }
+    endOfMonth(month: number, year?: number): Date {
+        year = year || moment().year();
+        return moment()
+            .year(year)
+            .month(month - 1)
+            .endOf('month')
+            .toDate();
+    }
+
+    startOfMonth(month: number, year?: number): Date {
+        year = year || moment().year();
+        return moment()
+            .year(year)
+            .month(month - 1)
+            .startOf('month')
+            .toDate();
+    }
+
+    endOfYear(year: number): Date {
+        return moment().year(year).endOf('year').toDate();
+    }
+
+    startOfYear(year: number): Date {
+        return moment().year(year).startOf('year').toDate();
+    }
 }

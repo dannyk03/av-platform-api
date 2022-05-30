@@ -1,1 +1,1 @@
-export const DATABASE_CONNECTION_NAME = 'master';
+export const DATABASE_CONNECTION_NAME = 'DatabaseConnectionName';

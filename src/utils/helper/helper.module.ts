@@ -13,44 +13,46 @@ import { HelperGeoService } from './service/helper.geo.service';
 
 @Global()
 @Module({
-  providers: [
-    HelperService,
-    HelperArrayService,
-    HelperDateService,
-    HelperEncryptionService,
-    HelperHashService,
-    HelperNumberService,
-    HelperStringService,
-    HelperFileService,
-    HelperGeoService,
-  ],
-  exports: [
-    HelperService,
-    HelperArrayService,
-    HelperDateService,
-    HelperEncryptionService,
-    HelperHashService,
-    HelperNumberService,
-    HelperStringService,
-    HelperFileService,
-    HelperGeoService,
-  ],
-  controllers: [],
-  imports: [
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        return {
-          secret: configService.get<string>('helper.jwt.defaultSecretKey'),
-          signOptions: {
-            expiresIn: configService.get<string>(
-              'helper.jwt.defaultExpirationTime',
-            ),
-          },
-        };
-      },
-    }),
-  ],
+    providers: [
+        HelperService,
+        HelperArrayService,
+        HelperDateService,
+        HelperEncryptionService,
+        HelperHashService,
+        HelperNumberService,
+        HelperStringService,
+        HelperFileService,
+        HelperGeoService,
+    ],
+    exports: [
+        HelperService,
+        HelperArrayService,
+        HelperDateService,
+        HelperEncryptionService,
+        HelperHashService,
+        HelperNumberService,
+        HelperStringService,
+        HelperFileService,
+        HelperGeoService,
+    ],
+    controllers: [],
+    imports: [
+        JwtModule.registerAsync({
+            inject: [ConfigService],
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) => {
+                return {
+                    secret: configService.get<string>(
+                        'helper.jwt.defaultSecretKey'
+                    ),
+                    signOptions: {
+                        expiresIn: configService.get<string>(
+                            'helper.jwt.defaultExpirationTime'
+                        ),
+                    },
+                };
+            },
+        }),
+    ],
 })
 export class HelperModule {}

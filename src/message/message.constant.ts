@@ -1,3 +1,4 @@
 export enum ENUM_MESSAGE_LANGUAGE {
-  en = 'en',
+    en = 'en',
+    id = 'id',
 }

@@ -1,30 +1,34 @@
 import { Exclude, Type } from 'class-transformer';
 import { Types } from 'mongoose';
+import { IAwsS3Response } from 'src/aws/aws.interface';
 
 export class UserListSerialization {
-  @Type(() => String)
-  readonly _id: string;
+    @Type(() => String)
+    readonly _id: string;
 
-  @Exclude()
-  readonly role: Types.ObjectId;
+    @Exclude()
+    readonly role: Types.ObjectId;
 
-  readonly email: string;
-  readonly mobileNumber: string;
-  readonly isActive: boolean;
-  readonly firstName: string;
-  readonly lastName: string;
+    readonly email: string;
+    readonly mobileNumber: string;
+    readonly isActive: boolean;
+    readonly firstName: string;
+    readonly lastName: string;
 
-  @Exclude()
-  readonly password: string;
+    @Exclude()
+    readonly photo?: IAwsS3Response;
 
-  @Exclude()
-  readonly passwordExpired: Date;
+    @Exclude()
+    readonly password: string;
 
-  @Exclude()
-  readonly salt: string;
+    @Exclude()
+    readonly passwordExpired: Date;
 
-  readonly createdAt: Date;
+    @Exclude()
+    readonly salt: string;
 
-  @Exclude()
-  readonly updatedAt: Date;
+    readonly createdAt: Date;
+
+    @Exclude()
+    readonly updatedAt: Date;
 }

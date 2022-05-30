@@ -1,6 +1,6 @@
 {
-  "check": "Healthy",
-  "error": {
-    "check": "Unhealthy"
-  }
+    "check": "Healthy",
+    "error": {
+        "check": "Unhealthy"
+    }
 }

@@ -1,36 +1,41 @@
 import { Exclude, Transform, Type } from 'class-transformer';
+import { IAwsS3Response } from 'src/aws/aws.interface';
+import { IRoleDocument } from 'src/role/role.interface';
 
 export class UserGetSerialization {
-  @Type(() => String)
-  readonly _id: string;
+    @Type(() => String)
+    readonly _id: string;
 
-  @Transform(
-    ({ value }) => ({
-      name: value.name,
-      permissions: value.permissions.map((val: Record<string, any>) => ({
-        name: val.name,
-        isActive: val.isActive,
-      })),
-      isActive: value.isActive,
-    }),
-    { toClassOnly: true },
-  )
-  readonly email: string;
-  readonly mobileNumber: string;
-  readonly isActive: boolean;
-  readonly firstName: string;
-  readonly lastName: string;
+    @Transform(
+        ({ value }) => ({
+            name: value.name,
+            permissions: value.permissions.map((val: Record<string, any>) => ({
+                name: val.name,
+                isActive: val.isActive,
+            })),
+            isActive: value.isActive,
+        }),
+        { toClassOnly: true }
+    )
+    readonly role: IRoleDocument;
 
-  @Exclude()
-  readonly password: string;
+    readonly email: string;
+    readonly mobileNumber: string;
+    readonly isActive: boolean;
+    readonly firstName: string;
+    readonly lastName: string;
+    readonly photo?: IAwsS3Response;
 
-  readonly passwordExpired: Date;
+    @Exclude()
+    readonly password: string;
 
-  @Exclude()
-  readonly salt: string;
+    readonly passwordExpired: Date;
 
-  readonly createdAt: Date;
+    @Exclude()
+    readonly salt: string;
 
-  @Exclude()
-  readonly updatedAt: Date;
+    readonly createdAt: Date;
+
+    @Exclude()
+    readonly updatedAt: Date;
 }

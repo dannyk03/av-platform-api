@@ -6,6 +6,6 @@ export const PAGINATION_DEFAULT_SORT = 'createdAt@asc';
 export const PAGINATION_DEFAULT_AVAILABLE_SORT = ['createdAt'];
 
 export enum ENUM_PAGINATION_AVAILABLE_SORT_TYPE {
-  ASC = 1,
-  DESC = -1,
+    ASC = 1,
+    DESC = -1,
 }
