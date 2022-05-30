@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperArrayService } from 'src/utils/helper/service/helper.array.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperArrayService } from '@/utils/helper/service/helper.array.service';
 
 describe('HelperArrayService', () => {
     let helperArrayService: HelperArrayService;
@@ -30,7 +30,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.getLeftByIndex(arrays, 1);
             jest.spyOn(helperArrayService, 'getLeftByIndex').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.getLeftByIndex(arrays, 1)).toBe(result);
@@ -49,7 +49,7 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.getRightByIndex(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'getRightByIndex'
+                'getRightByIndex',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.getRightByIndex(arrays, 1)).toBe(result);
@@ -68,7 +68,7 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.getLeftByLength(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'getLeftByLength'
+                'getLeftByLength',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.getLeftByLength(arrays, 1)).toBe(result);
@@ -87,7 +87,7 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.getRightByLength(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'getRightByLength'
+                'getRightByLength',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.getRightByLength(arrays, 1)).toBe(result);
@@ -105,7 +105,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.getLast(arrays);
             jest.spyOn(helperArrayService, 'getLast').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.getLast(arrays)).toBe(result);
@@ -123,7 +123,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.getFirst(arrays);
             jest.spyOn(helperArrayService, 'getFirst').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.getFirst(arrays)).toBe(result);
@@ -142,11 +142,11 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.getFirstIndexByValue(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'getFirstIndexByValue'
+                'getFirstIndexByValue',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.getFirstIndexByValue(arrays, 1)).toBe(
-                result
+                result,
             );
         });
     });
@@ -163,11 +163,11 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.getLastIndexByValue(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'getLastIndexByValue'
+                'getLastIndexByValue',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.getLastIndexByValue(arrays, 1)).toBe(
-                result
+                result,
             );
         });
     });
@@ -183,7 +183,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.removeByValue(arrays, 1);
             jest.spyOn(helperArrayService, 'removeByValue').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.removeByValue(arrays, 1)).toBe(result);
@@ -202,11 +202,11 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.removeLeftByLength(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'removeLeftByLength'
+                'removeLeftByLength',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.removeLeftByLength(arrays, 1)).toBe(
-                result
+                result,
             );
         });
     });
@@ -223,11 +223,11 @@ describe('HelperArrayService', () => {
             const result = helperArrayService.removeRightByLength(arrays, 1);
             jest.spyOn(
                 helperArrayService,
-                'removeRightByLength'
+                'removeRightByLength',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.removeRightByLength(arrays, 1)).toBe(
-                result
+                result,
             );
         });
     });
@@ -243,7 +243,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.joinToString(arrays, ',');
             jest.spyOn(helperArrayService, 'joinToString').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.joinToString(arrays, ',')).toBe(result);
@@ -261,7 +261,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.reverse(arrays);
             jest.spyOn(helperArrayService, 'reverse').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.reverse(arrays)).toBe(result);
@@ -279,7 +279,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.unique(arrays);
             jest.spyOn(helperArrayService, 'unique').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.unique(arrays)).toBe(result);
@@ -297,7 +297,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.shuffle(arrays);
             jest.spyOn(helperArrayService, 'shuffle').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.shuffle(arrays)).toBe(result);
@@ -315,7 +315,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.merge(arrays, arrays);
             jest.spyOn(helperArrayService, 'merge').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.merge(arrays, arrays)).toBe(result);
@@ -333,7 +333,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.mergeUnique(arrays, arrays);
             jest.spyOn(helperArrayService, 'mergeUnique').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.mergeUnique(arrays, arrays)).toBe(result);
@@ -344,7 +344,7 @@ describe('HelperArrayService', () => {
         it('should be called', async () => {
             const test = jest.spyOn(
                 helperArrayService,
-                'filterNotIncludeByValue'
+                'filterNotIncludeByValue',
             );
 
             helperArrayService.filterNotIncludeByValue(arrays, 1);
@@ -354,15 +354,15 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.filterNotIncludeByValue(
                 arrays,
-                1
+                1,
             );
             jest.spyOn(
                 helperArrayService,
-                'filterNotIncludeByValue'
+                'filterNotIncludeByValue',
             ).mockImplementation(() => result);
 
             expect(helperArrayService.filterNotIncludeByValue(arrays, 1)).toBe(
-                result
+                result,
             );
         });
     });
@@ -371,7 +371,7 @@ describe('HelperArrayService', () => {
         it('should be called', async () => {
             const test = jest.spyOn(
                 helperArrayService,
-                'filterNotIncludeByArray'
+                'filterNotIncludeByArray',
             );
 
             helperArrayService.filterNotIncludeByArray(arrays, arrays);
@@ -381,15 +381,15 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.filterNotIncludeByArray(
                 arrays,
-                arrays
+                arrays,
             );
             jest.spyOn(
                 helperArrayService,
-                'filterNotIncludeByArray'
+                'filterNotIncludeByArray',
             ).mockImplementation(() => result);
 
             expect(
-                helperArrayService.filterNotIncludeByArray(arrays, arrays)
+                helperArrayService.filterNotIncludeByArray(arrays, arrays),
             ).toBe(result);
         });
     });
@@ -405,15 +405,15 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.filterIncludeByArray(
                 arrays,
-                arrays
+                arrays,
             );
             jest.spyOn(
                 helperArrayService,
-                'filterIncludeByArray'
+                'filterIncludeByArray',
             ).mockImplementation(() => result);
 
             expect(
-                helperArrayService.filterIncludeByArray(arrays, arrays)
+                helperArrayService.filterIncludeByArray(arrays, arrays),
             ).toBe(result);
         });
     });
@@ -429,7 +429,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.equals(arrays, arrays);
             jest.spyOn(helperArrayService, 'equals').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.equals(arrays, arrays)).toBe(result);
@@ -447,7 +447,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.notEquals(arrays, arrays);
             jest.spyOn(helperArrayService, 'notEquals').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.notEquals(arrays, arrays)).toBe(result);
@@ -465,7 +465,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.in(arrays, arrays);
             jest.spyOn(helperArrayService, 'in').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.in(arrays, arrays)).toBe(result);
@@ -483,7 +483,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.notIn(arrays, arrays);
             jest.spyOn(helperArrayService, 'notIn').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.notIn(arrays, arrays)).toBe(result);
@@ -501,7 +501,7 @@ describe('HelperArrayService', () => {
         it('should be success', async () => {
             const result = helperArrayService.includes(arrays, 1);
             jest.spyOn(helperArrayService, 'includes').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperArrayService.includes(arrays, 1)).toBe(result);

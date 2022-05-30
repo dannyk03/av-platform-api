@@ -2,21 +2,21 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
-import { CoreModule } from 'src/core/core.module';
-import { SettingService } from 'src/setting/service/setting.service';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
+import { CoreModule } from '@/core/core.module';
+import { SettingService } from '@/setting/service/setting.service';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { connection, Types } from 'mongoose';
 import request from 'supertest';
 import faker from '@faker-js/faker';
-import { SettingDocument } from 'src/setting/schema/setting.schema';
-import { ENUM_SETTING_STATUS_CODE_ERROR } from 'src/setting/setting.constant';
+import { SettingDocument } from '@/setting/schema/setting.schema';
+import { ENUM_SETTING_STATUS_CODE_ERROR } from '@/setting/setting.constant';
 import {
     E2E_SETTING_COMMON_GET_BY_NAME_URL,
     E2E_SETTING_COMMON_GET_URL,
     E2E_SETTING_COMMON_LIST_URL,
 } from './setting.constant';
-import { RouterCommonModule } from 'src/router/router.common.module';
+import { RouterCommonModule } from '@/router/router.common.module';
 
 describe('E2E Setting Common', () => {
     let app: INestApplication;
@@ -60,7 +60,7 @@ describe('E2E Setting Common', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -85,8 +85,8 @@ describe('E2E Setting Common', () => {
             .get(
                 E2E_SETTING_COMMON_GET_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('user-agent', faker.internet.userAgent())
             .set('x-timestamp', timestamp.toString())
@@ -94,7 +94,7 @@ describe('E2E Setting Common', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR
+            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
         );
 
         return;
@@ -118,8 +118,8 @@ describe('E2E Setting Common', () => {
             .get(
                 E2E_SETTING_COMMON_GET_BY_NAME_URL.replace(
                     ':settingName',
-                    faker.name.firstName()
-                )
+                    faker.name.firstName(),
+                ),
             )
             .set('user-agent', faker.internet.userAgent())
             .set('x-timestamp', timestamp.toString())
@@ -127,7 +127,7 @@ describe('E2E Setting Common', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR
+            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
         );
 
         return;
@@ -138,8 +138,8 @@ describe('E2E Setting Common', () => {
             .get(
                 E2E_SETTING_COMMON_GET_BY_NAME_URL.replace(
                     ':settingName',
-                    setting.name
-                )
+                    setting.name,
+                ),
             )
             .set('user-agent', faker.internet.userAgent())
             .set('x-timestamp', timestamp.toString())

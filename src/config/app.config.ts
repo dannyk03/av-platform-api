@@ -29,5 +29,5 @@ export default registerAs(
 
         httpOn: process.env.APP_HTTP_ON === 'true' ? true : false,
         taskOn: process.env.APP_TASK_ON === 'true' || false,
-    })
+    }),
 );

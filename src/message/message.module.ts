@@ -15,7 +15,7 @@ import { MessageService } from './service/message.service';
                 fallbackLanguage: configService.get<string>('app.language'),
                 fallbacks: Object.values(ENUM_MESSAGE_LANGUAGE).reduce(
                     (a, v) => ({ ...a, [`${v}-*`]: v }),
-                    {}
+                    {},
                 ),
                 loaderOptions: {
                     path: path.join(__dirname, '/languages/'),

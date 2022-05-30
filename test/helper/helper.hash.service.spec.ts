@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 
 describe('HelperHashService', () => {
     let helperHashService: HelperHashService;
@@ -29,7 +29,7 @@ describe('HelperHashService', () => {
         it('should be success', async () => {
             const result = helperHashService.randomSalt();
             jest.spyOn(helperHashService, 'randomSalt').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperHashService.randomSalt()).toBe(result);
@@ -49,7 +49,7 @@ describe('HelperHashService', () => {
             const salt = helperHashService.randomSalt();
             const result = helperHashService.bcrypt(data, salt);
             jest.spyOn(helperHashService, 'bcrypt').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperHashService.bcrypt(data, salt)).toBe(result);
@@ -71,11 +71,11 @@ describe('HelperHashService', () => {
             const hash = helperHashService.bcrypt(data, salt);
             const validate = helperHashService.bcryptCompare('bbbb', hash);
             jest.spyOn(helperHashService, 'bcryptCompare').mockImplementation(
-                () => validate
+                () => validate,
             );
 
             expect(helperHashService.bcryptCompare('bbbb', hash)).toBe(
-                validate
+                validate,
             );
         });
     });
@@ -91,7 +91,7 @@ describe('HelperHashService', () => {
         it('should be success', async () => {
             const hash = helperHashService.sha256(data);
             jest.spyOn(helperHashService, 'sha256').mockImplementation(
-                () => hash
+                () => hash,
             );
 
             expect(helperHashService.sha256(data)).toBe(hash);
@@ -111,11 +111,11 @@ describe('HelperHashService', () => {
             const hash = helperHashService.sha256(data);
             const validate = helperHashService.sha256Compare('bbbb', hash);
             jest.spyOn(helperHashService, 'bcryptCompare').mockImplementation(
-                () => validate
+                () => validate,
             );
 
             expect(helperHashService.sha256Compare('bbbb', hash)).toBe(
-                validate
+                validate,
             );
         });
     });

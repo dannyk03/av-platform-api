@@ -43,11 +43,11 @@ import { HelperGeoService } from './service/helper.geo.service';
             useFactory: (configService: ConfigService) => {
                 return {
                     secret: configService.get<string>(
-                        'helper.jwt.defaultSecretKey'
+                        'helper.jwt.defaultSecretKey',
                     ),
                     signOptions: {
                         expiresIn: configService.get<string>(
-                            'helper.jwt.defaultExpirationTime'
+                            'helper.jwt.defaultExpirationTime',
                         ),
                     },
                 };

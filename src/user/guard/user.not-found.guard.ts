@@ -4,7 +4,7 @@ import {
     ExecutionContext,
     NotFoundException,
 } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import { ENUM_USER_STATUS_CODE_ERROR } from '../user.constant';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class UserNotFoundGuard implements CanActivate {
             this.debuggerService.error(
                 'User not found',
                 'UserNotFoundGuard',
-                'canActivate'
+                'canActivate',
             );
 
             throw new NotFoundException({

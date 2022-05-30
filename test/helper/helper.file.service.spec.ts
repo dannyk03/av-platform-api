@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperFileService } from 'src/utils/helper/service/helper.file.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperFileService } from '@/utils/helper/service/helper.file.service';
 
 describe('HelperFileService', () => {
     let helperFileService: HelperFileService;
@@ -28,7 +28,7 @@ describe('HelperFileService', () => {
         it('should be success', async () => {
             const result = helperFileService.writeExcel([], []);
             jest.spyOn(helperFileService, 'writeExcel').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperFileService.writeExcel([], [])).toBe(result);

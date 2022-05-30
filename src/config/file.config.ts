@@ -7,5 +7,5 @@ export default registerAs(
         fieldSize: 524288, // 500 KB
         maxFileSize: 104858, // 100 KB
         maxFiles: 2, // 2 files
-    })
+    }),
 );

@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
 
 describe('HelperEncryptionService', () => {
     let helperEncryptionService: HelperEncryptionService;
@@ -13,7 +13,7 @@ describe('HelperEncryptionService', () => {
         }).compile();
 
         helperEncryptionService = moduleRef.get<HelperEncryptionService>(
-            HelperEncryptionService
+            HelperEncryptionService,
         );
     });
 
@@ -33,7 +33,7 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.base64Encrypt(data);
             jest.spyOn(
                 helperEncryptionService,
-                'base64Encrypt'
+                'base64Encrypt',
             ).mockImplementation(() => result);
 
             expect(helperEncryptionService.base64Encrypt(data)).toBe(result);
@@ -53,7 +53,7 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.base64Encrypt(data);
             jest.spyOn(
                 helperEncryptionService,
-                'base64Decrypt'
+                'base64Decrypt',
             ).mockImplementation(() => data);
 
             expect(helperEncryptionService.base64Decrypt(result)).toBe(data);
@@ -67,12 +67,12 @@ describe('HelperEncryptionService', () => {
             helperEncryptionService.aes256Encrypt(
                 data,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             expect(test).toHaveBeenCalledWith(
                 data,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
         });
 
@@ -80,19 +80,19 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.aes256Encrypt(
                 data,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             jest.spyOn(
                 helperEncryptionService,
-                'aes256Encrypt'
+                'aes256Encrypt',
             ).mockImplementation(() => result);
 
             expect(
                 helperEncryptionService.aes256Encrypt(
                     data,
                     '1234567',
-                    '1231231231231231'
-                )
+                    '1231231231231231',
+                ),
             ).toBe(result);
         });
 
@@ -100,19 +100,19 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.aes256Encrypt(
                 dataObject,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             jest.spyOn(
                 helperEncryptionService,
-                'aes256Encrypt'
+                'aes256Encrypt',
             ).mockImplementation(() => result);
 
             expect(
                 helperEncryptionService.aes256Encrypt(
                     dataObject,
                     '1234567',
-                    '1231231231231231'
-                )
+                    '1231231231231231',
+                ),
             ).toBe(result);
         });
     });
@@ -124,17 +124,17 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.aes256Encrypt(
                 data,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             helperEncryptionService.aes256Decrypt(
                 result,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             expect(test).toHaveBeenCalledWith(
                 result,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
         });
 
@@ -142,19 +142,19 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.aes256Encrypt(
                 data,
                 '1234567',
-                '1231231231231231'
+                '1231231231231231',
             );
             jest.spyOn(
                 helperEncryptionService,
-                'aes256Decrypt'
+                'aes256Decrypt',
             ).mockImplementation(() => data);
 
             expect(
                 helperEncryptionService.aes256Decrypt(
                     result,
                     '1234567',
-                    '1231231231231231'
-                )
+                    '1231231231231231',
+                ),
             ).toBe(data);
         });
     });
@@ -171,7 +171,7 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.jwtEncrypt({ data });
             jest.spyOn(
                 helperEncryptionService,
-                'jwtEncrypt'
+                'jwtEncrypt',
             ).mockImplementation(() => result);
 
             expect(helperEncryptionService.jwtEncrypt({ data })).toBe(result);
@@ -192,7 +192,7 @@ describe('HelperEncryptionService', () => {
             const decrypt = helperEncryptionService.jwtDecrypt(result);
             jest.spyOn(
                 helperEncryptionService,
-                'jwtDecrypt'
+                'jwtDecrypt',
             ).mockImplementation(() => decrypt);
 
             expect(helperEncryptionService.jwtDecrypt(result)).toBe(decrypt);
@@ -212,7 +212,7 @@ describe('HelperEncryptionService', () => {
             const result = helperEncryptionService.jwtEncrypt({ data });
             const verify = helperEncryptionService.jwtVerify(result);
             jest.spyOn(helperEncryptionService, 'jwtVerify').mockImplementation(
-                () => verify
+                () => verify,
             );
 
             expect(helperEncryptionService.jwtVerify(result)).toBe(verify);
@@ -221,11 +221,11 @@ describe('HelperEncryptionService', () => {
         it('should be failed', async () => {
             const result = helperEncryptionService.jwtEncrypt(
                 { data },
-                { secretKey: '123123123' }
+                { secretKey: '123123123' },
             );
             const verify = helperEncryptionService.jwtVerify(result);
             jest.spyOn(helperEncryptionService, 'jwtVerify').mockImplementation(
-                () => verify
+                () => verify,
             );
 
             expect(helperEncryptionService.jwtVerify(result)).toBe(verify);

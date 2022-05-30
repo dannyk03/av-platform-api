@@ -25,7 +25,7 @@ export class AwsS3Service {
                 accessKeyId:
                     this.configService.get<string>('aws.credential.key'),
                 secretAccessKey: this.configService.get<string>(
-                    'aws.credential.secret'
+                    'aws.credential.secret',
                 ),
             },
             region: this.configService.get<string>('aws.s3.region'),
@@ -38,7 +38,7 @@ export class AwsS3Service {
     async listBucket(): Promise<string[]> {
         const command: ListBucketsCommand = new ListBucketsCommand({});
         const listBucket: Record<string, any> = await this.s3Client.send(
-            command
+            command,
         );
         return listBucket.Buckets.map((val: Record<string, any>) => val.Name);
     }
@@ -49,7 +49,7 @@ export class AwsS3Service {
             Prefix: prefix,
         });
         const listItems: Record<string, any> = await this.s3Client.send(
-            command
+            command,
         );
 
         return listItems.Contents.map((val: Record<string, any>) => {
@@ -57,7 +57,7 @@ export class AwsS3Service {
             const path: string = val.Key.substring(0, lastIndex);
             const filename: string = val.Key.substring(
                 lastIndex,
-                val.Key.length
+                val.Key.length,
             );
             const mime: string = filename
                 .substring(filename.lastIndexOf('.') + 1, filename.length)
@@ -76,7 +76,7 @@ export class AwsS3Service {
 
     async getItemInBucket(
         filename: string,
-        path?: string
+        path?: string,
     ): Promise<Record<string, any>> {
         if (path)
             path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
@@ -101,7 +101,7 @@ export class AwsS3Service {
             | Readable
             | ReadableStream
             | Blob,
-        options?: IAwsS3PutItemOptions
+        options?: IAwsS3PutItemOptions,
     ): Promise<IAwsS3Response> {
         let path: string = options && options.path ? options.path : undefined;
         const acl: string =

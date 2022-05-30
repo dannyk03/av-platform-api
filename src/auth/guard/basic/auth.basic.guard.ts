@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 @Injectable()
 export class BasicGuard implements CanActivate {
@@ -18,13 +18,13 @@ export class BasicGuard implements CanActivate {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly configService: ConfigService,
-        private readonly authApiService: AuthApiService
+        private readonly authApiService: AuthApiService,
     ) {
         this.clientId = this.configService.get<string>(
-            'auth.basicToken.clientId'
+            'auth.basicToken.clientId',
         );
         this.clientSecret = this.configService.get<string>(
-            'auth.basicToken.clientSecret'
+            'auth.basicToken.clientSecret',
         );
     }
 
@@ -37,7 +37,7 @@ export class BasicGuard implements CanActivate {
             this.debuggerService.error(
                 'AuthBasicGuardError',
                 'BasicGuard',
-                'canActivate'
+                'canActivate',
             );
 
             throw new UnauthorizedException({
@@ -51,20 +51,20 @@ export class BasicGuard implements CanActivate {
         const ourBasicToken: string =
             await this.authApiService.createBasicToken(
                 this.clientId,
-                this.clientSecret
+                this.clientSecret,
             );
 
         const validateBasicToken: boolean =
             await this.authApiService.validateBasicToken(
                 clientBasicToken,
-                ourBasicToken
+                ourBasicToken,
             );
 
         if (!validateBasicToken) {
             this.debuggerService.error(
                 'AuthBasicGuardError Validate Basic Token',
                 'BasicGuard',
-                'canActivate'
+                'canActivate',
             );
 
             throw new UnauthorizedException({

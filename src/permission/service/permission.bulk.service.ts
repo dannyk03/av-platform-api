@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { IPermission } from '../permission.interface';
 import { DeleteResult } from 'mongodb';
 import {
@@ -12,7 +12,7 @@ import {
 export class PermissionBulkService {
     constructor(
         @DatabaseEntity(PermissionEntity.name)
-        private readonly permissionModel: Model<PermissionDocument>
+        private readonly permissionModel: Model<PermissionDocument>,
     ) {}
 
     async createMany(data: IPermission[]): Promise<PermissionDocument[]> {
@@ -22,7 +22,7 @@ export class PermissionBulkService {
                 name: name,
                 description: description,
                 isActive: isActive || true,
-            }))
+            })),
         );
     }
 

@@ -40,5 +40,5 @@ export default registerAs(
             toleranceTimeInMinutes:
                 parseInt(process.env.MIDDLEWARE_TOLERANCE_TIMESTAMP) || 5, // 5 mins
         },
-    })
+    }),
 );

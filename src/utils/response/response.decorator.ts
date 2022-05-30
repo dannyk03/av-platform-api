@@ -4,12 +4,12 @@ import { ResponsePagingInterceptor } from './interceptor/response.paging.interce
 
 export function Response(messagePath: string, statusCode?: number): any {
     return applyDecorators(
-        UseInterceptors(ResponseDefaultInterceptor(messagePath, statusCode))
+        UseInterceptors(ResponseDefaultInterceptor(messagePath, statusCode)),
     );
 }
 
 export function ResponsePaging(messagePath: string, statusCode?: number): any {
     return applyDecorators(
-        UseInterceptors(ResponsePagingInterceptor(messagePath, statusCode))
+        UseInterceptors(ResponsePagingInterceptor(messagePath, statusCode)),
     );
 }

@@ -10,10 +10,10 @@ export class RateLimitMiddleware implements NestMiddleware {
 
     use(req: Request, res: Response, next: NextFunction): void {
         const resetTime = this.configService.get<number>(
-            'middleware.rateLimit.resetTime'
+            'middleware.rateLimit.resetTime',
         );
         const maxRequestPerId = this.configService.get<number>(
-            'middleware.rateLimit.maxRequestPerId'
+            'middleware.rateLimit.maxRequestPerId',
         );
 
         rateLimit({

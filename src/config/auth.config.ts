@@ -28,5 +28,5 @@ export default registerAs(
             saltLength: 8,
             expiredInDay: 182, // recommendation for production is 182 days
         },
-    })
+    }),
 );

@@ -1,15 +1,15 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
-import { AuthApiBulkService } from 'src/auth/service/auth.api.bulk.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
+import { AuthApiBulkService } from '@/auth/service/auth.api.bulk.service';
 
 @Injectable()
 export class AuthApiSeed {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly authApiService: AuthApiService,
-        private readonly authApiBulkService: AuthApiBulkService
+        private readonly authApiBulkService: AuthApiBulkService,
     ) {}
 
     @Command({
@@ -30,7 +30,7 @@ export class AuthApiSeed {
             this.debuggerService.debug(
                 'Insert Auth Api Succeed',
                 'AuthApiSeed',
-                'insert'
+                'insert',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'AuthApiSeed', 'insert');
@@ -48,7 +48,7 @@ export class AuthApiSeed {
             this.debuggerService.debug(
                 'Remove Auth Api Succeed',
                 'AuthApiSeed',
-                'remove'
+                'remove',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'AuthApiSeed', 'remove');

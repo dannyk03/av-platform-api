@@ -14,12 +14,12 @@ export const GetPermission = createParamDecorator(
     (data: string, ctx: ExecutionContext) => {
         const { __permission } = ctx.switchToHttp().getRequest();
         return __permission;
-    }
+    },
 );
 
 export function PermissionGetGuard(): any {
     return applyDecorators(
-        UseGuards(PermissionPutToRequestGuard, PermissionNotFoundGuard)
+        UseGuards(PermissionPutToRequestGuard, PermissionNotFoundGuard),
     );
 }
 
@@ -28,9 +28,9 @@ export function PermissionUpdateGuard(): any {
         UseGuards(
             PermissionPutToRequestGuard,
             PermissionNotFoundGuard,
-            PermissionActiveGuard
+            PermissionActiveGuard,
         ),
-        SetMetadata(PERMISSION_ACTIVE_META_KEY, [true])
+        SetMetadata(PERMISSION_ACTIVE_META_KEY, [true]),
     );
 }
 
@@ -39,9 +39,9 @@ export function PermissionUpdateActiveGuard(): any {
         UseGuards(
             PermissionPutToRequestGuard,
             PermissionNotFoundGuard,
-            PermissionActiveGuard
+            PermissionActiveGuard,
         ),
-        SetMetadata(PERMISSION_ACTIVE_META_KEY, [false])
+        SetMetadata(PERMISSION_ACTIVE_META_KEY, [false]),
     );
 }
 
@@ -50,8 +50,8 @@ export function PermissionUpdateInactiveGuard(): any {
         UseGuards(
             PermissionPutToRequestGuard,
             PermissionNotFoundGuard,
-            PermissionActiveGuard
+            PermissionActiveGuard,
         ),
-        SetMetadata(PERMISSION_ACTIVE_META_KEY, [true])
+        SetMetadata(PERMISSION_ACTIVE_META_KEY, [true]),
     );
 }

@@ -1,40 +1,32 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { RouterAdminModule } from 'src/router/router.admin.module';
-import { RouterCallbackModule } from 'src/router/router.callback.module';
-import { RouterCommonModule } from 'src/router/router.common.module';
-import { RouterEnumModule } from 'src/router/router.enum.module';
-import { RouterPublicModule } from 'src/router/router.public.module';
-import { RouterTestModule } from 'src/router/router.test.module';
+import {
+    RouterAdminModule,
+    RouterHealthModule,
+    RouterPublicModule,
+    RouterCommonModule,
+    RouterCallbackModule,
+} from '@/router';
 
 @Module({})
-export class AppRouterModule {
+export class RouterAppModule {
     static register(): DynamicModule {
         if (process.env.APP_HTTP_ON === 'true') {
             return {
-                module: AppRouterModule,
+                module: RouterAppModule,
                 controllers: [],
                 providers: [],
                 exports: [],
                 imports: [
                     RouterCommonModule,
-                    RouterTestModule,
-                    RouterEnumModule,
+                    RouterHealthModule,
                     RouterPublicModule,
                     RouterAdminModule,
                     RouterCallbackModule,
                     RouterModule.register([
                         {
-                            path: '/',
-                            module: RouterCommonModule,
-                        },
-                        {
-                            path: '/test',
-                            module: RouterTestModule,
-                        },
-                        {
-                            path: '/enum',
-                            module: RouterEnumModule,
+                            path: '/health',
+                            module: RouterHealthModule,
                         },
                         {
                             path: '/admin',
@@ -48,13 +40,17 @@ export class AppRouterModule {
                             path: '/callback',
                             module: RouterCallbackModule,
                         },
+                        {
+                            path: '/',
+                            module: RouterCommonModule,
+                        },
                     ]),
                 ],
             };
         }
 
         return {
-            module: AppRouterModule,
+            module: RouterAppModule,
             providers: [],
             exports: [],
             controllers: [],

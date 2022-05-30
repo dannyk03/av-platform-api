@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperNumberService } from 'src/utils/helper/service/helper.number.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperNumberService } from '@/utils/helper/service/helper.number.service';
 
 describe('HelperNumberService', () => {
     let helperNumberService: HelperNumberService;
@@ -29,7 +29,7 @@ describe('HelperNumberService', () => {
         it('should be success', async () => {
             const result = helperNumberService.check('111');
             jest.spyOn(helperNumberService, 'check').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperNumberService.check('111')).toBe(result);
@@ -47,7 +47,7 @@ describe('HelperNumberService', () => {
         it('should be success', async () => {
             const result = helperNumberService.random(10);
             jest.spyOn(helperNumberService, 'random').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperNumberService.random(10)).toBe(result);
@@ -65,7 +65,7 @@ describe('HelperNumberService', () => {
         it('should be success', async () => {
             const result = helperNumberService.randomInRange(5, 8);
             jest.spyOn(helperNumberService, 'randomInRange').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperNumberService.randomInRange(5, 8)).toBe(result);

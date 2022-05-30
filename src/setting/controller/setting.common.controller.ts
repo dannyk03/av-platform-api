@@ -1,14 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { PaginationService } from 'src/utils/pagination/service/pagination.service';
-import { RequestParamGuard } from 'src/utils/request/request.decorator';
-import {
-    Response,
-    ResponsePaging,
-} from 'src/utils/response/response.decorator';
+import { PaginationService } from '@/utils/pagination/service/pagination.service';
+import { RequestParamGuard } from '@/utils/request/request.decorator';
+import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
-} from 'src/utils/response/response.interface';
+} from '@/utils/response/response.interface';
 import { SettingListDto } from '../dto/setting.list.dto';
 import { SettingRequestDto } from '../dto/setting.request.dto';
 import { SettingDocument } from '../schema/setting.schema';
@@ -27,7 +24,7 @@ import {
 export class SettingCommonController {
     constructor(
         private readonly settingService: SettingService,
-        private readonly paginationService: PaginationService
+        private readonly paginationService: PaginationService,
     ) {}
 
     @ResponsePaging('setting.list')
@@ -41,7 +38,7 @@ export class SettingCommonController {
             search,
             availableSort,
             availableSearch,
-        }: SettingListDto
+        }: SettingListDto,
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
@@ -62,12 +59,12 @@ export class SettingCommonController {
                 limit: perPage,
                 skip: skip,
                 sort,
-            }
+            },
         );
         const totalData: number = await this.settingService.getTotal(find);
         const totalPage: number = await this.paginationService.totalPage(
             totalData,
-            perPage
+            perPage,
         );
 
         const data: SettingListSerialization[] =
@@ -96,7 +93,7 @@ export class SettingCommonController {
     @SettingGetByNameGuard()
     @Get('get/name/:settingName')
     async getByName(
-        @GetSetting() setting: SettingDocument
+        @GetSetting() setting: SettingDocument,
     ): Promise<IResponse> {
         return this.settingService.serializationGet(setting);
     }

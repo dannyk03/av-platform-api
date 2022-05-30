@@ -12,24 +12,23 @@ import {
     MongooseHealthIndicator,
 } from '@nestjs/terminus';
 import { Connection } from 'mongoose';
-import { DatabaseConnection } from 'src/database/database.decorator';
+import { DatabaseConnection } from '@/database/database.decorator';
 import { AwsHealthIndicator } from '../indicator/health.aws.indicator';
-import { IResponse } from 'src/utils/response/response.interface';
-import { Response } from 'src/utils/response/response.decorator';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
+import { IResponse } from '@/utils/response/response.interface';
+import { Response } from '@/utils/response/response.decorator';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
 
 @Controller({
     version: VERSION_NEUTRAL,
-    path: 'health',
 })
-export class HealthCommonController {
+export class HealthController {
     constructor(
         @DatabaseConnection() private readonly databaseConnection: Connection,
         private readonly health: HealthCheckService,
         private readonly memoryHealthIndicator: MemoryHealthIndicator,
         private readonly diskHealthIndicator: DiskHealthIndicator,
         private readonly databaseIndicator: MongooseHealthIndicator,
-        private readonly awsIndicator: AwsHealthIndicator
+        private readonly awsIndicator: AwsHealthIndicator,
     ) {}
 
     @Response('health.check')
@@ -76,7 +75,7 @@ export class HealthCommonController {
                 () =>
                     this.memoryHealthIndicator.checkHeap(
                         'memory heap',
-                        300 * 1024 * 1024
+                        300 * 1024 * 1024,
                     ),
             ]);
         } catch (e) {
@@ -96,7 +95,7 @@ export class HealthCommonController {
                 () =>
                     this.memoryHealthIndicator.checkRSS(
                         'memory RSS',
-                        300 * 1024 * 1024
+                        300 * 1024 * 1024,
                     ),
             ]);
         } catch (e) {

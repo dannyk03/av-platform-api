@@ -4,10 +4,10 @@ import {
     ServiceUnavailableException,
 } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { SettingDocument } from 'src/setting/schema/setting.schema';
-import { SettingService } from 'src/setting/service/setting.service';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { IRequestApp } from 'src/utils/request/request.interface';
+import { SettingDocument } from '@/setting/schema/setting.schema';
+import { SettingService } from '@/setting/service/setting.service';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { IRequestApp } from '@/utils/request/request.interface';
 
 @Injectable()
 export class MaintenanceMiddleware implements NestMiddleware {
@@ -16,12 +16,12 @@ export class MaintenanceMiddleware implements NestMiddleware {
     async use(
         req: IRequestApp,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ): Promise<void> {
         const maintenance: SettingDocument =
             await this.settingService.findOneByName('maintenance');
 
-        if (maintenance.value as boolean) {
+        if (maintenance?.value as boolean) {
             throw new ServiceUnavailableException({
                 statusCode: ENUM_STATUS_CODE_ERROR.SERVICE_UNAVAILABLE,
                 message: 'http.serverError.serviceUnavailable',

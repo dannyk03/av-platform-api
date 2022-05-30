@@ -13,21 +13,21 @@ import {
     E2E_ROLE_PAYLOAD_TEST,
 } from './role.constant';
 import { connection, Types } from 'mongoose';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
+import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
 import { RouterModule } from '@nestjs/core';
-import { CoreModule } from 'src/core/core.module';
-import { AuthService } from 'src/auth/service/auth.service';
-import { RoleService } from 'src/role/service/role.service';
-import { PermissionService } from 'src/permission/service/permission.service';
-import { RoleBulkService } from 'src/role/service/role.bulk.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from 'src/utils/request/request.constant';
-import { RouterAdminModule } from 'src/router/router.admin.module';
-import { RoleDocument } from 'src/role/schema/role.schema';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
-import { RoleCreateDto } from 'src/role/dto/role.create.dto';
+import { CoreModule } from '@/core/core.module';
+import { AuthService } from '@/auth/service/auth.service';
+import { RoleService } from '@/role/service/role.service';
+import { PermissionService } from '@/permission/service/permission.service';
+import { RoleBulkService } from '@/role/service/role.bulk.service';
+import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RouterAdminModule } from '@/router/router.admin.module';
+import { RoleDocument } from '@/role/schema/role.schema';
+import { PermissionDocument } from '@/permission/schema/permission.schema';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { RoleCreateDto } from '@/role/dto/role.create.dto';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('E2E Role Admin', () => {
     let app: INestApplication;
@@ -117,7 +117,7 @@ describe('E2E Role Admin', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -143,8 +143,8 @@ describe('E2E Role Admin', () => {
             .get(
                 E2E_ROLE_ADMIN_GET_BY_ID_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -153,7 +153,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
         );
 
         return;
@@ -186,7 +186,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR
+            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
         );
 
         return;
@@ -203,7 +203,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
         );
 
         return;
@@ -237,7 +237,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR
+            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
         );
 
         return;
@@ -248,8 +248,8 @@ describe('E2E Role Admin', () => {
             .put(
                 E2E_ROLE_ADMIN_UPDATE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .send(updateData)
             .set('Authorization', `Bearer ${accessToken}`)
@@ -259,7 +259,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
         );
 
         return;
@@ -276,7 +276,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
         );
 
         return;
@@ -302,8 +302,8 @@ describe('E2E Role Admin', () => {
             .patch(
                 E2E_ROLE_ADMIN_INACTIVE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -312,7 +312,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
         );
 
         return;
@@ -342,7 +342,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR,
         );
 
         return;
@@ -353,8 +353,8 @@ describe('E2E Role Admin', () => {
             .patch(
                 E2E_ROLE_ADMIN_ACTIVE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -363,7 +363,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
         );
 
         return;
@@ -393,7 +393,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR,
         );
 
         return;
@@ -404,8 +404,8 @@ describe('E2E Role Admin', () => {
             .delete(
                 E2E_ROLE_ADMIN_DELETE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -414,7 +414,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
         );
 
         return;

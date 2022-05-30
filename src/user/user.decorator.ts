@@ -15,7 +15,7 @@ export const GetUser = createParamDecorator(
     (data: string, ctx: ExecutionContext) => {
         const { __user } = ctx.switchToHttp().getRequest();
         return __user;
-    }
+    },
 );
 
 export function UserGetGuard(): any {
@@ -32,20 +32,20 @@ export function UserUpdateGuard(): any {
 
 export function UserProfileGuard(): any {
     return applyDecorators(
-        UseGuards(UserPayloadPutToRequestGuard, UserNotFoundGuard)
+        UseGuards(UserPayloadPutToRequestGuard, UserNotFoundGuard),
     );
 }
 
 export function UserUpdateInactiveGuard(): any {
     return applyDecorators(
         UseGuards(UserPutToRequestGuard, UserNotFoundGuard, UserActiveGuard),
-        SetMetadata(USER_ACTIVE_META_KEY, [true])
+        SetMetadata(USER_ACTIVE_META_KEY, [true]),
     );
 }
 
 export function UserUpdateActiveGuard(): any {
     return applyDecorators(
         UseGuards(UserPutToRequestGuard, UserNotFoundGuard, UserActiveGuard),
-        SetMetadata(USER_ACTIVE_META_KEY, [false])
+        SetMetadata(USER_ACTIVE_META_KEY, [false]),
     );
 }

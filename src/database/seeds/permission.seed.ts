@@ -1,14 +1,14 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
-import { PermissionBulkService } from 'src/permission/service/permission.bulk.service';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { PermissionBulkService } from '@/permission/service/permission.bulk.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 
 @Injectable()
 export class PermissionSeed {
     constructor(
         private readonly debuggerService: DebuggerService,
-        private readonly permissionBulkService: PermissionBulkService
+        private readonly permissionBulkService: PermissionBulkService,
     ) {}
 
     @Command({
@@ -27,7 +27,7 @@ export class PermissionSeed {
             this.debuggerService.debug(
                 'Insert Permission Succeed',
                 'PermissionSeed',
-                'insert'
+                'insert',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'PermissionSeed', 'insert');
@@ -45,7 +45,7 @@ export class PermissionSeed {
             this.debuggerService.debug(
                 'Remove Permission Succeed',
                 'PermissionSeed',
-                'remove'
+                'remove',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'PermissionSeed', 'remove');

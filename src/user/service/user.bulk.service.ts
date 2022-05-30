@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { DeleteResult } from 'mongodb';
 import { UserDocument, UserEntity } from '../schema/user.schema';
 
@@ -8,7 +8,7 @@ import { UserDocument, UserEntity } from '../schema/user.schema';
 export class UserBulkService {
     constructor(
         @DatabaseEntity(UserEntity.name)
-        private readonly userModel: Model<UserDocument>
+        private readonly userModel: Model<UserDocument>,
     ) {}
 
     async deleteMany(find: Record<string, any>): Promise<DeleteResult> {

@@ -19,7 +19,7 @@ export class MaxGreaterThanConstraint implements ValidatorConstraintInterface {
 
 export function MaxGreaterThan(
     property: string,
-    validationOptions?: ValidationOptions
+    validationOptions?: ValidationOptions,
 ) {
     return function (object: Record<string, any>, propertyName: string): any {
         registerDecorator({

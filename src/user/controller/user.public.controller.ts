@@ -7,15 +7,15 @@ import {
     Post,
     UploadedFile,
 } from '@nestjs/common';
-import { AuthPublicJwtGuard } from 'src/auth/auth.decorator';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { AwsS3Service } from 'src/aws/service/aws.s3.service';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { ENUM_FILE_TYPE } from 'src/utils/file/file.constant';
-import { UploadFileSingle } from 'src/utils/file/file.decorator';
-import { Response } from 'src/utils/response/response.decorator';
-import { IResponse } from 'src/utils/response/response.interface';
+import { AuthPublicJwtGuard } from '@/auth/auth.decorator';
+import { IAwsS3Response } from '@/aws/aws.interface';
+import { AwsS3Service } from '@/aws/service/aws.s3.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { ENUM_FILE_TYPE } from '@/utils/file/file.constant';
+import { UploadFileSingle } from '@/utils/file/file.decorator';
+import { Response } from '@/utils/response/response.decorator';
+import { IResponse } from '@/utils/response/response.interface';
 import { UserService } from '../service/user.service';
 import { GetUser, UserProfileGuard } from '../user.decorator';
 import { IUserDocument } from '../user.interface';
@@ -28,7 +28,7 @@ export class UserPublicController {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly userService: UserService,
-        private readonly awsService: AwsS3Service
+        private readonly awsService: AwsS3Service,
     ) {}
 
     @Response('user.profile')
@@ -47,7 +47,7 @@ export class UserPublicController {
     @Post('/profile/upload')
     async upload(
         @GetUser() user: IUserDocument,
-        @UploadedFile() file: Express.Multer.File
+        @UploadedFile() file: Express.Multer.File,
     ): Promise<void> {
         const filename: string = file.originalname;
         const content: Buffer = file.buffer;
@@ -63,7 +63,7 @@ export class UserPublicController {
                 content,
                 {
                     path: `${path.path}/${user._id}`,
-                }
+                },
             );
 
             await this.userService.updatePhoto(user._id, aws);
@@ -72,7 +72,7 @@ export class UserPublicController {
                 'Store photo user',
                 'UserPublicController',
                 'upload',
-                err
+                err,
             );
 
             throw new InternalServerErrorException({

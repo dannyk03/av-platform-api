@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 
 describe('HelperStringService', () => {
     let helperStringService: HelperStringService;
@@ -29,7 +29,7 @@ describe('HelperStringService', () => {
         it('should be success', async () => {
             const result = helperStringService.checkEmail('111');
             jest.spyOn(helperStringService, 'checkEmail').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.checkEmail('111')).toBe(result);
@@ -48,11 +48,11 @@ describe('HelperStringService', () => {
             const result = helperStringService.randomReference(10, 'test');
             jest.spyOn(
                 helperStringService,
-                'randomReference'
+                'randomReference',
             ).mockImplementation(() => result);
 
             expect(helperStringService.randomReference(10, 'test')).toBe(
-                result
+                result,
             );
         });
     });
@@ -68,7 +68,7 @@ describe('HelperStringService', () => {
         it('should be success', async () => {
             const result = helperStringService.random(5);
             jest.spyOn(helperStringService, 'random').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.random(5)).toBe(result);
@@ -86,7 +86,7 @@ describe('HelperStringService', () => {
         it('string length 1 should be success', async () => {
             const result = helperStringService.censor('1');
             jest.spyOn(helperStringService, 'censor').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.censor('1')).toBe(result);
@@ -95,7 +95,7 @@ describe('HelperStringService', () => {
         it('string length 1 - 4 should be success', async () => {
             const result = helperStringService.censor('125');
             jest.spyOn(helperStringService, 'censor').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.censor('125')).toBe(result);
@@ -104,7 +104,7 @@ describe('HelperStringService', () => {
         it('string length 4 - 10 should be success', async () => {
             const result = helperStringService.censor('123245');
             jest.spyOn(helperStringService, 'censor').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.censor('123245')).toBe(result);
@@ -112,14 +112,14 @@ describe('HelperStringService', () => {
 
         it('string length > 10 should be success', async () => {
             const result = helperStringService.censor(
-                '12312312312312312312312'
+                '12312312312312312312312',
             );
             jest.spyOn(helperStringService, 'censor').mockImplementation(
-                () => result
+                () => result,
             );
 
             expect(helperStringService.censor('12312312312312312312312')).toBe(
-                result
+                result,
             );
         });
     });
@@ -137,11 +137,11 @@ describe('HelperStringService', () => {
                 helperStringService.checkPasswordWeak('aaAAbbBBccCC');
             jest.spyOn(
                 helperStringService,
-                'checkPasswordWeak'
+                'checkPasswordWeak',
             ).mockImplementation(() => result);
 
             expect(helperStringService.checkPasswordWeak('aaAAbbBBccCC')).toBe(
-                result
+                result,
             );
         });
     });
@@ -158,11 +158,11 @@ describe('HelperStringService', () => {
             const result = helperStringService.checkPasswordMedium('aaAA12345');
             jest.spyOn(
                 helperStringService,
-                'checkPasswordMedium'
+                'checkPasswordMedium',
             ).mockImplementation(() => result);
 
             expect(helperStringService.checkPasswordMedium('aaAA12345')).toBe(
-                result
+                result,
             );
         });
     });
@@ -180,11 +180,11 @@ describe('HelperStringService', () => {
                 helperStringService.checkPasswordStrong('aaAA12345@!');
             jest.spyOn(
                 helperStringService,
-                'checkPasswordStrong'
+                'checkPasswordStrong',
             ).mockImplementation(() => result);
 
             expect(helperStringService.checkPasswordStrong('aaAA12345@!')).toBe(
-                result
+                result,
             );
         });
     });

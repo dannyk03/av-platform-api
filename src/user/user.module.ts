@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DATABASE_CONNECTION_NAME } from 'src/database/database.constant';
+import { DATABASE_CONNECTION_NAME } from '@/database/database.constant';
 import { UserService } from './service/user.service';
 import { UserBulkService } from './service/user.bulk.service';
 import { UserDatabaseName, UserEntity, UserSchema } from './schema/user.schema';
@@ -15,7 +15,7 @@ import { UserDatabaseName, UserEntity, UserSchema } from './schema/user.schema';
                     collection: UserDatabaseName,
                 },
             ],
-            DATABASE_CONNECTION_NAME
+            DATABASE_CONNECTION_NAME,
         ),
     ],
     exports: [UserService, UserBulkService],

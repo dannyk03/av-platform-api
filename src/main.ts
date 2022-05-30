@@ -47,26 +47,26 @@ async function bootstrap() {
     logger.log(`App Environment is ${env}`, 'NestApplication');
     logger.log(
         `App Language is ${configService.get<string>('app.language')}`,
-        'NestApplication'
+        'NestApplication',
     );
     logger.log(
         `App Debug is ${configService.get<boolean>('app.debug')}`,
-        'NestApplication'
+        'NestApplication',
     );
     logger.log(
         `App Task is ${configService.get<boolean>('app.taskOn')}`,
-        'NestApplication'
+        'NestApplication',
     );
     logger.log(
         `Database Debug is ${configService.get<boolean>('database.debug')}`,
-        'NestApplication'
+        'NestApplication',
     );
     logger.log(`==========================================================`);
     logger.log(
         `Database running on ${configService.get<string>(
-            'database.host'
+            'database.host',
         )}/${configService.get<string>('database.name')}`,
-        'NestApplication'
+        'NestApplication',
     );
     logger.log(`Server running on ${await app.getUrl()}`, 'NestApplication');
     logger.log(`==========================================================`);

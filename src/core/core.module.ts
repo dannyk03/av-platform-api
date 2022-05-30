@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
-import { MessageModule } from 'src/message/message.module';
+import { MessageModule } from '@/message/message.module';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
-import { DebuggerModule } from 'src/debugger/debugger.module';
-import Configs from 'src/config/index';
-import { AuthModule } from 'src/auth/auth.module';
-import { PaginationModule } from 'src/utils/pagination/pagination.module';
-import { HelperModule } from 'src/utils/helper/helper.module';
-import { MiddlewareModule } from 'src/utils/middleware/middleware.module';
-import { DebuggerOptionService } from 'src/debugger/service/debugger.option.service';
-import { DatabaseModule } from 'src/database/database.module';
+import { DebuggerModule } from '@/debugger/debugger.module';
+import Configs from '@/config/index';
+import { AuthModule } from '@/auth/auth.module';
+import { PaginationModule } from '@/utils/pagination/pagination.module';
+import { HelperModule } from '@/utils/helper/helper.module';
+import { MiddlewareModule } from '@/utils/middleware/middleware.module';
+import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
+import { DatabaseModule } from '@/database/database.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DATABASE_CONNECTION_NAME } from 'src/database/database.constant';
-import { DatabaseService } from 'src/database/service/database.service';
-import { LoggerModule } from 'src/logger/logger.module';
-import { RequestModule } from 'src/utils/request/request.module';
-import { ErrorModule } from 'src/utils/error/error.module';
-import { SettingModule } from 'src/setting/setting.module';
+import { DATABASE_CONNECTION_NAME } from '@/database/database.constant';
+import { DatabaseService } from '@/database/service/database.service';
+import { LoggerModule } from '@/logger/logger.module';
+import { RequestModule } from '@/utils/request/request.module';
+import { ErrorModule } from '@/utils/error/error.module';
+import { SettingModule } from '@/setting/setting.module';
 
 @Module({
     controllers: [],

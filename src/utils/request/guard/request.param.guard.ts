@@ -11,7 +11,7 @@ import { validate, ValidationError } from 'class-validator';
 import { ENUM_REQUEST_STATUS_CODE_ERROR } from '../request.constant';
 
 export function ParamGuard(
-    classValidation: ClassConstructor<any>[]
+    classValidation: ClassConstructor<any>[],
 ): Type<CanActivate> {
     @Injectable()
     class MixinParamGuard implements CanActivate {

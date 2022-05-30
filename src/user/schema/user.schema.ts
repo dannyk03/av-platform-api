@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { RoleEntity } from 'src/role/schema/role.schema';
+import { IAwsS3Response } from '@/aws/aws.interface';
+import { RoleEntity } from '@/role/schema/role.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class UserEntity {

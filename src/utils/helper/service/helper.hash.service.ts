@@ -9,7 +9,7 @@ export class HelperHashService {
 
     randomSalt(length?: number): string {
         return genSaltSync(
-            length || this.configService.get<number>('helper.salt.length')
+            length || this.configService.get<number>('helper.salt.length'),
         );
     }
 

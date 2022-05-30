@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
     Strategy,
-    'jwtRefresh'
+    'jwtRefresh',
 ) {
     constructor(private readonly configService: ConfigService) {
         super({
@@ -16,7 +16,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
                 ignoreNotBefore: false,
             },
             secretOrKey: configService.get<string>(
-                'auth.jwt.refreshToken.secretKey'
+                'auth.jwt.refreshToken.secretKey',
             ),
         });
     }

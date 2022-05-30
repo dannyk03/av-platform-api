@@ -17,13 +17,13 @@ export class DebuggerOptionService {
         this.env = this.configService.get<string>('app.env');
         this.debug = this.configService.get<boolean>('app.debug');
         this.logger = this.configService.get<boolean>(
-            'app.debugger.system.active'
+            'app.debugger.system.active',
         );
         this.maxSize = this.configService.get<string>(
-            'app.debugger.system.maxSize'
+            'app.debugger.system.maxSize',
         );
         this.maxFiles = this.configService.get<string>(
-            'app.debugger.system.maxFiles'
+            'app.debugger.system.maxFiles',
         );
     }
 
@@ -39,7 +39,7 @@ export class DebuggerOptionService {
                 maxSize: this.maxSize,
                 maxFiles: this.maxFiles,
                 level: 'error',
-            })
+            }),
         );
         transports.push(
             new DailyRotateFile({
@@ -50,7 +50,7 @@ export class DebuggerOptionService {
                 maxSize: this.maxSize,
                 maxFiles: this.maxFiles,
                 level: 'info',
-            })
+            }),
         );
         transports.push(
             new DailyRotateFile({
@@ -61,7 +61,7 @@ export class DebuggerOptionService {
                 maxSize: this.maxSize,
                 maxFiles: this.maxFiles,
                 level: 'debug',
-            })
+            }),
         );
 
         /* istanbul ignore next */
@@ -72,7 +72,7 @@ export class DebuggerOptionService {
         const loggerOptions: LoggerOptions = {
             format: winston.format.combine(
                 winston.format.timestamp(),
-                winston.format.prettyPrint()
+                winston.format.prettyPrint(),
             ),
             transports,
         };

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ENUM_MESSAGE_LANGUAGE } from 'src/message/message.constant';
+import { ENUM_MESSAGE_LANGUAGE } from '@/message/message.constant';
 import {
     IMessage,
     IMessageOptions,
@@ -8,7 +8,7 @@ import {
 } from '../message.interface';
 import { isArray, ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
-import { IErrors } from 'src/utils/error/error.interface';
+import { IErrors } from '@/utils/error/error.interface';
 
 @Injectable()
 export class MessageService {
@@ -16,20 +16,20 @@ export class MessageService {
 
     constructor(
         private readonly i18n: I18nService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
     ) {
         this.defaultLanguage = this.configService.get<string>('app.language');
     }
 
     async getRequestErrorsMessage(
         requestErrors: ValidationError[],
-        appLanguages?: string[]
+        appLanguages?: string[],
     ): Promise<IErrors[]> {
         const messages: Array<IErrors[]> = [];
         for (const transfomer of requestErrors) {
             let children: Record<string, any>[] = transfomer.children;
             let constraints: string[] = Object.keys(
-                transfomer.constraints || []
+                transfomer.constraints || [],
             );
             const errors: IErrors[] = [];
             let property: string = transfomer.property;
@@ -74,7 +74,7 @@ export class MessageService {
 
     async get(
         key: string,
-        options?: IMessageOptions
+        options?: IMessageOptions,
     ): Promise<string | IMessage> {
         const { properties, appLanguages } = options
             ? options
@@ -88,7 +88,7 @@ export class MessageService {
                     key,
                     {
                         properties,
-                    }
+                    },
                 );
             }
 
@@ -107,7 +107,7 @@ export class MessageService {
     private setMessage(
         lang: string,
         key: string,
-        options?: IMessageSetOptions
+        options?: IMessageSetOptions,
     ): any {
         return this.i18n.translate(key, {
             lang: lang,

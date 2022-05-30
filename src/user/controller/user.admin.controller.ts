@@ -11,7 +11,7 @@ import {
     Patch,
     NotFoundException,
 } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
+import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
 import {
     GetUser,
     UserDeleteGuard,
@@ -20,29 +20,26 @@ import {
     UserUpdateGuard,
     UserUpdateInactiveGuard,
 } from '../user.decorator';
-import { AuthAdminJwtGuard } from 'src/auth/auth.decorator';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
+import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
+import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
 import { UserService } from '../service/user.service';
-import { RoleService } from 'src/role/service/role.service';
+import { RoleService } from '@/role/service/role.service';
 import { IUserCheckExist, IUserDocument } from '../user.interface';
 import { ENUM_USER_STATUS_CODE_ERROR } from '../user.constant';
-import { PaginationService } from 'src/utils/pagination/service/pagination.service';
-import { AuthService } from 'src/auth/service/auth.service';
-import {
-    Response,
-    ResponsePaging,
-} from 'src/utils/response/response.decorator';
+import { PaginationService } from '@/utils/pagination/service/pagination.service';
+import { AuthService } from '@/auth/service/auth.service';
+import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
-} from 'src/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+} from '@/utils/response/response.interface';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserListDto } from '../dto/user.list.dto';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserCreateDto } from '../dto/user.create.dto';
 import { UserUpdateDto } from '../dto/user.update.dto';
-import { RequestParamGuard } from 'src/utils/request/request.decorator';
+import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { UserRequestDto } from '../dto/user.request.dto';
 
 @Controller({
@@ -55,7 +52,7 @@ export class UserAdminController {
         private readonly authService: AuthService,
         private readonly paginationService: PaginationService,
         private readonly userService: UserService,
-        private readonly roleService: RoleService
+        private readonly roleService: RoleService,
     ) {}
 
     @ResponsePaging('user.list')
@@ -70,7 +67,7 @@ export class UserAdminController {
             search,
             availableSort,
             availableSearch,
-        }: UserListDto
+        }: UserListDto,
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
@@ -102,7 +99,7 @@ export class UserAdminController {
         const totalData: number = await this.userService.getTotal(find);
         const totalPage: number = await this.paginationService.totalPage(
             totalData,
-            perPage
+            perPage,
         );
 
         const data: UserListSerialization[] =
@@ -133,18 +130,18 @@ export class UserAdminController {
     @Post('/create')
     async create(
         @Body()
-        body: UserCreateDto
+        body: UserCreateDto,
     ): Promise<IResponse> {
         const checkExist: IUserCheckExist = await this.userService.checkExist(
             body.email,
-            body.mobileNumber
+            body.mobileNumber,
         );
 
         if (checkExist.email && checkExist.mobileNumber) {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -155,7 +152,7 @@ export class UserAdminController {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -166,7 +163,7 @@ export class UserAdminController {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -181,7 +178,7 @@ export class UserAdminController {
             this.debuggerService.error(
                 'Role not found',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new NotFoundException({
@@ -192,7 +189,7 @@ export class UserAdminController {
 
         try {
             const password = await this.authService.createPassword(
-                body.password
+                body.password,
             );
 
             const create = await this.userService.create({
@@ -214,7 +211,7 @@ export class UserAdminController {
                 'create try catch',
                 'UserController',
                 'create',
-                err
+                err,
             );
 
             throw new InternalServerErrorException({
@@ -237,7 +234,7 @@ export class UserAdminController {
                 'delete try catch',
                 'UserController',
                 'create',
-                err
+                err,
             );
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
@@ -256,7 +253,7 @@ export class UserAdminController {
     async update(
         @GetUser() user: IUserDocument,
         @Body()
-        body: UserUpdateDto
+        body: UserUpdateDto,
     ): Promise<IResponse> {
         try {
             await this.userService.updateOneById(user._id, body);
@@ -265,7 +262,7 @@ export class UserAdminController {
                 'update try catch',
                 'UserController',
                 'update',
-                err
+                err,
             );
 
             throw new InternalServerErrorException({
@@ -292,7 +289,7 @@ export class UserAdminController {
                 'User inactive server internal error',
                 'UserController',
                 'inactive',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({
@@ -317,7 +314,7 @@ export class UserAdminController {
                 'User active server internal error',
                 'UserController',
                 'active',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({

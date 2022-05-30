@@ -1,0 +1,15 @@
+export const TENANT_DEFAULT_SORT = 'name@asc';
+export const TENANT_DEFAULT_PAGE = 1;
+export const TENANT_DEFAULT_PER_PAGE = 10;
+export const TENANT_DEFAULT_AVAILABLE_SORT = ['name', 'createdAt'];
+export const TENANT_DEFAULT_AVAILABLE_SEARCH = ['name'];
+
+export enum ENUM_TENANT_STATUS_CODE_ERROR {
+    TENANT_IS_INACTIVE_ERROR = 5500,
+    TENANT_NOT_FOUND_ERROR = 5501,
+    TENANT_EXIST_ERROR = 5502,
+    TENANT_ACTIVE_ERROR = 5503,
+    TENANT_USED_ERROR = 5504,
+}
+
+export const TENANT_ACTIVE_META_KEY = 'TenantActiveMetaKey';

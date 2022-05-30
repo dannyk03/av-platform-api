@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
                 ignoreNotBefore: false,
             },
             secretOrKey: configService.get<string>(
-                'auth.jwt.accessToken.secretKey'
+                'auth.jwt.accessToken.secretKey',
             ),
         });
     }

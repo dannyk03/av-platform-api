@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { DebuggerOptionService } from 'src/debugger/service/debugger.option.service';
+import { CoreModule } from '@/core/core.module';
+import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
 
 describe('DebuggerOptionService', () => {
     let debuggerOptionService: DebuggerOptionService;
@@ -11,7 +11,7 @@ describe('DebuggerOptionService', () => {
         }).compile();
 
         debuggerOptionService = moduleRef.get<DebuggerOptionService>(
-            DebuggerOptionService
+            DebuggerOptionService,
         );
     });
 
@@ -31,7 +31,7 @@ describe('DebuggerOptionService', () => {
             const options = debuggerOptionService.createLogger();
             jest.spyOn(
                 debuggerOptionService,
-                'createLogger'
+                'createLogger',
             ).mockImplementation(() => options);
 
             expect(debuggerOptionService.createLogger()).toBe(options);

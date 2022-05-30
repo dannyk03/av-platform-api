@@ -1,6 +1,6 @@
 import { Exclude, Transform, Type } from 'class-transformer';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { IRoleDocument } from 'src/role/role.interface';
+import { IAwsS3Response } from '@/aws/aws.interface';
+import { IRoleDocument } from '@/role/role.interface';
 
 export class UserGetSerialization {
     @Type(() => String)
@@ -15,7 +15,7 @@ export class UserGetSerialization {
             })),
             isActive: value.isActive,
         }),
-        { toClassOnly: true }
+        { toClassOnly: true },
     )
     readonly role: IRoleDocument;
 

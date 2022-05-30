@@ -13,7 +13,7 @@ export const UserAgent = createParamDecorator(
     (data: string, ctx: ExecutionContext): IResult => {
         const { userAgent } = ctx.switchToHttp().getRequest() as IRequestApp;
         return userAgent;
-    }
+    },
 );
 
 export function RequestParamGuard(

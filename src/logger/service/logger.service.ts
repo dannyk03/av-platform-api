@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { ILogger } from '../logger.interface';
 import { ENUM_LOGGER_LEVEL } from '../logger.constant';
 import { LoggerDocument, LoggerEntity } from '../schema/logger.schema';
@@ -9,7 +9,7 @@ import { LoggerDocument, LoggerEntity } from '../schema/logger.schema';
 export class LoggerService {
     constructor(
         @DatabaseEntity(LoggerEntity.name)
-        private readonly loggerModel: Model<LoggerDocument>
+        private readonly loggerModel: Model<LoggerDocument>,
     ) {}
 
     async info({

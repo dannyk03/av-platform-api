@@ -8,7 +8,7 @@ export class HelperGeoService {
         return geoLib.isPointWithinRadius(
             { latitude: geoRule.latitude, longitude: geoRule.longitude },
             geoCurrent,
-            geoRule.inRadius
+            geoRule.inRadius,
         );
     }
 }

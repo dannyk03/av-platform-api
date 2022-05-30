@@ -5,7 +5,7 @@ import {
     BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
     ENUM_USER_STATUS_CODE_ERROR,
     USER_ACTIVE_META_KEY,
@@ -15,13 +15,13 @@ import {
 export class UserActiveGuard implements CanActivate {
     constructor(
         private readonly debuggerService: DebuggerService,
-        private reflector: Reflector
+        private reflector: Reflector,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const required: boolean[] = this.reflector.getAllAndOverride<boolean[]>(
             USER_ACTIVE_META_KEY,
-            [context.getHandler(), context.getClass()]
+            [context.getHandler(), context.getClass()],
         );
 
         if (!required) {
@@ -34,7 +34,7 @@ export class UserActiveGuard implements CanActivate {
             this.debuggerService.error(
                 'User active error',
                 'UserActiveGuard',
-                'canActivate'
+                'canActivate',
             );
 
             throw new BadRequestException({

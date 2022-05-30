@@ -7,8 +7,8 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { IErrorException } from './error.interface';
-import { IMessage } from 'src/message/message.interface';
-import { MessageService } from 'src/message/service/message.service';
+import { IMessage } from '@/message/message.interface';
+import { MessageService } from '@/message/service/message.service';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
@@ -30,13 +30,13 @@ export class ErrorHttpFilter implements ExceptionFilter {
             const rErrors = errors
                 ? await this.messageService.getRequestErrorsMessage(
                       errors,
-                      appLanguages
+                      appLanguages,
                   )
                 : undefined;
 
             let rMessage: string | IMessage = await this.messageService.get(
                 message,
-                { appLanguages }
+                { appLanguages },
             );
 
             if (properties) {
@@ -55,7 +55,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         } else {
             const rMessage: string | IMessage = await this.messageService.get(
                 'response.error.structure',
-                { appLanguages }
+                { appLanguages },
             );
             responseHttp.status(statusHttp).json({
                 statusCode: 500,

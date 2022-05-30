@@ -6,16 +6,16 @@ import {
     NotFoundException,
     Post,
 } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
-import { RoleDocument } from 'src/role/schema/role.schema';
-import { RoleService } from 'src/role/service/role.service';
-import { UserService } from 'src/user/service/user.service';
-import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
-import { IUserCheckExist, IUserDocument } from 'src/user/user.interface';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { Response } from 'src/utils/response/response.decorator';
-import { IResponse } from 'src/utils/response/response.interface';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { RoleDocument } from '@/role/schema/role.schema';
+import { RoleService } from '@/role/service/role.service';
+import { UserService } from '@/user/service/user.service';
+import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { IUserCheckExist, IUserDocument } from '@/user/user.interface';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { Response } from '@/utils/response/response.decorator';
+import { IResponse } from '@/utils/response/response.interface';
 import { AuthSignUpDto } from '../dto/auth.sign-up.dto';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
 import { AuthService } from '../service/auth.service';
@@ -29,25 +29,25 @@ export class AuthPublicController {
         private readonly debuggerService: DebuggerService,
         private readonly userService: UserService,
         private readonly authService: AuthService,
-        private readonly roleService: RoleService
+        private readonly roleService: RoleService,
     ) {}
 
     @Response('auth.signUp')
     @Post('/sign-up')
     async signUp(
         @Body()
-        { email, mobileNumber, ...body }: AuthSignUpDto
+        { email, mobileNumber, ...body }: AuthSignUpDto,
     ): Promise<IResponse> {
         const role: RoleDocument = await this.roleService.findOne<RoleDocument>(
             {
                 name: 'user',
-            }
+            },
         );
         if (!role) {
             this.debuggerService.error(
                 'Role not found',
                 'AuthController',
-                'signUp'
+                'signUp',
             );
 
             throw new NotFoundException({
@@ -58,14 +58,14 @@ export class AuthPublicController {
 
         const checkExist: IUserCheckExist = await this.userService.checkExist(
             email,
-            mobileNumber
+            mobileNumber,
         );
 
         if (checkExist.email && checkExist.mobileNumber) {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -76,7 +76,7 @@ export class AuthPublicController {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -87,7 +87,7 @@ export class AuthPublicController {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -99,7 +99,7 @@ export class AuthPublicController {
 
         try {
             const password = await this.authService.createPassword(
-                body.password
+                body.password,
             );
 
             const create = await this.userService.create({
@@ -136,7 +136,7 @@ export class AuthPublicController {
             const refreshToken: string =
                 await this.authService.createRefreshToken(
                     payloadRefreshToken,
-                    false
+                    false,
                 );
 
             return {
@@ -148,7 +148,7 @@ export class AuthPublicController {
                 'Signup try catch',
                 'AuthController',
                 'signUp',
-                err
+                err,
             );
 
             throw new InternalServerErrorException({

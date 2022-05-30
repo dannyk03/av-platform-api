@@ -5,5 +5,5 @@ export default registerAs(
     (): Record<string, any> => ({
         uploadPath:
             process.env.APP_ENV === 'production' ? '/user' : '/test/user',
-    })
+    }),
 );

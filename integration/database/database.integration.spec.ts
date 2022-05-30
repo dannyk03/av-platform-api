@@ -1,14 +1,14 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HealthCommonController } from 'src/health/controller/health.common.controller';
-import { HealthModule } from 'src/health/health.module';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { CoreModule } from '@/core/core.module';
+import { HealthController } from '@/health';
+import { HealthModule } from '@/health/health.module';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import request from 'supertest';
 import faker from '@faker-js/faker';
 import { E2E_DATABASE_INTEGRATION_URL } from './database.constant';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('Database Integration', () => {
     let app: INestApplication;
@@ -22,7 +22,7 @@ describe('Database Integration', () => {
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [CoreModule, HealthModule, TerminusModule],
-            controllers: [HealthCommonController],
+            controllers: [HealthController],
         }).compile();
 
         app = moduleRef.createNestApplication();
@@ -37,7 +37,7 @@ describe('Database Integration', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 

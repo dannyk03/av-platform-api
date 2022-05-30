@@ -11,5 +11,5 @@ export default registerAs(
             expirationTime: '1h',
             notBeforeExpirationTime: '0',
         },
-    })
+    }),
 );

@@ -1,14 +1,13 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HealthCommonController } from 'src/health/controller/health.common.controller';
-import { HealthModule } from 'src/health/health.module';
+import { CoreModule } from '@/core/core.module';
+import { HealthController, HealthModule } from '@/health';
 import { E2E_AWS_INTEGRATION_URL } from './aws.s3.constant';
 import request from 'supertest';
 import faker from '@faker-js/faker';
 import { TerminusModule } from '@nestjs/terminus';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('Aws S3 Integration', () => {
     let app: INestApplication;
@@ -22,7 +21,7 @@ describe('Aws S3 Integration', () => {
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [CoreModule, HealthModule, TerminusModule],
-            controllers: [HealthCommonController],
+            controllers: [HealthController],
         }).compile();
 
         app = moduleRef.createNestApplication();
@@ -37,7 +36,7 @@ describe('Aws S3 Integration', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 

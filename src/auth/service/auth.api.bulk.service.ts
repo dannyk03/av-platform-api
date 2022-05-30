@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { Model } from 'mongoose';
 import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
 
@@ -9,7 +9,7 @@ import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
 export class AuthApiBulkService {
     constructor(
         @DatabaseEntity(AuthApiEntity.name)
-        private readonly authApiModel: Model<AuthApiDocument>
+        private readonly authApiModel: Model<AuthApiDocument>,
     ) {}
 
     async deleteMany(find: Record<string, any>) {

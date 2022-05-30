@@ -6,13 +6,6 @@ import {
 } from '@nestjs/common';
 import { CorsMiddleware } from './cors/cors.middleware';
 import {
-    HtmlBodyParserMiddleware,
-    JsonBodyParserMiddleware,
-    RawBodyParserMiddleware,
-    TextBodyParserMiddleware,
-    UrlencodedBodyParserMiddleware,
-} from './body-parser/body-parser.middleware';
-import {
     HttpDebuggerMiddleware,
     HttpDebuggerResponseMiddleware,
 } from './http-debugger/http-debugger.middleware';
@@ -28,18 +21,13 @@ export class MiddlewareModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer
             .apply(
-                JsonBodyParserMiddleware,
-                RawBodyParserMiddleware,
-                HtmlBodyParserMiddleware,
-                TextBodyParserMiddleware,
-                UrlencodedBodyParserMiddleware,
                 CompressionMiddleware,
                 CorsMiddleware,
                 HttpDebuggerResponseMiddleware,
                 HttpDebuggerMiddleware,
                 HelmetMiddleware,
                 RateLimitMiddleware,
-                UserAgentMiddleware
+                UserAgentMiddleware,
             )
             .forRoutes('*');
 
@@ -54,7 +42,7 @@ export class MiddlewareModule implements NestModule {
                 {
                     path: 'api/callback/(.*)',
                     method: RequestMethod.ALL,
-                }
+                },
             )
             .forRoutes('*');
 
@@ -84,7 +72,7 @@ export class MiddlewareModule implements NestModule {
                 {
                     path: 'api/admin/setting/(.*)',
                     method: RequestMethod.ALL,
-                }
+                },
             )
             .forRoutes('*');
     }

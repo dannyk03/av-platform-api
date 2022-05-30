@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { PaginationService } from 'src/utils/pagination/service/pagination.service';
+import { CoreModule } from '@/core/core.module';
+import { PaginationService } from '@/utils/pagination/service/pagination.service';
 
 describe('PaginationService', () => {
     let paginationService: PaginationService;
@@ -28,7 +28,7 @@ describe('PaginationService', () => {
         it('should be success', async () => {
             const skip = paginationService.skip(1, 10);
             jest.spyOn(paginationService, 'skip').mockImplementation(
-                () => skip
+                () => skip,
             );
 
             expect(paginationService.skip(1, 10)).toBe(skip);
@@ -37,7 +37,7 @@ describe('PaginationService', () => {
         it('max page should be success', async () => {
             const skip = paginationService.skip(1, 150);
             jest.spyOn(paginationService, 'skip').mockImplementation(
-                () => skip
+                () => skip,
             );
 
             expect(paginationService.skip(1, 150)).toBe(skip);
@@ -46,7 +46,7 @@ describe('PaginationService', () => {
         it('max per page should be success', async () => {
             const skip = paginationService.skip(50, 10);
             jest.spyOn(paginationService, 'skip').mockImplementation(
-                () => skip
+                () => skip,
             );
 
             expect(paginationService.skip(50, 10)).toBe(skip);
@@ -64,7 +64,7 @@ describe('PaginationService', () => {
         it('should be success', async () => {
             const totalPage = paginationService.totalPage(100, 10);
             jest.spyOn(paginationService, 'totalPage').mockImplementation(
-                () => totalPage
+                () => totalPage,
             );
 
             expect(paginationService.totalPage(100, 10)).toBe(totalPage);

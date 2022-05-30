@@ -5,14 +5,14 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 @Injectable()
 export class DebuggerService {
     constructor(
-        @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
+        @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     ) {}
 
     info(
         description: string,
         sClass: string,
         sFunction: string,
-        data?: any
+        data?: any,
     ): void {
         this.logger.info(description, {
             class: sClass,
@@ -25,7 +25,7 @@ export class DebuggerService {
         description: string,
         sClass: string,
         sFunction: string,
-        data?: any
+        data?: any,
     ): void {
         this.logger.debug(description, {
             class: sClass,
@@ -38,7 +38,7 @@ export class DebuggerService {
         description: string,
         sClass: string,
         sFunction: string,
-        error?: any
+        error?: any,
     ): void {
         this.logger.error(description, {
             class: sClass,

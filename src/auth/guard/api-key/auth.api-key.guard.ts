@@ -4,8 +4,8 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
@@ -14,7 +14,7 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly configService: ConfigService,
-        private readonly reflector: Reflector
+        private readonly reflector: Reflector,
     ) {
         super();
     }
@@ -23,7 +23,7 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
         const mode = this.configService.get<string>('app.mode');
         const excludeApiKey = this.reflector.get<boolean>(
             'excludeApiKey',
-            context.getHandler()
+            context.getHandler(),
         );
 
         const request = context.switchToHttp().getRequest();
@@ -39,14 +39,14 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
     handleRequest<TUser = any>(
         err: Record<string, any>,
         user: TUser,
-        info: Error | string
+        info: Error | string,
     ): TUser {
         if (err || !user) {
             this.debuggerService.error(
                 info instanceof Error ? info.message : `${info}`,
                 'ApiKeyGuard',
                 'handleRequest',
-                err
+                err,
             );
 
             if (

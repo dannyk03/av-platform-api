@@ -3,16 +3,16 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import faker from '@faker-js/faker';
 import { E2E_AUTH_PUBLIC_SIGN_UP_URL } from './auth.constant';
-import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
-import { CoreModule } from 'src/core/core.module';
+import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { connection } from 'mongoose';
-import { UserService } from 'src/user/service/user.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from 'src/utils/request/request.constant';
-import { RouterPublicModule } from 'src/router/router.public.module';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { UserService } from '@/user/service/user.service';
+import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RouterPublicModule } from '@/router/router.public.module';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('E2E Public', () => {
     let app: INestApplication;
@@ -64,7 +64,7 @@ describe('E2E Public', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -86,7 +86,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR
+            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
         );
 
         return;
@@ -116,7 +116,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
         );
 
         return;
@@ -136,7 +136,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
         );
 
         return;
@@ -156,7 +156,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
         );
 
         return;

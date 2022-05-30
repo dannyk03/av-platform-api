@@ -3,25 +3,25 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import faker from '@faker-js/faker';
 import { E2E_AUTH_LOGIN_URL } from './auth.constant';
-import { UserDocument } from 'src/user/schema/user.schema';
-import { RoleDocument } from 'src/role/schema/role.schema';
-import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
+import { UserDocument } from '@/user/schema/user.schema';
+import { RoleDocument } from '@/role/schema/role.schema';
+import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
 import {
     ENUM_AUTH_STATUS_CODE_ERROR,
     ENUM_AUTH_STATUS_CODE_SUCCESS,
-} from 'src/auth/auth.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
-import { CoreModule } from 'src/core/core.module';
+} from '@/auth/auth.constant';
+import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { connection } from 'mongoose';
-import { RoleService } from 'src/role/service/role.service';
-import { UserService } from 'src/user/service/user.service';
-import { AuthService } from 'src/auth/service/auth.service';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from 'src/utils/request/request.constant';
-import { RouterCommonModule } from 'src/router/router.common.module';
+import { RoleService } from '@/role/service/role.service';
+import { UserService } from '@/user/service/user.service';
+import { AuthService } from '@/auth/service/auth.service';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RouterCommonModule } from '@/router/router.common.module';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('E2E Login', () => {
     let app: INestApplication;
@@ -92,7 +92,7 @@ describe('E2E Login', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -114,7 +114,7 @@ describe('E2E Login', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR
+            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
         );
 
         return;
@@ -135,7 +135,7 @@ describe('E2E Login', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
         );
 
         return;
@@ -156,7 +156,7 @@ describe('E2E Login', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR
+            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR,
         );
 
         return;
@@ -180,7 +180,7 @@ describe('E2E Login', () => {
         await userService.active(user._id);
         expect(response.status).toEqual(HttpStatus.FORBIDDEN);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
         );
 
         return;
@@ -204,7 +204,7 @@ describe('E2E Login', () => {
         await roleService.active(`${user.role}`);
         expect(response.status).toEqual(HttpStatus.FORBIDDEN);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR
+            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
         );
 
         return;
@@ -225,7 +225,7 @@ describe('E2E Login', () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS
+            ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS,
         );
 
         return;
@@ -247,7 +247,7 @@ describe('E2E Login', () => {
 
         expect(response.status).toEqual(HttpStatus.OK);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_EXPIRED_ERROR
+            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_EXPIRED_ERROR,
         );
 
         return;

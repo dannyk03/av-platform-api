@@ -28,13 +28,13 @@ export class HelperStringService {
                       length,
                       true,
                       /[A-Z]/,
-                      options && options.prefix ? options.prefix : undefined
+                      options && options.prefix ? options.prefix : undefined,
                   )
                 : faker.internet.password(
                       length,
                       false,
                       /\w/,
-                      options && options.prefix ? options.prefix : undefined
+                      options && options.prefix ? options.prefix : undefined,
                   );
 
         return options && options.upperCase ? rString.toUpperCase() : rString;
@@ -59,7 +59,7 @@ export class HelperStringService {
     }
 
     convertStringToNumberOrBooleanIfPossible(
-        text: string
+        text: string,
     ): string | number | boolean {
         let convertValue: string | boolean | number = text;
 
@@ -75,7 +75,7 @@ export class HelperStringService {
 
     checkPasswordWeak(password: string, length?: number): boolean {
         const regex = new RegExp(
-            `^(?=.*?[A-Z])(?=.*?[a-z]).{${length || 8},}$`
+            `^(?=.*?[A-Z])(?=.*?[a-z]).{${length || 8},}$`,
         );
 
         return regex.test(password);
@@ -83,7 +83,7 @@ export class HelperStringService {
 
     checkPasswordMedium(password: string, length?: number): boolean {
         const regex = new RegExp(
-            `^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{${length || 8},}$`
+            `^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{${length || 8},}$`,
         );
 
         return regex.test(password);
@@ -93,7 +93,7 @@ export class HelperStringService {
         const regex = new RegExp(
             `^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{${
                 length || 8
-            },}$`
+            },}$`,
         );
 
         return regex.test(password);

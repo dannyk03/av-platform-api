@@ -20,7 +20,7 @@ export class IsStartWithConstraint implements ValidatorConstraintInterface {
 
 export function IsStartWith(
     prefix: string[],
-    validationOptions?: ValidationOptions
+    validationOptions?: ValidationOptions,
 ) {
     return function (object: Record<string, any>, propertyName: string): any {
         registerDecorator({

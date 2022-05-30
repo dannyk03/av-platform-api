@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import { Request, Response, NextFunction } from 'express';
 import { createStream } from 'rotating-file-stream';
 import { ConfigService } from '@nestjs/config';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import {
     ICustomResponse,
     IHttpDebuggerConfig,
@@ -21,36 +21,36 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly helperDateService: HelperDateService
+        private readonly helperDateService: HelperDateService,
     ) {
         this.maxSize = this.configService.get<string>(
-            'app.debugger.http.maxSize'
+            'app.debugger.http.maxSize',
         );
         this.maxFiles = this.configService.get<number>(
-            'app.debugger.http.maxFiles'
+            'app.debugger.http.maxFiles',
         );
     }
 
     private customToken(): void {
         morgan.token('req-params', (req: Request) =>
-            JSON.stringify(req.params)
+            JSON.stringify(req.params),
         );
 
         morgan.token('req-body', (req: Request) => JSON.stringify(req.body));
 
         morgan.token(
             'res-body',
-            (req: Request, res: ICustomResponse) => res.body
+            (req: Request, res: ICustomResponse) => res.body,
         );
 
         morgan.token('req-headers', (req: Request) =>
-            JSON.stringify(req.headers)
+            JSON.stringify(req.headers),
         );
     }
 
     private httpLogger(): IHttpDebuggerConfig {
         const date: string = this.helperDateService.format(
-            this.helperDateService.create()
+            this.helperDateService.create(),
         );
         const HttpDebuggerOptions: IHttpDebuggerConfigOptions = {
             stream: createStream(`${date}.log`, {
@@ -74,7 +74,7 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
         morgan(config.debuggerHttpFormat, config.HttpDebuggerOptions)(
             req,
             res,
-            next
+            next,
         );
     }
 }

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
-import { IUserDocument } from 'src/user/user.interface';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
-import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
-import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
+import { IUserDocument } from '@/user/user.interface';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
+import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
@@ -24,32 +24,32 @@ export class AuthService {
         private readonly helperHashService: HelperHashService,
         private readonly helperDateService: HelperDateService,
         private readonly helperEncryptionService: HelperEncryptionService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
     ) {
         this.accessTokenSecretToken = this.configService.get<string>(
-            'auth.jwt.accessToken.secretKey'
+            'auth.jwt.accessToken.secretKey',
         );
         this.accessTokenExpirationTime = this.configService.get<string>(
-            'auth.jwt.accessToken.expirationTime'
+            'auth.jwt.accessToken.expirationTime',
         );
         this.accessTokenNotBeforeExpirationTime =
             this.configService.get<string>(
-                'auth.jwt.accessToken.notBeforeExpirationTime'
+                'auth.jwt.accessToken.notBeforeExpirationTime',
             );
 
         this.refreshTokenSecretToken = this.configService.get<string>(
-            'auth.jwt.refreshToken.secretKey'
+            'auth.jwt.refreshToken.secretKey',
         );
         this.refreshTokenExpirationTime = this.configService.get<string>(
-            'auth.jwt.refreshToken.expirationTime'
+            'auth.jwt.refreshToken.expirationTime',
         );
         this.refreshTokenExpirationTimeRememberMe =
             this.configService.get<string>(
-                'auth.jwt.refreshToken.expirationTimeRememberMe'
+                'auth.jwt.refreshToken.expirationTimeRememberMe',
             );
         this.refreshTokenNotBeforeExpirationTime =
             this.configService.get<string>(
-                'auth.jwt.refreshToken.notBeforeExpirationTime'
+                'auth.jwt.refreshToken.notBeforeExpirationTime',
             );
     }
 
@@ -74,7 +74,7 @@ export class AuthService {
     async createRefreshToken(
         payload: Record<string, any>,
         rememberMe: boolean,
-        test?: boolean
+        test?: boolean,
     ): Promise<string> {
         return this.helperEncryptionService.jwtEncrypt(payload, {
             secretKey: this.refreshTokenSecretToken,
@@ -97,18 +97,18 @@ export class AuthService {
 
     async validateUser(
         passwordString: string,
-        passwordHash: string
+        passwordHash: string,
     ): Promise<boolean> {
         return this.helperHashService.bcryptCompare(
             passwordString,
-            passwordHash
+            passwordHash,
         );
     }
 
     async createPayloadAccessToken(
         data: AuthLoginDto,
         rememberMe: boolean,
-        options?: IAuthPayloadOptions
+        options?: IAuthPayloadOptions,
     ): Promise<Record<string, any>> {
         return {
             ...data,
@@ -123,7 +123,7 @@ export class AuthService {
     async createPayloadRefreshToken(
         { _id }: AuthLoginSerialization,
         rememberMe: boolean,
-        options?: IAuthPayloadOptions
+        options?: IAuthPayloadOptions,
     ): Promise<Record<string, any>> {
         return {
             _id,
@@ -134,23 +134,23 @@ export class AuthService {
     }
 
     async serializationLogin(
-        data: IUserDocument
+        data: IUserDocument,
     ): Promise<AuthLoginSerialization> {
         return plainToInstance(AuthLoginSerialization, data);
     }
 
     async createPassword(password: string): Promise<IAuthPassword> {
         const saltLength: number = this.configService.get<number>(
-            'auth.password.saltLength'
+            'auth.password.saltLength',
         );
 
         const salt: string = this.helperHashService.randomSalt(saltLength);
 
         const passwordExpiredInDays: number = this.configService.get<number>(
-            'auth.password.expiredInDay'
+            'auth.password.expiredInDay',
         );
         const passwordExpired: Date = this.helperDateService.forwardInDays(
-            passwordExpiredInDays
+            passwordExpiredInDays,
         );
         const passwordHash = this.helperHashService.bcrypt(password, salt);
         return {

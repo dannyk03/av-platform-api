@@ -14,7 +14,7 @@ export class HelperFileService {
 
     async writeExcel(
         headers: string[],
-        rows: Record<string, string>[]
+        rows: Record<string, string>[],
     ): Promise<Buffer> {
         const workbook = new excelJs.Workbook();
         workbook.creator = this.appName;

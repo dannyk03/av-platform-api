@@ -8,8 +8,8 @@ import {
     IsOptional,
     ValidateIf,
 } from 'class-validator';
-import { IsPasswordStrong } from 'src/utils/request/validation/request.is-password-strong.validation';
-import { IsStartWith } from 'src/utils/request/validation/request.is-start-with.validation';
+import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
+import { IsStartWith } from '@/utils/request/validation/request.is-start-with.validation';
 
 export class AuthSignUpDto {
     @IsEmail()

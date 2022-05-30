@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
-import { IDatabaseFindAllOptions } from 'src/database/database.interface';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { DatabaseEntity } from '@/database/database.decorator';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { SettingCreateDto } from '../dto/setting.create.dto';
 import { SettingUpdateDto } from '../dto/setting.update.dto';
 import { SettingDocument, SettingEntity } from '../schema/setting.schema';
@@ -15,12 +15,12 @@ export class SettingService {
     constructor(
         @DatabaseEntity(SettingEntity.name)
         private readonly settingModel: Model<SettingDocument>,
-        private readonly helperStringService: HelperStringService
+        private readonly helperStringService: HelperStringService,
     ) {}
 
     async findAll(
         find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions
+        options?: IDatabaseFindAllOptions,
     ): Promise<SettingDocument[]> {
         const settings = this.settingModel.find(find);
 
@@ -71,7 +71,7 @@ export class SettingService {
 
     async updateOneById(
         _id: string,
-        { description, value }: SettingUpdateDto
+        { description, value }: SettingUpdateDto,
     ): Promise<SettingDocument> {
         const update: SettingDocument = await this.settingModel.findById(_id);
 
@@ -86,13 +86,13 @@ export class SettingService {
     }
 
     async serializationList(
-        data: SettingDocument[]
+        data: SettingDocument[],
     ): Promise<SettingListSerialization[]> {
         return plainToInstance(SettingListSerialization, data);
     }
 
     async serializationGet(
-        data: SettingDocument
+        data: SettingDocument,
     ): Promise<SettingGetSerialization> {
         return plainToInstance(SettingGetSerialization, data);
     }
@@ -103,7 +103,7 @@ export class SettingService {
 
     async convertValue(value: string): Promise<string | number | boolean> {
         return this.helperStringService.convertStringToNumberOrBooleanIfPossible(
-            value
+            value,
         );
     }
 }

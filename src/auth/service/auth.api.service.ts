@@ -1,10 +1,10 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { Model } from 'mongoose';
 import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
-import { IDatabaseFindAllOptions } from 'src/database/database.interface';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
 import { plainToInstance } from 'class-transformer';
 import { AuthApiListSerialization } from '../serialization/auth.api.list.serialization';
 import { AuthApiGetSerialization } from '../serialization/auth.api.get.serialization';
@@ -13,11 +13,11 @@ import {
     IAuthApiRequestHashedData,
     IAuthApiCreate,
 } from '../auth.interface';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { ConfigService } from '@nestjs/config';
-import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
+import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 import { AuthApiUpdateDto } from '../dto/auth.api.update.dto';
-import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
+import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
 
 @Injectable()
 export class AuthApiService {
@@ -29,14 +29,14 @@ export class AuthApiService {
         private readonly helperStringService: HelperStringService,
         private readonly configService: ConfigService,
         private readonly helperHashService: HelperHashService,
-        private readonly helperEncryptionService: HelperEncryptionService
+        private readonly helperEncryptionService: HelperEncryptionService,
     ) {
         this.env = this.configService.get<string>('app.env');
     }
 
     async findAll(
         find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions
+        options?: IDatabaseFindAllOptions,
     ): Promise<AuthApiDocument[]> {
         const users = this.authApiModel.find(find).select({
             name: 1,
@@ -77,13 +77,13 @@ export class AuthApiService {
     }
 
     async serializationList(
-        data: AuthApiDocument[]
+        data: AuthApiDocument[],
     ): Promise<AuthApiListSerialization[]> {
         return plainToInstance(AuthApiListSerialization, data);
     }
 
     async serializationGet(
-        data: AuthApiDocument
+        data: AuthApiDocument,
     ): Promise<AuthApiGetSerialization> {
         return plainToInstance(AuthApiGetSerialization, data);
     }
@@ -140,7 +140,7 @@ export class AuthApiService {
 
     async updateOneById(
         _id: string,
-        { name, description }: AuthApiUpdateDto
+        { name, description }: AuthApiUpdateDto,
     ): Promise<AuthApiDocument> {
         const authApi: AuthApiDocument = await this.authApiModel.findById(_id);
 
@@ -214,7 +214,7 @@ export class AuthApiService {
 
     async validateHashApiKey(
         hashFromRequest: string,
-        hash: string
+        hash: string,
     ): Promise<boolean> {
         return this.helperHashService.sha256Compare(hashFromRequest, hash);
     }
@@ -222,12 +222,12 @@ export class AuthApiService {
     async decryptApiKey(
         apiKeyHashed: string,
         secretKey: string,
-        passphrase: string
+        passphrase: string,
     ): Promise<IAuthApiRequestHashedData> {
         const decrypted = this.helperEncryptionService.aes256Decrypt(
             apiKeyHashed,
             secretKey,
-            passphrase
+            passphrase,
         );
 
         return JSON.parse(decrypted);
@@ -236,18 +236,18 @@ export class AuthApiService {
     async encryptApiKey(
         data: IAuthApiRequestHashedData,
         secretKey: string,
-        passphrase: string
+        passphrase: string,
     ): Promise<string> {
         return this.helperEncryptionService.aes256Encrypt(
             data,
             secretKey,
-            passphrase
+            passphrase,
         );
     }
 
     async createBasicToken(
         clientId: string,
-        clientSecret: string
+        clientSecret: string,
     ): Promise<string> {
         const token = `${clientId}:${clientSecret}`;
         return this.helperEncryptionService.base64Decrypt(token);
@@ -255,11 +255,11 @@ export class AuthApiService {
 
     async validateBasicToken(
         clientBasicToken: string,
-        ourBasicToken: string
+        ourBasicToken: string,
     ): Promise<boolean> {
         return this.helperEncryptionService.base64Compare(
             clientBasicToken,
-            ourBasicToken
+            ourBasicToken,
         );
     }
 }

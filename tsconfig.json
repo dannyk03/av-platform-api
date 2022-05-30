@@ -16,7 +16,11 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "@/*": ["src/*"],
+            "@utils/*": ["src/utils/*"]
+        }
     },
     "include": ["src", "test", "e2e", "integration"],
     "exclude": ["node_modules", "dist", "prod"]

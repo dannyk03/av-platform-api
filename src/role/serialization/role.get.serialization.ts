@@ -1,5 +1,5 @@
 import { Exclude, Transform, Type } from 'class-transformer';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
+import { PermissionDocument } from '@/permission/schema/permission.schema';
 
 export class RoleGetSerialization {
     @Type(() => String)
@@ -17,7 +17,7 @@ export class RoleGetSerialization {
                 name: val.name,
                 isActive: val.isActive,
             })),
-        { toClassOnly: true }
+        { toClassOnly: true },
     )
     readonly permissions: PermissionDocument[];
 

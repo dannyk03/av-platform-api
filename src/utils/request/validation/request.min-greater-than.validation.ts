@@ -19,7 +19,7 @@ export class MinGreaterThanConstraint implements ValidatorConstraintInterface {
 
 export function MinGreaterThan(
     property: string,
-    validationOptions?: ValidationOptions
+    validationOptions?: ValidationOptions,
 ) {
     return function (object: Record<string, any>, propertyName: string): any {
         registerDecorator({

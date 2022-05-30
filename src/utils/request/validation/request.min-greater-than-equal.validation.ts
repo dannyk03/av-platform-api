@@ -21,7 +21,7 @@ export class MinGreaterThanEqualConstraint
 
 export function MinGreaterThanEqual(
     property: string,
-    validationOptions?: ValidationOptions
+    validationOptions?: ValidationOptions,
 ) {
     return function (object: Record<string, any>, propertyName: string): any {
         registerDecorator({

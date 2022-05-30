@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-headerapikey';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 import { Request } from 'express';
-import { AuthApiDocument } from 'src/auth/schema/auth.api.schema';
-import { IAuthApiRequestHashedData } from 'src/auth/auth.interface';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
+import { AuthApiDocument } from '@/auth/schema/auth.api.schema';
+import { IAuthApiRequestHashedData } from '@/auth/auth.interface';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
@@ -18,10 +18,10 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
                 verified: (
                     error: Error,
                     user?: Record<string, any>,
-                    info?: string | number
+                    info?: string | number,
                 ) => Promise<void>,
-                req: Request
-            ) => this.validate(apiKey, verified, req)
+                req: Request,
+            ) => this.validate(apiKey, verified, req),
         );
     }
 
@@ -30,28 +30,28 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
         verified: (
             error: Error,
             user?: TUser,
-            info?: string | number
+            info?: string | number,
         ) => Promise<void>,
-        req: any
+        req: any,
     ) {
         const xApiKey: string[] = apiKey.split(':');
         const key = xApiKey[0];
         const encrypted = xApiKey[1];
 
         const authApi: AuthApiDocument = await this.authApiService.findOneByKey(
-            key
+            key,
         );
         if (!authApi) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR}`
+                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR}`,
             );
         } else if (!authApi.isActive) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR}`
+                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR}`,
             );
         }
 
@@ -59,7 +59,7 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
             await this.authApiService.decryptApiKey(
                 encrypted,
                 authApi.encryptionKey,
-                authApi.passphrase
+                authApi.passphrase,
             );
 
         const keys: string[] = ['key', 'timestamp', 'hash'];
@@ -67,39 +67,39 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
         const hasKey: boolean = keys.every((key) => deKeys.includes(key));
 
         const timestamp: number = parseInt(
-            req.headers['x-timestamp'] as string
+            req.headers['x-timestamp'] as string,
         );
 
         if (!hasKey) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR}`
+                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR}`,
             );
         } else if (key !== decrypted.key) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`
+                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
             );
         } else if (timestamp !== decrypted.timestamp) {
             verified(
                 new Error(
-                    `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR}`
-                )
+                    `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR}`,
+                ),
             );
         }
 
         const validateApiKey: boolean =
             await this.authApiService.validateHashApiKey(
                 decrypted.hash,
-                authApi.hash
+                authApi.hash,
             );
         if (!validateApiKey) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`
+                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
             );
         }
 

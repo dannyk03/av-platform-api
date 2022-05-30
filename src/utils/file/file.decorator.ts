@@ -6,14 +6,14 @@ import { FileImageInterceptor } from './interceptor/file.image.interceptor';
 export function UploadFileSingle(
     field: string,
     type: ENUM_FILE_TYPE,
-    required?: boolean
+    required?: boolean,
 ): any {
     if (type === ENUM_FILE_TYPE.IMAGE) {
         return applyDecorators(
             UseInterceptors(
                 FileInterceptor(field),
-                FileImageInterceptor(required)
-            )
+                FileImageInterceptor(required),
+            ),
         );
     }
 
@@ -23,14 +23,14 @@ export function UploadFileSingle(
 export function UploadFileMultiple(
     field: string,
     type: ENUM_FILE_TYPE,
-    required?: boolean
+    required?: boolean,
 ): any {
     if (type === ENUM_FILE_TYPE.IMAGE) {
         return applyDecorators(
             UseInterceptors(
                 FilesInterceptor(field),
-                FileImageInterceptor(required)
-            )
+                FileImageInterceptor(required),
+            ),
         );
     }
 

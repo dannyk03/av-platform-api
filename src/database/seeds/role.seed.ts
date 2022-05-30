@@ -1,17 +1,17 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
-import { PermissionService } from 'src/permission/service/permission.service';
-import { RoleBulkService } from 'src/role/service/role.bulk.service';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
+import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { PermissionService } from '@/permission/service/permission.service';
+import { RoleBulkService } from '@/role/service/role.bulk.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { PermissionDocument } from '@/permission/schema/permission.schema';
 
 @Injectable()
 export class RoleSeed {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly permissionService: PermissionService,
-        private readonly roleBulkService: RoleBulkService
+        private readonly roleBulkService: RoleBulkService,
     ) {}
 
     @Command({
@@ -42,7 +42,7 @@ export class RoleSeed {
             this.debuggerService.debug(
                 'Insert Role Succeed',
                 'RoleSeed',
-                'insert'
+                'insert',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'RoleSeed', 'insert');
@@ -60,7 +60,7 @@ export class RoleSeed {
             this.debuggerService.debug(
                 'Remove Role Succeed',
                 'RoleSeed',
-                'remove'
+                'remove',
             );
         } catch (e) {
             this.debuggerService.error(e.message, 'RoleSeed', 'remove');

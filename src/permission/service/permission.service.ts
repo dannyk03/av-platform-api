@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
-import { IDatabaseFindAllOptions } from 'src/database/database.interface';
+import { DatabaseEntity } from '@/database/database.decorator';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { IPermission } from '../permission.interface';
 import {
@@ -16,12 +16,12 @@ import { PermissionListSerialization } from '../serialization/permission.list.se
 export class PermissionService {
     constructor(
         @DatabaseEntity(PermissionEntity.name)
-        private readonly permissionModel: Model<PermissionDocument>
+        private readonly permissionModel: Model<PermissionDocument>,
     ) {}
 
     async findAll(
         find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions
+        options?: IDatabaseFindAllOptions,
     ): Promise<PermissionDocument[]> {
         const findAll = this.permissionModel.find(find);
         if (
@@ -68,7 +68,7 @@ export class PermissionService {
 
     async update(
         _id: string,
-        { name, description }: PermissionUpdateDto
+        { name, description }: PermissionUpdateDto,
     ): Promise<PermissionDocument> {
         const permission = await this.permissionModel.findById(_id);
 
@@ -78,13 +78,13 @@ export class PermissionService {
     }
 
     async serializationGet(
-        data: PermissionDocument
+        data: PermissionDocument,
     ): Promise<PermissionGetSerialization> {
         return plainToInstance(PermissionGetSerialization, data);
     }
 
     async serializationList(
-        data: PermissionDocument[]
+        data: PermissionDocument[],
     ): Promise<PermissionListSerialization[]> {
         return plainToInstance(PermissionListSerialization, data);
     }

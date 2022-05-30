@@ -9,12 +9,12 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { IMessage } from 'src/message/message.interface';
-import { MessageService } from 'src/message/service/message.service';
+import { IMessage } from '@/message/message.interface';
+import { MessageService } from '@/message/service/message.service';
 
 export function ResponseDefaultInterceptor(
     messagePath: string,
-    customStatusCode?: number
+    customStatusCode?: number,
 ): Type<NestInterceptor> {
     @Injectable()
     class MixinResponseDefaultInterceptor
@@ -24,7 +24,7 @@ export function ResponseDefaultInterceptor(
 
         async intercept(
             context: ExecutionContext,
-            next: CallHandler
+            next: CallHandler,
         ): Promise<Observable<Promise<any> | string>> {
             const ctx: HttpArgumentsHost = context.switchToHttp();
             const responseExpress: any = ctx.getResponse();
@@ -52,7 +52,7 @@ export function ResponseDefaultInterceptor(
                         message,
                         data,
                     };
-                })
+                }),
             );
         }
     }

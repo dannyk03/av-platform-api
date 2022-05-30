@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { IRoleDocument } from '../role.interface';
 import { RoleDocument, RoleEntity } from '../schema/role.schema';
-import { PermissionEntity } from 'src/permission/schema/permission.schema';
+import { PermissionEntity } from '@/permission/schema/permission.schema';
 import {
     IDatabaseFindAllOptions,
     IDatabaseFindOneOptions,
-} from 'src/database/database.interface';
+} from '@/database/database.interface';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleGetSerialization } from '../serialization/role.get.serialization';
@@ -18,12 +18,12 @@ import { RoleListSerialization } from '../serialization/role.list.serialization'
 export class RoleService {
     constructor(
         @DatabaseEntity(RoleEntity.name)
-        private readonly roleModel: Model<RoleDocument>
+        private readonly roleModel: Model<RoleDocument>,
     ) {}
 
     async findAll(
         find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions
+        options?: IDatabaseFindAllOptions,
     ): Promise<RoleDocument[]> {
         const roles = this.roleModel.find(find);
         if (
@@ -47,7 +47,7 @@ export class RoleService {
 
     async findOneById<T>(
         _id: string,
-        options?: IDatabaseFindOneOptions
+        options?: IDatabaseFindOneOptions,
     ): Promise<T> {
         const roles = this.roleModel.findById(_id);
 
@@ -63,7 +63,7 @@ export class RoleService {
 
     async findOne<T>(
         find?: Record<string, any>,
-        options?: IDatabaseFindOneOptions
+        options?: IDatabaseFindOneOptions,
     ): Promise<T> {
         const role = this.roleModel.findOne(find);
 
@@ -106,7 +106,7 @@ export class RoleService {
 
     async update(
         _id: string,
-        { name, permissions, isAdmin }: RoleUpdateDto
+        { name, permissions, isAdmin }: RoleUpdateDto,
     ): Promise<RoleDocument> {
         const update: RoleDocument = await this.roleModel.findById(_id);
         update.name = name;
@@ -139,7 +139,7 @@ export class RoleService {
     }
 
     async serializationList(
-        data: RoleDocument[]
+        data: RoleDocument[],
     ): Promise<RoleListSerialization[]> {
         return plainToInstance(RoleListSerialization, data);
     }

@@ -5,26 +5,26 @@ import {
     ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
     ENUM_PERMISSIONS,
     ENUM_PERMISSION_STATUS_CODE_ERROR,
     PERMISSION_META_KEY,
-} from 'src/permission/permission.constant';
-import { IPermission } from 'src/permission/permission.interface';
+} from '@/permission/permission.constant';
+import { IPermission } from '@/permission/permission.interface';
 
 @Injectable()
 export class PermissionPayloadDefaultGuard implements CanActivate {
     constructor(
         private readonly debuggerService: DebuggerService,
-        private reflector: Reflector
+        private reflector: Reflector,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const requiredPermission: ENUM_PERMISSIONS[] =
             this.reflector.getAllAndOverride<ENUM_PERMISSIONS[]>(
                 PERMISSION_META_KEY,
-                [context.getHandler(), context.getClass()]
+                [context.getHandler(), context.getClass()],
             );
         if (!requiredPermission) {
             return true;
@@ -36,14 +36,14 @@ export class PermissionPayloadDefaultGuard implements CanActivate {
             .map((val: IPermission) => val.code);
 
         const hasPermission: boolean = requiredPermission.every((permission) =>
-            permissions.includes(permission)
+            permissions.includes(permission),
         );
 
         if (!hasPermission) {
             this.debuggerService.error(
                 'Permission not has permission',
                 'PermissionDefaultGuard',
-                'canActivate'
+                'canActivate',
             );
 
             throw new ForbiddenException({

@@ -5,21 +5,21 @@ import {
     IUserCreate,
     IUserUpdate,
     IUserCheckExist,
-} from 'src/user/user.interface';
+} from '@/user/user.interface';
 import { Types } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { IAuthPassword } from 'src/auth/auth.interface';
+import { IAwsS3Response } from '@/aws/aws.interface';
+import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseEntity } from 'src/database/database.decorator';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { DatabaseEntity } from '@/database/database.decorator';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { UserDocument, UserEntity } from '../schema/user.schema';
-import { RoleEntity } from 'src/role/schema/role.schema';
-import { PermissionEntity } from 'src/permission/schema/permission.schema';
+import { RoleEntity } from '@/role/schema/role.schema';
+import { PermissionEntity } from '@/permission/schema/permission.schema';
 import {
     IDatabaseFindAllOptions,
     IDatabaseFindOneOptions,
-} from 'src/database/database.interface';
+} from '@/database/database.interface';
 import { UserProfileSerialization } from '../serialization/user.profile.serialization';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserGetSerialization } from '../serialization/user.get.serialization';
@@ -32,14 +32,14 @@ export class UserService {
         @DatabaseEntity(UserEntity.name)
         private readonly userModel: Model<UserDocument>,
         private readonly helperStringService: HelperStringService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
     ) {
         this.uploadPath = this.configService.get<string>('user.uploadPath');
     }
 
     async findAll(
         find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions
+        options?: IDatabaseFindAllOptions,
     ): Promise<IUserDocument[]> {
         const users = this.userModel.find(find).populate({
             path: 'role',
@@ -66,13 +66,13 @@ export class UserService {
     }
 
     async serializationProfile(
-        data: IUserDocument
+        data: IUserDocument,
     ): Promise<UserProfileSerialization> {
         return plainToInstance(UserProfileSerialization, data);
     }
 
     async serializationList(
-        data: IUserDocument[]
+        data: IUserDocument[],
     ): Promise<UserListSerialization[]> {
         return plainToInstance(UserListSerialization, data);
     }
@@ -83,7 +83,7 @@ export class UserService {
 
     async findOneById<T>(
         _id: string,
-        options?: IDatabaseFindOneOptions
+        options?: IDatabaseFindOneOptions,
     ): Promise<T> {
         const user = this.userModel.findById(_id);
 
@@ -110,7 +110,7 @@ export class UserService {
 
     async findOne<T>(
         find?: Record<string, any>,
-        options?: IDatabaseFindOneOptions
+        options?: IDatabaseFindOneOptions,
     ): Promise<T> {
         const user = this.userModel.findOne(find);
 
@@ -171,7 +171,7 @@ export class UserService {
 
     async updateOneById(
         _id: string,
-        { firstName, lastName }: IUserUpdate
+        { firstName, lastName }: IUserUpdate,
     ): Promise<UserDocument> {
         const user: UserDocument = await this.userModel.findById(_id);
 
@@ -184,7 +184,7 @@ export class UserService {
     async checkExist(
         email: string,
         mobileNumber: string,
-        _id?: string
+        _id?: string,
     ): Promise<IUserCheckExist> {
         const existEmail: Record<string, any> = await this.userModel.exists({
             email: {
@@ -224,7 +224,7 @@ export class UserService {
 
     async updatePassword(
         _id: string,
-        { salt, passwordHash, passwordExpired }: IAuthPassword
+        { salt, passwordHash, passwordExpired }: IAuthPassword,
     ): Promise<UserDocument> {
         const auth: UserDocument = await this.userModel.findById(_id);
 
@@ -237,7 +237,7 @@ export class UserService {
 
     async updatePasswordExpired(
         _id: string,
-        passwordExpired: Date
+        passwordExpired: Date,
     ): Promise<UserDocument> {
         const auth: UserDocument = await this.userModel.findById(_id);
         auth.passwordExpired = passwordExpired;

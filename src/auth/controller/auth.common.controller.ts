@@ -10,19 +10,19 @@ import {
     InternalServerErrorException,
     Patch,
 } from '@nestjs/common';
-import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
-import { UserService } from 'src/user/service/user.service';
+import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { UserService } from '@/user/service/user.service';
 import { AuthService } from '../service/auth.service';
 import {
     ENUM_AUTH_STATUS_CODE_ERROR,
     ENUM_AUTH_STATUS_CODE_SUCCESS,
 } from '../auth.constant';
-import { Response } from 'src/utils/response/response.decorator';
-import { IResponse } from 'src/utils/response/response.interface';
-import { IUserDocument } from 'src/user/user.interface';
-import { SuccessException } from 'src/utils/error/error.exception';
-import { ENUM_LOGGER_ACTION } from 'src/logger/logger.constant';
+import { Response } from '@/utils/response/response.decorator';
+import { IResponse } from '@/utils/response/response.interface';
+import { IUserDocument } from '@/user/user.interface';
+import { SuccessException } from '@/utils/error/error.exception';
+import { ENUM_LOGGER_ACTION } from '@/logger/logger.constant';
 import {
     ApiKey,
     AuthJwtGuard,
@@ -30,11 +30,11 @@ import {
     Token,
     User,
 } from '../auth.decorator';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { LoggerService } from 'src/logger/service/logger.service';
-import { UserDocument } from 'src/user/schema/user.schema';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { LoggerService } from '@/logger/service/logger.service';
+import { UserDocument } from '@/user/schema/user.schema';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthChangePasswordDto } from '../dto/auth.change-password.dto';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
@@ -50,7 +50,7 @@ export class AuthCommonController {
         private readonly helperDateService: HelperDateService,
         private readonly userService: UserService,
         private readonly authService: AuthService,
-        private readonly loggerService: LoggerService
+        private readonly loggerService: LoggerService,
     ) {}
 
     @Response('auth.login', ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS)
@@ -58,7 +58,7 @@ export class AuthCommonController {
     @Post('/login')
     async login(
         @Body() body: AuthLoginDto,
-        @ApiKey() apiKey: IAuthApiPayload
+        @ApiKey() apiKey: IAuthApiPayload,
     ): Promise<IResponse> {
         const rememberMe: boolean = body.rememberMe ? true : false;
         const user: IUserDocument =
@@ -71,14 +71,14 @@ export class AuthCommonController {
                         role: true,
                         permission: true,
                     },
-                }
+                },
             );
 
         if (!user) {
             this.debuggerService.error(
                 'Authorized error user not found',
                 'AuthController',
-                'login'
+                'login',
             );
 
             throw new NotFoundException({
@@ -89,14 +89,14 @@ export class AuthCommonController {
 
         const validate: boolean = await this.authService.validateUser(
             body.password,
-            user.password
+            user.password,
         );
 
         if (!validate) {
             this.debuggerService.error(
                 'Authorized error',
                 'AuthController',
-                'login'
+                'login',
             );
 
             throw new BadRequestException({
@@ -131,24 +131,24 @@ export class AuthCommonController {
             });
 
         const accessToken: string = await this.authService.createAccessToken(
-            payloadAccessToken
+            payloadAccessToken,
         );
 
         const refreshToken: string = await this.authService.createRefreshToken(
             payloadRefreshToken,
-            rememberMe
+            rememberMe,
         );
 
         const today: Date = this.helperDateService.create();
         const passwordExpired: Date = this.helperDateService.create(
-            user.passwordExpired
+            user.passwordExpired,
         );
 
         if (today > passwordExpired) {
             this.debuggerService.error(
                 'Password expired',
                 'AuthController',
-                'login'
+                'login',
             );
 
             throw new SuccessException({
@@ -183,7 +183,7 @@ export class AuthCommonController {
     async refresh(
         @User()
         { _id, rememberMe, loginDate }: Record<string, any>,
-        @Token() refreshToken: string
+        @Token() refreshToken: string,
     ): Promise<IResponse> {
         const user: IUserDocument =
             await this.userService.findOneById<IUserDocument>(_id, {
@@ -197,7 +197,7 @@ export class AuthCommonController {
             this.debuggerService.error(
                 'Authorized error user not found',
                 'AuthController',
-                'refresh'
+                'refresh',
             );
 
             throw new NotFoundException({
@@ -208,7 +208,7 @@ export class AuthCommonController {
             this.debuggerService.error(
                 'Auth Block',
                 'AuthController',
-                'refresh'
+                'refresh',
             );
 
             throw new ForbiddenException({
@@ -219,7 +219,7 @@ export class AuthCommonController {
             this.debuggerService.error(
                 'Role Block',
                 'AuthController',
-                'refresh'
+                'refresh',
             );
 
             throw new ForbiddenException({
@@ -230,14 +230,14 @@ export class AuthCommonController {
 
         const today: Date = this.helperDateService.create();
         const passwordExpired: Date = this.helperDateService.create(
-            user.passwordExpired
+            user.passwordExpired,
         );
 
         if (today > passwordExpired) {
             this.debuggerService.error(
                 'Password expired',
                 'AuthController',
-                'refresh'
+                'refresh',
             );
 
             throw new ForbiddenException({
@@ -255,7 +255,7 @@ export class AuthCommonController {
             });
 
         const accessToken: string = await this.authService.createAccessToken(
-            payloadAccessToken
+            payloadAccessToken,
         );
 
         return {
@@ -269,14 +269,14 @@ export class AuthCommonController {
     @Patch('/change-password')
     async changePassword(
         @Body() body: AuthChangePasswordDto,
-        @User('_id') _id: string
+        @User('_id') _id: string,
     ): Promise<void> {
         const user: UserDocument = await this.userService.findOneById(_id);
         if (!user) {
             this.debuggerService.error(
                 'User not found',
                 'AuthController',
-                'changePassword'
+                'changePassword',
             );
 
             throw new NotFoundException({
@@ -287,13 +287,13 @@ export class AuthCommonController {
 
         const matchPassword: boolean = await this.authService.validateUser(
             body.oldPassword,
-            user.password
+            user.password,
         );
         if (!matchPassword) {
             this.debuggerService.error(
                 "Old password don't match",
                 'AuthController',
-                'changePassword'
+                'changePassword',
             );
 
             throw new BadRequestException({
@@ -305,13 +305,13 @@ export class AuthCommonController {
 
         const newMatchPassword: boolean = await this.authService.validateUser(
             body.newPassword,
-            user.password
+            user.password,
         );
         if (newMatchPassword) {
             this.debuggerService.error(
                 "New password cant't same with old password",
                 'AuthController',
-                'changePassword'
+                'changePassword',
             );
 
             throw new BadRequestException({
@@ -323,7 +323,7 @@ export class AuthCommonController {
 
         try {
             const password = await this.authService.createPassword(
-                body.newPassword
+                body.newPassword,
             );
 
             await this.userService.updatePassword(user._id, password);
@@ -332,7 +332,7 @@ export class AuthCommonController {
                 'Change password error internal server error',
                 'AuthController',
                 'changePassword',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({

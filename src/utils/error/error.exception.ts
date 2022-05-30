@@ -11,7 +11,7 @@ export class SuccessException extends HttpException {
             | HttpStatus.NON_AUTHORITATIVE_INFORMATION
             | HttpStatus.NO_CONTENT
             | HttpStatus.RESET_CONTENT
-            | HttpStatus.PARTIAL_CONTENT
+            | HttpStatus.PARTIAL_CONTENT,
     ) {
         super(data, httpCode || HttpStatus.OK);
     }

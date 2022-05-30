@@ -6,7 +6,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface,
 } from 'class-validator';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
@@ -31,7 +31,7 @@ export class IsPasswordStrongConstraint
 
 export function IsPasswordStrong(
     minLength = 8,
-    validationOptions?: ValidationOptions
+    validationOptions?: ValidationOptions,
 ) {
     return function (object: Record<string, any>, propertyName: string): any {
         registerDecorator({

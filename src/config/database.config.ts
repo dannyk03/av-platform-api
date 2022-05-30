@@ -9,5 +9,5 @@ export default registerAs(
         password: process.env.DATABASE_PASSWORD || null,
         debug: process.env.DATABASE_DEBUG === 'true' || false,
         options: process.env.DATABASE_OPTIONS,
-    })
+    }),
 );

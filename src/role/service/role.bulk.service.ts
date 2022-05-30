@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from 'src/database/database.decorator';
+import { DatabaseEntity } from '@/database/database.decorator';
 import { DeleteResult } from 'mongodb';
 import { RoleDocument, RoleEntity } from '../schema/role.schema';
 import { RoleCreateDto } from '../dto/role.create.dto';
@@ -9,7 +9,7 @@ import { RoleCreateDto } from '../dto/role.create.dto';
 export class RoleBulkService {
     constructor(
         @DatabaseEntity(RoleEntity.name)
-        private readonly roleModel: Model<RoleDocument>
+        private readonly roleModel: Model<RoleDocument>,
     ) {}
 
     async deleteMany(find: Record<string, any>): Promise<DeleteResult> {
@@ -23,7 +23,7 @@ export class RoleBulkService {
                 isActive: true,
                 isAdmin: isAdmin || false,
                 permissions: permissions.map((val) => new Types.ObjectId(val)),
-            }))
+            })),
         );
     }
 }

@@ -55,7 +55,7 @@ export class HelperDateService {
             .format(
                 options && options.format
                     ? options.format
-                    : ENUM_HELPER_DATE_FORMAT.DATE
+                    : ENUM_HELPER_DATE_FORMAT.DATE,
             );
     }
 

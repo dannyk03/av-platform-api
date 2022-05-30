@@ -31,7 +31,7 @@ export function PaginationSearch(): any {
         Expose(),
         Transform(({ value }) => (value ? value : undefined), {
             toClassOnly: true,
-        })
+        }),
     );
 }
 
@@ -40,7 +40,7 @@ export function PaginationAvailableSearch(availableSearch: string[]): any {
         Expose(),
         Transform(() => availableSearch, {
             toClassOnly: true,
-        })
+        }),
     );
 }
 
@@ -58,8 +58,8 @@ export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
                     : parseInt(value),
             {
                 toClassOnly: true,
-            }
-        )
+            },
+        ),
     );
 }
 
@@ -77,14 +77,14 @@ export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
                     : parseInt(value),
             {
                 toClassOnly: true,
-            }
-        )
+            },
+        ),
     );
 }
 
 export function PaginationSort(
     sort = PAGINATION_DEFAULT_SORT,
-    availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT
+    availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT,
 ): any {
     return applyDecorators(
         Expose(),
@@ -108,19 +108,19 @@ export function PaginationSort(
             },
             {
                 toClassOnly: true,
-            }
-        )
+            },
+        ),
     );
 }
 
 export function PaginationAvailableSort(
-    availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT
+    availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT,
 ): any {
     return applyDecorators(
         Expose(),
         Transform(({ value }) => (!value ? availableSort : value), {
             toClassOnly: true,
-        })
+        }),
     );
 }
 
@@ -135,14 +135,14 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
                           .split(',')
                           .map((val: string) => (val === 'true' ? true : false))
                     : defaultValue,
-            { toClassOnly: true }
-        )
+            { toClassOnly: true },
+        ),
     );
 }
 
 export function PaginationFilterEnum<T>(
     defaultValue: T[],
-    defaultEnum: Record<string, any>
+    defaultEnum: Record<string, any>,
 ): any {
     const cEnum = defaultEnum as unknown;
     return applyDecorators(
@@ -153,14 +153,14 @@ export function PaginationFilterEnum<T>(
                 value
                     ? value.split(',').map((val: string) => defaultEnum[val])
                     : defaultValue,
-            { toClassOnly: true }
-        )
+            { toClassOnly: true },
+        ),
     );
 }
 
 export function PaginationFilterId(
     field: string,
-    options?: IPaginationFilterOptions
+    options?: IPaginationFilterOptions,
 ): any {
     return applyDecorators(
         Expose(),
@@ -168,13 +168,13 @@ export function PaginationFilterId(
         options && options.required ? IsNotEmpty() : Skip(),
         options && options.required
             ? Skip()
-            : ValidateIf((e) => e[field] !== '' && e[field])
+            : ValidateIf((e) => e[field] !== '' && e[field]),
     );
 }
 
 export function PaginationFilterDate(
     field: string,
-    options?: IPaginationFilterDateOptions
+    options?: IPaginationFilterDateOptions,
 ): any {
     return applyDecorators(
         Expose(),
@@ -189,7 +189,7 @@ export function PaginationFilterDate(
                       e[field] !== '' &&
                       e[options.asEndDate.moreThanField] !== '' &&
                       e[field] &&
-                      e[options.asEndDate.moreThanField]
+                      e[options.asEndDate.moreThanField],
               )
             : ValidateIf((e) => e[field] !== '' && e[field]),
         options && options.asEndDate
@@ -204,15 +204,15 @@ export function PaginationFilterDate(
                   },
                   {
                       toClassOnly: true,
-                  }
+                  },
               )
-            : Skip()
+            : Skip(),
     );
 }
 
 export function PaginationFilterString(
     field: string,
-    options?: IPaginationFilterStringOptions
+    options?: IPaginationFilterStringOptions,
 ) {
     return applyDecorators(
         Expose(),
@@ -226,12 +226,12 @@ export function PaginationFilterString(
                           : undefined,
                   {
                       toClassOnly: true,
-                  }
+                  },
               )
             : Skip(),
         options && options.required ? IsNotEmpty() : IsOptional(),
         options && options.required
             ? Skip()
-            : ValidateIf((e) => e[field] !== '' && e[field])
+            : ValidateIf((e) => e[field] !== '' && e[field]),
     );
 }

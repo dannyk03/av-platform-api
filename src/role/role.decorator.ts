@@ -15,7 +15,7 @@ export const GetRole = createParamDecorator(
     (data: string, ctx: ExecutionContext) => {
         const { __role } = ctx.switchToHttp().getRequest();
         return __role;
-    }
+    },
 );
 
 export function RoleGetGuard(): any {
@@ -25,7 +25,7 @@ export function RoleGetGuard(): any {
 export function RoleUpdateGuard(): any {
     return applyDecorators(
         UseGuards(RolePutToRequestGuard, RoleNotFoundGuard, RoleActiveGuard),
-        SetMetadata(ROLE_ACTIVE_META_KEY, [true])
+        SetMetadata(ROLE_ACTIVE_META_KEY, [true]),
     );
 }
 
@@ -35,22 +35,22 @@ export function RoleDeleteGuard(): any {
             RolePutToRequestGuard,
             RoleNotFoundGuard,
             RoleActiveGuard,
-            RoleUsedGuard
+            RoleUsedGuard,
         ),
-        SetMetadata(ROLE_ACTIVE_META_KEY, [true])
+        SetMetadata(ROLE_ACTIVE_META_KEY, [true]),
     );
 }
 
 export function RoleUpdateActiveGuard(): any {
     return applyDecorators(
         UseGuards(RolePutToRequestGuard, RoleNotFoundGuard, RoleActiveGuard),
-        SetMetadata(ROLE_ACTIVE_META_KEY, [false])
+        SetMetadata(ROLE_ACTIVE_META_KEY, [false]),
     );
 }
 
 export function RoleUpdateInactiveGuard(): any {
     return applyDecorators(
         UseGuards(RolePutToRequestGuard, RoleNotFoundGuard, RoleActiveGuard),
-        SetMetadata(ROLE_ACTIVE_META_KEY, [true])
+        SetMetadata(ROLE_ACTIVE_META_KEY, [true]),
     );
 }

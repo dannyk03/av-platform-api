@@ -19,7 +19,7 @@ import {
 import { IFile } from '../file.interface';
 
 export function FileImageInterceptor(
-    required?: boolean
+    required?: boolean,
 ): Type<NestInterceptor> {
     @Injectable()
     class MixinFileImageInterceptor implements NestInterceptor<Promise<any>> {
@@ -27,7 +27,7 @@ export function FileImageInterceptor(
 
         async intercept(
             context: ExecutionContext,
-            next: CallHandler
+            next: CallHandler,
         ): Promise<Observable<Promise<any> | string>> {
             const ctx: HttpArgumentsHost = context.switchToHttp();
             const { file, files } = ctx.getRequest();
@@ -74,7 +74,7 @@ export function FileImageInterceptor(
                     this.configService.get<number>('file.maxFileSize');
                 if (
                     !Object.values(ENUM_FILE_IMAGE_MIME).find(
-                        (val) => val === mimetype.toLowerCase()
+                        (val) => val === mimetype.toLowerCase(),
                     )
                 ) {
                     throw new UnsupportedMediaTypeException({

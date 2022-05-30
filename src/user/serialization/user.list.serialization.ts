@@ -1,6 +1,6 @@
 import { Exclude, Type } from 'class-transformer';
 import { Types } from 'mongoose';
-import { IAwsS3Response } from 'src/aws/aws.interface';
+import { IAwsS3Response } from '@/aws/aws.interface';
 
 export class UserListSerialization {
     @Type(() => String)

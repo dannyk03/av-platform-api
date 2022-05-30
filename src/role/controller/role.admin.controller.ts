@@ -14,9 +14,9 @@ import {
 import {
     ENUM_PERMISSIONS,
     ENUM_PERMISSION_STATUS_CODE_ERROR,
-} from 'src/permission/permission.constant';
-import { AuthAdminJwtGuard } from 'src/auth/auth.decorator';
-import { PermissionService } from 'src/permission/service/permission.service';
+} from '@/permission/permission.constant';
+import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
+import { PermissionService } from '@/permission/service/permission.service';
 import { RoleService } from '../service/role.service';
 import {
     GetRole,
@@ -28,25 +28,22 @@ import {
 } from '../role.decorator';
 import { IRoleDocument } from '../role.interface';
 import { ENUM_ROLE_STATUS_CODE_ERROR } from '../role.constant';
-import {
-    Response,
-    ResponsePaging,
-} from 'src/utils/response/response.decorator';
+import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
-} from 'src/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { PaginationService } from 'src/utils/pagination/service/pagination.service';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+} from '@/utils/response/response.interface';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { PaginationService } from '@/utils/pagination/service/pagination.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import { RoleDocument } from '../schema/role.schema';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
+import { PermissionDocument } from '@/permission/schema/permission.schema';
 import { RoleListDto } from '../dto/role.list.dto';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleListSerialization } from '../serialization/role.list.serialization';
 import { RoleRequestDto } from '../dto/role.request.dto';
-import { RequestParamGuard } from 'src/utils/request/request.decorator';
+import { RequestParamGuard } from '@/utils/request/request.decorator';
 
 @Controller({
     version: '1',
@@ -57,7 +54,7 @@ export class RoleAdminController {
         private readonly debuggerService: DebuggerService,
         private readonly paginationService: PaginationService,
         private readonly roleService: RoleService,
-        private readonly permissionService: PermissionService
+        private readonly permissionService: PermissionService,
     ) {}
 
     @ResponsePaging('role.list')
@@ -72,7 +69,7 @@ export class RoleAdminController {
             search,
             availableSort,
             availableSearch,
-        }: RoleListDto
+        }: RoleListDto,
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
@@ -96,7 +93,7 @@ export class RoleAdminController {
         const totalData: number = await this.roleService.getTotal({});
         const totalPage: number = await this.paginationService.totalPage(
             totalData,
-            perPage
+            perPage,
         );
 
         const data: RoleListSerialization[] =
@@ -127,14 +124,14 @@ export class RoleAdminController {
     @Post('/create')
     async create(
         @Body()
-        { name, permissions, isAdmin }: RoleCreateDto
+        { name, permissions, isAdmin }: RoleCreateDto,
     ): Promise<IResponse> {
         const exist: boolean = await this.roleService.exists(name);
         if (exist) {
             this.debuggerService.error(
                 'Role Error',
                 'RoleController',
-                'create'
+                'create',
             );
 
             throw new BadRequestException({
@@ -151,7 +148,7 @@ export class RoleAdminController {
                 this.debuggerService.error(
                     'Permission not found',
                     'RoleController',
-                    'create'
+                    'create',
                 );
 
                 throw new NotFoundException({
@@ -177,7 +174,7 @@ export class RoleAdminController {
                 'create try catch',
                 'RoleController',
                 'create',
-                err
+                err,
             );
 
             throw new InternalServerErrorException({
@@ -195,14 +192,14 @@ export class RoleAdminController {
     async update(
         @GetRole() role: RoleDocument,
         @Body()
-        { name, permissions, isAdmin }: RoleUpdateDto
+        { name, permissions, isAdmin }: RoleUpdateDto,
     ): Promise<IResponse> {
         const check: boolean = await this.roleService.exists(name, role._id);
         if (check) {
             this.debuggerService.error(
                 'Role Exist Error',
                 'RoleController',
-                'update'
+                'update',
             );
 
             throw new BadRequestException({
@@ -219,7 +216,7 @@ export class RoleAdminController {
                 this.debuggerService.error(
                     'Permission not found',
                     'RoleController',
-                    'update'
+                    'update',
                 );
 
                 throw new NotFoundException({
@@ -241,7 +238,7 @@ export class RoleAdminController {
                 'Project server internal error',
                 'SurveyAdminController',
                 'update',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({
@@ -268,7 +265,7 @@ export class RoleAdminController {
                 'delete try catch',
                 'RoleController',
                 'delete',
-                err
+                err,
             );
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
@@ -291,7 +288,7 @@ export class RoleAdminController {
                 'Role inactive server internal error',
                 'RoleController',
                 'inactive',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({
@@ -316,7 +313,7 @@ export class RoleAdminController {
                 'Role active server internal error',
                 'RoleController',
                 'active',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({

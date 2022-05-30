@@ -8,7 +8,7 @@ import { IHelperJwtOptions } from '../helper.interface';
 export class HelperEncryptionService {
     constructor(
         private readonly configService: ConfigService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
     ) {}
 
     base64Encrypt(data: string): string {
@@ -28,7 +28,7 @@ export class HelperEncryptionService {
     aes256Encrypt(
         data: string | Record<string, any> | Record<string, any>[],
         key: string,
-        iv: string
+        iv: string,
     ): string {
         const cIv = enc.Utf8.parse(iv);
         const cipher = AES.encrypt(JSON.stringify(data), key, {
@@ -53,7 +53,7 @@ export class HelperEncryptionService {
 
     jwtEncrypt(
         payload: Record<string, any>,
-        options?: IHelperJwtOptions
+        options?: IHelperJwtOptions,
     ): string {
         return this.jwtService.sign(payload, {
             secret:
@@ -64,13 +64,13 @@ export class HelperEncryptionService {
                 options && options.expiredIn
                     ? options.expiredIn
                     : this.configService.get<string>(
-                          'helper.jwt.expirationTime'
+                          'helper.jwt.expirationTime',
                       ),
             notBefore:
                 options && options.notBefore
                     ? options.notBefore
                     : this.configService.get<string>(
-                          'helper.jwt.notBeforeExpirationTime'
+                          'helper.jwt.notBeforeExpirationTime',
                       ),
         });
     }
@@ -86,7 +86,7 @@ export class HelperEncryptionService {
                     options && options.secretKey
                         ? options.secretKey
                         : this.configService.get<string>(
-                              'helper.jwt.secretKey'
+                              'helper.jwt.secretKey',
                           ),
             });
             return true;

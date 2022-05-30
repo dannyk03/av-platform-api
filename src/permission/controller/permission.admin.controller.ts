@@ -7,9 +7,9 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
-import { AuthAdminJwtGuard } from 'src/auth/auth.decorator';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
+import { DebuggerService } from '@/debugger/service/debugger.service';
 import { PermissionService } from '../service/permission.service';
 import {
     GetPermission,
@@ -18,21 +18,18 @@ import {
     PermissionUpdateGuard,
     PermissionUpdateInactiveGuard,
 } from '../permission.decorator';
-import {
-    Response,
-    ResponsePaging,
-} from 'src/utils/response/response.decorator';
+import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
-} from 'src/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
-import { PaginationService } from 'src/utils/pagination/service/pagination.service';
+} from '@/utils/response/response.interface';
+import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { PaginationService } from '@/utils/pagination/service/pagination.service';
 import { PermissionDocument } from '../schema/permission.schema';
 import { PermissionListDto } from '../dto/permission.list.dto';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
-import { RequestParamGuard } from 'src/utils/request/request.decorator';
+import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { PermissionRequestDto } from '../dto/permissions.request.dto';
 
 @Controller({
@@ -43,7 +40,7 @@ export class PermissionAdminController {
     constructor(
         private readonly debuggerService: DebuggerService,
         private readonly paginationService: PaginationService,
-        private readonly permissionService: PermissionService
+        private readonly permissionService: PermissionService,
     ) {}
 
     @ResponsePaging('permission.list')
@@ -59,7 +56,7 @@ export class PermissionAdminController {
             availableSort,
             availableSearch,
             isActive,
-        }: PermissionListDto
+        }: PermissionListDto,
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {
@@ -88,7 +85,7 @@ export class PermissionAdminController {
         const totalData: number = await this.permissionService.getTotal(find);
         const totalPage: number = await this.paginationService.totalPage(
             totalData,
-            perPage
+            perPage,
         );
 
         const data: PermissionListSerialization[] =
@@ -111,7 +108,7 @@ export class PermissionAdminController {
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
     @Get('/get/:permission')
     async get(
-        @GetPermission() permission: PermissionDocument
+        @GetPermission() permission: PermissionDocument,
     ): Promise<IResponse> {
         return this.permissionService.serializationGet(permission);
     }
@@ -121,12 +118,12 @@ export class PermissionAdminController {
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
         ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE
+        ENUM_PERMISSIONS.PERMISSION_UPDATE,
     )
     @Put('/update/:permission')
     async update(
         @GetPermission() permission: PermissionDocument,
-        @Body() body: PermissionUpdateDto
+        @Body() body: PermissionUpdateDto,
     ): Promise<IResponse> {
         try {
             await this.permissionService.update(permission._id, body);
@@ -135,7 +132,7 @@ export class PermissionAdminController {
                 'Auth active server internal error',
                 'AuthAdminController',
                 'updateActive',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({
@@ -154,11 +151,11 @@ export class PermissionAdminController {
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
         ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE
+        ENUM_PERMISSIONS.PERMISSION_UPDATE,
     )
     @Patch('/update/:permission/inactive')
     async inactive(
-        @GetPermission() permission: PermissionDocument
+        @GetPermission() permission: PermissionDocument,
     ): Promise<void> {
         try {
             await this.permissionService.inactive(permission._id);
@@ -168,7 +165,7 @@ export class PermissionAdminController {
 
                 'PermissionController',
                 'inactive',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({
@@ -185,11 +182,11 @@ export class PermissionAdminController {
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
         ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE
+        ENUM_PERMISSIONS.PERMISSION_UPDATE,
     )
     @Patch('/update/:permission/active')
     async active(
-        @GetPermission() permission: PermissionDocument
+        @GetPermission() permission: PermissionDocument,
     ): Promise<void> {
         try {
             await this.permissionService.active(permission._id);
@@ -198,7 +195,7 @@ export class PermissionAdminController {
                 'Permission active server internal error',
                 'PermissionController',
                 'active',
-                e
+                e,
             );
 
             throw new InternalServerErrorException({

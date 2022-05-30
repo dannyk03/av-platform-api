@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { DatabaseService } from 'src/database/service/database.service';
+import { CoreModule } from '@/core/core.module';
+import { DatabaseService } from '@/database/service/database.service';
 
 describe('DatabaseService', () => {
     let databaseService: DatabaseService;
@@ -29,7 +29,7 @@ describe('DatabaseService', () => {
             const options = databaseService.createMongooseOptions();
             jest.spyOn(
                 databaseService,
-                'createMongooseOptions'
+                'createMongooseOptions',
             ).mockImplementation(() => options);
 
             expect(databaseService.createMongooseOptions()).toBe(options);

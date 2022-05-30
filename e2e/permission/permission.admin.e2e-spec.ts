@@ -11,18 +11,18 @@ import {
     E2E_PERMISSION_PAYLOAD_TEST,
 } from './permission.constant';
 import { Types, connection } from 'mongoose';
-import { ENUM_PERMISSION_STATUS_CODE_ERROR } from 'src/permission/permission.constant';
-import { CoreModule } from 'src/core/core.module';
+import { ENUM_PERMISSION_STATUS_CODE_ERROR } from '@/permission/permission.constant';
+import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
-import { PermissionService } from 'src/permission/service/permission.service';
-import { AuthService } from 'src/auth/service/auth.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from 'src/utils/request/request.constant';
-import { RouterAdminModule } from 'src/router/router.admin.module';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
-import { PermissionUpdateDto } from 'src/permission/dto/permission.update.dto';
+import { PermissionService } from '@/permission/service/permission.service';
+import { AuthService } from '@/auth/service/auth.service';
+import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RouterAdminModule } from '@/router/router.admin.module';
+import { PermissionDocument } from '@/permission/schema/permission.schema';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { PermissionUpdateDto } from '@/permission/dto/permission.update.dto';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('E2E Permission Admin', () => {
     let app: INestApplication;
@@ -85,7 +85,7 @@ describe('E2E Permission Admin', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -111,8 +111,8 @@ describe('E2E Permission Admin', () => {
             .get(
                 E2E_PERMISSION_ADMIN_GET_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -121,7 +121,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
         );
 
         return;
@@ -146,8 +146,8 @@ describe('E2E Permission Admin', () => {
             .put(
                 E2E_PERMISSION_ADMIN_UPDATE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .send(updateData)
             .set('Authorization', `Bearer ${accessToken}`)
@@ -157,7 +157,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
         );
 
         return;
@@ -166,7 +166,7 @@ describe('E2E Permission Admin', () => {
     it(`PUT ${E2E_PERMISSION_ADMIN_UPDATE_URL} Update Error Request`, async () => {
         const response = await request(app.getHttpServer())
             .put(
-                E2E_PERMISSION_ADMIN_UPDATE_URL.replace(':_id', permission._id)
+                E2E_PERMISSION_ADMIN_UPDATE_URL.replace(':_id', permission._id),
             )
             .send({
                 name: [1231231],
@@ -178,7 +178,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR
+            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
         );
 
         return;
@@ -187,7 +187,7 @@ describe('E2E Permission Admin', () => {
     it(`PUT ${E2E_PERMISSION_ADMIN_UPDATE_URL} Update Success`, async () => {
         const response = await request(app.getHttpServer())
             .put(
-                E2E_PERMISSION_ADMIN_UPDATE_URL.replace(':_id', permission._id)
+                E2E_PERMISSION_ADMIN_UPDATE_URL.replace(':_id', permission._id),
             )
             .send(updateData)
             .set('Authorization', `Bearer ${accessToken}`)
@@ -206,8 +206,8 @@ describe('E2E Permission Admin', () => {
             .patch(
                 E2E_PERMISSION_ADMIN_ACTIVE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -216,7 +216,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
         );
 
         return;
@@ -225,7 +225,7 @@ describe('E2E Permission Admin', () => {
     it(`PATCH ${E2E_PERMISSION_ADMIN_ACTIVE_URL} Active already Active`, async () => {
         const response = await request(app.getHttpServer())
             .patch(
-                E2E_PERMISSION_ADMIN_ACTIVE_URL.replace(':_id', permission._id)
+                E2E_PERMISSION_ADMIN_ACTIVE_URL.replace(':_id', permission._id),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -234,7 +234,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR,
         );
 
         return;
@@ -245,8 +245,8 @@ describe('E2E Permission Admin', () => {
             .patch(
                 E2E_PERMISSION_ADMIN_INACTIVE_URL.replace(
                     ':_id',
-                    `${new Types.ObjectId()}`
-                )
+                    `${new Types.ObjectId()}`,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -255,7 +255,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
         );
 
         return;
@@ -266,8 +266,8 @@ describe('E2E Permission Admin', () => {
             .patch(
                 E2E_PERMISSION_ADMIN_INACTIVE_URL.replace(
                     ':_id',
-                    permission._id
-                )
+                    permission._id,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -285,8 +285,8 @@ describe('E2E Permission Admin', () => {
             .patch(
                 E2E_PERMISSION_ADMIN_INACTIVE_URL.replace(
                     ':_id',
-                    permission._id
-                )
+                    permission._id,
+                ),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())
@@ -295,7 +295,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR
+            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR,
         );
 
         return;
@@ -304,7 +304,7 @@ describe('E2E Permission Admin', () => {
     it(`PATCH ${E2E_PERMISSION_ADMIN_ACTIVE_URL} Active Success`, async () => {
         const response = await request(app.getHttpServer())
             .patch(
-                E2E_PERMISSION_ADMIN_ACTIVE_URL.replace(':_id', permission._id)
+                E2E_PERMISSION_ADMIN_ACTIVE_URL.replace(':_id', permission._id),
             )
             .set('Authorization', `Bearer ${accessToken}`)
             .set('user-agent', faker.internet.userAgent())

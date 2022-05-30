@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { HelperService } from 'src/utils/helper/service/helper.service';
+import { CoreModule } from '@/core/core.module';
+import { HelperService } from '@/utils/helper/service/helper.service';
 
 describe('HelperService', () => {
     let helperService: HelperService;
@@ -28,7 +28,7 @@ describe('HelperService', () => {
         it('should be success', async () => {
             const result = await helperService.delay(100);
             jest.spyOn(helperService, 'delay').mockImplementation(
-                async () => result
+                async () => result,
             );
 
             expect(await helperService.delay(100)).toBe(result);

@@ -12,7 +12,7 @@ export class SettingPutToRequestGuard implements CanActivate {
         const { setting } = params;
 
         const check: SettingDocument = await this.settingService.findOneById(
-            setting
+            setting,
         );
         request.__setting = check;
 
@@ -30,7 +30,7 @@ export class SettingPutToRequestByNameGuard implements CanActivate {
         const { settingName } = params;
 
         const check: SettingDocument = await this.settingService.findOneByName(
-            settingName
+            settingName,
         );
         request.__setting = check;
 

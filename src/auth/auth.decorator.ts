@@ -5,11 +5,11 @@ import {
     applyDecorators,
     SetMetadata,
 } from '@nestjs/common';
-import { PermissionPayloadDefaultGuard } from 'src/permission/guard/payload/permission.default.guard';
+import { PermissionPayloadDefaultGuard } from '@/permission/guard/payload/permission.default.guard';
 import {
     ENUM_PERMISSIONS,
     PERMISSION_META_KEY,
-} from 'src/permission/permission.constant';
+} from '@/permission/permission.constant';
 import { AUTH_ADMIN_META_KEY } from './auth.constant';
 import { BasicGuard } from './guard/basic/auth.basic.guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
@@ -23,9 +23,9 @@ export function AuthJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
         UseGuards(
             JwtGuard,
             AuthPayloadDefaultGuard,
-            PermissionPayloadDefaultGuard
+            PermissionPayloadDefaultGuard,
         ),
-        SetMetadata(PERMISSION_META_KEY, permissions)
+        SetMetadata(PERMISSION_META_KEY, permissions),
     );
 }
 
@@ -36,10 +36,10 @@ export function AuthPublicJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
             AuthPayloadDefaultGuard,
             AuthPayloadPasswordExpiredGuard,
             AuthPayloadAdminGuard,
-            PermissionPayloadDefaultGuard
+            PermissionPayloadDefaultGuard,
         ),
         SetMetadata(PERMISSION_META_KEY, permissions),
-        SetMetadata(AUTH_ADMIN_META_KEY, [false])
+        SetMetadata(AUTH_ADMIN_META_KEY, [false]),
     );
 }
 
@@ -50,10 +50,10 @@ export function AuthAdminJwtGuard(...permissions: ENUM_PERMISSIONS[]) {
             AuthPayloadDefaultGuard,
             AuthPayloadPasswordExpiredGuard,
             AuthPayloadAdminGuard,
-            PermissionPayloadDefaultGuard
+            PermissionPayloadDefaultGuard,
         ),
         SetMetadata(PERMISSION_META_KEY, permissions),
-        SetMetadata(AUTH_ADMIN_META_KEY, [true])
+        SetMetadata(AUTH_ADMIN_META_KEY, [true]),
     );
 }
 
@@ -71,14 +71,14 @@ export const User = createParamDecorator(
     (data: string, ctx: ExecutionContext): Record<string, any> => {
         const { user } = ctx.switchToHttp().getRequest();
         return data ? user[data] : user;
-    }
+    },
 );
 
 export const ApiKey = createParamDecorator(
     (data: string, ctx: ExecutionContext): Record<string, any> => {
         const { apiKey } = ctx.switchToHttp().getRequest();
         return data ? apiKey[data] : apiKey;
-    }
+    },
 );
 
 export const Token = createParamDecorator(
@@ -86,5 +86,5 @@ export const Token = createParamDecorator(
         const { headers } = ctx.switchToHttp().getRequest();
         const { authorization } = headers;
         return authorization ? authorization.split(' ')[1] : undefined;
-    }
+    },
 );

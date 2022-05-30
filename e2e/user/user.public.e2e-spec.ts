@@ -2,25 +2,25 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import faker from '@faker-js/faker';
-import { IUserDocument } from 'src/user/user.interface';
+import { IUserDocument } from '@/user/user.interface';
 import {
     E2E_USER_PUBLIC_PROFILE_UPLOAD_URL,
     E2E_USER_PUBLIC_PROFILE_URL,
 } from './user.constant';
 import { Types, connection } from 'mongoose';
-import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
-import { CoreModule } from 'src/core/core.module';
+import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
-import { UserService } from 'src/user/service/user.service';
-import { AuthService } from 'src/auth/service/auth.service';
-import { RoleService } from 'src/role/service/role.service';
-import { ENUM_FILE_STATUS_CODE_ERROR } from 'src/utils/file/file.constant';
-import { RouterPublicModule } from 'src/router/router.public.module';
-import { RoleDocument } from 'src/role/schema/role.schema';
-import { UserDocument } from 'src/user/schema/user.schema';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { UserService } from '@/user/service/user.service';
+import { AuthService } from '@/auth/service/auth.service';
+import { RoleService } from '@/role/service/role.service';
+import { ENUM_FILE_STATUS_CODE_ERROR } from '@/utils/file/file.constant';
+import { RouterPublicModule } from '@/router/router.public.module';
+import { RoleDocument } from '@/role/schema/role.schema';
+import { UserDocument } from '@/user/schema/user.schema';
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { useContainer } from 'class-validator';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 
 describe('E2E User Public', () => {
     let app: INestApplication;
@@ -66,7 +66,7 @@ describe('E2E User Public', () => {
         });
 
         const passwordHash = await authService.createPassword(
-            faker.internet.password(20, true, /[A-Za-z0-9]/)
+            faker.internet.password(20, true, /[A-Za-z0-9]/),
         );
 
         user = await userService.create({
@@ -87,7 +87,7 @@ describe('E2E User Public', () => {
                     role: true,
                     permission: true,
                 },
-            }
+            },
         );
 
         const map = await authService.serializationLogin(userPopulate);
@@ -99,7 +99,7 @@ describe('E2E User Public', () => {
 
         accessToken = await authService.createAccessToken(payload);
         accessTokenNotFound = await authService.createAccessToken(
-            payloadNotFound
+            payloadNotFound,
         );
 
         timestamp = helperDateService.timestamp();
@@ -110,7 +110,7 @@ describe('E2E User Public', () => {
                 hash: 'e11a023bc0ccf713cb50de9baa5140e59d3d4c52ec8952d9ca60326e040eda54',
             },
             'opbUwdiS1FBsrDUoPgZdx',
-            'cuwakimacojulawu'
+            'cuwakimacojulawu',
         );
         xApiKey = `${apiKey}:${apiEncryption}`;
 
@@ -127,7 +127,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
         );
 
         return;
@@ -159,7 +159,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         expect(response.body.statusCode).toEqual(
-            ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR
+            ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR,
         );
 
         return;
@@ -177,7 +177,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR
+            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
         );
 
         return;
@@ -196,7 +196,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.PAYLOAD_TOO_LARGE);
         expect(response.body.statusCode).toEqual(
-            ENUM_FILE_STATUS_CODE_ERROR.FILE_MAX_SIZE_ERROR
+            ENUM_FILE_STATUS_CODE_ERROR.FILE_MAX_SIZE_ERROR,
         );
 
         return;
