@@ -4,7 +4,7 @@ import { CoreModule } from '@/core/core.module';
 import { HealthController, HealthModule } from '@/health';
 import { E2E_AWS_INTEGRATION_URL } from './aws.s3.constant';
 import request from 'supertest';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { TerminusModule } from '@nestjs/terminus';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { AuthApiService } from '@/auth/service/auth.api.service';
