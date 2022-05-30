@@ -9,6 +9,7 @@ export interface IErrorException {
     statusCode: number;
     message: string;
     errors?: IErrors[];
+    error?: IErrors;
     data?: Record<string, any>;
     properties?: IMessageOptionsProperties;
 }

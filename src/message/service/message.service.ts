@@ -35,7 +35,7 @@ export class MessageService {
             let property: string = transfomer.property;
             let propertyValue: string = transfomer.value;
 
-            if (children.length > 0) {
+            if (children?.length > 0) {
                 while (children.length > 0) {
                     for (const child of children) {
                         property = `${property}.${child.property}`;
@@ -109,11 +109,13 @@ export class MessageService {
         key: string,
         options?: IMessageSetOptions,
     ): any {
-        return this.i18n.translate(key, {
-            lang: lang,
-            args:
-                options && options.properties ? options.properties : undefined,
-        });
+        return (
+            key &&
+            this.i18n.translate(key, {
+                lang: lang,
+                args: options?.properties,
+            })
+        );
     }
 
     async getLanguages(): Promise<string[]> {
