@@ -3,7 +3,7 @@ import { AuthService } from '@/auth/service/auth.service';
 import { CoreModule } from '@/core/core.module';
 import { IRoleDocument } from '@/role/role.interface';
 import { IUserDocument } from '@/user/user.interface';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 describe('AuthService', () => {
     let authService: AuthService;

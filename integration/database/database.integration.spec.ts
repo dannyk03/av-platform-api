@@ -6,7 +6,7 @@ import { HealthController } from '@/health';
 import { HealthModule } from '@/health/health.module';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import request from 'supertest';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { E2E_DATABASE_INTEGRATION_URL } from './database.constant';
 import { AuthApiService } from '@/auth/service/auth.api.service';
 

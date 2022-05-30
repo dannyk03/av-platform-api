@@ -8,7 +8,7 @@ import { SettingService } from '@/setting/service/setting.service';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { connection, Types } from 'mongoose';
 import request from 'supertest';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { SettingDocument } from '@/setting/schema/setting.schema';
 import { ENUM_SETTING_STATUS_CODE_ERROR } from '@/setting/setting.constant';
 import {

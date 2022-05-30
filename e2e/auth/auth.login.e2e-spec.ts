@@ -1,7 +1,7 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { E2E_AUTH_LOGIN_URL } from './auth.constant';
 import { UserDocument } from '@/user/schema/user.schema';
 import { RoleDocument } from '@/role/schema/role.schema';
