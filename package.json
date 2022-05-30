@@ -16,7 +16,7 @@
         "format:e2e": "prettier --write e2e/**/*.ts",
         "format:integration": "prettier --write integration/**/*.ts",
         "rollback": "nestjs-command remove:user && nestjs-command remove:role && nestjs-command remove:permission && nestjs-command remove:authapis && nestjs-command remove:setting",
-        "migrate": "nestjs-command insert:setting && nestjs-command insert:authapis && nestjs-command insert:permission && nestjs-command insert:role && nestjs-command insert:user",
+        "seed": "nestjs-command insert:setting && nestjs-command insert:authapis && nestjs-command insert:permission && nestjs-command insert:role && nestjs-command insert:user",
         "start": "nest start",
         "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
