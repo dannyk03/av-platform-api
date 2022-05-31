@@ -7,7 +7,6 @@ import { RoleEntity } from '@/role/schema/role.schema';
 export class UserEntity {
     @Prop({
         required: true,
-        index: true,
         lowercase: true,
         trim: true,
     })
@@ -20,14 +19,6 @@ export class UserEntity {
         trim: true,
     })
     lastName?: string;
-
-    @Prop({
-        required: true,
-        index: true,
-        unique: true,
-        trim: true,
-    })
-    mobileNumber: string;
 
     @Prop({
         required: true,

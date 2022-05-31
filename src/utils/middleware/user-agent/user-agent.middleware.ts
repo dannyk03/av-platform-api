@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response, NextFunction } from 'express';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { IRequestApp } from '@/utils/request/request.interface';
 import userAgentParser from 'ua-parser-js';
 
@@ -18,7 +18,7 @@ export class UserAgentMiddleware implements NestMiddleware {
             if (!userAgent) {
                 throw new ForbiddenException({
                     statusCode:
-                        ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_USER_AGENT_INVALID_ERROR,
+                        RequestStatusCodeError.RequestUserAgentInvalidError,
                     message: 'middleware.error.userAgentInvalid',
                 });
             }

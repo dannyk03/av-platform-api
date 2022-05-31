@@ -21,11 +21,11 @@ import {
     UserUpdateInactiveGuard,
 } from '../user.decorator';
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { UserService } from '../service/user.service';
 import { RoleService } from '@/role/service/role.service';
 import { IUserCheckExist, IUserDocument } from '../user.interface';
-import { ENUM_USER_STATUS_CODE_ERROR } from '../user.constant';
+import { UserStatusCodeError } from '../user.constant';
 import { PaginationService } from '@/utils/pagination/service/pagination.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { Response, ResponsePaging } from '@/utils/response/response.decorator';
@@ -33,14 +33,14 @@ import {
     IResponse,
     IResponsePaging,
 } from '@/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserListDto } from '../dto/user.list.dto';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserCreateDto } from '../dto/user.create.dto';
 import { UserUpdateDto } from '../dto/user.update.dto';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
-import { UserRequestDto } from '../dto/user.request.dto';
+import { UserGetDto } from '../dto/user.get.dto';
 
 @Controller({
     version: '1',
@@ -118,7 +118,7 @@ export class UserAdminController {
 
     @Response('user.get')
     @UserGetGuard()
-    @RequestParamGuard(UserRequestDto)
+    @RequestParamGuard(UserGetDto)
     @AuthAdminJwtGuard(Permissions.UserRead)
     @Get('get/:user')
     async get(@GetUser() user: IUserDocument): Promise<IResponse> {
@@ -126,7 +126,7 @@ export class UserAdminController {
     }
 
     @Response('user.create')
-    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserCreate)
+    // @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserCreate)
     @Post('/create')
     async create(
         @Body()
@@ -134,10 +134,10 @@ export class UserAdminController {
     ): Promise<IResponse> {
         const checkExist: IUserCheckExist = await this.userService.checkExist(
             body.email,
-            body.mobileNumber,
+            // body.mobileNumber,
         );
 
-        if (checkExist.email && checkExist.mobileNumber) {
+        if (checkExist.email) {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
@@ -145,33 +145,23 @@ export class UserAdminController {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
-                message: 'user.error.exist',
-            });
-        } else if (checkExist.email) {
-            this.debuggerService.error(
-                'create user exist',
-                'UserController',
-                'create',
-            );
-
-            throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+                statusCode: UserStatusCodeError.UserEmailExistsError,
                 message: 'user.error.emailExist',
             });
-        } else if (checkExist.mobileNumber) {
-            this.debuggerService.error(
-                'create user exist',
-                'UserController',
-                'create',
-            );
-
-            throw new BadRequestException({
-                statusCode:
-                    ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-                message: 'user.error.mobileNumberExist',
-            });
         }
+        // else if (checkExist.mobileNumber) {
+        //     this.debuggerService.error(
+        //         'create user exist',
+        //         'UserController',
+        //         'create',
+        //     );
+
+        //     throw new BadRequestException({
+        //         statusCode:
+        //             ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+        //         message: 'user.error.mobileNumberExist',
+        //     });
+        // }
 
         const role = await this.roleService.findOneById(body.role);
         if (!role) {
@@ -182,7 +172,7 @@ export class UserAdminController {
             );
 
             throw new NotFoundException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+                statusCode: RoleStatusCodeError.RoleNotFoundError,
                 message: 'role.error.notFound',
             });
         }
@@ -196,7 +186,7 @@ export class UserAdminController {
                 firstName: body.firstName,
                 lastName: body.lastName,
                 email: body.email,
-                mobileNumber: body.mobileNumber,
+                // mobileNumber: body.mobileNumber,
                 role: body.role,
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
@@ -215,7 +205,7 @@ export class UserAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -223,7 +213,7 @@ export class UserAdminController {
 
     @Response('user.delete')
     @UserDeleteGuard()
-    @RequestParamGuard(UserRequestDto)
+    @RequestParamGuard(UserGetDto)
     @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UsedDelete)
     @Delete('/delete/:user')
     async delete(@GetUser() user: IUserDocument): Promise<void> {
@@ -237,7 +227,7 @@ export class UserAdminController {
                 err,
             );
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -247,7 +237,7 @@ export class UserAdminController {
 
     @Response('user.update')
     @UserUpdateGuard()
-    @RequestParamGuard(UserRequestDto)
+    @RequestParamGuard(UserGetDto)
     @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Put('/update/:user')
     async update(
@@ -266,7 +256,7 @@ export class UserAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -278,7 +268,7 @@ export class UserAdminController {
 
     @Response('user.inactive')
     @UserUpdateInactiveGuard()
-    @RequestParamGuard(UserRequestDto)
+    @RequestParamGuard(UserGetDto)
     @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Patch('/update/:user/inactive')
     async inactive(@GetUser() user: IUserDocument): Promise<void> {
@@ -293,7 +283,7 @@ export class UserAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -303,7 +293,7 @@ export class UserAdminController {
 
     @Response('user.active')
     @UserUpdateActiveGuard()
-    @RequestParamGuard(UserRequestDto)
+    @RequestParamGuard(UserGetDto)
     @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Patch('/update/:user/active')
     async active(@GetUser() user: IUserDocument): Promise<void> {
@@ -318,7 +308,7 @@ export class UserAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

@@ -18,5 +18,8 @@
     "moduleFileExtensions": ["js", "ts", "json"],
     "transform": {
         "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+        "@/(.*)": "<rootDir>/src/$1"
     }
 }

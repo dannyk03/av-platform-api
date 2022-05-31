@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_ORGANIZATION_STATUS_CODE_ERROR } from '../organization.constant';
+import { OrganizationStatusCodeError } from '../organization.constant';
 
 @Injectable()
 export class OrganizationNotFoundGuard implements CanActivate {
@@ -23,7 +23,7 @@ export class OrganizationNotFoundGuard implements CanActivate {
 
             throw new NotFoundException({
                 statusCode:
-                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_NOT_FOUND_ERROR,
+                    OrganizationStatusCodeError.OrganizationNotFoundError,
                 message: 'organization.error.notFound',
             });
         }

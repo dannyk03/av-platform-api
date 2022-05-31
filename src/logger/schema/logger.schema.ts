@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { AuthApiEntity } from '@/auth/schema/auth.api.schema';
-import { ENUM_LOGGER_ACTION, ENUM_LOGGER_LEVEL } from '../logger.constant';
+import { LoggerAction, LoggerLevel } from '../logger.constant';
 
 @Schema({ timestamps: true, versionKey: false })
 export class LoggerEntity {
     @Prop({
         required: true,
-        enum: ENUM_LOGGER_LEVEL,
+        enum: LoggerLevel,
     })
     level: string;
 
     @Prop({
         required: true,
-        enum: ENUM_LOGGER_ACTION,
+        enum: LoggerAction,
     })
     action: string;
 

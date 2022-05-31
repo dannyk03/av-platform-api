@@ -4,7 +4,7 @@ import {
     ExecutionContext,
     BadRequestException,
 } from '@nestjs/common';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '../role.constant';
+import { RoleStatusCodeError } from '../role.constant';
 import { Types } from 'mongoose';
 import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
@@ -26,7 +26,7 @@ export class RoleUsedGuard implements CanActivate {
         if (check) {
             this.debuggerService.error('Role used', 'RoleUsedGuard', 'delete');
             throw new BadRequestException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_USED_ERROR,
+                statusCode: RoleStatusCodeError.RoleUsedError,
                 message: 'role.error.used',
             });
         }

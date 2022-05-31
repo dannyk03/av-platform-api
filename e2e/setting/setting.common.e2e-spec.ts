@@ -10,7 +10,7 @@ import { connection, Types } from 'mongoose';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { SettingDocument } from '@/setting/schema/setting.schema';
-import { ENUM_SETTING_STATUS_CODE_ERROR } from '@/setting/setting.constant';
+import { SettingStatusCodeError } from '@/setting/setting.constant';
 import {
     E2E_SETTING_COMMON_GET_BY_NAME_URL,
     E2E_SETTING_COMMON_GET_URL,
@@ -94,7 +94,7 @@ describe('E2E Setting Common', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
+            SettingStatusCodeError.SettingNotFoundError,
         );
 
         return;
@@ -127,7 +127,7 @@ describe('E2E Setting Common', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
+            SettingStatusCodeError.SettingNotFoundError,
         );
 
         return;

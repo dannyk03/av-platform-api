@@ -6,7 +6,7 @@ import {
 import { Response, NextFunction } from 'express';
 import { SettingDocument } from '@/setting/schema/setting.schema';
 import { SettingService } from '@/setting/service/setting.service';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { IRequestApp } from '@/utils/request/request.interface';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class MaintenanceMiddleware implements NestMiddleware {
 
         if (maintenance?.value as boolean) {
             throw new ServiceUnavailableException({
-                statusCode: ENUM_STATUS_CODE_ERROR.SERVICE_UNAVAILABLE,
+                statusCode: StatusCodeError.ServiceUnavailable,
                 message: 'http.serverError.serviceUnavailable',
             });
         }

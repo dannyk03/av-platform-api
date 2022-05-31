@@ -11,8 +11,8 @@ import { AuthPublicJwtGuard } from '@/auth/auth.decorator';
 import { IAwsS3Response } from '@/aws/aws.interface';
 import { AwsS3Service } from '@/aws/service/aws.s3.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
-import { ENUM_FILE_TYPE } from '@/utils/file/file.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
+import { FileType } from '@/utils/file/file.constant';
 import { UploadFileSingle } from '@/utils/file/file.decorator';
 import { Response } from '@/utils/response/response.decorator';
 import { IResponse } from '@/utils/response/response.interface';
@@ -42,7 +42,7 @@ export class UserPublicController {
     @Response('user.upload')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
-    @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
+    @UploadFileSingle('file', FileType.Image)
     @HttpCode(HttpStatus.OK)
     @Post('/profile/upload')
     async upload(
@@ -76,7 +76,7 @@ export class UserPublicController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

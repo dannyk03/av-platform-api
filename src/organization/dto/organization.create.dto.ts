@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import {
+    IsString,
+    IsNotEmpty,
+    MaxLength,
+    MinLength,
+    IsOptional,
+    IsEmail,
+} from 'class-validator';
 
 export class OrganizationCreateDto {
     @IsString()
@@ -6,4 +13,12 @@ export class OrganizationCreateDto {
     @MinLength(3)
     @MaxLength(30)
     readonly name: string;
+
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(3)
+    @MaxLength(30)
+    @IsEmail()
+    readonly ownerEmail?: string;
 }

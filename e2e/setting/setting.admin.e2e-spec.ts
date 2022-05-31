@@ -15,8 +15,8 @@ import { E2E_SETTING_ADMIN_UPDATE_URL } from './setting.constant';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { SettingDocument } from '@/setting/schema/setting.schema';
-import { ENUM_SETTING_STATUS_CODE_ERROR } from '@/setting/setting.constant';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { SettingStatusCodeError } from '@/setting/setting.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 
 describe('E2E Setting Admin', () => {
     let app: INestApplication;
@@ -105,7 +105,7 @@ describe('E2E Setting Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
+            SettingStatusCodeError.SettingNotFoundError,
         );
 
         return;
@@ -122,7 +122,7 @@ describe('E2E Setting Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;

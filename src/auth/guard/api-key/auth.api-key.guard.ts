@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
@@ -55,8 +55,7 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
                 info.message === 'Missing API Key'
             ) {
                 throw new UnauthorizedException({
-                    statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NEEDED_ERROR,
+                    statusCode: AuthStatusCodeError.AuthGuardApiKeyNeededError,
                     message: 'auth.apiKey.error.keyNeeded',
                 });
             } else if (
@@ -66,7 +65,7 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
             ) {
                 throw new UnauthorizedException({
                     statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_PREFIX_INVALID_ERROR,
+                        AuthStatusCodeError.AuthGuardApiKeyPrefixInvalidError,
                     message: 'auth.apiKey.error.prefixInvalid',
                 });
             }
@@ -75,45 +74,42 @@ export class ApiKeyGuard extends AuthGuard('api-key') {
 
             if (
                 statusCode ===
-                ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR
+                AuthStatusCodeError.AuthGuardApiKeySchemaInvalidError
             ) {
                 throw new UnauthorizedException({
                     statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR,
+                        AuthStatusCodeError.AuthGuardApiKeySchemaInvalidError,
                     message: 'auth.apiKey.error.schemaInvalid',
                 });
             } else if (
                 statusCode ===
-                ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR
+                AuthStatusCodeError.AuthGuardApiKeyTimestampNotMatchWithRequestError
             ) {
                 throw new UnauthorizedException({
                     statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR,
+                        AuthStatusCodeError.AuthGuardApiKeyTimestampNotMatchWithRequestError,
                     message: 'auth.apiKey.error.timestampNotMatchWithRequest',
                 });
             } else if (
-                statusCode ===
-                ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR
+                statusCode === AuthStatusCodeError.AuthGuardApiKeyNotFoundError
             ) {
                 throw new UnauthorizedException({
                     statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR,
+                        AuthStatusCodeError.AuthGuardApiKeyNotFoundError,
                     message: 'auth.apiKey.error.notFound',
                 });
             } else if (
-                statusCode ===
-                ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR
+                statusCode === AuthStatusCodeError.AuthGuardApiKeyInactiveError
             ) {
                 throw new UnauthorizedException({
                     statusCode:
-                        ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR,
+                        AuthStatusCodeError.AuthGuardApiKeyInactiveError,
                     message: 'auth.apiKey.error.inactive',
                 });
             }
 
             throw new UnauthorizedException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR,
+                statusCode: AuthStatusCodeError.AuthGuardApiKeyInvalidError,
                 message: 'auth.apiKey.error.invalid',
             });
         }

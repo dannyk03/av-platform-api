@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { CoreModule } from '@/core/core.module';
 import {
-    ENUM_HELPER_DATE_DIFF,
-    ENUM_HELPER_DATE_FORMAT,
+    HelperDateDiff,
+    HelperDateFormat,
 } from '@/utils/helper/helper.constant';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 
@@ -62,18 +62,14 @@ describe('HelperDateService', () => {
             const result = helperDateService.diff(
                 date1,
                 date2,
-                ENUM_HELPER_DATE_DIFF.HOURS,
+                HelperDateDiff.Hours,
             );
             jest.spyOn(helperDateService, 'diff').mockImplementation(
                 () => result,
             );
 
             expect(
-                helperDateService.diff(
-                    date1,
-                    date2,
-                    ENUM_HELPER_DATE_DIFF.HOURS,
-                ),
+                helperDateService.diff(date1, date2, HelperDateDiff.Hours),
             ).toBe(result);
         });
 
@@ -81,18 +77,14 @@ describe('HelperDateService', () => {
             const result = helperDateService.diff(
                 date1,
                 date2,
-                ENUM_HELPER_DATE_DIFF.DAYS,
+                HelperDateDiff.Days,
             );
             jest.spyOn(helperDateService, 'diff').mockImplementation(
                 () => result,
             );
 
             expect(
-                helperDateService.diff(
-                    date1,
-                    date2,
-                    ENUM_HELPER_DATE_DIFF.DAYS,
-                ),
+                helperDateService.diff(date1, date2, HelperDateDiff.Days),
             ).toBe(result);
         });
 
@@ -100,18 +92,14 @@ describe('HelperDateService', () => {
             const result = helperDateService.diff(
                 date1,
                 date2,
-                ENUM_HELPER_DATE_DIFF.SECONDS,
+                HelperDateDiff.Seconds,
             );
             jest.spyOn(helperDateService, 'diff').mockImplementation(
                 () => result,
             );
 
             expect(
-                helperDateService.diff(
-                    date1,
-                    date2,
-                    ENUM_HELPER_DATE_DIFF.SECONDS,
-                ),
+                helperDateService.diff(date1, date2, HelperDateDiff.Seconds),
             ).toBe(result);
         });
 
@@ -119,18 +107,14 @@ describe('HelperDateService', () => {
             const result = helperDateService.diff(
                 date1,
                 date2,
-                ENUM_HELPER_DATE_DIFF.MILIS,
+                HelperDateDiff.Milis,
             );
             jest.spyOn(helperDateService, 'diff').mockImplementation(
                 () => result,
             );
 
             expect(
-                helperDateService.diff(
-                    date1,
-                    date2,
-                    ENUM_HELPER_DATE_DIFF.MILIS,
-                ),
+                helperDateService.diff(date1, date2, HelperDateDiff.Milis),
             ).toBe(result);
         });
     });
@@ -209,7 +193,7 @@ describe('HelperDateService', () => {
         it('with options should be success', async () => {
             const result = helperDateService.format(date1, {
                 timezone: 'ASIA/JERUSALEM',
-                format: ENUM_HELPER_DATE_FORMAT.DATE,
+                format: HelperDateFormat.Date,
             });
             jest.spyOn(helperDateService, 'format').mockImplementation(
                 () => result,
@@ -218,7 +202,7 @@ describe('HelperDateService', () => {
             expect(
                 helperDateService.format(date1, {
                     timezone: 'ASIA/JERUSALEM',
-                    format: ENUM_HELPER_DATE_FORMAT.DATE,
+                    format: HelperDateFormat.Date,
                 }),
             ).toBe(result);
         });

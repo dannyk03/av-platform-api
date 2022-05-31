@@ -4,7 +4,7 @@ import {
     ExecutionContext,
     ForbiddenException,
 } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 
@@ -30,8 +30,7 @@ export class AuthPayloadPasswordExpiredGuard implements CanActivate {
             );
 
             throw new ForbiddenException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_PASSWORD_EXPIRED_ERROR,
+                statusCode: AuthStatusCodeError.AuthGuardPasswordExpiredError,
                 message: 'auth.error.passwordExpired',
             });
         }

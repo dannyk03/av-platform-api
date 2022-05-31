@@ -11,7 +11,7 @@ export interface IUserCreate {
     password: string;
     passwordExpired: Date;
     email: string;
-    mobileNumber: string;
+    // mobileNumber: string;
     role: string;
     salt: string;
 }
@@ -20,5 +20,5 @@ export type IUserUpdate = Pick<IUserCreate, 'firstName' | 'lastName'>;
 
 export interface IUserCheckExist {
     email: boolean;
-    mobileNumber: boolean;
+    // mobileNumber: boolean;
 }

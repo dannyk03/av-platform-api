@@ -7,9 +7,11 @@ import {
     OrganizationSchema,
 } from './schema/organization.schema';
 import { OrganizationService } from './service/organization.service';
+import { UserModule } from '@/user';
 
 @Module({
     imports: [
+        UserModule,
         MongooseModule.forFeature(
             [
                 {

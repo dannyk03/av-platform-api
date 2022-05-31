@@ -4,15 +4,15 @@ import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { IUserDocument } from '@/user/user.interface';
 import { E2E_AUTH_CHANGE_PASSWORD_URL } from './auth.constant';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
 import { Types, connection } from 'mongoose';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
 import { CoreModule } from '@/core';
 import { RouterModule } from '@nestjs/core';
 import { UserService } from '@/user/service/user.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { RoleService } from '@/role/service/role.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { UserDocument } from '@/user/schema/user.schema';
 import { RoleDocument } from '@/role/schema/role.schema';
@@ -129,7 +129,7 @@ describe('E2E Change Password', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -149,7 +149,7 @@ describe('E2E Change Password', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -169,7 +169,7 @@ describe('E2E Change Password', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR,
+            AuthStatusCodeError.AuthPasswordNotMatchError,
         );
 
         return;
@@ -189,7 +189,7 @@ describe('E2E Change Password', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NEW_MUST_DIFFERENCE_ERROR,
+            AuthStatusCodeError.AuthPasswordNewMustDifferenceError,
         );
 
         return;

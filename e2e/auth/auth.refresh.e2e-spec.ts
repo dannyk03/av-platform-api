@@ -3,11 +3,11 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { E2E_AUTH_REFRESH_URL } from './auth.constant';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
 import { UserDocument } from '@/user/schema/user.schema';
 import { RoleDocument } from '@/role/schema/role.schema';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { IUserDocument } from '@/user/user.interface';
 import { Types, connection } from 'mongoose';
 import { CoreModule } from '@/core/core.module';
@@ -138,7 +138,7 @@ describe('E2E Refresh', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -156,7 +156,7 @@ describe('E2E Refresh', () => {
         await userService.active(user._id);
         expect(response.status).toEqual(HttpStatus.FORBIDDEN);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+            UserStatusCodeError.UserIsInactiveError,
         );
 
         return;
@@ -174,7 +174,7 @@ describe('E2E Refresh', () => {
         await roleService.active(`${user.role}`);
         expect(response.status).toEqual(HttpStatus.FORBIDDEN);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
+            RoleStatusCodeError.RoleIsInactiveError,
         );
 
         return;
@@ -195,7 +195,7 @@ describe('E2E Refresh', () => {
         );
         expect(response.status).toEqual(HttpStatus.FORBIDDEN);
         expect(response.body.statusCode).toEqual(
-            ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_EXPIRED_ERROR,
+            AuthStatusCodeError.AuthPasswordExpiredError,
         );
 
         return;

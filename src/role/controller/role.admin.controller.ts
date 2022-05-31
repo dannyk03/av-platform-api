@@ -27,13 +27,13 @@ import {
     RoleUpdateInactiveGuard,
 } from '../role.decorator';
 import { IRoleDocument } from '../role.interface';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '../role.constant';
+import { RoleStatusCodeError } from '../role.constant';
 import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
 } from '@/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { PaginationService } from '@/utils/pagination/service/pagination.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { RoleDocument } from '../schema/role.schema';
@@ -42,7 +42,7 @@ import { RoleListDto } from '../dto/role.list.dto';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleListSerialization } from '../serialization/role.list.serialization';
-import { RoleRequestDto } from '../dto/role.request.dto';
+import { RoleGetDto } from '../dto/role.request.dto';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 
 @Controller({
@@ -112,7 +112,7 @@ export class RoleAdminController {
 
     @Response('role.get')
     @RoleGetGuard()
-    @RequestParamGuard(RoleRequestDto)
+    @RequestParamGuard(RoleGetDto)
     @AuthAdminJwtGuard(Permissions.RoleRead)
     @Get('get/:role')
     async get(@GetRole() role: IRoleDocument): Promise<IResponse> {
@@ -135,7 +135,7 @@ export class RoleAdminController {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+                statusCode: RoleStatusCodeError.RoleExistError,
                 message: 'role.error.exist',
             });
         }
@@ -177,7 +177,7 @@ export class RoleAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -185,7 +185,7 @@ export class RoleAdminController {
 
     @Response('role.update')
     @RoleUpdateGuard()
-    @RequestParamGuard(RoleRequestDto)
+    @RequestParamGuard(RoleGetDto)
     @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Put('/update/:role')
     async update(
@@ -202,7 +202,7 @@ export class RoleAdminController {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+                statusCode: RoleStatusCodeError.RoleExistError,
                 message: 'role.error.exist',
             });
         }
@@ -240,7 +240,7 @@ export class RoleAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -252,7 +252,7 @@ export class RoleAdminController {
 
     @Response('role.delete')
     @RoleDeleteGuard()
-    @RequestParamGuard(RoleRequestDto)
+    @RequestParamGuard(RoleGetDto)
     @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleDelete)
     @Delete('/delete/:role')
     async delete(@GetRole() role: IRoleDocument): Promise<void> {
@@ -266,7 +266,7 @@ export class RoleAdminController {
                 err,
             );
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -275,7 +275,7 @@ export class RoleAdminController {
 
     @Response('role.inactive')
     @RoleUpdateInactiveGuard()
-    @RequestParamGuard(RoleRequestDto)
+    @RequestParamGuard(RoleGetDto)
     @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Patch('/update/:role/inactive')
     async inactive(@GetRole() role: IRoleDocument): Promise<void> {
@@ -290,7 +290,7 @@ export class RoleAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -300,7 +300,7 @@ export class RoleAdminController {
 
     @Response('role.active')
     @RoleUpdateActiveGuard()
-    @RequestParamGuard(RoleRequestDto)
+    @RequestParamGuard(RoleGetDto)
     @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Patch('/update/:role/active')
     async active(@GetRole() role: IRoleDocument): Promise<void> {
@@ -315,7 +315,7 @@ export class RoleAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

@@ -24,13 +24,13 @@ import {
     OrganizationUpdateInactiveGuard,
 } from '../organization.decorator';
 import { IOrganizationDocument } from '../organization.interface';
-import { ENUM_ORGANIZATION_STATUS_CODE_ERROR } from '../organization.constant';
+import { OrganizationStatusCodeError } from '@/organization';
 import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
     IResponsePaging,
 } from '@/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { PaginationService } from '@/utils/pagination/service/pagination.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { OrganizationDocument } from '../schema/organization.schema';
@@ -55,86 +55,80 @@ export class OrganizationController {
         private readonly permissionService: PermissionService,
     ) {}
 
-    @Response('health.check')
-    @Get()
-    async test() {
-        return {};
-    }
+    // @ResponsePaging('organization.list')
+    // @AuthAdminJwtGuard(Permissions.OrganizationRead)
+    // @Get('/list')
+    // async list(
+    //     @Query()
+    //     {
+    //         page,
+    //         perPage,
+    //         sort,
+    //         search,
+    //         availableSort,
+    //         availableSearch,
+    //     }: OrganizationListDto,
+    // ): Promise<IResponsePaging> {
+    //     const skip: number = await this.paginationService.skip(page, perPage);
+    //     const find: Record<string, any> = {};
+    //     if (search) {
+    //         find['$or'] = [
+    //             {
+    //                 name: {
+    //                     $regex: new RegExp(search),
+    //                     $options: 'i',
+    //                 },
+    //             },
+    //         ];
+    //     }
 
-    @ResponsePaging('organization.list')
-    @AuthAdminJwtGuard(Permissions.OrganizationRead)
-    @Get('/list')
-    async list(
-        @Query()
-        {
-            page,
-            perPage,
-            sort,
-            search,
-            availableSort,
-            availableSearch,
-        }: OrganizationListDto,
-    ): Promise<IResponsePaging> {
-        const skip: number = await this.paginationService.skip(page, perPage);
-        const find: Record<string, any> = {};
-        if (search) {
-            find['$or'] = [
-                {
-                    name: {
-                        $regex: new RegExp(search),
-                        $options: 'i',
-                    },
-                },
-            ];
-        }
+    //     const organizations: OrganizationDocument[] =
+    //         await this.organizationService.findAll(find, {
+    //             skip: skip,
+    //             limit: perPage,
+    //             sort,
+    //         });
 
-        const organizations: OrganizationDocument[] =
-            await this.organizationService.findAll(find, {
-                skip: skip,
-                limit: perPage,
-                sort,
-            });
+    //     const totalData: number = await this.organizationService.getTotal({});
+    //     const totalPage: number = await this.paginationService.totalPage(
+    //         totalData,
+    //         perPage,
+    //     );
 
-        const totalData: number = await this.organizationService.getTotal({});
-        const totalPage: number = await this.paginationService.totalPage(
-            totalData,
-            perPage,
-        );
+    //     const data: OrganizationListSerialization[] =
+    //         await this.organizationService.serializationList(organizations);
 
-        const data: OrganizationListSerialization[] =
-            await this.organizationService.serializationList(organizations);
+    //     return {
+    //         totalData,
+    //         totalPage,
+    //         currentPage: page,
+    //         perPage,
+    //         availableSearch,
+    //         availableSort,
+    //         data,
+    //     };
+    // }
 
-        return {
-            totalData,
-            totalPage,
-            currentPage: page,
-            perPage,
-            availableSearch,
-            availableSort,
-            data,
-        };
-    }
-
-    @Response('organization.get')
-    @OrganizationGetGuard()
-    @RequestParamGuard(OrganizationGetDto)
-    @AuthAdminJwtGuard(Permissions.OrganizationRead)
-    @Get('get/:slug')
-    async get(
-        @GetOrganization() slug: IOrganizationDocument,
-    ): Promise<IResponse> {
-        return this.organizationService.serializationGet(slug);
-    }
+    // @Response('organization.get')
+    // @OrganizationGetGuard()
+    // @RequestParamGuard(OrganizationGetDto)
+    // @AuthAdminJwtGuard(Permissions.OrganizationRead)
+    // @Get('get/:slug')
+    // async get(
+    //     @GetOrganization() slug: IOrganizationDocument,
+    // ): Promise<IResponse> {
+    //     return this.organizationService.serializationGet(slug);
+    // }
 
     @Response('organization.create')
-    @AuthAdminJwtGuard(
-        Permissions.OrganizationRead,
-        Permissions.OrganizationCreate,
-    )
+    // @AuthAdminJwtGuard(
+    //     Permissions.OrganizationRead,
+    //     Permissions.OrganizationCreate,
+    // )
     @Post('/create')
     async create(
         @Body()
-        { name }: OrganizationCreateDto,
+        { name, ownerEmail }: OrganizationCreateDto,
     ): Promise<IResponse> {
         const exist: boolean = await this.organizationService.exists(name);
         if (exist) {
@@ -145,8 +139,7 @@ export class OrganizationController {
             );
 
             throw new BadRequestException({
-                statusCode:
-                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_EXIST_ERROR,
+                statusCode: OrganizationStatusCodeError.OrganizationExistError,
                 message: 'organization.error.exist',
             });
         }
@@ -154,6 +147,7 @@ export class OrganizationController {
         try {
             const create = await this.organizationService.create({
                 name,
+                ownerEmail,
             });
 
             return {
@@ -168,148 +162,149 @@ export class OrganizationController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
     }
 
-    @Response('organization.update')
-    @OrganizationUpdateGuard()
-    @RequestParamGuard(OrganizationUpdateDto)
-    @AuthAdminJwtGuard(
-        Permissions.OrganizationRead,
-        Permissions.OrganizationUpdate,
-    )
-    @Put('/update/:slug')
-    async update(
-        @Body()
-        { name }: OrganizationUpdateDto,
-        @Param('slug')
-        slug: string,
-    ): Promise<IResponse> {
-        const check: boolean = await this.organizationService.exists(name);
-        if (check) {
-            this.debuggerService.error(
-                'Organization Exist Error',
-                'OrganizationController',
-                'update',
-            );
-
-            throw new BadRequestException({
-                statusCode:
-                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_EXIST_ERROR,
-                message: 'organization.error.exist',
-            });
-        }
-
-        try {
-            await this.organizationService.update(slug, {
-                name,
-            });
-        } catch (e) {
-            this.debuggerService.error(
-                'Project server internal error',
-                'SurveyAdminController',
-                'update',
-                e,
-            );
-
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
-
-        return {
-            // _id: organization._id,
-        };
-    }
-    @Response('organization.delete')
-    @OrganizationDeleteGuard()
-    @RequestParamGuard(OrganizationGetDto)
-    @AuthAdminJwtGuard(
-        Permissions.OrganizationRead,
-        Permissions.OrganizationDelete,
-    )
-    @Delete('/delete/:slug')
-    async delete(
-        @GetOrganization() organization: IOrganizationDocument,
-    ): Promise<void> {
-        try {
-            await this.organizationService.deleteOneBySlug(organization._id);
-        } catch (err) {
-            this.debuggerService.error(
-                'delete try catch',
-                'OrganizationController',
-                'delete',
-                err,
-            );
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
-        return;
-    }
-
-    @Response('organization.inactive')
-    @OrganizationUpdateInactiveGuard()
-    @RequestParamGuard(OrganizationGetDto)
+    // @Response('organization.update')
+    // @OrganizationUpdateGuard()
+    // @RequestParamGuard(OrganizationUpdateDto)
     // @AuthAdminJwtGuard(
-    //   ENUM_PERMISSIONS.ORGANIZATION_READ,
-    //   ENUM_PERMISSIONS.ORGANIZATION_UPDATE,
+    //     Permissions.OrganizationRead,
+    //     Permissions.OrganizationUpdate,
     // )
-    @Patch('/update/:organization/inactive')
-    async inactive(
-        @GetOrganization() organization: IOrganizationDocument,
-    ): Promise<void> {
-        try {
-            await this.organizationService.inactive(organization._id);
-        } catch (e) {
-            this.debuggerService.error(
-                'Organization inactive server internal error',
-                'OrganizationController',
-                'inactive',
-                e,
-            );
+    // @Put('/update/:slug')
+    // async update(
+    //     @Body()
+    //     { name }: OrganizationUpdateDto,
+    //     @Param('slug')
+    //     slug: string,
+    // ): Promise<IResponse> {
+    //     const check: boolean = await this.organizationService.exists(name);
+    //     if (check) {
+    //         this.debuggerService.error(
+    //             'Organization Exist Error',
+    //             'OrganizationController',
+    //             'update',
+    //         );
 
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
+    //         throw new BadRequestException({
+    //             statusCode:
+    //                 OrganizationStatusCodeError.OrganizationExistError,
+    //             message: 'organization.error.exist',
+    //         });
+    //     }
 
-        return;
-    }
+    //     try {
+    //         await this.organizationService.update(slug, {
+    //             name,
+    //         });
+    //     } catch (e) {
+    //         this.debuggerService.error(
+    //             'Project server internal error',
+    //             'SurveyAdminController',
+    //             'update',
+    //             e,
+    //         );
 
-    @Response('organization.active')
-    @OrganizationUpdateActiveGuard()
-    @RequestParamGuard(OrganizationGetDto)
-    @AuthAdminJwtGuard(
-        Permissions.OrganizationRead,
-        Permissions.OrganizationUpdate,
-    )
-    @Patch('/update/:organization/active')
-    async active(
-        @GetOrganization() organization: IOrganizationDocument,
-    ): Promise<void> {
-        try {
-            await this.organizationService.active(organization._id);
-        } catch (e) {
-            this.debuggerService.error(
-                'Organization active server internal error',
-                'OrganizationController',
-                'active',
-                e,
-            );
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
 
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
+    //     return {
+    //         // _id: organization._id,
+    //     };
+    // }
 
-        return;
-    }
+    // @Response('organization.delete')
+    // @OrganizationDeleteGuard()
+    // @RequestParamGuard(OrganizationGetDto)
+    // @AuthAdminJwtGuard(
+    //     Permissions.OrganizationRead,
+    //     Permissions.OrganizationDelete,
+    // )
+    // @Delete('/delete/:slug')
+    // async delete(
+    //     @GetOrganization() organization: IOrganizationDocument,
+    // ): Promise<void> {
+    //     try {
+    //         await this.organizationService.deleteOneBySlug(organization._id);
+    //     } catch (err) {
+    //         this.debuggerService.error(
+    //             'delete try catch',
+    //             'OrganizationController',
+    //             'delete',
+    //             err,
+    //         );
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
+    //     return;
+    // }
+
+    // @Response('organization.inactive')
+    // @OrganizationUpdateInactiveGuard()
+    // @RequestParamGuard(OrganizationGetDto)
+    // @AuthAdminJwtGuard(
+    //   Permissions.OrganizationRead,
+    //   Permissions.OrganizationUpdate,
+    // )
+    // @Patch('/update/:slug/inactive')
+    // async inactive(
+    //     @GetOrganization() organization: IOrganizationDocument,
+    // ): Promise<void> {
+    //     try {
+    //         await this.organizationService.inactive(organization._id);
+    //     } catch (e) {
+    //         this.debuggerService.error(
+    //             'Organization inactive server internal error',
+    //             'OrganizationController',
+    //             'inactive',
+    //             e,
+    //         );
+
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
+
+    //     return;
+    // }
+
+    // @Response('organization.active')
+    // @OrganizationUpdateActiveGuard()
+    // @RequestParamGuard(OrganizationGetDto)
+    // @AuthAdminJwtGuard(
+    //     Permissions.OrganizationRead,
+    //     Permissions.OrganizationUpdate,
+    // )
+    // @Patch('/update/:slug/active')
+    // async active(
+    //     @GetOrganization() organization: IOrganizationDocument,
+    // ): Promise<void> {
+    //     try {
+    //         await this.organizationService.active(organization._id);
+    //     } catch (e) {
+    //         this.debuggerService.error(
+    //             'Organization active server internal error',
+    //             'OrganizationController',
+    //             'active',
+    //             e,
+    //         );
+
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
+
+    //     return;
+    // }
 }

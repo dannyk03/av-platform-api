@@ -16,7 +16,7 @@ import { DatabaseConnection } from '@/database';
 import { AwsHealthIndicator } from '../indicator/health.aws.indicator';
 import { IResponse } from '@/utils/response/response.interface';
 import { Response } from '@/utils/response/response.decorator';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 
 @Controller({
     version: VERSION_NEUTRAL,
@@ -41,7 +41,7 @@ export class HealthController {
             ]);
         } catch (e) {
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -60,7 +60,7 @@ export class HealthController {
             ]);
         } catch (e) {
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -80,7 +80,7 @@ export class HealthController {
             ]);
         } catch (e) {
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -100,7 +100,7 @@ export class HealthController {
             ]);
         } catch (e) {
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -120,7 +120,7 @@ export class HealthController {
             ]);
         } catch (e) {
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

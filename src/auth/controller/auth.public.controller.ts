@@ -7,13 +7,13 @@ import {
     Post,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { RoleDocument } from '@/role/schema/role.schema';
 import { RoleService } from '@/role/service/role.service';
 import { UserService } from '@/user/service/user.service';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
 import { IUserCheckExist, IUserDocument } from '@/user/user.interface';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { Response } from '@/utils/response/response.decorator';
 import { IResponse } from '@/utils/response/response.interface';
 import { AuthSignUpDto } from '../dto/auth.sign-up.dto';
@@ -36,7 +36,7 @@ export class AuthPublicController {
     @Post('/sign-up')
     async signUp(
         @Body()
-        { email, mobileNumber, ...body }: AuthSignUpDto,
+        { email, ...body }: AuthSignUpDto,
     ): Promise<IResponse> {
         const role: RoleDocument = await this.roleService.findOne<RoleDocument>(
             {
@@ -51,17 +51,16 @@ export class AuthPublicController {
             );
 
             throw new NotFoundException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+                statusCode: RoleStatusCodeError.RoleNotFoundError,
                 message: 'role.error.notFound',
             });
         }
 
         const checkExist: IUserCheckExist = await this.userService.checkExist(
             email,
-            mobileNumber,
         );
 
-        if (checkExist.email && checkExist.mobileNumber) {
+        if (checkExist.email) {
             this.debuggerService.error(
                 'create user exist',
                 'UserController',
@@ -69,7 +68,7 @@ export class AuthPublicController {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+                statusCode: UserStatusCodeError.UserExistsError,
                 message: 'user.error.exist',
             });
         } else if (checkExist.email) {
@@ -80,22 +79,23 @@ export class AuthPublicController {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+                statusCode: UserStatusCodeError.UserEmailExistsError,
                 message: 'user.error.emailExist',
             });
-        } else if (checkExist.mobileNumber) {
-            this.debuggerService.error(
-                'create user exist',
-                'UserController',
-                'create',
-            );
-
-            throw new BadRequestException({
-                statusCode:
-                    ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-                message: 'user.error.mobileNumberExist',
-            });
         }
+        // else if (checkExist.mobileNumber) {
+        //     this.debuggerService.error(
+        //         'create user exist',
+        //         'UserController',
+        //         'create',
+        //     );
+
+        //     throw new BadRequestException({
+        //         statusCode:
+        //             ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+        //         message: 'user.error.mobileNumberExist',
+        //     });
+        // }
 
         try {
             const password = await this.authService.createPassword(
@@ -106,7 +106,6 @@ export class AuthPublicController {
                 firstName: body.firstName,
                 lastName: body.lastName,
                 email,
-                mobileNumber,
                 role: role._id,
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
@@ -152,7 +151,7 @@ export class AuthPublicController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

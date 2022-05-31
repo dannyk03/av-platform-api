@@ -5,7 +5,7 @@ export const PAGINATION_DEFAULT_MAX_PAGE = 20;
 export const PAGINATION_DEFAULT_SORT = 'createdAt@asc';
 export const PAGINATION_DEFAULT_AVAILABLE_SORT = ['createdAt'];
 
-export enum ENUM_PAGINATION_AVAILABLE_SORT_TYPE {
-    ASC = 1,
-    DESC = -1,
+export enum PaginationAvailableSortType {
+    Asc = 1,
+    Desc = -1,
 }

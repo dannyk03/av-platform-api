@@ -12,10 +12,7 @@ import {
 import { Observable } from 'rxjs';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
-import {
-    ENUM_FILE_IMAGE_MIME,
-    ENUM_FILE_STATUS_CODE_ERROR,
-} from '../file.constant';
+import { FileImageMime, FileStatusCodeError } from '../file.constant';
 import { IFile } from '../file.interface';
 
 export function FileImageInterceptor(
@@ -40,13 +37,12 @@ export function FileImageInterceptor(
 
                 if (required && finalFiles.length === 0) {
                     throw new UnprocessableEntityException({
-                        statusCode:
-                            ENUM_FILE_STATUS_CODE_ERROR.FILE_NEEDED_ERROR,
+                        statusCode: FileStatusCodeError.FileNeededError,
                         message: 'file.error.notFound',
                     });
                 } else if (finalFiles.length > maxFiles) {
                     throw new UnprocessableEntityException({
-                        statusCode: ENUM_FILE_STATUS_CODE_ERROR.FILE_MAX_ERROR,
+                        statusCode: FileStatusCodeError.FileMaxError,
                         message: 'file.error.maxFiles',
                     });
                 }
@@ -64,7 +60,7 @@ export function FileImageInterceptor(
         async validate(file: IFile): Promise<void> {
             if (required && !file) {
                 throw new UnprocessableEntityException({
-                    statusCode: ENUM_FILE_STATUS_CODE_ERROR.FILE_NEEDED_ERROR,
+                    statusCode: FileStatusCodeError.FileNeededError,
                     message: 'file.error.notFound',
                 });
             } else if (file) {
@@ -73,19 +69,17 @@ export function FileImageInterceptor(
                 const maxSize =
                     this.configService.get<number>('file.maxFileSize');
                 if (
-                    !Object.values(ENUM_FILE_IMAGE_MIME).find(
+                    !Object.values(FileImageMime).find(
                         (val) => val === mimetype.toLowerCase(),
                     )
                 ) {
                     throw new UnsupportedMediaTypeException({
-                        statusCode:
-                            ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR,
+                        statusCode: FileStatusCodeError.FileExtensionError,
                         message: 'file.error.mimeInvalid',
                     });
                 } else if (size > maxSize) {
                     throw new PayloadTooLargeException({
-                        statusCode:
-                            ENUM_FILE_STATUS_CODE_ERROR.FILE_MAX_SIZE_ERROR,
+                        statusCode: FileStatusCodeError.FileMaxSizeError,
                         message: 'file.error.maxSize',
                     });
                 }

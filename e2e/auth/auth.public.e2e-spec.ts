@@ -3,12 +3,12 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { E2E_AUTH_PUBLIC_SIGN_UP_URL } from './auth.constant';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
 import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { connection } from 'mongoose';
 import { UserService } from '@/user/service/user.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 import { useContainer } from 'class-validator';
@@ -86,7 +86,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -116,7 +116,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+            UserStatusCodeError.UserExistsError,
         );
 
         return;
@@ -136,7 +136,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+            UserStatusCodeError.UserEmailExistsError,
         );
 
         return;
@@ -156,7 +156,7 @@ describe('E2E Public', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+            UserStatusCodeError.UserMobileNumberExistsError,
         );
 
         return;

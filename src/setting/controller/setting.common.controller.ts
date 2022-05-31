@@ -7,7 +7,7 @@ import {
     IResponsePaging,
 } from '@/utils/response/response.interface';
 import { SettingListDto } from '../dto/setting.list.dto';
-import { SettingRequestDto } from '../dto/setting.request.dto';
+import { SettingGetDto } from '../dto/setting.request.dto';
 import { SettingDocument } from '../schema/setting.schema';
 import { SettingListSerialization } from '../serialization/setting.list.serialization';
 import { SettingService } from '../service/setting.service';
@@ -83,7 +83,7 @@ export class SettingCommonController {
 
     @Response('setting.get')
     @SettingGetGuard()
-    @RequestParamGuard(SettingRequestDto)
+    @RequestParamGuard(SettingGetDto)
     @Get('get/:setting')
     async get(@GetSetting() setting: SettingDocument): Promise<IResponse> {
         return this.settingService.serializationGet(setting);

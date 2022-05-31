@@ -23,14 +23,14 @@ import {
     IResponse,
     IResponsePaging,
 } from '@/utils/response/response.interface';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { PaginationService } from '@/utils/pagination/service/pagination.service';
 import { PermissionDocument } from '../schema/permission.schema';
 import { PermissionListDto } from '../dto/permission.list.dto';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
-import { PermissionRequestDto } from '../dto/permissions.request.dto';
+import { PermissionGetDto } from '../dto/permissions.request.dto';
 
 @Controller({
     version: '1',
@@ -104,7 +104,7 @@ export class PermissionAdminController {
 
     @Response('permission.get')
     @PermissionGetGuard()
-    @RequestParamGuard(PermissionRequestDto)
+    @RequestParamGuard(PermissionGetDto)
     @AuthAdminJwtGuard(Permissions.PermissionsRead)
     @Get('/get/:permission')
     async get(
@@ -115,7 +115,7 @@ export class PermissionAdminController {
 
     @Response('permission.update')
     @PermissionUpdateGuard()
-    @RequestParamGuard(PermissionRequestDto)
+    @RequestParamGuard(PermissionGetDto)
     @AuthAdminJwtGuard(
         Permissions.PermissionsRead,
         Permissions.PermissionsUpdate,
@@ -136,7 +136,7 @@ export class PermissionAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -148,7 +148,7 @@ export class PermissionAdminController {
 
     @Response('permission.inactive')
     @PermissionUpdateInactiveGuard()
-    @RequestParamGuard(PermissionRequestDto)
+    @RequestParamGuard(PermissionGetDto)
     @AuthAdminJwtGuard(
         Permissions.PermissionsRead,
         Permissions.PermissionsUpdate,
@@ -169,7 +169,7 @@ export class PermissionAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }
@@ -179,7 +179,7 @@ export class PermissionAdminController {
 
     @Response('permission.active')
     @PermissionUpdateActiveGuard()
-    @RequestParamGuard(PermissionRequestDto)
+    @RequestParamGuard(PermissionGetDto)
     @AuthAdminJwtGuard(
         Permissions.PermissionsRead,
         Permissions.PermissionsUpdate,
@@ -199,7 +199,7 @@ export class PermissionAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

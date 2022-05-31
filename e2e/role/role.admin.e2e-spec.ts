@@ -13,14 +13,14 @@ import {
     E2E_ROLE_PAYLOAD_TEST,
 } from './role.constant';
 import { connection, Types } from 'mongoose';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { RouterModule } from '@nestjs/core';
 import { CoreModule } from '@/core/core.module';
 import { AuthService } from '@/auth/service/auth.service';
 import { RoleService } from '@/role/service/role.service';
 import { PermissionService } from '@/permission/service/permission.service';
 import { RoleBulkService } from '@/role/service/role.bulk.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { RouterAdminModule } from '@/router/router.admin.module';
 import { RoleDocument } from '@/role/schema/role.schema';
 import { PermissionDocument } from '@/permission/schema/permission.schema';
@@ -153,7 +153,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;
@@ -186,7 +186,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -203,7 +203,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+            RoleStatusCodeError.RoleExistError,
         );
 
         return;
@@ -237,7 +237,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -259,7 +259,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;
@@ -276,7 +276,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+            RoleStatusCodeError.RoleExistError,
         );
 
         return;
@@ -312,7 +312,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;
@@ -342,7 +342,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR,
+            RoleStatusCodeError.RoleActiveError,
         );
 
         return;
@@ -363,7 +363,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;
@@ -393,7 +393,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR,
+            RoleStatusCodeError.RoleActiveError,
         );
 
         return;
@@ -414,7 +414,7 @@ describe('E2E Role Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;

@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
-    ENUM_ORGANIZATION_STATUS_CODE_ERROR,
+    OrganizationStatusCodeError,
     ORGANIZATION_ACTIVE_META_KEY,
 } from '../organization.constant';
 
@@ -38,8 +38,7 @@ export class OrganizationActiveGuard implements CanActivate {
             );
 
             throw new BadRequestException({
-                statusCode:
-                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_ACTIVE_ERROR,
+                statusCode: OrganizationStatusCodeError.OrganizationActiveError,
                 message: 'organization.error.active',
             });
         }

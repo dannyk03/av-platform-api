@@ -1,4 +1,4 @@
-export enum ENUM_STATUS_CODE_ERROR {
-    UNKNOWN_ERROR = 5990,
-    SERVICE_UNAVAILABLE = 5991,
+export enum StatusCodeError {
+    UnknownError = 5990,
+    ServiceUnavailable = 5991,
 }

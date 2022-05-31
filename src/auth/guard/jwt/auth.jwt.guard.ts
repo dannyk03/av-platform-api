@@ -1,6 +1,6 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 
 @Injectable()
@@ -18,8 +18,7 @@ export class JwtGuard extends AuthGuard('jwt') {
             this.debuggerService.error(info, 'JwtGuard', 'handleRequest', err);
 
             throw new UnauthorizedException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_JWT_ACCESS_TOKEN_ERROR,
+                statusCode: AuthStatusCodeError.AuthGuardJwtAccessTokenError,
                 message: 'http.clientError.unauthorized',
             });
         }

@@ -7,11 +7,11 @@ import {
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { Permissions } from '@/permission/permission.constant';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { Response } from '@/utils/response/response.decorator';
 import { IResponse } from '@/utils/response/response.interface';
-import { SettingRequestDto } from '../dto/setting.request.dto';
+import { SettingGetDto } from '../dto/setting.request.dto';
 import { SettingUpdateDto } from '../dto/setting.update.dto';
 import { SettingDocument } from '../schema/setting.schema';
 import { SettingService } from '../service/setting.service';
@@ -29,7 +29,7 @@ export class SettingAdminController {
 
     @Response('setting.update')
     @SettingUpdateGuard()
-    @RequestParamGuard(SettingRequestDto)
+    @RequestParamGuard(SettingGetDto)
     @AuthAdminJwtGuard(Permissions.SettingsRead, Permissions.SettingsUpdate)
     @Put('/update/:setting')
     async update(
@@ -48,7 +48,7 @@ export class SettingAdminController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

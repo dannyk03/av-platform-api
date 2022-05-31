@@ -10,19 +10,16 @@ import {
     InternalServerErrorException,
     Patch,
 } from '@nestjs/common';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { UserService } from '@/user/service/user.service';
 import { AuthService } from '../service/auth.service';
-import {
-    ENUM_AUTH_STATUS_CODE_ERROR,
-    ENUM_AUTH_STATUS_CODE_SUCCESS,
-} from '../auth.constant';
+import { AuthStatusCodeError, AuthStatusCodeSuccess } from '../auth.constant';
 import { Response } from '@/utils/response/response.decorator';
 import { IResponse } from '@/utils/response/response.interface';
 import { IUserDocument } from '@/user/user.interface';
 import { SuccessException } from '@/utils/error/error.exception';
-import { ENUM_LOGGER_ACTION } from '@/logger/logger.constant';
+import { LoggerAction } from '@/logger/logger.constant';
 import {
     ApiKey,
     AuthJwtGuard,
@@ -30,7 +27,7 @@ import {
     Token,
     User,
 } from '../auth.decorator';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { StatusCodeError } from '@/utils/error/error.constant';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { LoggerService } from '@/logger/service/logger.service';
 import { UserDocument } from '@/user/schema/user.schema';
@@ -53,14 +50,14 @@ export class AuthCommonController {
         private readonly loggerService: LoggerService,
     ) {}
 
-    @Response('auth.login', ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS)
+    @Response('auth.login', AuthStatusCodeSuccess.AuthLoginSuccess)
     @HttpCode(HttpStatus.OK)
     @Post('/login')
     async login(
         @Body() body: AuthLoginDto,
         @ApiKey() apiKey: IAuthApiPayload,
     ): Promise<IResponse> {
-        const rememberMe: boolean = body.rememberMe ? true : false;
+        const rememberMe = Boolean(body.rememberMe);
         const user: IUserDocument =
             await this.userService.findOne<IUserDocument>(
                 {
@@ -82,7 +79,7 @@ export class AuthCommonController {
             );
 
             throw new NotFoundException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                statusCode: UserStatusCodeError.UserNotFoundError,
                 message: 'user.error.notFound',
             });
         }
@@ -100,22 +97,21 @@ export class AuthCommonController {
             );
 
             throw new BadRequestException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR,
+                statusCode: AuthStatusCodeError.AuthPasswordNotMatchError,
                 message: 'auth.error.passwordNotMatch',
             });
         } else if (!user.isActive) {
             this.debuggerService.error('Auth Block', 'AuthController', 'login');
 
             throw new ForbiddenException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                statusCode: UserStatusCodeError.UserIsInactiveError,
                 message: 'user.error.inactive',
             });
         } else if (!user.role.isActive) {
             this.debuggerService.error('Role Block', 'AuthController', 'login');
 
             throw new ForbiddenException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
+                statusCode: RoleStatusCodeError.RoleIsInactiveError,
                 message: 'role.error.inactive',
             });
         }
@@ -152,8 +148,7 @@ export class AuthCommonController {
             );
 
             throw new SuccessException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_EXPIRED_ERROR,
+                statusCode: AuthStatusCodeError.AuthPasswordExpiredError,
                 message: 'auth.error.passwordExpired',
                 data: {
                     accessToken,
@@ -163,7 +158,7 @@ export class AuthCommonController {
         }
 
         await this.loggerService.info({
-            action: ENUM_LOGGER_ACTION.LOGIN,
+            action: LoggerAction.Login,
             description: `${user._id} do login`,
             user: user._id,
             apiKey: apiKey?._id,
@@ -201,7 +196,7 @@ export class AuthCommonController {
             );
 
             throw new NotFoundException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                statusCode: UserStatusCodeError.UserNotFoundError,
                 message: 'user.error.notFound',
             });
         } else if (!user.isActive) {
@@ -212,7 +207,7 @@ export class AuthCommonController {
             );
 
             throw new ForbiddenException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                statusCode: UserStatusCodeError.UserIsInactiveError,
                 message: 'user.error.inactive',
             });
         } else if (!user.role.isActive) {
@@ -223,7 +218,7 @@ export class AuthCommonController {
             );
 
             throw new ForbiddenException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
+                statusCode: RoleStatusCodeError.RoleIsInactiveError,
                 message: 'role.error.inactive',
             });
         }
@@ -241,8 +236,7 @@ export class AuthCommonController {
             );
 
             throw new ForbiddenException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_EXPIRED_ERROR,
+                statusCode: AuthStatusCodeError.AuthPasswordExpiredError,
                 message: 'auth.error.passwordExpired',
             });
         }
@@ -280,7 +274,7 @@ export class AuthCommonController {
             );
 
             throw new NotFoundException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                statusCode: UserStatusCodeError.UserNotFoundError,
                 message: 'user.error.notFound',
             });
         }
@@ -297,8 +291,7 @@ export class AuthCommonController {
             );
 
             throw new BadRequestException({
-                statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR,
+                statusCode: AuthStatusCodeError.AuthPasswordNotMatchError,
                 message: 'auth.error.passwordNotMatch',
             });
         }
@@ -316,7 +309,7 @@ export class AuthCommonController {
 
             throw new BadRequestException({
                 statusCode:
-                    ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NEW_MUST_DIFFERENCE_ERROR,
+                    AuthStatusCodeError.AuthPasswordNewMustDifferenceError,
                 message: 'auth.error.newPasswordMustDifference',
             });
         }
@@ -336,7 +329,7 @@ export class AuthCommonController {
             );
 
             throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
         }

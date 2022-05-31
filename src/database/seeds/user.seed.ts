@@ -39,7 +39,7 @@ export class UserSeed {
                 email: 'admin@avonow.com',
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111111',
+                // mobileNumber: '08111111111',
                 role: role._id,
                 salt: password.salt,
             });

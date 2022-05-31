@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_SETTING_STATUS_CODE_ERROR } from '../setting.constant';
+import { SettingStatusCodeError } from '../setting.constant';
 
 @Injectable()
 export class SettingNotFoundGuard implements CanActivate {
@@ -22,8 +22,7 @@ export class SettingNotFoundGuard implements CanActivate {
             );
 
             throw new NotFoundException({
-                statusCode:
-                    ENUM_SETTING_STATUS_CODE_ERROR.SETTING_NOT_FOUND_ERROR,
+                statusCode: SettingStatusCodeError.SettingNotFoundError,
                 message: 'setting.error.notFound',
             });
         }

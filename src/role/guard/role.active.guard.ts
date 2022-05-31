@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import {
-    ENUM_ROLE_STATUS_CODE_ERROR,
-    ROLE_ACTIVE_META_KEY,
-} from '../role.constant';
+import { RoleStatusCodeError, ROLE_ACTIVE_META_KEY } from '../role.constant';
 
 @Injectable()
 export class RoleActiveGuard implements CanActivate {
@@ -38,7 +35,7 @@ export class RoleActiveGuard implements CanActivate {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_ACTIVE_ERROR,
+                statusCode: RoleStatusCodeError.RoleActiveError,
                 message: 'role.error.active',
             });
         }

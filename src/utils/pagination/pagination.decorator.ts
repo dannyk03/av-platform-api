@@ -12,7 +12,7 @@ import {
 import { MinGreaterThan } from '../request/validation/request.min-greater-than.validation';
 import { Skip } from '../request/validation/request.skip.validation';
 import {
-    ENUM_PAGINATION_AVAILABLE_SORT_TYPE,
+    PaginationAvailableSortType,
     PAGINATION_DEFAULT_AVAILABLE_SORT,
     PAGINATION_DEFAULT_MAX_PAGE,
     PAGINATION_DEFAULT_MAX_PER_PAGE,
@@ -101,8 +101,8 @@ export function PaginationSort(
                     : bSort;
                 const convertType: number =
                     type === 'desc'
-                        ? ENUM_PAGINATION_AVAILABLE_SORT_TYPE.DESC
-                        : ENUM_PAGINATION_AVAILABLE_SORT_TYPE.ASC;
+                        ? PaginationAvailableSortType.Desc
+                        : PaginationAvailableSortType.Asc;
 
                 return { [convertField]: convertType };
             },

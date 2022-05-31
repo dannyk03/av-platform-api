@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 
 @Injectable()
 export class TimestampMiddleware implements NestMiddleware {
@@ -25,7 +25,7 @@ export class TimestampMiddleware implements NestMiddleware {
             if (!ts || !check) {
                 throw new ForbiddenException({
                     statusCode:
-                        ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_TIMESTAMP_INVALID_ERROR,
+                        RequestStatusCodeError.RequestTimestampInvalidError,
                     message: 'middleware.error.timestampInvalid',
                 });
             }
@@ -42,7 +42,7 @@ export class TimestampMiddleware implements NestMiddleware {
             if (timestamp < toleranceMin || timestamp > toleranceMax) {
                 throw new ForbiddenException({
                     statusCode:
-                        ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_TIMESTAMP_INVALID_ERROR,
+                        RequestStatusCodeError.RequestTimestampInvalidError,
                     message: 'middleware.error.timestampInvalid',
                 });
             }

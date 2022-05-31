@@ -16,7 +16,7 @@ import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { PermissionService } from '@/permission/service/permission.service';
 import { AuthService } from '@/auth/service/auth.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { RouterAdminModule } from '@/router/router.admin.module';
 import { PermissionDocument } from '@/permission/schema/permission.schema';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
@@ -178,7 +178,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;

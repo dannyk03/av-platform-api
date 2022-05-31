@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { UserEntity } from '@/user';
+import { slugPlugin } from '@/database';
 
 @Schema({ timestamps: true, versionKey: false })
 export class OrganizationEntity {
@@ -24,6 +26,9 @@ export class OrganizationEntity {
         default: true,
     })
     isActive: boolean;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
+    owners: UserEntity[];
 }
 
 export const OrganizationsCollectionName = 'organizations';
@@ -32,8 +37,11 @@ export const OrganizationSchema =
 
 export type OrganizationDocument = OrganizationEntity & Document;
 
+// Plugins
+OrganizationSchema.plugin(slugPlugin('name'));
+
 // Hooks
-OrganizationSchema.pre<OrganizationDocument>('save', function (next) {
-    this.name = this.name.toLowerCase();
-    next();
-});
+// OrganizationSchema.pre<OrganizationDocument>('validate', function (next) {
+//     // this.slug = slugify(this.name, )
+//     next();
+// });

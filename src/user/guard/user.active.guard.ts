@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import {
-    ENUM_USER_STATUS_CODE_ERROR,
-    USER_ACTIVE_META_KEY,
-} from '../user.constant';
+import { UserStatusCodeError, USER_ACTIVE_META_KEY } from '../user.constant';
 
 @Injectable()
 export class UserActiveGuard implements CanActivate {
@@ -38,7 +35,7 @@ export class UserActiveGuard implements CanActivate {
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_ACTIVE_ERROR,
+                statusCode: UserStatusCodeError.UserActiveError,
                 message: 'user.error.active',
             });
         }

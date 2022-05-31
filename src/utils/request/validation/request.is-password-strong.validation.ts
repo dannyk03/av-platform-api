@@ -6,6 +6,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface,
 } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
 import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 
 @ValidatorConstraint({ async: true })
@@ -13,7 +14,10 @@ import { HelperStringService } from '@/utils/helper/service/helper.string.servic
 export class IsPasswordStrongConstraint
     implements ValidatorConstraintInterface
 {
-    constructor(protected readonly helperStringService: HelperStringService) {}
+    constructor(
+        protected readonly helperStringService: HelperStringService,
+        protected readonly configService: ConfigService,
+    ) {}
 
     validate(value: string, args: ValidationArguments): boolean {
         // At least one upper case English letter, (?=.*?[A-Z])
@@ -24,7 +28,9 @@ export class IsPasswordStrongConstraint
 
         const [length] = args.constraints;
         return value
-            ? this.helperStringService.checkPasswordStrong(value, length)
+            ? this.configService.get<string>('app.mode') === 'secure'
+                ? this.helperStringService.checkPasswordStrong(value, length)
+                : true
             : false;
     }
 }

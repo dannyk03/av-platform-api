@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { DatabaseEntity } from '@/database';
 import { ILogger } from '../logger.interface';
-import { ENUM_LOGGER_LEVEL } from '../logger.constant';
+import { LoggerLevel } from '../logger.constant';
 import { LoggerDocument, LoggerEntity } from '../schema/logger.schema';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class LoggerService {
         tags,
     }: ILogger): Promise<LoggerDocument> {
         const create = new this.loggerModel({
-            level: ENUM_LOGGER_LEVEL.INFO,
+            level: LoggerLevel.Info,
             user: new Types.ObjectId(user),
             apiKey: new Types.ObjectId(apiKey),
             anonymous: user ? false : true,
@@ -39,7 +39,7 @@ export class LoggerService {
         tags,
     }: ILogger): Promise<LoggerDocument> {
         const create = new this.loggerModel({
-            level: ENUM_LOGGER_LEVEL.DEBUG,
+            level: LoggerLevel.Debug,
             user: new Types.ObjectId(user),
             apiKey: new Types.ObjectId(apiKey),
             anonymous: user ? false : true,
@@ -58,7 +58,7 @@ export class LoggerService {
         tags,
     }: ILogger): Promise<LoggerDocument> {
         const create = new this.loggerModel({
-            level: ENUM_LOGGER_LEVEL.WARM,
+            level: LoggerLevel.Warn,
             user: new Types.ObjectId(user),
             apiKey: new Types.ObjectId(apiKey),
             anonymous: user ? false : true,
@@ -77,7 +77,7 @@ export class LoggerService {
         tags,
     }: ILogger): Promise<LoggerDocument> {
         const create = new this.loggerModel({
-            level: ENUM_LOGGER_LEVEL.FATAL,
+            level: LoggerLevel.Fatal,
             user: new Types.ObjectId(user),
             apiKey: new Types.ObjectId(apiKey),
             anonymous: user ? false : true,

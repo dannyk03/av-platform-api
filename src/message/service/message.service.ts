@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ENUM_MESSAGE_LANGUAGE } from '@/message/message.constant';
+import { MessageLanguage } from '@/message/message.constant';
 import {
     IMessage,
     IMessageOptions,
@@ -119,6 +119,6 @@ export class MessageService {
     }
 
     async getLanguages(): Promise<string[]> {
-        return Object.values(ENUM_MESSAGE_LANGUAGE);
+        return Object.values(MessageLanguage);
     }
 }

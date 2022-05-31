@@ -13,14 +13,14 @@ import {
     E2E_USER_ADMIN_LIST_URL,
     E2E_USER_ADMIN_UPDATE_URL,
 } from './user.constant';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from '@/role/role.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
+import { RoleStatusCodeError } from '@/role/role.constant';
 import { RouterModule } from '@nestjs/core';
 import { CoreModule } from '@/core/core.module';
 import { UserService } from '@/user/service/user.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { RoleService } from '@/role/service/role.service';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '@/utils/request/request.constant';
+import { RequestStatusCodeError } from '@/utils/request/request.constant';
 import { RouterAdminModule } from '@/router/router.admin.module';
 import { UserDocument } from '@/user/schema/user.schema';
 import { RoleDocument } from '@/role/schema/role.schema';
@@ -158,7 +158,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -181,7 +181,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+            RoleStatusCodeError.RoleNotFoundError,
         );
 
         return;
@@ -203,7 +203,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+            UserStatusCodeError.UserExistsError,
         );
 
         return;
@@ -224,7 +224,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+            UserStatusCodeError.UserEmailExistsError,
         );
 
         return;
@@ -245,7 +245,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+            UserStatusCodeError.UserMobileNumberExistsError,
         );
 
         return;
@@ -282,7 +282,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -317,7 +317,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
         expect(response.body.statusCode).toEqual(
-            ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            RequestStatusCodeError.RequestValidationError,
         );
 
         return;
@@ -343,7 +343,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -384,7 +384,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -416,7 +416,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_ACTIVE_ERROR,
+            UserStatusCodeError.UserActiveError,
         );
 
         return;
@@ -438,7 +438,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -470,7 +470,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_ACTIVE_ERROR,
+            UserStatusCodeError.UserActiveError,
         );
 
         return;
@@ -492,7 +492,7 @@ describe('E2E User Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;

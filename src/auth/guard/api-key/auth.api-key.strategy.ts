@@ -5,7 +5,7 @@ import { AuthApiService } from '@/auth/service/auth.api.service';
 import { Request } from 'express';
 import { AuthApiDocument } from '@/auth/schema/auth.api.schema';
 import { IAuthApiRequestHashedData } from '@/auth/auth.interface';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { AuthStatusCodeError } from '@/auth/auth.constant';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
@@ -45,13 +45,13 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR}`,
+                `${AuthStatusCodeError.AuthGuardApiKeyNotFoundError}`,
             );
         } else if (!authApi.isActive) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR}`,
+                `${AuthStatusCodeError.AuthGuardApiKeyInactiveError}`,
             );
         }
 
@@ -74,18 +74,18 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR}`,
+                `${AuthStatusCodeError.AuthGuardApiKeySchemaInvalidError}`,
             );
         } else if (key !== decrypted.key) {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
+                `${AuthStatusCodeError.AuthGuardApiKeyInvalidError}`,
             );
         } else if (timestamp !== decrypted.timestamp) {
             verified(
                 new Error(
-                    `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR}`,
+                    `${AuthStatusCodeError.AuthGuardApiKeyTimestampNotMatchWithRequestError}`,
                 ),
             );
         }
@@ -99,7 +99,7 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
             verified(
                 null,
                 null,
-                `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
+                `${AuthStatusCodeError.AuthGuardApiKeyInvalidError}`,
             );
         }
 

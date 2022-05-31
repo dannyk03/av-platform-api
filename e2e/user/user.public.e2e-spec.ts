@@ -8,13 +8,13 @@ import {
     E2E_USER_PUBLIC_PROFILE_URL,
 } from './user.constant';
 import { Types, connection } from 'mongoose';
-import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
+import { UserStatusCodeError } from '@/user/user.constant';
 import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { UserService } from '@/user/service/user.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { RoleService } from '@/role/service/role.service';
-import { ENUM_FILE_STATUS_CODE_ERROR } from '@/utils/file/file.constant';
+import { FileStatusCodeError } from '@/utils/file/file.constant';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RoleDocument } from '@/role/schema/role.schema';
 import { UserDocument } from '@/user/schema/user.schema';
@@ -127,7 +127,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -159,7 +159,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         expect(response.body.statusCode).toEqual(
-            ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR,
+            FileStatusCodeError.FileExtensionError,
         );
 
         return;
@@ -177,7 +177,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+            UserStatusCodeError.UserNotFoundError,
         );
 
         return;
@@ -196,7 +196,7 @@ describe('E2E User Public', () => {
 
         expect(response.status).toEqual(HttpStatus.PAYLOAD_TOO_LARGE);
         expect(response.body.statusCode).toEqual(
-            ENUM_FILE_STATUS_CODE_ERROR.FILE_MAX_SIZE_ERROR,
+            FileStatusCodeError.FileMaxSizeError,
         );
 
         return;
