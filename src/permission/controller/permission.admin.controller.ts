@@ -7,7 +7,7 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { Permissions } from '@/permission/permission.constant';
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { PermissionService } from '../service/permission.service';
@@ -44,7 +44,7 @@ export class PermissionAdminController {
     ) {}
 
     @ResponsePaging('permission.list')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
+    @AuthAdminJwtGuard(Permissions.PermissionsRead)
     @Get('/list')
     async list(
         @Query()
@@ -105,7 +105,7 @@ export class PermissionAdminController {
     @Response('permission.get')
     @PermissionGetGuard()
     @RequestParamGuard(PermissionRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
+    @AuthAdminJwtGuard(Permissions.PermissionsRead)
     @Get('/get/:permission')
     async get(
         @GetPermission() permission: PermissionDocument,
@@ -117,8 +117,8 @@ export class PermissionAdminController {
     @PermissionUpdateGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
-        ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE,
+        Permissions.PermissionsRead,
+        Permissions.PermissionsUpdate,
     )
     @Put('/update/:permission')
     async update(
@@ -150,8 +150,8 @@ export class PermissionAdminController {
     @PermissionUpdateInactiveGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
-        ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE,
+        Permissions.PermissionsRead,
+        Permissions.PermissionsUpdate,
     )
     @Patch('/update/:permission/inactive')
     async inactive(
@@ -181,8 +181,8 @@ export class PermissionAdminController {
     @PermissionUpdateActiveGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
-        ENUM_PERMISSIONS.PERMISSION_READ,
-        ENUM_PERMISSIONS.PERMISSION_UPDATE,
+        Permissions.PermissionsRead,
+        Permissions.PermissionsUpdate,
     )
     @Patch('/update/:permission/active')
     async active(

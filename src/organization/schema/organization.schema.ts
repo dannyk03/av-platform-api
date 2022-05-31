@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false })
-export class TenantEntity {
+export class OrganizationEntity {
     @Prop({
         required: true,
         unique: true,
@@ -26,13 +26,14 @@ export class TenantEntity {
     isActive: boolean;
 }
 
-export const TenantsCollectionName = 'tenants';
-export const TenantSchema = SchemaFactory.createForClass(TenantEntity);
+export const OrganizationsCollectionName = 'organizations';
+export const OrganizationSchema =
+    SchemaFactory.createForClass(OrganizationEntity);
 
-export type TenantDocument = TenantEntity & Document;
+export type OrganizationDocument = OrganizationEntity & Document;
 
 // Hooks
-TenantSchema.pre<TenantDocument>('save', function (next) {
+OrganizationSchema.pre<OrganizationDocument>('save', function (next) {
     this.name = this.name.toLowerCase();
     next();
 });

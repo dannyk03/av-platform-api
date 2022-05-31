@@ -11,7 +11,7 @@ import {
     E2E_PERMISSION_PAYLOAD_TEST,
 } from './permission.constant';
 import { Types, connection } from 'mongoose';
-import { ENUM_PERMISSION_STATUS_CODE_ERROR } from '@/permission/permission.constant';
+import { PermissionsStatusCodeError } from '@/permission/permission.constant';
 import { CoreModule } from '@/core/core.module';
 import { RouterModule } from '@nestjs/core';
 import { PermissionService } from '@/permission/service/permission.service';
@@ -121,7 +121,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+            PermissionsStatusCodeError.NotFoundError,
         );
 
         return;
@@ -157,7 +157,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+            PermissionsStatusCodeError.NotFoundError,
         );
 
         return;
@@ -216,7 +216,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+            PermissionsStatusCodeError.NotFoundError,
         );
 
         return;
@@ -234,7 +234,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR,
+            PermissionsStatusCodeError.ActiveError,
         );
 
         return;
@@ -255,7 +255,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.NOT_FOUND);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+            PermissionsStatusCodeError.NotFoundError,
         );
 
         return;
@@ -295,7 +295,7 @@ describe('E2E Permission Admin', () => {
 
         expect(response.status).toEqual(HttpStatus.BAD_REQUEST);
         expect(response.body.statusCode).toEqual(
-            ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR,
+            PermissionsStatusCodeError.ActiveError,
         );
 
         return;

@@ -1,26 +1,30 @@
-export enum ENUM_PERMISSIONS {
-    USER_CREATE = 'USER_CREATE',
-    USER_UPDATE = 'USER_UPDATE',
-    USER_READ = 'USER_READ',
-    USER_DELETE = 'USER_DELETE',
-    ROLE_CREATE = 'ROLE_CREATE',
-    ROLE_UPDATE = 'ROLE_UPDATE',
-    ROLE_READ = 'ROLE_READ',
-    ROLE_DELETE = 'ROLE_DELETE',
-    PERMISSION_READ = 'PERMISSION_READ',
-    PERMISSION_UPDATE = 'PERMISSION_UPDATE',
-    SETTING_READ = 'SETTING_READ',
-    SETTING_UPDATE = 'SETTING_UPDATE',
+export enum Permissions {
+    UserCreate = 'USER_CREATE',
+    UserUpdate = 'USER_UPDATE',
+    UserRead = 'USER_READ',
+    UsedDelete = 'USER_DELETE',
+    RoleCreate = 'ROLE_CREATE',
+    RoleUpdate = 'ROLE_UPDATE',
+    RoleRead = 'ROLE_READ',
+    RoleDelete = 'ROLE_DELETE',
+    PermissionsRead = 'PERMISSION_READ',
+    PermissionsUpdate = 'PERMISSION_UPDATE',
+    SettingsRead = 'SETTING_READ',
+    SettingsUpdate = 'SETTING_UPDATE',
+    OrganizationCreate = 'ORGANIZATION_CREATE',
+    OrganizationRead = 'ORGANIZATION_READ',
+    OrganizationUpdate = 'ORGANIZATION_UPDATE',
+    OrganizationDelete = 'ORGANIZATION_DELETE',
 }
 
 export const PERMISSION_META_KEY = 'PermissionMetaKey';
 
 export const PERMISSION_ACTIVE_META_KEY = 'PermissionActiveMetaKey';
 
-export enum ENUM_PERMISSION_STATUS_CODE_ERROR {
-    PERMISSION_NOT_FOUND_ERROR = 5200,
-    PERMISSION_GUARD_INVALID_ERROR = 5201,
-    PERMISSION_ACTIVE_ERROR = 5203,
+export enum PermissionsStatusCodeError {
+    NotFoundError = 5200,
+    GuardInvalidError = 5201,
+    ActiveError = 5203,
 }
 
 export const PERMISSION_DEFAULT_SORT = 'name@asc';

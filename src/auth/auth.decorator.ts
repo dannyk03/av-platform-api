@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PermissionPayloadDefaultGuard } from '@/permission/guard/payload/permission.default.guard';
 import {
-    ENUM_PERMISSIONS,
+    Permissions,
     PERMISSION_META_KEY,
 } from '@/permission/permission.constant';
 import { AUTH_ADMIN_META_KEY } from './auth.constant';
@@ -18,7 +18,7 @@ import { AuthPayloadAdminGuard } from './guard/payload/auth.payload.admin.guard'
 import { AuthPayloadDefaultGuard } from './guard/payload/auth.payload.default.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.payload.password-expired.guard';
 
-export function AuthJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
+export function AuthJwtGuard(...permissions: Permissions[]): any {
     return applyDecorators(
         UseGuards(
             JwtGuard,
@@ -29,7 +29,7 @@ export function AuthJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
     );
 }
 
-export function AuthPublicJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
+export function AuthPublicJwtGuard(...permissions: Permissions[]): any {
     return applyDecorators(
         UseGuards(
             JwtGuard,
@@ -43,7 +43,7 @@ export function AuthPublicJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
     );
 }
 
-export function AuthAdminJwtGuard(...permissions: ENUM_PERMISSIONS[]) {
+export function AuthAdminJwtGuard(...permissions: Permissions[]) {
     return applyDecorators(
         UseGuards(
             JwtGuard,

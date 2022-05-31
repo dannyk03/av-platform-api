@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_PERMISSION_STATUS_CODE_ERROR } from '../permission.constant';
+import { PermissionsStatusCodeError } from '../permission.constant';
 
 @Injectable()
 export class PermissionNotFoundGuard implements CanActivate {
@@ -22,8 +22,7 @@ export class PermissionNotFoundGuard implements CanActivate {
             );
 
             throw new NotFoundException({
-                statusCode:
-                    ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+                statusCode: PermissionsStatusCodeError.NotFoundError,
                 message: 'permission.error.notFound',
             });
         }

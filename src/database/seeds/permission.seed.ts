@@ -1,6 +1,6 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { Permissions } from '@/permission/permission.constant';
 import { PermissionBulkService } from '@/permission/service/permission.bulk.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 
@@ -17,7 +17,7 @@ export class PermissionSeed {
     })
     async insert(): Promise<void> {
         try {
-            const permissions = Object.keys(ENUM_PERMISSIONS).map((val) => ({
+            const permissions = Object.keys(Permissions).map((val) => ({
                 code: val,
                 name: val.replace('_', ' '),
             }));

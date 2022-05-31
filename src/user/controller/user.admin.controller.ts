@@ -11,7 +11,7 @@ import {
     Patch,
     NotFoundException,
 } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { Permissions } from '@/permission/permission.constant';
 import {
     GetUser,
     UserDeleteGuard,
@@ -56,7 +56,7 @@ export class UserAdminController {
     ) {}
 
     @ResponsePaging('user.list')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
+    @AuthAdminJwtGuard(Permissions.UserRead)
     @Get('/list')
     async list(
         @Query()
@@ -119,14 +119,14 @@ export class UserAdminController {
     @Response('user.get')
     @UserGetGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
+    @AuthAdminJwtGuard(Permissions.UserRead)
     @Get('get/:user')
     async get(@GetUser() user: IUserDocument): Promise<IResponse> {
         return this.userService.serializationGet(user);
     }
 
     @Response('user.create')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
+    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserCreate)
     @Post('/create')
     async create(
         @Body()
@@ -224,7 +224,7 @@ export class UserAdminController {
     @Response('user.delete')
     @UserDeleteGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_DELETE)
+    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UsedDelete)
     @Delete('/delete/:user')
     async delete(@GetUser() user: IUserDocument): Promise<void> {
         try {
@@ -248,7 +248,7 @@ export class UserAdminController {
     @Response('user.update')
     @UserUpdateGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
+    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Put('/update/:user')
     async update(
         @GetUser() user: IUserDocument,
@@ -279,7 +279,7 @@ export class UserAdminController {
     @Response('user.inactive')
     @UserUpdateInactiveGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
+    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Patch('/update/:user/inactive')
     async inactive(@GetUser() user: IUserDocument): Promise<void> {
         try {
@@ -304,7 +304,7 @@ export class UserAdminController {
     @Response('user.active')
     @UserUpdateActiveGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
+    @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserUpdate)
     @Patch('/update/:user/active')
     async active(@GetUser() user: IUserDocument): Promise<void> {
         try {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { DeleteResult } from 'mongodb';
 import { RoleDocument, RoleEntity } from '../schema/role.schema';
 import { RoleCreateDto } from '../dto/role.create.dto';

@@ -12,7 +12,7 @@ import {
     MongooseHealthIndicator,
 } from '@nestjs/terminus';
 import { Connection } from 'mongoose';
-import { DatabaseConnection } from '@/database/database.decorator';
+import { DatabaseConnection } from '@/database';
 import { AwsHealthIndicator } from '../indicator/health.aws.indicator';
 import { IResponse } from '@/utils/response/response.interface';
 import { Response } from '@/utils/response/response.decorator';

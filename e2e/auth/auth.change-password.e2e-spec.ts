@@ -7,7 +7,7 @@ import { E2E_AUTH_CHANGE_PASSWORD_URL } from './auth.constant';
 import { ENUM_USER_STATUS_CODE_ERROR } from '@/user/user.constant';
 import { Types, connection } from 'mongoose';
 import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
-import { CoreModule } from '@/core/core.module';
+import { CoreModule } from '@/core';
 import { RouterModule } from '@nestjs/core';
 import { UserService } from '@/user/service/user.service';
 import { AuthService } from '@/auth/service/auth.service';

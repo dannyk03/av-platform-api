@@ -1,12 +1,9 @@
-import { Exclude, Type } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 
-export class TenantGetSerialization {
-    @Type(() => String)
+export class OrganizationListSerialization {
     readonly slug: string;
-
     readonly isActive: boolean;
     readonly name: string;
-
     readonly createdAt: Date;
 
     @Exclude()

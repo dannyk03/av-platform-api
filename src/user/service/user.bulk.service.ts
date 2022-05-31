@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { DeleteResult } from 'mongodb';
 import { UserDocument, UserEntity } from '../schema/user.schema';
 

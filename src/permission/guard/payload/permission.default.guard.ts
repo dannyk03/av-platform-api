@@ -7,8 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
-    ENUM_PERMISSIONS,
-    ENUM_PERMISSION_STATUS_CODE_ERROR,
+    Permissions,
+    PermissionsStatusCodeError,
     PERMISSION_META_KEY,
 } from '@/permission/permission.constant';
 import { IPermission } from '@/permission/permission.interface';
@@ -21,8 +21,8 @@ export class PermissionPayloadDefaultGuard implements CanActivate {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const requiredPermission: ENUM_PERMISSIONS[] =
-            this.reflector.getAllAndOverride<ENUM_PERMISSIONS[]>(
+        const requiredPermission: Permissions[] =
+            this.reflector.getAllAndOverride<Permissions[]>(
                 PERMISSION_META_KEY,
                 [context.getHandler(), context.getClass()],
             );
@@ -47,8 +47,7 @@ export class PermissionPayloadDefaultGuard implements CanActivate {
             );
 
             throw new ForbiddenException({
-                statusCode:
-                    ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_GUARD_INVALID_ERROR,
+                statusCode: PermissionsStatusCodeError.GuardInvalidError,
                 message: 'permission.error.forbidden',
             });
         }

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { Permissions } from '@/permission/permission.constant';
 import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { Response } from '@/utils/response/response.decorator';
@@ -30,10 +30,7 @@ export class SettingAdminController {
     @Response('setting.update')
     @SettingUpdateGuard()
     @RequestParamGuard(SettingRequestDto)
-    @AuthAdminJwtGuard(
-        ENUM_PERMISSIONS.SETTING_READ,
-        ENUM_PERMISSIONS.SETTING_UPDATE,
-    )
+    @AuthAdminJwtGuard(Permissions.SettingsRead, Permissions.SettingsUpdate)
     @Put('/update/:setting')
     async update(
         @GetSetting() setting: SettingDocument,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { ILogger } from '../logger.interface';
 import { ENUM_LOGGER_LEVEL } from '../logger.constant';
 import { LoggerDocument, LoggerEntity } from '../schema/logger.schema';

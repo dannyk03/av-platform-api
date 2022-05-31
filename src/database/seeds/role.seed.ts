@@ -1,6 +1,6 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
+import { Permissions } from '@/permission/permission.constant';
 import { PermissionService } from '@/permission/service/permission.service';
 import { RoleBulkService } from '@/role/service/role.bulk.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
@@ -21,7 +21,7 @@ export class RoleSeed {
     async insert(): Promise<void> {
         const permissions: PermissionDocument[] =
             await this.permissionService.findAll({
-                code: { $in: Object.values(ENUM_PERMISSIONS) },
+                code: { $in: Object.values(Permissions) },
             });
 
         try {

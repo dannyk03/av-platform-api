@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
-    ENUM_PERMISSION_STATUS_CODE_ERROR,
+    PermissionsStatusCodeError,
     PERMISSION_ACTIVE_META_KEY,
 } from '../permission.constant';
 
@@ -38,8 +38,7 @@ export class PermissionActiveGuard implements CanActivate {
             );
 
             throw new BadRequestException({
-                statusCode:
-                    ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_ACTIVE_ERROR,
+                statusCode: PermissionsStatusCodeError.ActiveError,
                 message: 'permission.error.active',
             });
         }

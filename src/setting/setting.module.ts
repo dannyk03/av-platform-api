@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DATABASE_CONNECTION_NAME } from '@/database/database.constant';
+import { DATABASE_CONNECTION_NAME } from '@/database';
 import { SettingService } from './service/setting.service';
 import {
     SettingDatabaseName,

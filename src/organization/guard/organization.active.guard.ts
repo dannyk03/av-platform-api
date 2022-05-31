@@ -7,12 +7,12 @@ import {
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
-    ENUM_TENANT_STATUS_CODE_ERROR,
-    TENANT_ACTIVE_META_KEY,
-} from '../tenant.constant';
+    ENUM_ORGANIZATION_STATUS_CODE_ERROR,
+    ORGANIZATION_ACTIVE_META_KEY,
+} from '../organization.constant';
 
 @Injectable()
-export class TenantActiveGuard implements CanActivate {
+export class OrganizationActiveGuard implements CanActivate {
     constructor(
         private readonly debuggerService: DebuggerService,
         private reflector: Reflector,
@@ -20,7 +20,7 @@ export class TenantActiveGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const required: boolean[] = this.reflector.getAllAndOverride<boolean[]>(
-            TENANT_ACTIVE_META_KEY,
+            ORGANIZATION_ACTIVE_META_KEY,
             [context.getHandler(), context.getClass()],
         );
 
@@ -28,18 +28,19 @@ export class TenantActiveGuard implements CanActivate {
             return true;
         }
 
-        const { __tenant } = context.switchToHttp().getRequest();
+        const { __organization } = context.switchToHttp().getRequest();
 
-        if (!required.includes(__tenant.isActive)) {
+        if (!required.includes(__organization.isActive)) {
             this.debuggerService.error(
-                'Tenant active error',
-                'TenantActiveGuard',
+                'Organization active error',
+                'OrganizationActiveGuard',
                 'canActivate',
             );
 
             throw new BadRequestException({
-                statusCode: ENUM_TENANT_STATUS_CODE_ERROR.TENANT_ACTIVE_ERROR,
-                message: 'tenant.error.active',
+                statusCode:
+                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_ACTIVE_ERROR,
+                message: 'organization.error.active',
             });
         }
         return true;

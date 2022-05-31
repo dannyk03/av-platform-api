@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { Model } from 'mongoose';
 import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
 

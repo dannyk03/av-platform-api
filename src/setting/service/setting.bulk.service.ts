@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { DeleteResult } from 'mongodb';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { SettingDocument, SettingEntity } from '../schema/setting.schema';
 
 @Injectable()

@@ -5,26 +5,26 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { ENUM_TENANT_STATUS_CODE_ERROR } from '../tenant.constant';
+import { ENUM_ORGANIZATION_STATUS_CODE_ERROR } from '../organization.constant';
 
 @Injectable()
-export class TenantNotFoundGuard implements CanActivate {
+export class OrganizationNotFoundGuard implements CanActivate {
     constructor(private readonly debuggerService: DebuggerService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const { __tenant } = context.switchToHttp().getRequest();
+        const { __organization } = context.switchToHttp().getRequest();
 
-        if (!__tenant) {
+        if (!__organization) {
             this.debuggerService.error(
-                'Tenant not found',
-                'TenantNotFoundGuard',
+                'Organization not found',
+                'OrganizationNotFoundGuard',
                 'canActivate',
             );
 
             throw new NotFoundException({
                 statusCode:
-                    ENUM_TENANT_STATUS_CODE_ERROR.TENANT_NOT_FOUND_ERROR,
-                message: 'tenant.error.notFound',
+                    ENUM_ORGANIZATION_STATUS_CODE_ERROR.ORGANIZATION_NOT_FOUND_ERROR,
+                message: 'organization.error.notFound',
             });
         }
 

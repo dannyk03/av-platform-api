@@ -1,10 +1,10 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { Model } from 'mongoose';
 import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
-import { IDatabaseFindAllOptions } from '@/database/database.interface';
+import { IDatabaseFindAllOptions } from '@/database';
 import { plainToInstance } from 'class-transformer';
 import { AuthApiListSerialization } from '../serialization/auth.api.list.serialization';
 import { AuthApiGetSerialization } from '../serialization/auth.api.get.serialization';

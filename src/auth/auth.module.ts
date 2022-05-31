@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
-import { DATABASE_CONNECTION_NAME } from '@/database/database.constant';
+import { DATABASE_CONNECTION_NAME } from '@/database';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { ApiKeyGuard } from './guard/api-key/auth.api-key.guard';
 import { ApiKeyStrategy } from './guard/api-key/auth.api-key.strategy';

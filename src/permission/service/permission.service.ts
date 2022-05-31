@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
-import { DatabaseEntity } from '@/database/database.decorator';
-import { IDatabaseFindAllOptions } from '@/database/database.interface';
+import { DatabaseEntity } from '@/database';
+import { IDatabaseFindAllOptions } from '@/database';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { IPermission } from '../permission.interface';
 import {

@@ -12,8 +12,8 @@ import {
     Query,
 } from '@nestjs/common';
 import {
-    ENUM_PERMISSIONS,
-    ENUM_PERMISSION_STATUS_CODE_ERROR,
+    Permissions,
+    PermissionsStatusCodeError,
 } from '@/permission/permission.constant';
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
 import { PermissionService } from '@/permission/service/permission.service';
@@ -58,7 +58,7 @@ export class RoleAdminController {
     ) {}
 
     @ResponsePaging('role.list')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ)
+    @AuthAdminJwtGuard(Permissions.RoleRead)
     @Get('/list')
     async list(
         @Query()
@@ -113,14 +113,14 @@ export class RoleAdminController {
     @Response('role.get')
     @RoleGetGuard()
     @RequestParamGuard(RoleRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ)
+    @AuthAdminJwtGuard(Permissions.RoleRead)
     @Get('get/:role')
     async get(@GetRole() role: IRoleDocument): Promise<IResponse> {
         return this.roleService.serializationGet(role);
     }
 
     @Response('role.create')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
+    @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleCreate)
     @Post('/create')
     async create(
         @Body()
@@ -152,8 +152,7 @@ export class RoleAdminController {
                 );
 
                 throw new NotFoundException({
-                    statusCode:
-                        ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+                    statusCode: PermissionsStatusCodeError.NotFoundError,
                     message: 'permission.error.notFound',
                 });
             }
@@ -187,7 +186,7 @@ export class RoleAdminController {
     @Response('role.update')
     @RoleUpdateGuard()
     @RequestParamGuard(RoleRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
+    @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Put('/update/:role')
     async update(
         @GetRole() role: RoleDocument,
@@ -220,8 +219,7 @@ export class RoleAdminController {
                 );
 
                 throw new NotFoundException({
-                    statusCode:
-                        ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+                    statusCode: PermissionsStatusCodeError.NotFoundError,
                     message: 'permission.error.notFound',
                 });
             }
@@ -255,7 +253,7 @@ export class RoleAdminController {
     @Response('role.delete')
     @RoleDeleteGuard()
     @RequestParamGuard(RoleRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_DELETE)
+    @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleDelete)
     @Delete('/delete/:role')
     async delete(@GetRole() role: IRoleDocument): Promise<void> {
         try {
@@ -278,7 +276,7 @@ export class RoleAdminController {
     @Response('role.inactive')
     @RoleUpdateInactiveGuard()
     @RequestParamGuard(RoleRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
+    @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Patch('/update/:role/inactive')
     async inactive(@GetRole() role: IRoleDocument): Promise<void> {
         try {
@@ -303,7 +301,7 @@ export class RoleAdminController {
     @Response('role.active')
     @RoleUpdateActiveGuard()
     @RequestParamGuard(RoleRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
+    @AuthAdminJwtGuard(Permissions.RoleRead, Permissions.RoleUpdate)
     @Patch('/update/:role/active')
     async active(@GetRole() role: IRoleDocument): Promise<void> {
         try {

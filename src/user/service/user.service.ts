@@ -11,15 +11,12 @@ import { plainToInstance } from 'class-transformer';
 import { IAwsS3Response } from '@/aws/aws.interface';
 import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { UserDocument, UserEntity } from '../schema/user.schema';
 import { RoleEntity } from '@/role/schema/role.schema';
 import { PermissionEntity } from '@/permission/schema/permission.schema';
-import {
-    IDatabaseFindAllOptions,
-    IDatabaseFindOneOptions,
-} from '@/database/database.interface';
+import { IDatabaseFindAllOptions, IDatabaseFindOneOptions } from '@/database';
 import { UserProfileSerialization } from '../serialization/user.profile.serialization';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserGetSerialization } from '../serialization/user.get.serialization';

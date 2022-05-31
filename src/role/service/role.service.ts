@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
-import { DatabaseEntity } from '@/database/database.decorator';
+import { DatabaseEntity } from '@/database';
 import { IRoleDocument } from '../role.interface';
 import { RoleDocument, RoleEntity } from '../schema/role.schema';
 import { PermissionEntity } from '@/permission/schema/permission.schema';
-import {
-    IDatabaseFindAllOptions,
-    IDatabaseFindOneOptions,
-} from '@/database/database.interface';
+import { IDatabaseFindAllOptions, IDatabaseFindOneOptions } from '@/database';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleGetSerialization } from '../serialization/role.get.serialization';
