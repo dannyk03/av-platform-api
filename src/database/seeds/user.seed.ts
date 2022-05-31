@@ -36,7 +36,7 @@ export class UserSeed {
             await this.userService.create({
                 firstName: 'admin',
                 lastName: 'test',
-                email: 'admin@mail.com',
+                email: 'admin@avonow.com',
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
                 mobileNumber: '08111111111',

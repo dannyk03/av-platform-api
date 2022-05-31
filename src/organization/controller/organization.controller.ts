@@ -55,6 +55,12 @@ export class OrganizationController {
         private readonly permissionService: PermissionService,
     ) {}
 
+    @Response('health.check')
+    @Get()
+    async test() {
+        return {};
+    }
+
     @ResponsePaging('organization.list')
     @AuthAdminJwtGuard(Permissions.OrganizationRead)
     @Get('/list')
@@ -82,7 +88,7 @@ export class OrganizationController {
             ];
         }
 
-        const arganizations: OrganizationDocument[] =
+        const organizations: OrganizationDocument[] =
             await this.organizationService.findAll(find, {
                 skip: skip,
                 limit: perPage,
@@ -96,7 +102,7 @@ export class OrganizationController {
         );
 
         const data: OrganizationListSerialization[] =
-            await this.organizationService.serializationList(arganizations);
+            await this.organizationService.serializationList(organizations);
 
         return {
             totalData,

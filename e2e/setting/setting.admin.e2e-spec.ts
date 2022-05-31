@@ -58,7 +58,7 @@ describe('E2E Setting Admin', () => {
 
         const user = await userService.findOne<IUserDocument>(
             {
-                email: 'admin@mail.com',
+                email: 'admin@avonow.com',
             },
             {
                 populate: {

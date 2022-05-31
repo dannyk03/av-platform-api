@@ -5,3 +5,4 @@ export * from './router.public.module';
 export * from './router.callback.module';
 export * from './router.test.module';
 export * from './router.health.module';
+export * from './router.organization.module';

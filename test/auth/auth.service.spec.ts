@@ -24,7 +24,7 @@ describe('AuthService', () => {
             permissions: [],
             name: 'admin',
         } as IRoleDocument,
-        email: 'admin@mail.com',
+        email: 'admin@avonow.com',
         mobileNumber: '08111111111',
         lastName: 'test',
         firstName: 'admin@avonow.com',
