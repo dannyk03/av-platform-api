@@ -11,7 +11,7 @@ describe('AuthService', () => {
     const rememberMe = false;
 
     const user: IUserDocument = {
-        _id: '623cb7fd37a861a10bac2c91',
+        _id: '373cb7fd37a861a10bac2c37',
         isActive: true,
         salt: '$2b$08$GZfqgaDMPpWQ3lJEGQ8Ueu',
         passwordExpired: new Date('2023-03-24T18:27:09.500Z'),
@@ -27,7 +27,7 @@ describe('AuthService', () => {
         email: 'admin@mail.com',
         mobileNumber: '08111111111',
         lastName: 'test',
-        firstName: 'admin@mail.com',
+        firstName: 'admin@avonow.com',
     } as IUserDocument;
 
     beforeEach(async () => {

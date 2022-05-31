@@ -208,7 +208,7 @@ describe('HelperDateService', () => {
 
         it('with options should be success', async () => {
             const result = helperDateService.format(date1, {
-                timezone: 'ASIA/JAKARTA',
+                timezone: 'ASIA/JERUSALEM',
                 format: ENUM_HELPER_DATE_FORMAT.DATE,
             });
             jest.spyOn(helperDateService, 'format').mockImplementation(
@@ -217,7 +217,7 @@ describe('HelperDateService', () => {
 
             expect(
                 helperDateService.format(date1, {
-                    timezone: 'ASIA/JAKARTA',
+                    timezone: 'ASIA/JERUSALEM',
                     format: ENUM_HELPER_DATE_FORMAT.DATE,
                 }),
             ).toBe(result);

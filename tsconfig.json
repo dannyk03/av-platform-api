@@ -18,8 +18,7 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "paths": {
-            "@/*": ["src/*"],
-            "@utils/*": ["src/utils/*"]
+            "@/*": ["src/*"]
         }
     },
     "include": ["src", "test", "e2e", "integration"],

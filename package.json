@@ -119,8 +119,7 @@
         "minimist": "^1.2.6"
     },
     "moduleNameMapper": {
-        "@/(.*)": "<rootDir>/$1",
-        "@utils/(.*)": "<rootDir>/utils/$1"
+        "@/(.*)": "<rootDir>/$1"
     },
     "lint-staged": {
         "*.{js,ts}": [
