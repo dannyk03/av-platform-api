@@ -1,0 +1,52 @@
+version: 2.1
+
+orbs:
+    node: circleci/node@4.7
+    aws-ecr: circleci/aws-ecr@7.3.0
+
+jobs:
+    build-lint-test:
+        docker:
+            - image: cimg/node:16.10
+            - image: circleci/postgres:11.9
+              environment:
+                  POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
+                  POSTGRES_USER: ${POSTGRES_USERNAME}
+                  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        steps:
+            - checkout
+            - node/install-packages:
+                  pkg-manager: yarn
+            - run:
+                  name: Run linter
+                  command: yarn lint
+            - run:
+                  name: Run tests
+                  command: yarn test
+            - run:
+                  name: Yarn Build
+                  command: yarn build
+
+workflows:
+    workflow:
+        jobs:
+            - build-lint-test:
+                  context:
+                      - ci-migrations-job
+                      - jfrog-platform
+            - aws-ecr/build-and-push-image:
+                  name: build and push image to admin-eu ecr
+                  remote-docker-layer-caching: true
+                  context:
+                      - eu-ecr
+                      - jfrog-platform
+                  filters:
+                      branches:
+                          only:
+                              - development
+                              - main
+                  repo: ${CIRCLE_PROJECT_REPONAME}
+                  tag: 'development,${CIRCLE_BRANCH}-${CIRCLE_SHA1}'
+                  extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}'
+                  requires:
+                      - build-lint-test
