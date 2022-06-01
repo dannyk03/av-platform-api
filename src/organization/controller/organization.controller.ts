@@ -43,6 +43,7 @@ import {
 import { OrganizationListSerialization } from '../serialization/organization.list.serialization';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { Permissions } from '@/permission';
+import { UserService } from '@/user';
 
 @Controller({
     version: '1',
@@ -53,6 +54,7 @@ export class OrganizationController {
         private readonly paginationService: PaginationService,
         private readonly organizationService: OrganizationService,
         private readonly permissionService: PermissionService,
+        private readonly userService: UserService,
     ) {}
 
     // @ResponsePaging('organization.list')

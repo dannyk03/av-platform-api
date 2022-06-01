@@ -7,7 +7,7 @@ import {
     OrganizationSchema,
 } from './schema/organization.schema';
 import { OrganizationService } from './service/organization.service';
-import { UserModule } from '@/user';
+import { UserModule, UserService } from '@/user';
 
 @Module({
     imports: [

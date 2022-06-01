@@ -27,8 +27,12 @@ export class OrganizationEntity {
     })
     isActive: boolean;
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
-    owners: UserEntity[];
+    @Prop({
+        required: true,
+        type: Types.ObjectId,
+        ref: UserEntity.name,
+    })
+    owner: Types.ObjectId;
 }
 
 export const OrganizationsCollectionName = 'organizations';
