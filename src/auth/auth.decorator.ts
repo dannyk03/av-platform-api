@@ -49,7 +49,7 @@ export function AuthAdminJwtGuard(...permissions: Permissions[]) {
             JwtGuard,
             AuthPayloadDefaultGuard,
             AuthPayloadPasswordExpiredGuard,
-            AuthPayloadAdminGuard,
+            // AuthPayloadAdminGuard,
             PermissionPayloadDefaultGuard,
         ),
         SetMetadata(PERMISSION_META_KEY, permissions),

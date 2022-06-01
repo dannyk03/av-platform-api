@@ -7,7 +7,7 @@ import {
     Put,
     Query,
 } from '@nestjs/common';
-import { Permissions } from '@/permission/permission.constant';
+import { Permissions } from '@/permission';
 import { AuthAdminJwtGuard } from '@/auth/auth.decorator';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { PermissionService } from '../service/permission.service';
@@ -44,7 +44,7 @@ export class PermissionAdminController {
     ) {}
 
     @ResponsePaging('permission.list')
-    @AuthAdminJwtGuard(Permissions.PermissionsRead)
+    // @AuthAdminJwtGuard(Permission.PermissionsRead)
     @Get('/list')
     async list(
         @Query()
@@ -105,7 +105,7 @@ export class PermissionAdminController {
     @Response('permission.get')
     @PermissionGetGuard()
     @RequestParamGuard(PermissionGetDto)
-    @AuthAdminJwtGuard(Permissions.PermissionsRead)
+    // @AuthAdminJwtGuard(Permission.PermissionsRead)
     @Get('/get/:permission')
     async get(
         @GetPermission() permission: PermissionDocument,
@@ -116,10 +116,10 @@ export class PermissionAdminController {
     @Response('permission.update')
     @PermissionUpdateGuard()
     @RequestParamGuard(PermissionGetDto)
-    @AuthAdminJwtGuard(
-        Permissions.PermissionsRead,
-        Permissions.PermissionsUpdate,
-    )
+    // @AuthAdminJwtGuard(
+    //     Permission.PermissionsRead,
+    //     Permission.PermissionsUpdate,
+    // )
     @Put('/update/:permission')
     async update(
         @GetPermission() permission: PermissionDocument,
@@ -149,10 +149,10 @@ export class PermissionAdminController {
     @Response('permission.inactive')
     @PermissionUpdateInactiveGuard()
     @RequestParamGuard(PermissionGetDto)
-    @AuthAdminJwtGuard(
-        Permissions.PermissionsRead,
-        Permissions.PermissionsUpdate,
-    )
+    // @AuthAdminJwtGuard(
+    //     Permissions.PermissionsRead,
+    //     Permissions.PermissionsUpdate,
+    // )
     @Patch('/update/:permission/inactive')
     async inactive(
         @GetPermission() permission: PermissionDocument,
@@ -180,10 +180,10 @@ export class PermissionAdminController {
     @Response('permission.active')
     @PermissionUpdateActiveGuard()
     @RequestParamGuard(PermissionGetDto)
-    @AuthAdminJwtGuard(
-        Permissions.PermissionsRead,
-        Permissions.PermissionsUpdate,
-    )
+    // @AuthAdminJwtGuard(
+    //     Permissions.PermissionsRead,
+    //     Permissions.PermissionsUpdate,
+    // )
     @Patch('/update/:permission/active')
     async active(
         @GetPermission() permission: PermissionDocument,

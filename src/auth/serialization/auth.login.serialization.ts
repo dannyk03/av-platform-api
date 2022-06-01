@@ -14,7 +14,6 @@ export class AuthLoginSerialization {
                 isActive: val.isActive,
             })),
             isActive: value.isActive,
-            isAdmin: value.isAdmin,
         }),
         { toClassOnly: true },
     )

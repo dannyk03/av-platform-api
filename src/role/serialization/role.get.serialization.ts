@@ -7,7 +7,6 @@ export class RoleGetSerialization {
 
     readonly isActive: boolean;
     readonly name: string;
-    readonly isAdmin: boolean;
 
     @Transform(
         ({ obj }) =>

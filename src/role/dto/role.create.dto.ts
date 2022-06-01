@@ -5,8 +5,9 @@ import {
     MaxLength,
     MinLength,
     IsMongoId,
-    IsBoolean,
+    IsEnum,
 } from 'class-validator';
+import { Roles } from '../role.constant';
 
 export class RoleCreateDto {
     @IsString()
@@ -16,11 +17,11 @@ export class RoleCreateDto {
     @Type(() => String)
     readonly name: string;
 
+    @IsEnum(Roles)
+    @Type(() => String)
+    readonly code: string;
+
     @IsMongoId({ each: true })
     @IsNotEmpty()
     readonly permissions: string[];
-
-    @IsBoolean()
-    @IsNotEmpty()
-    readonly isAdmin: boolean;
 }

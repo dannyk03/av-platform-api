@@ -79,26 +79,26 @@ describe('E2E Role Admin', () => {
 
         successData = {
             name: 'testRole1',
+            code: 'TEST_ROLE1',
             permissions: permissions.map((val) => `${val._id}`),
-            isAdmin: true,
         };
 
         roleUpdate = await roleService.create({
             name: 'testRole2',
+            code: 'TEST_ROLE2',
             permissions: permissions.map((val) => `${val._id}`),
-            isAdmin: true,
         });
 
         updateData = {
             name: 'testRole3',
+            code: 'TEST_ROLE3',
             permissions: permissions.map((val) => `${val._id}`),
-            isAdmin: true,
         };
 
         existData = {
             name: 'testRole',
+            code: 'TEST_ROLE',
             permissions: permissions.map((val) => `${val._id}`),
-            isAdmin: true,
         };
 
         role = await roleService.create(existData as RoleCreateDto);

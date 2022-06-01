@@ -25,7 +25,7 @@ import {
 } from '../organization.decorator';
 import { IOrganizationDocument } from '../organization.interface';
 import { OrganizationStatusCodeError } from '@/organization';
-import { UserStatusCodeError } from '@/user';
+import { IUserCheckExist, UserStatusCodeError } from '@/user';
 import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
@@ -48,6 +48,7 @@ import { UserService } from '@/user';
 import { HelperSlugService } from '@/utils/helper/service/helper.slug.service';
 import { Connection } from 'mongoose';
 import { DatabaseConnection } from '@/database';
+import { RoleService, RoleStatusCodeError } from '@/role';
 
 @Controller({
     version: '1',
@@ -62,10 +63,11 @@ export class OrganizationController {
         private readonly permissionService: PermissionService,
         private readonly userService: UserService,
         private readonly helperSlugService: HelperSlugService,
+        private readonly roleService: RoleService,
     ) {}
 
     // @ResponsePaging('organization.list')
-    // @AuthAdminJwtGuard(Permissions.OrganizationRead)
+    // @AuthAdminJwtGuard(Permission.OrganizationRead)
     // @Get('/list')
     // async list(
     //     @Query()
@@ -121,7 +123,7 @@ export class OrganizationController {
     // @Response('organization.get')
     // @OrganizationGetGuard()
     // @RequestParamGuard(OrganizationGetDto)
-    // @AuthAdminJwtGuard(Permissions.OrganizationRead)
+    // @AuthAdminJwtGuard(Permission.OrganizationRead)
     // @Get('get/:slug')
     // async get(
     //     @GetOrganization() slug: IOrganizationDocument,
@@ -131,8 +133,8 @@ export class OrganizationController {
 
     @Response('organization.create')
     // @AuthAdminJwtGuard(
-    //     Permissions.OrganizationRead,
-    //     Permissions.OrganizationCreate,
+    //     Permission.OrganizationRead,
+    //     Permission.OrganizationCreate,
     // )
     @Post('/create')
     async create(
@@ -155,10 +157,12 @@ export class OrganizationController {
             });
         }
 
-        const userExists = await this.userService.checkExist(ownerEmail);
+        const userExists: IUserCheckExist = await this.userService.checkExist(
+            ownerEmail,
+        );
         if (userExists.email) {
             this.debuggerService.error(
-                'User Error',
+                'Owner Error',
                 'OrganizationController',
                 'create',
             );
@@ -170,13 +174,27 @@ export class OrganizationController {
         }
 
         const session = await this.databaseConnection.startSession();
+
+        const role = await this.roleService.findOneById(body.role);
+        if (!role) {
+            this.debuggerService.error(
+                'Role not found',
+                'UserController',
+                'create',
+            );
+
+            throw new NotFoundException({
+                statusCode: RoleStatusCodeError.RoleNotFoundError,
+                message: 'role.error.notFound',
+            });
+        }
+
         try {
             session.startTransaction();
-
-            // const ownerCreate = await this.userService.create({
-            //     name,
-            //     ownerEmail,
-            // });
+            const ownerCreate = await this.userService.create({
+                name,
+                ownerEmail,
+            });
 
             const orgCreate = await this.organizationService.create({
                 name,
@@ -209,8 +227,8 @@ export class OrganizationController {
     // @OrganizationUpdateGuard()
     // @RequestParamGuard(OrganizationUpdateDto)
     // @AuthAdminJwtGuard(
-    //     Permissions.OrganizationRead,
-    //     Permissions.OrganizationUpdate,
+    //     Permission.OrganizationRead,
+    //     Permission.OrganizationUpdate,
     // )
     // @Put('/update/:slug')
     // async update(
@@ -261,8 +279,8 @@ export class OrganizationController {
     // @OrganizationDeleteGuard()
     // @RequestParamGuard(OrganizationGetDto)
     // @AuthAdminJwtGuard(
-    //     Permissions.OrganizationRead,
-    //     Permissions.OrganizationDelete,
+    //     Permission.OrganizationRead,
+    //     Permission.OrganizationDelete,
     // )
     // @Delete('/delete/:slug')
     // async delete(
@@ -289,8 +307,8 @@ export class OrganizationController {
     // @OrganizationUpdateInactiveGuard()
     // @RequestParamGuard(OrganizationGetDto)
     // @AuthAdminJwtGuard(
-    //   Permissions.OrganizationRead,
-    //   Permissions.OrganizationUpdate,
+    //   Permission.OrganizationRead,
+    //   Permission.OrganizationUpdate,
     // )
     // @Patch('/update/:slug/inactive')
     // async inactive(
@@ -319,8 +337,8 @@ export class OrganizationController {
     // @OrganizationUpdateActiveGuard()
     // @RequestParamGuard(OrganizationGetDto)
     // @AuthAdminJwtGuard(
-    //     Permissions.OrganizationRead,
-    //     Permissions.OrganizationUpdate,
+    //     Permission.OrganizationRead,
+    //     Permission.OrganizationUpdate,
     // )
     // @Patch('/update/:slug/active')
     // async active(

@@ -18,10 +18,10 @@ export class RoleBulkService {
 
     async createMany(data: RoleCreateDto[]): Promise<RoleDocument[]> {
         return this.roleModel.insertMany(
-            data.map(({ name, permissions, isAdmin }) => ({
+            data.map(({ name, permissions, code }) => ({
                 name,
+                code,
                 isActive: true,
-                isAdmin: isAdmin || false,
                 permissions: permissions.map((val) => new Types.ObjectId(val)),
             })),
         );

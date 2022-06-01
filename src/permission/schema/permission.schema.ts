@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Permissions } from '../permission.constant';
 
 @Schema({ timestamps: true, versionKey: false })
 export class PermissionEntity {
@@ -9,6 +10,7 @@ export class PermissionEntity {
         uppercase: true,
         unique: true,
         trim: true,
+        enum: Permissions,
     })
     code: string;
 
@@ -38,6 +40,6 @@ export type PermissionDocument = PermissionEntity & Document;
 // Hooks
 PermissionSchema.pre<PermissionDocument>('save', function (next) {
     this.code = this.code.toUpperCase();
-    this.name = this.name.toLowerCase();
+    this.name = this.code.toLowerCase().replace('_', ' ');
     next();
 });

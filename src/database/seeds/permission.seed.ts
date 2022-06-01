@@ -19,7 +19,7 @@ export class PermissionSeed {
         try {
             const permissions = Object.values(Permissions).map((val) => ({
                 code: val,
-                name: val,
+                name: val.replace('_', ' ').toLowerCase(),
             }));
 
             await this.permissionBulkService.createMany(permissions);

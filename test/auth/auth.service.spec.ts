@@ -19,13 +19,13 @@ describe('AuthService', () => {
             '$2b$08$GZfqgaDMPpWQ3lJEGQ8Ueu1vJ3C6G3stnkS/5e61bK/4f1.Fuw2Eq',
         role: {
             _id: '623cb7f7965a74bf7a0e9e53',
-            isAdmin: true,
             isActive: true,
             permissions: [],
             name: 'admin',
+            code: 'ADMIN',
         } as IRoleDocument,
         email: 'admin@avonow.com',
-        mobileNumber: '08111111111',
+        // mobileNumber: '08111111111',
         lastName: 'test',
         firstName: 'admin@avonow.com',
     } as IUserDocument;

@@ -9,8 +9,8 @@ export enum Permissions {
     RoleRead = 'ROLE_READ',
     RoleDelete = 'ROLE_DELETE',
 
-    PermissionsRead = 'PERMISSION_READ',
-    PermissionsUpdate = 'PERMISSION_UPDATE',
+    PermissionsRead = 'PERMISSIONS_READ',
+    PermissionsUpdate = 'PERMISSIONS_UPDATE',
 
     SettingsRead = 'SETTING_READ',
     SettingsUpdate = 'SETTING_UPDATE',

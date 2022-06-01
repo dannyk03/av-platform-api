@@ -10,7 +10,6 @@ export const E2E_PERMISSION_PAYLOAD_TEST = {
     role: {
         name: 'ADMIN',
         isActive: true,
-        isAdmin: true,
         permissions: [
             {
                 code: 'PERMISSION_READ',

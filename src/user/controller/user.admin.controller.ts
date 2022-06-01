@@ -126,7 +126,7 @@ export class UserAdminController {
     }
 
     @Response('user.create')
-    // @AuthAdminJwtGuard(Permissions.UserRead, Permissions.UserCreate)
+    // @AuthAdminJwtGuard(Permission.UserRead, Permission.UserCreate)
     @Post('/create')
     async create(
         @Body()

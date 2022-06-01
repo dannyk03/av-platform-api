@@ -31,6 +31,7 @@ export class RoleSeed {
             await this.roleBulkService.createMany([
                 {
                     name: Roles.SuperAdmin,
+                    code: Roles.SuperAdmin,
                     permissions: permissions
                         .filter((val) =>
                             RolesAndPermissions[Roles.SuperAdmin].includes(
@@ -38,28 +39,47 @@ export class RoleSeed {
                             ),
                         )
                         .map((val) => val.id),
-                    isAdmin: true,
                 },
-                // {
-                //     name: 'OWNER',
-                //     permissions: permissionsMap,
-                //     isAdmin: true,
-                // },
-                // {
-                //     name: 'ADMIN',
-                //     permissions: permissionsMap,
-                //     isAdmin: true,
-                // },
-                // {
-                //     name: 'MANAGER',
-                //     permissions: permissionsMap,
-                //     isAdmin: true,
-                // },
-                // {
-                //     name: 'USER',
-                //     permissions: [],
-                //     isAdmin: false,
-                // },
+                {
+                    name: Roles.Owner,
+                    code: Roles.Owner,
+                    permissions: permissions
+                        .filter((val) =>
+                            RolesAndPermissions[Roles.Owner].includes(val.code),
+                        )
+                        .map((val) => val.id),
+                },
+                {
+                    name: Roles.Admin,
+                    code: Roles.Admin,
+                    permissions: permissions
+                        .filter((val) =>
+                            RolesAndPermissions[Roles.Admin].includes(val.code),
+                        )
+                        .map((val) => val.id),
+                },
+                {
+                    name: Roles.Manager,
+                    code: Roles.Manager,
+                    permissions: permissions
+                        .filter((val) =>
+                            RolesAndPermissions[Roles.Manager].includes(
+                                val.code,
+                            ),
+                        )
+                        .map((val) => val.id),
+                },
+                {
+                    name: Roles.User,
+                    code: Roles.User,
+                    permissions: permissions
+                        .filter((val) =>
+                            RolesAndPermissions[Roles.Manager].includes(
+                                val.code,
+                            ),
+                        )
+                        .map((val) => val.id),
+                },
             ]);
 
             this.debuggerService.debug(

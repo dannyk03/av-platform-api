@@ -95,7 +95,7 @@ describe('E2E User Admin', () => {
             passwordExpired: passwordHash.passwordExpired,
             salt: passwordHash.salt,
             email: faker.internet.email(),
-            mobileNumber: faker.phone.phoneNumber('62812#########'),
+            // mobileNumber: faker.phone.phoneNumber('62812#########'),
             role: `${role._id}`,
         });
 
@@ -153,7 +153,6 @@ describe('E2E User Admin', () => {
             .set('x-api-key', xApiKey)
             .send({
                 role: '21easdasd1',
-                isAdmin: 'falsea',
             });
 
         expect(response.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -197,7 +196,7 @@ describe('E2E User Admin', () => {
             .send({
                 ...userData,
                 email: userExist.email,
-                mobileNumber: userExist.mobileNumber,
+                // mobileNumber: userExist.mobileNumber,
                 password,
             });
 
@@ -239,7 +238,7 @@ describe('E2E User Admin', () => {
             .set('x-api-key', xApiKey)
             .send({
                 ...userData,
-                mobileNumber: userExist.mobileNumber,
+                // mobileNumber: userExist.mobileNumber,s
                 password,
             });
 

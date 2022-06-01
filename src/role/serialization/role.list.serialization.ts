@@ -6,7 +6,6 @@ export class RoleListSerialization {
 
     readonly isActive: boolean;
     readonly name: string;
-    readonly isAdmin: boolean;
 
     @Exclude()
     readonly permissions: number;

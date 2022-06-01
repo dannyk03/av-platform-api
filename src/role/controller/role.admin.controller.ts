@@ -124,7 +124,7 @@ export class RoleAdminController {
     @Post('/create')
     async create(
         @Body()
-        { name, permissions, isAdmin }: RoleCreateDto,
+        { name, permissions }: RoleCreateDto,
     ): Promise<IResponse> {
         const exist: boolean = await this.roleService.exists(name);
         if (exist) {
@@ -161,8 +161,8 @@ export class RoleAdminController {
         try {
             const create = await this.roleService.create({
                 name,
+                code: name,
                 permissions,
-                isAdmin,
             });
 
             return {
@@ -191,7 +191,7 @@ export class RoleAdminController {
     async update(
         @GetRole() role: RoleDocument,
         @Body()
-        { name, permissions, isAdmin }: RoleUpdateDto,
+        { name, permissions }: RoleUpdateDto,
     ): Promise<IResponse> {
         const check: boolean = await this.roleService.exists(name, role._id);
         if (check) {
@@ -229,7 +229,7 @@ export class RoleAdminController {
             await this.roleService.update(role._id, {
                 name,
                 permissions,
-                isAdmin,
+                code: name,
             });
         } catch (e) {
             this.debuggerService.error(

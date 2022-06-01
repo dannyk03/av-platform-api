@@ -86,16 +86,11 @@ export class RoleService {
         return exist ? true : false;
     }
 
-    async create({
-        name,
-        permissions,
-        isAdmin,
-    }: RoleCreateDto): Promise<RoleDocument> {
+    async create({ name, permissions }: RoleCreateDto): Promise<RoleDocument> {
         const create: RoleDocument = new this.roleModel({
             name: name,
             permissions: permissions.map((val) => new Types.ObjectId(val)),
             isActive: true,
-            isAdmin: isAdmin || false,
         });
 
         return create.save();
@@ -103,12 +98,11 @@ export class RoleService {
 
     async update(
         _id: string,
-        { name, permissions, isAdmin }: RoleUpdateDto,
+        { name, permissions }: RoleUpdateDto,
     ): Promise<RoleDocument> {
         const update: RoleDocument = await this.roleModel.findById(_id);
         update.name = name;
         update.permissions = permissions.map((val) => new Types.ObjectId(val));
-        update.isAdmin = isAdmin || false;
 
         return update.save();
     }

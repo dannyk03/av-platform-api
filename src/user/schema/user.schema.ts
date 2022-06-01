@@ -14,7 +14,6 @@ export class UserEntity {
 
     @Prop({
         required: false,
-        index: true,
         lowercase: true,
         trim: true,
     })

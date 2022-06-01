@@ -26,6 +26,8 @@ export class AuthPayloadAdminGuard implements CanActivate {
         }
 
         const { user } = context.switchToHttp().getRequest();
+
+        // TODO admin validation
         if (!required.includes(user.role.isAdmin)) {
             this.debuggerService.error(
                 'Auth active error',
