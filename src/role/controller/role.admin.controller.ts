@@ -42,7 +42,7 @@ import { RoleListDto } from '../dto/role.list.dto';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleListSerialization } from '../serialization/role.list.serialization';
-import { RoleGetDto } from '../dto/role.request.dto';
+import { RoleGetDto } from '../dto/role.get.dto';
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 
 @Controller({

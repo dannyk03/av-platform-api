@@ -7,9 +7,10 @@
     "inactive": "Inactive Succeed",
     "active": "Active Succeed",
     "error": {
-        "notFound": "Organization not found.",
+        "notFound": "Organization not found",
         "inactive": "Organization inactive",
         "active": "Organization status active invalid",
-        "exist": "Organization exist"
+        "exist": "Organization exist",
+        "ownerExists": "Organization owner exist"
     }
 }

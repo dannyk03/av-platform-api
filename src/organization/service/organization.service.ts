@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, ClientSession } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
-import { DatabaseEntity } from '@/database';
+import { DatabaseEntity, IWithSession } from '@/database';
 import { IOrganizationDocument } from '../organization.interface';
 import {
     OrganizationDocument,
@@ -58,27 +58,28 @@ export class OrganizationService {
         return organization.lean();
     }
 
-    async exists(slug: string): Promise<boolean> {
-        const exist = await this.organizationModel.exists({
+    async checkExists(slug: string): Promise<boolean> {
+        const exists = await this.organizationModel.exists({
             slug: {
                 $regex: new RegExp(slug),
                 $options: 'i',
             },
         });
 
-        return Boolean(exist);
+        return Boolean(exists);
     }
 
     async create({
         name,
         ownerEmail,
-    }: OrganizationCreateDto): Promise<OrganizationDocument> {
+        session = null,
+    }: OrganizationCreateDto & IWithSession): Promise<OrganizationDocument> {
         const create: OrganizationDocument = new this.organizationModel({
             name: name,
             owners: [],
         });
 
-        return create.save();
+        return create.save({ session });
     }
 
     // async update(

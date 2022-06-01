@@ -3,14 +3,28 @@ export enum Permissions {
     UserUpdate = 'USER_UPDATE',
     UserRead = 'USER_READ',
     UsedDelete = 'USER_DELETE',
+
     RoleCreate = 'ROLE_CREATE',
     RoleUpdate = 'ROLE_UPDATE',
     RoleRead = 'ROLE_READ',
     RoleDelete = 'ROLE_DELETE',
+
     PermissionsRead = 'PERMISSION_READ',
     PermissionsUpdate = 'PERMISSION_UPDATE',
+
     SettingsRead = 'SETTING_READ',
     SettingsUpdate = 'SETTING_UPDATE',
+
+    OrderRead = 'ORDER_READ',
+    OrderCreate = 'ORDER_CREATE',
+    OrderDelete = 'ORDER_DELETE',
+    OrderUpdated = 'ORDER_UPDATE',
+
+    PaymentRead = 'PAYMENT_READ',
+    PaymentCreate = 'PAYMENT_CREATE',
+    PaymentDelete = 'PAYMENT_DELETE',
+    PaymentUpdated = 'PAYMENT_UPDATE',
+
     OrganizationCreate = 'ORGANIZATION_CREATE',
     OrganizationRead = 'ORGANIZATION_READ',
     OrganizationUpdate = 'ORGANIZATION_UPDATE',

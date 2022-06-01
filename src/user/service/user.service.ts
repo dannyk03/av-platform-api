@@ -192,8 +192,8 @@ export class UserService {
         //     });
 
         return {
-            email: existEmail ? true : false,
-            // mobileNumber: existMobileNumber ? true : false,
+            email: Boolean(existEmail),
+            // mobileNumber: Boolean(existMobileNumber),
         };
     }
 

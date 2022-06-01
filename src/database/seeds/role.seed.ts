@@ -1,10 +1,12 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { Permissions } from '@/permission/permission.constant';
-import { PermissionService } from '@/permission/service/permission.service';
-import { RoleBulkService } from '@/role/service/role.bulk.service';
+import {
+    Permissions,
+    PermissionService,
+    PermissionDocument,
+} from '@/permission';
+import { RoleBulkService, RolesAndPermissions, Roles } from '@/role';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { PermissionDocument } from '@/permission/schema/permission.schema';
 
 @Injectable()
 export class RoleSeed {
@@ -25,18 +27,39 @@ export class RoleSeed {
             });
 
         try {
-            const permissionsMap = permissions.map((val) => val._id);
+            // const permissionsMap = permissions.map((val) => val._id);
             await this.roleBulkService.createMany([
                 {
-                    name: 'admin',
-                    permissions: permissionsMap,
+                    name: Roles.SuperAdmin,
+                    permissions: permissions
+                        .filter((val) =>
+                            RolesAndPermissions[Roles.SuperAdmin].includes(
+                                val.code,
+                            ),
+                        )
+                        .map((val) => val.id),
                     isAdmin: true,
                 },
-                {
-                    name: 'user',
-                    permissions: [],
-                    isAdmin: false,
-                },
+                // {
+                //     name: 'OWNER',
+                //     permissions: permissionsMap,
+                //     isAdmin: true,
+                // },
+                // {
+                //     name: 'ADMIN',
+                //     permissions: permissionsMap,
+                //     isAdmin: true,
+                // },
+                // {
+                //     name: 'MANAGER',
+                //     permissions: permissionsMap,
+                //     isAdmin: true,
+                // },
+                // {
+                //     name: 'USER',
+                //     permissions: [],
+                //     isAdmin: false,
+                // },
             ]);
 
             this.debuggerService.debug(

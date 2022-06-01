@@ -25,6 +25,7 @@ import {
 } from '../organization.decorator';
 import { IOrganizationDocument } from '../organization.interface';
 import { OrganizationStatusCodeError } from '@/organization';
+import { UserStatusCodeError } from '@/user';
 import { Response, ResponsePaging } from '@/utils/response/response.decorator';
 import {
     IResponse,
@@ -44,17 +45,23 @@ import { OrganizationListSerialization } from '../serialization/organization.lis
 import { RequestParamGuard } from '@/utils/request/request.decorator';
 import { Permissions } from '@/permission';
 import { UserService } from '@/user';
+import { HelperSlugService } from '@/utils/helper/service/helper.slug.service';
+import { Connection } from 'mongoose';
+import { DatabaseConnection } from '@/database';
 
 @Controller({
     version: '1',
 })
 export class OrganizationController {
     constructor(
+        @DatabaseConnection()
+        private readonly databaseConnection: Connection,
         private readonly debuggerService: DebuggerService,
         private readonly paginationService: PaginationService,
         private readonly organizationService: OrganizationService,
         private readonly permissionService: PermissionService,
         private readonly userService: UserService,
+        private readonly helperSlugService: HelperSlugService,
     ) {}
 
     // @ResponsePaging('organization.list')
@@ -132,8 +139,10 @@ export class OrganizationController {
         @Body()
         { name, ownerEmail }: OrganizationCreateDto,
     ): Promise<IResponse> {
-        const exist: boolean = await this.organizationService.exists(name);
-        if (exist) {
+        const orgSlug = this.helperSlugService.slugify(name);
+        const organizationExists: boolean =
+            await this.organizationService.checkExists(orgSlug);
+        if (organizationExists) {
             this.debuggerService.error(
                 'Organization Error',
                 'OrganizationController',
@@ -146,16 +155,40 @@ export class OrganizationController {
             });
         }
 
+        const userExists = await this.userService.checkExist(ownerEmail);
+        if (userExists.email) {
+            this.debuggerService.error(
+                'User Error',
+                'OrganizationController',
+                'create',
+            );
+
+            throw new BadRequestException({
+                statusCode: UserStatusCodeError.UserEmailExistsError,
+                message: 'organization.error.ownerExists',
+            });
+        }
+
+        const session = await this.databaseConnection.startSession();
         try {
-            const create = await this.organizationService.create({
+            session.startTransaction();
+
+            // const ownerCreate = await this.userService.create({
+            //     name,
+            //     ownerEmail,
+            // });
+
+            const orgCreate = await this.organizationService.create({
                 name,
                 ownerEmail,
             });
 
+            await session.commitTransaction();
             return {
-                slug: create.slug,
+                slug: orgCreate.slug,
             };
         } catch (err: any) {
+            await session.abortTransaction();
             this.debuggerService.error(
                 'create try catch',
                 'OrganizationController',
@@ -167,6 +200,8 @@ export class OrganizationController {
                 statusCode: StatusCodeError.UnknownError,
                 message: 'http.serverError.internalServerError',
             });
+        } finally {
+            session.endSession();
         }
     }
 

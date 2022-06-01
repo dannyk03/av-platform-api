@@ -7,6 +7,9 @@ import { AuthService } from '@/auth/service/auth.service';
 import { RoleDocument } from '@/role/schema/role.schema';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 
+const SUPER_ADMIN_EMAIL = 'admin@avonow.com';
+const SUPER_ADMIN_PASS = 'Avo123';
+
 @Injectable()
 export class UserSeed {
     constructor(
@@ -24,19 +27,19 @@ export class UserSeed {
     async insert(): Promise<void> {
         const role: RoleDocument = await this.roleService.findOne<RoleDocument>(
             {
-                name: 'admin',
+                code: 'SUPER_ADMIN',
             },
         );
 
         try {
             const password = await this.authService.createPassword(
-                'aaAA@@123444',
+                SUPER_ADMIN_PASS,
             );
 
             await this.userService.create({
                 firstName: 'admin',
-                lastName: 'test',
-                email: 'admin@avonow.com',
+                lastName: 'admin',
+                email: SUPER_ADMIN_EMAIL,
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
                 // mobileNumber: '08111111111',
@@ -60,7 +63,7 @@ export class UserSeed {
     })
     async remove(): Promise<void> {
         try {
-            await this.userBulkService.deleteMany({});
+            await this.userBulkService.deleteMany({ email: SUPER_ADMIN_EMAIL });
 
             this.debuggerService.debug(
                 'Remove User Succeed',

@@ -17,9 +17,9 @@ export class PermissionSeed {
     })
     async insert(): Promise<void> {
         try {
-            const permissions = Object.keys(Permissions).map((val) => ({
+            const permissions = Object.values(Permissions).map((val) => ({
                 code: val,
-                name: val.replace('_', ' '),
+                name: val,
             }));
 
             await this.permissionBulkService.createMany(permissions);

@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import slugify from 'slugify';
+import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
 
 export function slugPlugin<DocType>(
     fromKey: string,
@@ -9,12 +9,11 @@ export function slugPlugin<DocType>(
     return (schema) => {
         if (fromKey && slugKey) {
             schema.pre('validate', function (next) {
-                if (this[fromKey] && (!this[slugKey] || force)) {
-                    this[slugKey] = slugify(this[fromKey], {
-                        lower: true,
-                        strict: true,
-                        // remove: /[*+~.()'"!:@]/g
-                    });
+                if (
+                    typeof this[fromKey] === 'string' &&
+                    (!this[slugKey] || force)
+                ) {
+                    this[slugKey] = createSlugFromString(this[fromKey]);
                 }
                 next();
             });
