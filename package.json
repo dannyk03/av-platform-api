@@ -25,7 +25,6 @@
     "rollback": "nestjs-command remove:user && nestjs-command remove:role && nestjs-command remove:permission",
     "seed": "nestjs-command insert:permission",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "seeds": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
     "migration:master:generate": "yarn typeorm migration:generate -d src/database/typeorm-cli/master.datasource.ts -p src/database/migrations/master/migration",
     "migration:master:create": "yarn typeorm  migration:create src/database/migrations/master/custom",
     "migration:master:run": "yarn typeorm migration:run -d src/database/typeorm-cli/master.datasource.ts",
