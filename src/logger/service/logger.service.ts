@@ -1,90 +1,91 @@
 import { Injectable } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from '@/database';
 import { ILogger } from '../logger.interface';
-import { LoggerLevel } from '../logger.constant';
-import { LoggerDocument, LoggerEntity } from '../schema/logger.schema';
+import { ENUM_LOGGER_LEVEL } from '../logger.constant';
+import { LoggerEntity } from '../entity/logger.entity';
+import { ConnectionNames } from '@/database';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class LoggerService {
-    constructor(
-        @DatabaseEntity(LoggerEntity.name)
-        private readonly loggerModel: Model<LoggerDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(LoggerEntity, ConnectionNames.Master)
+    private loggerRepository: Repository<LoggerEntity>,
+  ) {}
 
-    async info({
-        action,
-        description,
-        apiKey,
-        user,
-        tags,
-    }: ILogger): Promise<LoggerDocument> {
-        const create = new this.loggerModel({
-            level: LoggerLevel.Info,
-            user: new Types.ObjectId(user),
-            apiKey: new Types.ObjectId(apiKey),
-            anonymous: user ? false : true,
-            action,
-            description,
-            tags,
-        });
-        return create.save();
-    }
+  async info({
+    action,
+    description,
+    apiKey,
+    user,
+    tags,
+  }: ILogger): Promise<any> {
+    // const create = new this.loggerRepository({
+    //   level: ENUM_LOGGER_LEVEL.INFO,
+    //   user: new Types.ObjectId(user),
+    //   apiKey: new Types.ObjectId(apiKey),
+    //   anonymous: user ? false : true,
+    //   action,
+    //   description,
+    //   tags,
+    // });
+    // return create.save();
+  }
 
-    async debug({
-        action,
-        description,
-        apiKey,
-        user,
-        tags,
-    }: ILogger): Promise<LoggerDocument> {
-        const create = new this.loggerModel({
-            level: LoggerLevel.Debug,
-            user: new Types.ObjectId(user),
-            apiKey: new Types.ObjectId(apiKey),
-            anonymous: user ? false : true,
-            action,
-            description,
-            tags,
-        });
-        return create.save();
-    }
+  async debug({
+    action,
+    description,
+    apiKey,
+    user,
+    tags,
+  }: ILogger): Promise<any> {
+    // const create = new this.loggerRepository({
+    //   level: ENUM_LOGGER_LEVEL.DEBUG,
+    //   user: new Types.ObjectId(user),
+    //   apiKey: new Types.ObjectId(apiKey),
+    //   anonymous: user ? false : true,
+    //   action,
+    //   description,
+    //   tags,
+    // });
+    // return create.save();
+  }
 
-    async warning({
-        action,
-        description,
-        apiKey,
-        user,
-        tags,
-    }: ILogger): Promise<LoggerDocument> {
-        const create = new this.loggerModel({
-            level: LoggerLevel.Warn,
-            user: new Types.ObjectId(user),
-            apiKey: new Types.ObjectId(apiKey),
-            anonymous: user ? false : true,
-            action,
-            description,
-            tags,
-        });
-        return create.save();
-    }
+  async warning({
+    action,
+    description,
+    apiKey,
+    user,
+    tags,
+  }: ILogger): Promise<any> {
+    // const create = new this.loggerRepository({
+    //   level: ENUM_LOGGER_LEVEL.WARM,
+    //   user: new Types.ObjectId(user),
+    //   apiKey: new Types.ObjectId(apiKey),
+    //   anonymous: user ? false : true,
+    //   action,
+    //   description,
+    //   tags,
+    // });
+    // return create.save();
+  }
 
-    async fatal({
-        action,
-        description,
-        apiKey,
-        user,
-        tags,
-    }: ILogger): Promise<LoggerDocument> {
-        const create = new this.loggerModel({
-            level: LoggerLevel.Fatal,
-            user: new Types.ObjectId(user),
-            apiKey: new Types.ObjectId(apiKey),
-            anonymous: user ? false : true,
-            action,
-            description,
-            tags,
-        });
-        return create.save();
-    }
+  async fatal({
+    action,
+    description,
+    apiKey,
+    user,
+    tags,
+  }: ILogger): Promise<any> {
+    // const create = new this.loggerRepository({
+    //   level: ENUM_LOGGER_LEVEL.FATAL,
+    //   user: new Types.ObjectId(user),
+    //   apiKey: new Types.ObjectId(apiKey),
+    //   anonymous: user ? false : true,
+    //   action,
+    //   description,
+    //   tags,
+    // });
+    // return create.save();
+  }
 }

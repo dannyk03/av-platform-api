@@ -1,25 +1,27 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UserService } from '../service/user.service';
-import { IUserDocument } from '../user.interface';
+import { IUserEntity } from '../user.interface';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {
-    constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const { params } = request;
-        const { user } = params;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const { params } = request;
+    const { user } = params;
 
-        const check: IUserDocument =
-            await this.userService.findOneById<IUserDocument>(user, {
-                populate: {
-                    role: true,
-                    permission: true,
-                },
-            });
-        request.__user = check;
+    const check: IUserEntity = await this.userService.findOneById<IUserEntity>(
+      user,
+      {
+        populate: {
+          role: true,
+          permission: true,
+        },
+      },
+    );
+    request.__user = check;
 
-        return true;
-    }
+    return true;
+  }
 }

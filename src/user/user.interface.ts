@@ -1,24 +1,24 @@
-import { IRoleDocument } from '@/role/role.interface';
-import { UserDocument } from './schema/user.schema';
+import { IRoleEntity } from 'src/role/role.interface';
+import { UserEntity } from './entity/user.entity';
 
-export interface IUserDocument extends Omit<UserDocument, 'role'> {
-    role: IRoleDocument;
+export interface IUserEntity extends Omit<UserEntity, 'role'> {
+  role: IRoleEntity;
 }
 
 export interface IUserCreate {
-    firstName: string;
-    lastName?: string;
-    password: string;
-    passwordExpired: Date;
-    email: string;
-    // mobileNumber: string;
-    role: string;
-    salt: string;
+  firstName: string;
+  lastName?: string;
+  password: string;
+  passwordExpired: Date;
+  email: string;
+  mobileNumber: string;
+  role: string;
+  salt: string;
 }
 
 export type IUserUpdate = Pick<IUserCreate, 'firstName' | 'lastName'>;
 
 export interface IUserCheckExist {
-    email: boolean;
-    // mobileNumber: boolean;
+  email: boolean;
+  mobileNumber: boolean;
 }

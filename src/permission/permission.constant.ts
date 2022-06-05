@@ -1,44 +1,26 @@
-export enum Permissions {
-    UserCreate = 'USER_CREATE',
-    UserUpdate = 'USER_UPDATE',
-    UserRead = 'USER_READ',
-    UsedDelete = 'USER_DELETE',
-
-    RoleCreate = 'ROLE_CREATE',
-    RoleUpdate = 'ROLE_UPDATE',
-    RoleRead = 'ROLE_READ',
-    RoleDelete = 'ROLE_DELETE',
-
-    PermissionsRead = 'PERMISSIONS_READ',
-    PermissionsUpdate = 'PERMISSIONS_UPDATE',
-
-    SettingsRead = 'SETTING_READ',
-    SettingsUpdate = 'SETTING_UPDATE',
-
-    OrderRead = 'ORDER_READ',
-    OrderCreate = 'ORDER_CREATE',
-    OrderDelete = 'ORDER_DELETE',
-    OrderUpdated = 'ORDER_UPDATE',
-
-    PaymentRead = 'PAYMENT_READ',
-    PaymentCreate = 'PAYMENT_CREATE',
-    PaymentDelete = 'PAYMENT_DELETE',
-    PaymentUpdated = 'PAYMENT_UPDATE',
-
-    OrganizationCreate = 'ORGANIZATION_CREATE',
-    OrganizationRead = 'ORGANIZATION_READ',
-    OrganizationUpdate = 'ORGANIZATION_UPDATE',
-    OrganizationDelete = 'ORGANIZATION_DELETE',
+export enum ENUM_PERMISSIONS {
+  USER_CREATE = 'USER_CREATE',
+  USER_UPDATE = 'USER_UPDATE',
+  USER_READ = 'USER_READ',
+  USER_DELETE = 'USER_DELETE',
+  ROLE_CREATE = 'ROLE_CREATE',
+  ROLE_UPDATE = 'ROLE_UPDATE',
+  ROLE_READ = 'ROLE_READ',
+  ROLE_DELETE = 'ROLE_DELETE',
+  PERMISSION_READ = 'PERMISSION_READ',
+  PERMISSION_UPDATE = 'PERMISSION_UPDATE',
+  SETTING_READ = 'SETTING_READ',
+  SETTING_UPDATE = 'SETTING_UPDATE',
 }
 
 export const PERMISSION_META_KEY = 'PermissionMetaKey';
 
 export const PERMISSION_ACTIVE_META_KEY = 'PermissionActiveMetaKey';
 
-export enum PermissionsStatusCodeError {
-    NotFoundError = 5200,
-    GuardInvalidError = 5201,
-    ActiveError = 5203,
+export enum ENUM_PERMISSION_STATUS_CODE_ERROR {
+  PERMISSION_NOT_FOUND_ERROR = 5200,
+  PERMISSION_GUARD_INVALID_ERROR = 5201,
+  PERMISSION_ACTIVE_ERROR = 5203,
 }
 
 export const PERMISSION_DEFAULT_SORT = 'name@asc';

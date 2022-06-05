@@ -1,14 +1,9 @@
-import { IPaginationOptions } from '@/utils/pagination/pagination.interface';
-import { ClientSession } from 'mongoose';
+import { IPaginationOptions } from 'src/utils/pagination/pagination.interface';
 
 export interface IDatabaseFindOneOptions {
-    populate?: Record<string, boolean>;
+  where?: Record<string, boolean>;
 }
 
 export interface IDatabaseFindAllOptions
-    extends IPaginationOptions,
-        IDatabaseFindOneOptions {}
-
-export interface IWithSession {
-    session?: ClientSession | null;
-}
+  extends IPaginationOptions,
+    IDatabaseFindOneOptions {}

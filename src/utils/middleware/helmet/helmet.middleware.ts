@@ -4,7 +4,7 @@ import helmet from 'helmet';
 
 @Injectable()
 export class HelmetMiddleware implements NestMiddleware {
-    use(req: Request, res: Response, next: NextFunction): void {
-        helmet()(req, res, next);
-    }
+  use(req: Request, res: Response, next: NextFunction): void {
+    helmet()(req, res, next);
+  }
 }

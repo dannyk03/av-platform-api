@@ -1,6 +1,6 @@
 {
-    "default": "Response message default",
-    "error": {
-        "structure": "Error response structure invalid"
-    }
+  "default": "Response message default",
+  "error": {
+    "structure": "Error response structure invalid"
+  }
 }

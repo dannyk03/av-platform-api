@@ -1,6 +1,6 @@
 {
-    "error": {
-        "timestampInvalid": "Request timestamp not acceptable",
-        "userAgentInvalid": "Request user agent not acceptable"
-    }
+  "error": {
+    "timestampInvalid": "Request timestamp not acceptable",
+    "userAgentInvalid": "Request user agent not acceptable"
+  }
 }

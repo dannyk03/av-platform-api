@@ -1,32 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { DatabaseEntity } from '@/database';
 import { IPermission } from '../permission.interface';
-import { DeleteResult } from 'mongodb';
-import {
-    PermissionDocument,
-    PermissionEntity,
-} from '../schema/permission.schema';
+import { PermissionEntity } from '../entity/permission.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConnectionNames } from '@/database';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PermissionBulkService {
-    constructor(
-        @DatabaseEntity(PermissionEntity.name)
-        private readonly permissionModel: Model<PermissionDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(PermissionEntity, ConnectionNames.Master)
+    private permissionRepository: Repository<PermissionEntity>,
+  ) {}
 
-    async createMany(data: IPermission[]): Promise<PermissionDocument[]> {
-        return this.permissionModel.insertMany(
-            data.map(({ isActive, code, description, name }) => ({
-                code: code,
-                name: name,
-                description: description,
-                isActive: isActive || true,
-            })),
-        );
-    }
+  async createMany(data: IPermission[]): Promise<any | any[]> {
+    // return this.permissionModel.insertMany(
+    //   data.map(({ isActive, code, description, name }) => ({
+    //     code: code,
+    //     name: name,
+    //     description: description,
+    //     isActive: isActive || true,
+    //   })),
+    // );
+  }
 
-    async deleteMany(find: Record<string, any>): Promise<DeleteResult> {
-        return this.permissionModel.deleteMany(find);
-    }
+  async deleteMany(find: Record<string, any>): Promise<any> {
+    // return this.permissionModel.deleteMany(find);
+  }
 }

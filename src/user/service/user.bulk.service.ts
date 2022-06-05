@@ -1,17 +1,18 @@
+import { ConnectionNames } from '@/database';
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { DatabaseEntity } from '@/database';
-import { DeleteResult } from 'mongodb';
-import { UserDocument, UserEntity } from '../schema/user.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult } from 'typeorm';
+
+import { UserEntity } from '../entity/user.entity';
 
 @Injectable()
 export class UserBulkService {
-    constructor(
-        @DatabaseEntity(UserEntity.name)
-        private readonly userModel: Model<UserDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(UserEntity, ConnectionNames.Master)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-    async deleteMany(find: Record<string, any>): Promise<DeleteResult> {
-        return this.userModel.deleteMany(find);
-    }
+  async deleteMany(find: Record<string, any>): Promise<DeleteResult | any> {
+    // return this.userRepository.deleteMany(find);
+  }
 }

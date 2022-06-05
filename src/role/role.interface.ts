@@ -1,6 +1,6 @@
-import { PermissionDocument } from '@/permission/schema/permission.schema';
-import { RoleDocument } from './schema/role.schema';
+import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { RoleEntity } from './entity/role.entity';
 
-export interface IRoleDocument extends Omit<RoleDocument, 'permissions'> {
-    permissions: PermissionDocument[];
+export interface IRoleEntity extends Omit<RoleEntity, 'permissions'> {
+  permissions: PermissionEntity[];
 }

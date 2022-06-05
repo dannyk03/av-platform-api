@@ -1,29 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
-import { DatabaseEntity } from '@/database';
-import { DeleteResult } from 'mongodb';
-import { RoleDocument, RoleEntity } from '../schema/role.schema';
+
+import { RoleEntity } from '../entity/role.entity';
 import { RoleCreateDto } from '../dto/role.create.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class RoleBulkService {
-    constructor(
-        @DatabaseEntity(RoleEntity.name)
-        private readonly roleModel: Model<RoleDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(RoleEntity, ConnectionNames.Master)
+    private roleRepository: Repository<RoleEntity>,
+  ) {}
 
-    async deleteMany(find: Record<string, any>): Promise<DeleteResult> {
-        return await this.roleModel.deleteMany(find);
-    }
+  async deleteMany(find: Record<string, any>): Promise<any> {
+    // return await this.roleRepository.deleteMany(find);
+  }
 
-    async createMany(data: RoleCreateDto[]): Promise<RoleDocument[]> {
-        return this.roleModel.insertMany(
-            data.map(({ name, permissions, code }) => ({
-                name,
-                code,
-                isActive: true,
-                permissions: permissions.map((val) => new Types.ObjectId(val)),
-            })),
-        );
-    }
+  async createMany(data: RoleCreateDto[]): Promise<any[] | any> {
+    // return this.roleRepository.insertMany(
+    //   data.map(({ name, permissions, isAdmin }) => ({
+    //     name,
+    //     isActive: true,
+    //     isAdmin: isAdmin || false,
+    //     permissions: permissions.map((val) => new Types.ObjectId(val)),
+    //   })),
+    // );
+  }
 }

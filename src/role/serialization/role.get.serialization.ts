@@ -1,27 +1,28 @@
 import { Exclude, Transform, Type } from 'class-transformer';
-import { PermissionDocument } from '@/permission/schema/permission.schema';
+import { PermissionEntity } from '@/permission/entity/permission.entity';
 
 export class RoleGetSerialization {
-    @Type(() => String)
-    readonly _id: string;
+  @Type(() => String)
+  readonly _id: string;
 
-    readonly isActive: boolean;
-    readonly name: string;
+  readonly isActive: boolean;
+  readonly name: string;
+  readonly isAdmin: boolean;
 
-    @Transform(
-        ({ obj }) =>
-            obj.permissions.map((val) => ({
-                _id: `${val._id}`,
-                code: val.code,
-                name: val.name,
-                isActive: val.isActive,
-            })),
-        { toClassOnly: true },
-    )
-    readonly permissions: PermissionDocument[];
+  @Transform(
+    ({ obj }) =>
+      obj.permissions.map((val) => ({
+        _id: `${val._id}`,
+        code: val.code,
+        name: val.name,
+        isActive: val.isActive,
+      })),
+    { toClassOnly: true },
+  )
+  readonly permissions: PermissionEntity[];
 
-    readonly createdAt: Date;
+  readonly createdAt: Date;
 
-    @Exclude()
-    readonly updatedAt: Date;
+  @Exclude()
+  readonly updatedAt: Date;
 }

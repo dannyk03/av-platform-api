@@ -14,48 +14,45 @@ import { HelperSlugService } from './service/helper.slug.service';
 
 @Global()
 @Module({
-    providers: [
-        HelperService,
-        HelperArrayService,
-        HelperDateService,
-        HelperEncryptionService,
-        HelperHashService,
-        HelperNumberService,
-        HelperStringService,
-        HelperFileService,
-        HelperGeoService,
-        HelperSlugService,
-    ],
-    exports: [
-        HelperService,
-        HelperArrayService,
-        HelperDateService,
-        HelperEncryptionService,
-        HelperHashService,
-        HelperNumberService,
-        HelperStringService,
-        HelperFileService,
-        HelperGeoService,
-        HelperSlugService,
-    ],
-    controllers: [],
-    imports: [
-        JwtModule.registerAsync({
-            inject: [ConfigService],
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => {
-                return {
-                    secret: configService.get<string>(
-                        'helper.jwt.defaultSecretKey',
-                    ),
-                    signOptions: {
-                        expiresIn: configService.get<string>(
-                            'helper.jwt.defaultExpirationTime',
-                        ),
-                    },
-                };
-            },
-        }),
-    ],
+  providers: [
+    HelperService,
+    HelperSlugService,
+    HelperArrayService,
+    HelperDateService,
+    HelperEncryptionService,
+    HelperHashService,
+    HelperNumberService,
+    HelperStringService,
+    HelperFileService,
+    HelperGeoService,
+  ],
+  exports: [
+    HelperService,
+    HelperArrayService,
+    HelperDateService,
+    HelperEncryptionService,
+    HelperHashService,
+    HelperNumberService,
+    HelperStringService,
+    HelperFileService,
+    HelperGeoService,
+  ],
+  controllers: [],
+  imports: [
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        return {
+          secret: configService.get<string>('helper.jwt.defaultSecretKey'),
+          signOptions: {
+            expiresIn: configService.get<string>(
+              'helper.jwt.defaultExpirationTime',
+            ),
+          },
+        };
+      },
+    }),
+  ],
 })
 export class HelperModule {}

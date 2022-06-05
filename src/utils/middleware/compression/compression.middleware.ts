@@ -4,7 +4,7 @@ import compression from 'compression';
 
 @Injectable()
 export class CompressionMiddleware implements NestMiddleware {
-    use(req: Request, res: Response, next: NextFunction): void {
-        compression()(req, res, next);
-    }
+  use(req: Request, res: Response, next: NextFunction): void {
+    compression()(req, res, next);
+  }
 }

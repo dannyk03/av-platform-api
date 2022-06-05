@@ -1,18 +1,19 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseEntity } from '@/database';
-import { Model } from 'mongoose';
-import { AuthApiDocument, AuthApiEntity } from '../schema/auth.api.schema';
+import { AuthApiEntity } from '../entity/auth.api.entity';
+import { ConnectionNames } from '@/database';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthApiBulkService {
-    constructor(
-        @DatabaseEntity(AuthApiEntity.name)
-        private readonly authApiModel: Model<AuthApiDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(AuthApiEntity, ConnectionNames.Master)
+    private authapiRepository: Repository<AuthApiEntity>,
+  ) {}
 
-    async deleteMany(find: Record<string, any>) {
-        return this.authApiModel.deleteMany(find);
-    }
+  async deleteMany(find: Record<string, any>) {
+    // return this.authapiRepository.deleteMany(find);
+  }
 }

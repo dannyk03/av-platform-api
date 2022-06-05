@@ -1,25 +1,15 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { DATABASE_CONNECTION_NAME } from '@/database';
+
 import { UserService } from './service/user.service';
 import { UserBulkService } from './service/user.bulk.service';
-import { UserDatabaseName, UserEntity, UserSchema } from './schema/user.schema';
+import { UserEntity } from './entity/user.entity';
+import { ConnectionNames } from '@/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature(
-            [
-                {
-                    name: UserEntity.name,
-                    schema: UserSchema,
-                    collection: UserDatabaseName,
-                },
-            ],
-            DATABASE_CONNECTION_NAME,
-        ),
-    ],
-    exports: [UserService, UserBulkService],
-    providers: [UserService, UserBulkService],
-    controllers: [],
+  imports: [TypeOrmModule.forFeature([UserEntity], ConnectionNames.Master)],
+  exports: [UserService, UserBulkService],
+  providers: [UserService, UserBulkService],
+  controllers: [],
 })
 export class UserModule {}

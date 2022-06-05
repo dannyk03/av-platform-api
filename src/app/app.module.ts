@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
-import { CoreModule } from '@/core/core.module';
-import { TaskModule } from '@/task/task.module';
-import { RouterAppModule } from '@/router';
+import { CoreModule } from 'src/core/core.module';
+import { TaskModule } from 'src/task/task.module';
+import { AppRouterModule } from './app.router.module';
 @Module({
-    controllers: [],
-    providers: [],
-    imports: [
-        // Core
-        CoreModule,
+  controllers: [],
+  providers: [],
+  imports: [
+    // Core
+    CoreModule,
 
-        // Task
-        TaskModule.register(),
+    // Task
+    TaskModule.register(),
 
-        // Router
-        RouterAppModule.register(),
-    ],
+    // Router
+    AppRouterModule.register(),
+  ],
 })
 export class AppModule {}

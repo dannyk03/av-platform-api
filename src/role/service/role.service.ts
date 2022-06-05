@@ -1,137 +1,119 @@
 import { Injectable } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
 import { plainToInstance } from 'class-transformer';
-import { DatabaseEntity } from '@/database';
-import { IRoleDocument } from '../role.interface';
-import { RoleDocument, RoleEntity } from '../schema/role.schema';
-import { PermissionEntity } from '@/permission/schema/permission.schema';
-import { IDatabaseFindAllOptions, IDatabaseFindOneOptions } from '@/database';
+import { RoleEntity } from '../entity/role.entity';
+import { IDatabaseFindAllOptions } from 'src/database/database.interface';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
 import { RoleGetSerialization } from '../serialization/role.get.serialization';
 import { RoleListSerialization } from '../serialization/role.list.serialization';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConnectionNames } from '@/database';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RoleService {
-    constructor(
-        @DatabaseEntity(RoleEntity.name)
-        private readonly roleModel: Model<RoleDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(RoleEntity, ConnectionNames.Master)
+    private roleRepository: Repository<RoleEntity>,
+  ) {}
 
-    async findAll(
-        find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions,
-    ): Promise<RoleDocument[]> {
-        const roles = this.roleModel.find(find);
-        if (
-            options &&
-            options.limit !== undefined &&
-            options.skip !== undefined
-        ) {
-            roles.limit(options.limit).skip(options.skip);
-        }
+  async findAll(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions,
+  ): Promise<any[] | any> {
+    // const roles = this.roleRepository.find(find);
+    // if (options && options.limit !== undefined && options.skip !== undefined) {
+    //   roles.limit(options.limit).skip(options.skip);
+    // }
+    // if (options && options.sort) {
+    //   roles.sort(options.sort);
+    // }
+    // return roles.lean();
+  }
 
-        if (options && options.sort) {
-            roles.sort(options.sort);
-        }
+  async getTotal(find?: Record<string, any>): Promise<number | any> {
+    // return this.roleRepository.countDocuments(find);
+  }
 
-        return roles.lean();
-    }
+  async findOneById<T>(_id: string, options?): Promise<any> {
+    // const roles = this.roleRepository.findById(_id);
+    // if (options && options.populate && options.populate.permission) {
+    //   roles.populate({
+    //     path: 'permissions',
+    //     model: PermissionEntity.name,
+    //   });
+    // }
+    // return roles.lean();
+  }
 
-    async getTotal(find?: Record<string, any>): Promise<number> {
-        return this.roleModel.countDocuments(find);
-    }
+  async findOne<T>(find?: Record<string, any>, options?): Promise<any> {
+    // const role = this.roleRepository.findOne(find);
+    // if (options && options.populate && options.populate.permission) {
+    //   role.populate({
+    //     path: 'permissions',
+    //     model: PermissionEntity.name,
+    //   });
+    // }
+    // return role.lean();
+  }
 
-    async findOneById<T>(
-        _id: string,
-        options?: IDatabaseFindOneOptions,
-    ): Promise<T> {
-        const roles = this.roleModel.findById(_id);
+  async exists(name: string, _id?: string): Promise<boolean> {
+    // const exist = await this.roleRepository.exists({
+    //   name: {
+    //     $regex: new RegExp(name),
+    //     $options: 'i',
+    //   },
+    //   _id: { $nin: new Types.ObjectId(_id) },
+    // });
 
-        if (options && options.populate && options.populate.permission) {
-            roles.populate({
-                path: 'permissions',
-                model: PermissionEntity.name,
-            });
-        }
+    // return exist ? true : false;
+    return false;
+  }
 
-        return roles.lean();
-    }
+  async create({ name, permissions, isAdmin }: RoleCreateDto): Promise<any> {
+    // const create: RoleDocument = new this.roleRepository({
+    //   name,
+    //   permissions: permissions.map((val) => new Types.ObjectId(val)),
+    //   isActive: true,
+    //   isAdmin: isAdmin || false,
+    // });
+    // return create.save();
+  }
 
-    async findOne<T>(
-        find?: Record<string, any>,
-        options?: IDatabaseFindOneOptions,
-    ): Promise<T> {
-        const role = this.roleModel.findOne(find);
+  async update(
+    _id: string,
+    { name, permissions, isAdmin }: RoleUpdateDto,
+  ): Promise<any> {
+    // const update: RoleDocument = await this.roleRepository.findById(_id);
+    // update.name = name;
+    // update.permissions = permissions.map((val) => new Types.ObjectId(val));
+    // update.isAdmin = isAdmin || false;
+    // return update.save();
+  }
 
-        if (options && options.populate && options.populate.permission) {
-            role.populate({
-                path: 'permissions',
-                model: PermissionEntity.name,
-            });
-        }
+  async inactive(_id: string): Promise<any> {
+    // const role: RoleDocument = await this.roleRepository.findById(_id);
+    // role.isActive = false;
+    // return role.save();
+  }
 
-        return role.lean();
-    }
+  async active(_id: string): Promise<any> {
+    // const role: RoleDocument = await this.roleRepository.findById(_id);
+    // role.isActive = true;
+    // return role.save();
+  }
 
-    async exists(name: string, _id?: string): Promise<boolean> {
-        const exist = await this.roleModel.exists({
-            name: {
-                $regex: new RegExp(name),
-                $options: 'i',
-            },
-            _id: { $nin: new Types.ObjectId(_id) },
-        });
+  async deleteOneById(_id: string): Promise<any> {
+    // return this.roleRepository.findByIdAndDelete(_id);
+  }
 
-        return exist ? true : false;
-    }
+  async serializationGet(data): Promise<RoleGetSerialization> {
+    return plainToInstance(RoleGetSerialization, data);
+  }
 
-    async create({ name, permissions }: RoleCreateDto): Promise<RoleDocument> {
-        const create: RoleDocument = new this.roleModel({
-            name: name,
-            permissions: permissions.map((val) => new Types.ObjectId(val)),
-            isActive: true,
-        });
-
-        return create.save();
-    }
-
-    async update(
-        _id: string,
-        { name, permissions }: RoleUpdateDto,
-    ): Promise<RoleDocument> {
-        const update: RoleDocument = await this.roleModel.findById(_id);
-        update.name = name;
-        update.permissions = permissions.map((val) => new Types.ObjectId(val));
-
-        return update.save();
-    }
-
-    async inactive(_id: string): Promise<RoleDocument> {
-        const role: RoleDocument = await this.roleModel.findById(_id);
-
-        role.isActive = false;
-        return role.save();
-    }
-
-    async active(_id: string): Promise<RoleDocument> {
-        const role: RoleDocument = await this.roleModel.findById(_id);
-
-        role.isActive = true;
-        return role.save();
-    }
-
-    async deleteOneById(_id: string): Promise<RoleDocument> {
-        return this.roleModel.findByIdAndDelete(_id);
-    }
-
-    async serializationGet(data: IRoleDocument): Promise<RoleGetSerialization> {
-        return plainToInstance(RoleGetSerialization, data);
-    }
-
-    async serializationList(
-        data: RoleDocument[],
-    ): Promise<RoleListSerialization[]> {
-        return plainToInstance(RoleListSerialization, data);
-    }
+  async serializationList(
+    data: RoleEntity[],
+  ): Promise<RoleListSerialization[]> {
+    return plainToInstance(RoleListSerialization, data);
+  }
 }

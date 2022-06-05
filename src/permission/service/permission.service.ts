@@ -1,107 +1,97 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Model } from 'mongoose';
-import { DatabaseEntity } from '@/database';
-import { IDatabaseFindAllOptions } from '@/database';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { IPermission } from '../permission.interface';
-import {
-    PermissionDocument,
-    PermissionEntity,
-} from '../schema/permission.schema';
+import { PermissionEntity } from '../entity/permission.entity';
 import { PermissionGetSerialization } from '../serialization/permission.get.serialization';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConnectionNames } from '@/database';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
 
 @Injectable()
 export class PermissionService {
-    constructor(
-        @DatabaseEntity(PermissionEntity.name)
-        private readonly permissionModel: Model<PermissionDocument>,
-    ) {}
+  constructor(
+    @InjectRepository(PermissionEntity, ConnectionNames.Master)
+    private permissionRepository: Repository<PermissionEntity>,
+  ) {}
 
-    async findAll(
-        find?: Record<string, any>,
-        options?: IDatabaseFindAllOptions,
-    ): Promise<PermissionDocument[]> {
-        const findAll = this.permissionModel.find(find);
-        if (
-            options &&
-            options.limit !== undefined &&
-            options.skip !== undefined
-        ) {
-            findAll.limit(options.limit).skip(options.skip);
-        }
+  async findAll(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions,
+  ): Promise<any | any[]> {
+    // const findAll = this.permissionModel.find(find);
+    // if (options && options.limit !== undefined && options.skip !== undefined) {
+    //   findAll.limit(options.limit).skip(options.skip);
+    // }
+    // if (options && options.sort) {
+    //   findAll.sort(options.sort);
+    // }
+    // return findAll.lean();
+  }
 
-        if (options && options.sort) {
-            findAll.sort(options.sort);
-        }
+  async findOneById(_id: string): Promise<any> {
+    // return this.permissionModel.findById(_id).lean();
+  }
 
-        return findAll.lean();
-    }
+  async findOne(find?: Record<string, any>): Promise<any> {
+    // return this.permissionModel.findOne(find).lean();
+  }
 
-    async findOneById(_id: string): Promise<PermissionDocument> {
-        return this.permissionModel.findById(_id).lean();
-    }
+  async getTotal(find?: Record<string, any>): Promise<any> {
+    // return this.permissionModel.countDocuments(find);
+  }
 
-    async findOne(find?: Record<string, any>): Promise<PermissionDocument> {
-        return this.permissionModel.findOne(find).lean();
-    }
+  async deleteOne(find: Record<string, any>): Promise<any> {
+    // return this.permissionModel.findOneAndDelete(find);
+  }
 
-    async getTotal(find?: Record<string, any>): Promise<number> {
-        return this.permissionModel.countDocuments(find);
-    }
+  async create(data: IPermission): Promise<any> {
+    // const create: PermissionDocument = new this.permissionModel({
+    //   name: data.name,
+    //   code: data.code,
+    //   description: data.description,
+    //   isActive: data.isActive || true,
+    // });
+    // return create.save();
+  }
 
-    async deleteOne(find: Record<string, any>): Promise<PermissionDocument> {
-        return this.permissionModel.findOneAndDelete(find);
-    }
+  async update(
+    _id: string,
+    { name, description }: PermissionUpdateDto,
+  ): Promise<any> {
+    // const permission = await this.permissionModel.findById(_id);
+    // permission.name = name;
+    // permission.description = description;
+    // return permission.save();
+  }
 
-    async create(data: IPermission): Promise<PermissionDocument> {
-        const create: PermissionDocument = new this.permissionModel({
-            name: data.name,
-            code: data.code,
-            description: data.description,
-            isActive: data.isActive || true,
-        });
+  async serializationGet(
+    data: PermissionEntity,
+  ): Promise<PermissionGetSerialization> {
+    return plainToInstance(PermissionGetSerialization, data);
+  }
 
-        return create.save();
-    }
+  async serializationList(
+    data: PermissionEntity[],
+  ): Promise<PermissionListSerialization[]> {
+    return plainToInstance(PermissionListSerialization, data);
+  }
 
-    async update(
-        _id: string,
-        { name, description }: PermissionUpdateDto,
-    ): Promise<PermissionDocument> {
-        const permission = await this.permissionModel.findById(_id);
+  async inactive(_id: string): Promise<any> {
+    // const permission: PermissionDocument = await this.permissionModel.findById(
+    //   _id,
+    // );
+    // permission.isActive = false;
+    // return permission.save();
+  }
 
-        permission.name = name;
-        permission.description = description;
-        return permission.save();
-    }
-
-    async serializationGet(
-        data: PermissionDocument,
-    ): Promise<PermissionGetSerialization> {
-        return plainToInstance(PermissionGetSerialization, data);
-    }
-
-    async serializationList(
-        data: PermissionDocument[],
-    ): Promise<PermissionListSerialization[]> {
-        return plainToInstance(PermissionListSerialization, data);
-    }
-
-    async inactive(_id: string): Promise<PermissionDocument> {
-        const permission: PermissionDocument =
-            await this.permissionModel.findById(_id);
-
-        permission.isActive = false;
-        return permission.save();
-    }
-
-    async active(_id: string): Promise<PermissionDocument> {
-        const permission: PermissionDocument =
-            await this.permissionModel.findById(_id);
-
-        permission.isActive = true;
-        return permission.save();
-    }
+  async active(_id: string): Promise<any> {
+    // const permission: PermissionDocument = await this.permissionModel.findById(
+    //   _id,
+    // );
+    // permission.isActive = true;
+    // return permission.save();
+  }
 }

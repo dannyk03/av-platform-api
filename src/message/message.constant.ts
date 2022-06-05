@@ -1,3 +1,3 @@
-export enum MessageLanguage {
-    En = 'en',
+export enum ENUM_MESSAGE_LANGUAGE {
+  en = 'en',
 }

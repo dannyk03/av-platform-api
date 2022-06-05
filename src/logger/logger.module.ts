@@ -1,28 +1,13 @@
 import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { DATABASE_CONNECTION_NAME } from '@/database';
-import {
-    LoggerDatabaseName,
-    LoggerEntity,
-    LoggerSchema,
-} from './schema/logger.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConnectionNames } from 'src/database/database.constant';
+import { LoggerEntity } from './entity/logger.entity';
 import { LoggerService } from './service/logger.service';
 
 @Global()
 @Module({
-    providers: [LoggerService],
-    exports: [LoggerService],
-    imports: [
-        MongooseModule.forFeature(
-            [
-                {
-                    name: LoggerEntity.name,
-                    schema: LoggerSchema,
-                    collection: LoggerDatabaseName,
-                },
-            ],
-            DATABASE_CONNECTION_NAME,
-        ),
-    ],
+  providers: [LoggerService],
+  exports: [LoggerService],
+  imports: [TypeOrmModule.forFeature([LoggerEntity], ConnectionNames.Master)],
 })
 export class LoggerModule {}
