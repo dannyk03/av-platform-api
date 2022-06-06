@@ -1,19 +1,21 @@
 export enum ENUM_PERMISSIONS {
-  USER_CREATE = 'USER_CREATE',
-  USER_UPDATE = 'USER_UPDATE',
-  USER_READ = 'USER_READ',
-  USER_DELETE = 'USER_DELETE',
+  USER_CREATE = 'user-create',
+  USER_UPDATE = 'user-update',
+  USER_READ = 'user-read',
+  USER_DELETE = 'user-delete',
 
-  ROLE_CREATE = 'ROLE_CREATE',
-  ROLE_UPDATE = 'ROLE_UPDATE',
-  ROLE_READ = 'ROLE_READ',
-  ROLE_DELETE = 'ROLE_DELETE',
+  ROLE_CREATE = 'role-create',
+  ROLE_UPDATE = 'role-update',
+  ROLE_READ = 'role-read',
+  ROLE_DELETE = 'role-delete',
 
-  PERMISSION_READ = 'PERMISSION_READ',
-  PERMISSION_UPDATE = 'PERMISSION_UPDATE',
+  PERMISSION_READ = 'permission-read',
+  PERMISSION_UPDATE = 'permission-update',
 
-  SETTING_READ = 'SETTING_READ',
-  SETTING_UPDATE = 'SETTING_UPDATE',
+  PAYMENT_READ = 'payment-read',
+
+  SETTING_READ = 'setting-read',
+  SETTING_UPDATE = 'setting-update',
 }
 
 export const PERMISSION_META_KEY = 'PermissionMetaKey';

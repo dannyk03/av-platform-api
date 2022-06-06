@@ -7,7 +7,7 @@ import { ConnectionNames } from '@/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity], ConnectionNames.Master)],
+  imports: [TypeOrmModule.forFeature([UserEntity], ConnectionNames.Default)],
   exports: [UserService, UserBulkService],
   providers: [UserService, UserBulkService],
   controllers: [],

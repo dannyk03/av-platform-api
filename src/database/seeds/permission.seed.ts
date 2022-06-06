@@ -17,9 +17,9 @@ export class PermissionSeed {
   })
   async insert(): Promise<void> {
     try {
-      const permissions = Object.keys(ENUM_PERMISSIONS).map((val) => ({
-        code: val,
-        name: val.replace('_', ' '),
+      const permissions = Object.values(ENUM_PERMISSIONS).map((val) => ({
+        name: val.replace('-', ' ').toLowerCase(),
+        description: 'Initial seed permission',
       }));
 
       await this.permissionBulkService.createMany(permissions);
@@ -40,7 +40,9 @@ export class PermissionSeed {
   })
   async remove(): Promise<void> {
     try {
-      await this.permissionBulkService.deleteMany({});
+      await this.permissionBulkService.deleteManyBySlug(
+        Object.values(ENUM_PERMISSIONS),
+      );
 
       this.debuggerService.debug(
         'Remove Permission Succeed',

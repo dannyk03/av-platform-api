@@ -13,7 +13,7 @@ import { IDatabaseFindAllOptions } from '@/database/database.interface';
 @Injectable()
 export class PermissionService {
   constructor(
-    @InjectRepository(PermissionEntity, ConnectionNames.Master)
+    @InjectRepository(PermissionEntity, ConnectionNames.Default)
     private permissionRepository: Repository<PermissionEntity>,
   ) {}
 

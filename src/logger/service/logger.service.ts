@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class LoggerService {
   constructor(
-    @InjectRepository(LoggerEntity, ConnectionNames.Master)
+    @InjectRepository(LoggerEntity, ConnectionNames.Default)
     private loggerRepository: Repository<LoggerEntity>,
   ) {}
 

@@ -10,7 +10,7 @@ import { PermissionService } from './service/permission.service';
   providers: [PermissionService, PermissionBulkService],
   exports: [PermissionService, PermissionBulkService],
   imports: [
-    TypeOrmModule.forFeature([PermissionEntity], ConnectionNames.Master),
+    TypeOrmModule.forFeature([PermissionEntity], ConnectionNames.Default),
   ],
 })
 export class PermissionModule {}

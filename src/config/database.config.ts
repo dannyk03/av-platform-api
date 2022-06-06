@@ -5,7 +5,7 @@ import { registerAs } from '@nestjs/config';
 export default registerAs(
   'database',
   (): Record<string, any> => ({
-    [ConnectionNames.Master]: {
+    [ConnectionNames.Default]: {
       type: 'postgres',
       host: process.env.DATABASE_HOST,
       port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
@@ -16,7 +16,7 @@ export default registerAs(
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [
         __dirname +
-          `/../database/migrations/${ConnectionNames.Master}/**/*{.ts,.js}`,
+          `/../database/migrations/${ConnectionNames.Default}/**/*{.ts,.js}`,
       ],
       namingStrategy: new TypeormSnakeCaseNamingStrategy(),
       migrationsRun: true,

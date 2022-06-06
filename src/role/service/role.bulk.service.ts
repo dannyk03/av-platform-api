@@ -9,7 +9,7 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class RoleBulkService {
   constructor(
-    @InjectRepository(RoleEntity, ConnectionNames.Master)
+    @InjectRepository(RoleEntity, ConnectionNames.Default)
     private roleRepository: Repository<RoleEntity>,
   ) {}
 

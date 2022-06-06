@@ -8,4 +8,4 @@ ConfigModule.forRoot({
   load: [dbConfiguration],
 });
 
-export default new DataSource(dbConfiguration()[ConnectionNames.Master]);
+export default new DataSource(dbConfiguration()[ConnectionNames.Default]);

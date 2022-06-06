@@ -35,6 +35,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   exports: [AuthService, AuthApiService, AuthApiBulkService],
   controllers: [],
-  imports: [TypeOrmModule.forFeature([AuthApiEntity], ConnectionNames.Master)],
+  imports: [TypeOrmModule.forFeature([AuthApiEntity], ConnectionNames.Default)],
 })
 export class AuthModule {}

@@ -1,29 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { IPermission } from '../permission.interface';
+import { IPermissionCreate } from '../permission.interface';
 import { PermissionEntity } from '../entity/permission.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionNames } from '@/database';
-import { Repository } from 'typeorm';
+import { Repository, In, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class PermissionBulkService {
   constructor(
-    @InjectRepository(PermissionEntity, ConnectionNames.Master)
+    @InjectRepository(PermissionEntity, ConnectionNames.Default)
     private permissionRepository: Repository<PermissionEntity>,
   ) {}
 
-  async createMany(data: IPermission[]): Promise<any | any[]> {
-    // return this.permissionModel.insertMany(
-    //   data.map(({ isActive, code, description, name }) => ({
-    //     code: code,
-    //     name: name,
-    //     description: description,
-    //     isActive: isActive || true,
-    //   })),
-    // );
+  async createMany(data: IPermissionCreate[]): Promise<PermissionEntity[]> {
+    const permissions = data.map((permission) =>
+      this.permissionRepository.create(permission),
+    );
+
+    return this.permissionRepository.save(permissions);
   }
 
-  async deleteMany(find: Record<string, any>): Promise<any> {
-    // return this.permissionModel.deleteMany(find);
+  async deleteManyBySlug(slugs: string[]): Promise<DeleteResult> {
+    return this.permissionRepository.delete({ slug: In(slugs) });
   }
 }

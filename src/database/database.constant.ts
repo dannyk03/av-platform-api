@@ -1,5 +1,5 @@
 export enum ConnectionNames {
-  Master = 'master',
+  Default = 'default',
 }
 
 export const SLUGIFY_OPTS = {

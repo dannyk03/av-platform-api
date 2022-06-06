@@ -8,6 +8,6 @@ import { LoggerService } from './service/logger.service';
 @Module({
   providers: [LoggerService],
   exports: [LoggerService],
-  imports: [TypeOrmModule.forFeature([LoggerEntity], ConnectionNames.Master)],
+  imports: [TypeOrmModule.forFeature([LoggerEntity], ConnectionNames.Default)],
 })
 export class LoggerModule {}

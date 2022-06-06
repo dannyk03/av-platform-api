@@ -29,7 +29,7 @@ export class HealthController {
 
   private checkDatabase = () =>
     this.databaseIndicator.pingCheck('database', {
-      connection: ConnectionNames.Master,
+      connection: ConnectionNames.Default,
       timeout: 1500,
     });
 

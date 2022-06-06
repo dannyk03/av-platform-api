@@ -13,7 +13,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(RoleEntity, ConnectionNames.Master)
+    @InjectRepository(RoleEntity, ConnectionNames.Default)
     private roleRepository: Repository<RoleEntity>,
   ) {}
 

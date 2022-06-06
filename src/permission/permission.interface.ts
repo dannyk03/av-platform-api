@@ -4,3 +4,5 @@ export interface IPermission {
   description?: string;
   isActive?: boolean;
 }
+
+export type IPermissionCreate = Omit<IPermission, 'code'>;

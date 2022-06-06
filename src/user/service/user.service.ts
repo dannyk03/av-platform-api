@@ -29,7 +29,7 @@ export class UserService {
   private readonly uploadPath: string;
 
   constructor(
-    @InjectRepository(UserEntity, ConnectionNames.Master)
+    @InjectRepository(UserEntity, ConnectionNames.Default)
     private userRepository: Repository<UserEntity>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,

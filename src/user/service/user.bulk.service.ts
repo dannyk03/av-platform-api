@@ -8,7 +8,7 @@ import { UserEntity } from '../entity/user.entity';
 @Injectable()
 export class UserBulkService {
   constructor(
-    @InjectRepository(UserEntity, ConnectionNames.Master)
+    @InjectRepository(UserEntity, ConnectionNames.Default)
     private userRepository: Repository<UserEntity>,
   ) {}
 

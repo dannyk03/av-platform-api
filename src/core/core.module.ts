@@ -38,9 +38,9 @@ import { DataSource } from 'typeorm';
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
-      name: ConnectionNames.Master,
+      name: ConnectionNames.Default,
       // useFactory: (configService: ConfigService) =>
-      // configService.get(`database.${ConnectionNames.Master}`),
+      // configService.get(`database.${ConnectionNames.Default}`),
       // imports: [ConfigModule],
       // inject: [ConfigService],
       // dataSourceFactory: async (options) => {
