@@ -1,3 +1,4 @@
+import { ConnectionNames } from '@/database';
 import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
 import { IResponse } from '@/utils/response/response.interface';
 import {
@@ -28,6 +29,7 @@ export class HealthController {
 
   private checkDatabase = () =>
     this.databaseIndicator.pingCheck('database', {
+      connection: ConnectionNames.Master,
       timeout: 1500,
     });
 
