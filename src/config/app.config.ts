@@ -7,7 +7,7 @@ export default registerAs(
     env: process.env.APP_ENV || 'development',
     mode: process.env.APP_MODE || 'simple',
     language: process.env.APP_LANGUAGE || 'en',
-    timezone: process.env.APP_TZ || 'Asia/Jakarta',
+    timezone: process.env.APP_TZ || 'Asia/Jerusalem',
 
     http: {
       host: process.env.APP_HOST || 'localhost',
