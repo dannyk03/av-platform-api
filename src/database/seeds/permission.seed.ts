@@ -18,8 +18,8 @@ export class PermissionSeed {
   async insert(): Promise<void> {
     try {
       const permissions = Object.values(ENUM_PERMISSIONS).map((val) => ({
-        name: val.replace('-', ' ').toLowerCase(),
-        description: 'Initial seed permission',
+        slug: val,
+        description: 'Seed permission',
       }));
 
       await this.permissionBulkService.createMany(permissions);

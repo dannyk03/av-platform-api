@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   Index,
   BeforeInsert,
+  ManyToMany,
 } from 'typeorm';
 import { RoleEntity } from '@/role/entity/role.entity';
 
@@ -36,7 +37,8 @@ export class UserEntity {
   //   type: Types.ObjectId,
   //   ref: RoleEntity.name,
   // })
-  // role: RoleEntity;
+  @ManyToMany(() => RoleEntity)
+  role: RoleEntity;
 
   @Column()
   password: string;

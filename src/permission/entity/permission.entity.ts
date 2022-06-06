@@ -21,8 +21,22 @@ export class PermissionEntity {
   })
   slug: string;
 
-  @Column({ unique: true })
-  name: string;
+  // @Column({ unique: true })
+  // name: string;
+
+  // @ManyToMany(() => Role , (role) => role.id)
+  // @JoinTable({
+  //   name: 'Permission_Role',
+  //   joinColumn: {
+  //     name: 'permissionId',
+  //     referencedColumnName: 'id'
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'roleId',
+  //     referencedColumnName: 'id'
+  //   }
+  // })
+  // roles: Role[];
 
   @Column({
     default: true,
@@ -42,6 +56,6 @@ export class PermissionEntity {
 
   @BeforeInsert()
   beforeInsert() {
-    this.slug = createSlugFromString(this.name);
+    this.slug = createSlugFromString(this.slug);
   }
 }

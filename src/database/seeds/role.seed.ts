@@ -21,7 +21,7 @@ export class RoleSeed {
   async insert(): Promise<void> {
     const permissions: PermissionEntity[] =
       await this.permissionService.findAll({
-        code: { $in: Object.values(ENUM_PERMISSIONS) },
+        slug: { $in: Object.values(ENUM_PERMISSIONS) },
       });
 
     try {

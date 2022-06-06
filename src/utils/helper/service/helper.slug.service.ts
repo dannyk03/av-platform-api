@@ -4,6 +4,7 @@ import slugify from 'slugify';
 export const SLUGIFY_OPTS = {
   lower: true,
   strict: true,
+  trim: true,
   remove: /[*+~.()'"!:@]/g,
 };
 
