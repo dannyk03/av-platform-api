@@ -5,6 +5,7 @@ import { registerAs } from '@nestjs/config';
 export default registerAs(
   'database',
   (): Record<string, any> => ({
+    debug: process.env.DATABASE_DEBUG === 'true',
     [ConnectionNames.Default]: {
       type: 'postgres',
       host: process.env.DATABASE_HOST,
