@@ -19,7 +19,7 @@ export class RoleUsedGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { __role } = context.switchToHttp().getRequest();
     const check: UserEntity = await this.userService.findOne({
-      role: __role._id,
+      role: __role.id,
     });
 
     if (check) {

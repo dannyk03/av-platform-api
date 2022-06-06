@@ -12,7 +12,7 @@ import {
 @Entity({ name: 'permissions' })
 export class PermissionEntity {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Index('permission_slug_index')
   @Column({

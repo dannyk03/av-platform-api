@@ -25,7 +25,7 @@ export class RoleSeed {
       });
 
     try {
-      const permissionsMap = permissions.map((val) => val._id);
+      const permissionsMap = permissions.map((val) => val.id);
       await this.roleBulkService.createMany([
         {
           name: 'admin',

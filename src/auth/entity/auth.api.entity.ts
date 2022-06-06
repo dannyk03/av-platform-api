@@ -11,7 +11,7 @@ import {
 @Entity({ name: 'authapis' })
 export class AuthApiEntity {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Column()
   name: string;

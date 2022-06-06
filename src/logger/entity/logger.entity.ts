@@ -9,7 +9,7 @@ import {
 @Entity({ name: 'loggers' })
 export class LoggerEntity {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Column({ enum: ENUM_LOGGER_LEVEL })
   level: string;

@@ -11,14 +11,14 @@ export interface IAuthPayloadOptions {
 }
 
 export interface IAuthApiPayload {
-  _id: string;
+  id: string;
   key: string;
   name: string;
   description: string;
 }
 
 export interface IAuthApiEntity {
-  _id: string;
+  id: string;
   secret: string;
   passphrase: string;
   encryptionKey: string;

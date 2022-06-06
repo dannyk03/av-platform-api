@@ -1,7 +1,7 @@
 import { Exclude, Type } from 'class-transformer';
 export class PermissionListSerialization {
   @Type(() => String)
-  readonly _id: string;
+  readonly id: string;
 
   readonly isActive: boolean;
   readonly name: string;

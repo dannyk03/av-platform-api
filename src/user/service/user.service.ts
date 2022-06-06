@@ -74,8 +74,8 @@ export class UserService {
     return plainToInstance(UserGetSerialization, data);
   }
 
-  async findOneById<T>(_id: string, options?): Promise<T | any> {
-    // const user = this.userRepository.findById(_id);
+  async findOneById<T>(id: string, options?): Promise<T | any> {
+    // const user = this.userRepository.findById(id);
     // if (options && options.populate && options.populate.role) {
     //   user.populate({
     //     path: 'role',
@@ -144,8 +144,8 @@ export class UserService {
     // return create.save();
   }
 
-  async deleteOneById(_id: string): Promise<any> {
-    // return this.userRepository.findByIdAndDelete(_id);
+  async deleteOneById(id: string): Promise<any> {
+    // return this.userRepository.findByIdAndDelete(id);
   }
 
   async deleteOne(find: Record<string, any>): Promise<any> {
@@ -153,10 +153,10 @@ export class UserService {
   }
 
   async updateOneById(
-    _id: string,
+    id: string,
     { firstName, lastName }: IUserUpdate,
   ): Promise<any> {
-    // const user: UserDocument = await this.userRepository.findById(_id);
+    // const user: UserDocument = await this.userRepository.findById(id);
     // user.firstName = firstName;
     // user.lastName = lastName || undefined;
     // return user.save();
@@ -165,19 +165,19 @@ export class UserService {
   async checkExist(
     email: string,
     mobileNumber: string,
-    _id?: string,
+    id?: string,
   ): Promise<IUserCheckExist | any> {
     // const existEmail: Record<string, any> = await this.userRepository.exists({
     //   email: {
     //     $regex: new RegExp(email),
     //     $options: 'i',
     //   },
-    //   _id: { $nin: [new Types.ObjectId(_id)] },
+    //   id: { $nin: [new Types.ObjectId(id)] },
     // });
     // const existMobileNumber: Record<string, any> =
     //   await this.userRepository.exists({
     //     mobileNumber,
-    //     _id: { $nin: [new Types.ObjectId(_id)] },
+    //     id: { $nin: [new Types.ObjectId(id)] },
     //   });
     // return {
     //   email: existEmail ? true : false,
@@ -185,8 +185,8 @@ export class UserService {
     // };
   }
 
-  async updatePhoto(_id: string, aws: IAwsS3Response): Promise<any> {
-    // const user: UserDocument = await this.userRepository.findById(_id);
+  async updatePhoto(id: string, aws: IAwsS3Response): Promise<any> {
+    // const user: UserDocument = await this.userRepository.findById(id);
     // user.photo = aws;
     // return user.save();
   }
@@ -201,33 +201,30 @@ export class UserService {
   }
 
   async updatePassword(
-    _id: string,
+    id: string,
     { salt, passwordHash, passwordExpired }: IAuthPassword,
   ): Promise<any> {
-    // const auth: UserDocument = await this.userRepository.findById(_id);
+    // const auth: UserDocument = await this.userRepository.findById(id);
     // auth.password = passwordHash;
     // auth.passwordExpired = passwordExpired;
     // auth.salt = salt;
     // return auth.save();
   }
 
-  async updatePasswordExpired(
-    _id: string,
-    passwordExpired: Date,
-  ): Promise<any> {
-    // const auth: UserDocument = await this.userRepository.findById(_id);
+  async updatePasswordExpired(id: string, passwordExpired: Date): Promise<any> {
+    // const auth: UserDocument = await this.userRepository.findById(id);
     // auth.passwordExpired = passwordExpired;
     // return auth.save();
   }
 
-  async inactive(_id: string): Promise<any> {
-    // const user: UserDocument = await this.userRepository.findById(_id);
+  async inactive(id: string): Promise<any> {
+    // const user: UserDocument = await this.userRepository.findById(id);
     // user.isActive = false;
     // return user.save();
   }
 
-  async active(_id: string): Promise<any> {
-    // const user: UserDocument = await this.userRepository.findById(_id);
+  async active(id: string): Promise<any> {
+    // const user: UserDocument = await this.userRepository.findById(id);
     // user.isActive = true;
     // return user.save();
   }

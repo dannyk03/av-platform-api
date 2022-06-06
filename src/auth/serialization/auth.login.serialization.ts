@@ -4,7 +4,7 @@ import { IRoleEntity } from 'src/role/role.interface';
 
 export class AuthLoginSerialization {
   @Type(() => String)
-  readonly _id: string;
+  readonly id: string;
 
   @Transform(
     ({ value }) => ({

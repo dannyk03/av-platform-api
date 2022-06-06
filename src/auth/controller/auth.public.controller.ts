@@ -98,14 +98,14 @@ export class AuthPublicController {
         lastName: body.lastName,
         email,
         mobileNumber,
-        role: role._id,
+        role: role.id,
         password: password.passwordHash,
         passwordExpired: password.passwordExpired,
         salt: password.salt,
       });
 
       const user: IUserEntity = await this.userService.findOneById<IUserEntity>(
-        create._id,
+        create.id,
         {
           populate: {
             role: true,

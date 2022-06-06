@@ -3,7 +3,7 @@ import { PermissionEntity } from '@/permission/entity/permission.entity';
 
 export class RoleGetSerialization {
   @Type(() => String)
-  readonly _id: string;
+  readonly id: string;
 
   readonly isActive: boolean;
   readonly name: string;
@@ -12,7 +12,7 @@ export class RoleGetSerialization {
   @Transform(
     ({ obj }) =>
       obj.permissions.map((val) => ({
-        _id: `${val._id}`,
+        id: `${val.id}`,
         code: val.code,
         name: val.name,
         isActive: val.isActive,

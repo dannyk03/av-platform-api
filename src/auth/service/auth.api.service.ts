@@ -58,8 +58,8 @@ export class AuthApiService {
     // return this.authapiRepository.countDocuments(find);
   }
 
-  async findOneById(_id: string): Promise<AuthApiEntity | any> {
-    // return this.authapiRepository.findById(_id).lean();
+  async findOneById(id: string): Promise<AuthApiEntity | any> {
+    // return this.authapiRepository.findById(id).lean();
   }
 
   async findOne(find?: Record<string, any>): Promise<AuthApiEntity | any> {
@@ -82,14 +82,14 @@ export class AuthApiService {
     return plainToInstance(AuthApiGetSerialization, data);
   }
 
-  async inactive(_id: string): Promise<AuthApiEntity | any> {
-    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(_id);
+  async inactive(id: string): Promise<AuthApiEntity | any> {
+    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // authApi.isActive = false;
     // return authApi.save();
   }
 
-  async active(_id: string): Promise<AuthApiEntity | any> {
-    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(_id);
+  async active(id: string): Promise<AuthApiEntity | any> {
+    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // authApi.isActive = true;
     // return authApi.save();
   }
@@ -123,7 +123,7 @@ export class AuthApiService {
     // await create.save();
 
     // return {
-    //   _id: create._id,
+    //   id: create.id,
     //   secret,
     //   passphrase,
     //   encryptionKey,
@@ -131,17 +131,17 @@ export class AuthApiService {
   }
 
   async updateOneById(
-    _id: string,
+    id: string,
     { name, description }: AuthApiUpdateDto,
   ): Promise<IAuthApiEntity | any> {
-    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(_id);
+    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // authApi.name = name;
     // authApi.description = description;
     // return authApi.save();
   }
 
-  async updateHashById(_id: string): Promise<IAuthApiEntity | any> {
-    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(_id);
+  async updateHashById(id: string): Promise<IAuthApiEntity | any> {
+    // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // const secret: string = await this.createSecret();
     // const hash: string = await this.createHashApiKey(authApi.key, secret);
     // const passphrase: string = await this.createPassphrase();
@@ -151,15 +151,15 @@ export class AuthApiService {
     // authApi.encryptionKey = encryptionKey;
     // await authApi.save();
     // return {
-    //   _id: authApi._id,
+    //   id: authApi.id,
     //   secret,
     //   passphrase,
     //   encryptionKey,
     // };
   }
 
-  async deleteOneById(_id: string): Promise<IAuthApiEntity | any> {
-    // return this.authapiRepository.findByIdAndDelete(_id);
+  async deleteOneById(id: string): Promise<IAuthApiEntity | any> {
+    // return this.authapiRepository.findByIdAndDelete(id);
   }
 
   async deleteOne(find: Record<string, any>): Promise<IAuthApiEntity | any> {

@@ -138,9 +138,9 @@ export class AuthCommonController {
     // }
     // await this.loggerService.info({
     //   action: ENUM_LOGGER_ACTION.LOGIN,
-    //   description: `${user._id} do login`,
-    //   user: user._id,
-    //   apiKey: apiKey?._id,
+    //   description: `${user.id} do login`,
+    //   user: user.id,
+    //   apiKey: apiKey?.id,
     //   tags: ['login', 'withEmail'],
     // });
     // return {
@@ -155,11 +155,11 @@ export class AuthCommonController {
   @Post('/refresh')
   async refresh(
     @User()
-    { _id, rememberMe, loginDate }: Record<string, any>,
+    { id, rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
     const user: IUserEntity = await this.userService.findOneById<IUserEntity>(
-      _id,
+      id,
       {
         populate: {
           role: true,
@@ -235,9 +235,9 @@ export class AuthCommonController {
   @Patch('/change-password')
   async changePassword(
     @Body() body: AuthChangePasswordDto,
-    @User('_id') _id: string,
+    @User('id') id: string,
   ): Promise<void> {
-    const user: UserEntity = await this.userService.findOneById(_id);
+    const user: UserEntity = await this.userService.findOneById(id);
     if (!user) {
       this.debuggerService.error(
         'User not found',
@@ -289,7 +289,7 @@ export class AuthCommonController {
     try {
       const password = await this.authService.createPassword(body.newPassword);
 
-      await this.userService.updatePassword(user._id, password);
+      await this.userService.updatePassword(user.id, password);
     } catch (e) {
       this.debuggerService.error(
         'Change password error internal server error',

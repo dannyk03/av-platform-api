@@ -62,11 +62,11 @@ export class UserPublicController {
         `${path.filename}.${mime}`,
         content,
         {
-          path: `${path.path}/${user._id}`,
+          path: `${path.path}/${user.id}`,
         },
       );
 
-      await this.userService.updatePhoto(user._id, aws);
+      await this.userService.updatePhoto(user.id, aws);
     } catch (err) {
       this.debuggerService.error(
         'Store photo user',

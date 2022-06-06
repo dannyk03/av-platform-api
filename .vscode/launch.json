@@ -5,9 +5,9 @@
       "name": "Debug NestJS",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/src/cli.ts",
+      "program": "${workspaceFolder}/src/main.ts",
       "cwd": "${workspaceRoot}",
-      "args": ["${workspaceFolder}/src/cli.ts"],
+      "args": ["${workspaceFolder}/src/main.ts"],
       "runtimeArgs": [
         "--nolazy",
         "-r",

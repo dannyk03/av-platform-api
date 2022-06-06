@@ -12,7 +12,7 @@ import { RoleEntity } from '@/role/entity/role.entity';
 @Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Column()
   firstName?: string;

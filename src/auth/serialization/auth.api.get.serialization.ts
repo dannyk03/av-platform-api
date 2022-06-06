@@ -2,7 +2,7 @@ import { Exclude, Type } from 'class-transformer';
 
 export class AuthApiGetSerialization {
   @Type(() => String)
-  readonly _id: string;
+  readonly id: string;
 
   readonly name: string;
   readonly description?: string;

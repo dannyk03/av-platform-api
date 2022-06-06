@@ -31,8 +31,8 @@ export class PermissionService {
     // return findAll.lean();
   }
 
-  async findOneById(_id: string): Promise<any> {
-    // return this.permissionModel.findById(_id).lean();
+  async findOneById(id: string): Promise<any> {
+    // return this.permissionModel.findById(id).lean();
   }
 
   async findOne(find?: Record<string, any>): Promise<any> {
@@ -58,10 +58,10 @@ export class PermissionService {
   }
 
   async update(
-    _id: string,
+    id: string,
     { name, description }: PermissionUpdateDto,
   ): Promise<any> {
-    // const permission = await this.permissionModel.findById(_id);
+    // const permission = await this.permissionModel.findById(id);
     // permission.name = name;
     // permission.description = description;
     // return permission.save();
@@ -79,17 +79,17 @@ export class PermissionService {
     return plainToInstance(PermissionListSerialization, data);
   }
 
-  async inactive(_id: string): Promise<any> {
+  async inactive(id: string): Promise<any> {
     // const permission: PermissionDocument = await this.permissionModel.findById(
-    //   _id,
+    //   id,
     // );
     // permission.isActive = false;
     // return permission.save();
   }
 
-  async active(_id: string): Promise<any> {
+  async active(id: string): Promise<any> {
     // const permission: PermissionDocument = await this.permissionModel.findById(
-    //   _id,
+    //   id,
     // );
     // permission.isActive = true;
     // return permission.save();

@@ -3,7 +3,7 @@ import { Exclude, Type } from 'class-transformer';
 
 export class UserListSerialization {
   @Type(() => String)
-  readonly _id: string;
+  readonly id: string;
 
   @Exclude()
   readonly role: RoleEntity;

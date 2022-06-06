@@ -115,12 +115,12 @@ export class AuthService {
   }
 
   async createPayloadRefreshToken(
-    { _id }: AuthLoginSerialization,
+    { id }: AuthLoginSerialization,
     rememberMe: boolean,
     options?: IAuthPayloadOptions,
   ): Promise<Record<string, any>> {
     return {
-      _id,
+      id,
       rememberMe,
       loginDate: options && options.loginDate ? options.loginDate : undefined,
     };

@@ -35,8 +35,8 @@ export class RoleService {
     // return this.roleRepository.countDocuments(find);
   }
 
-  async findOneById<T>(_id: string, options?): Promise<any> {
-    // const roles = this.roleRepository.findById(_id);
+  async findOneById<T>(id: string, options?): Promise<any> {
+    // const roles = this.roleRepository.findById(id);
     // if (options && options.populate && options.populate.permission) {
     //   roles.populate({
     //     path: 'permissions',
@@ -57,13 +57,13 @@ export class RoleService {
     // return role.lean();
   }
 
-  async exists(name: string, _id?: string): Promise<boolean> {
+  async exists(name: string, id?: string): Promise<boolean> {
     // const exist = await this.roleRepository.exists({
     //   name: {
     //     $regex: new RegExp(name),
     //     $options: 'i',
     //   },
-    //   _id: { $nin: new Types.ObjectId(_id) },
+    //   id: { $nin: new Types.ObjectId(id) },
     // });
 
     // return exist ? true : false;
@@ -81,30 +81,30 @@ export class RoleService {
   }
 
   async update(
-    _id: string,
+    id: string,
     { name, permissions, isAdmin }: RoleUpdateDto,
   ): Promise<any> {
-    // const update: RoleDocument = await this.roleRepository.findById(_id);
+    // const update: RoleDocument = await this.roleRepository.findById(id);
     // update.name = name;
     // update.permissions = permissions.map((val) => new Types.ObjectId(val));
     // update.isAdmin = isAdmin || false;
     // return update.save();
   }
 
-  async inactive(_id: string): Promise<any> {
-    // const role: RoleDocument = await this.roleRepository.findById(_id);
+  async inactive(id: string): Promise<any> {
+    // const role: RoleDocument = await this.roleRepository.findById(id);
     // role.isActive = false;
     // return role.save();
   }
 
-  async active(_id: string): Promise<any> {
-    // const role: RoleDocument = await this.roleRepository.findById(_id);
+  async active(id: string): Promise<any> {
+    // const role: RoleDocument = await this.roleRepository.findById(id);
     // role.isActive = true;
     // return role.save();
   }
 
-  async deleteOneById(_id: string): Promise<any> {
-    // return this.roleRepository.findByIdAndDelete(_id);
+  async deleteOneById(id: string): Promise<any> {
+    // return this.roleRepository.findByIdAndDelete(id);
   }
 
   async serializationGet(data): Promise<RoleGetSerialization> {

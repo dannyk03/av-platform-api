@@ -200,7 +200,7 @@ export class UserAdminController {
       });
 
       return {
-        _id: create._id,
+        id: create.id,
       };
     } catch (err: any) {
       this.debuggerService.error(
@@ -224,7 +224,7 @@ export class UserAdminController {
   @Delete('/delete/:user')
   async delete(@GetUser() user: IUserEntity): Promise<void> {
     try {
-      await this.userService.deleteOneById(user._id);
+      await this.userService.deleteOneById(user.id);
     } catch (err) {
       this.debuggerService.error(
         'delete try catch',
@@ -252,7 +252,7 @@ export class UserAdminController {
     body: UserUpdateDto,
   ): Promise<IResponse> {
     try {
-      await this.userService.updateOneById(user._id, body);
+      await this.userService.updateOneById(user.id, body);
     } catch (err: any) {
       this.debuggerService.error(
         'update try catch',
@@ -268,7 +268,7 @@ export class UserAdminController {
     }
 
     return {
-      _id: user._id,
+      id: user.id,
     };
   }
 
@@ -279,7 +279,7 @@ export class UserAdminController {
   @Patch('/update/:user/inactive')
   async inactive(@GetUser() user: IUserEntity): Promise<void> {
     try {
-      await this.userService.inactive(user._id);
+      await this.userService.inactive(user.id);
     } catch (e) {
       this.debuggerService.error(
         'User inactive server internal error',
@@ -304,7 +304,7 @@ export class UserAdminController {
   @Patch('/update/:user/active')
   async active(@GetUser() user: IUserEntity): Promise<void> {
     try {
-      await this.userService.active(user._id);
+      await this.userService.active(user.id);
     } catch (e) {
       this.debuggerService.error(
         'User active server internal error',

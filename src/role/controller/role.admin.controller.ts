@@ -166,7 +166,7 @@ export class RoleAdminController {
       });
 
       return {
-        _id: create._id,
+        id: create.id,
       };
     } catch (err: any) {
       this.debuggerService.error(
@@ -193,7 +193,7 @@ export class RoleAdminController {
     @Body()
     { name, permissions, isAdmin }: RoleUpdateDto,
   ): Promise<IResponse> {
-    const check: boolean = await this.roleService.exists(name, role._id);
+    const check: boolean = await this.roleService.exists(name, role.id);
     if (check) {
       this.debuggerService.error(
         'Role Exist Error',
@@ -227,7 +227,7 @@ export class RoleAdminController {
     }
 
     try {
-      await this.roleService.update(role._id, {
+      await this.roleService.update(role.id, {
         name,
         permissions,
         isAdmin,
@@ -247,7 +247,7 @@ export class RoleAdminController {
     }
 
     return {
-      _id: role._id,
+      id: role.id,
     };
   }
 
@@ -258,7 +258,7 @@ export class RoleAdminController {
   @Delete('/delete/:role')
   async delete(@GetRole() role: IRoleEntity): Promise<void> {
     try {
-      await this.roleService.deleteOneById(role._id);
+      await this.roleService.deleteOneById(role.id);
     } catch (err) {
       this.debuggerService.error(
         'delete try catch',
@@ -281,7 +281,7 @@ export class RoleAdminController {
   @Patch('/update/:role/inactive')
   async inactive(@GetRole() role: IRoleEntity): Promise<void> {
     try {
-      await this.roleService.inactive(role._id);
+      await this.roleService.inactive(role.id);
     } catch (e) {
       this.debuggerService.error(
         'Role inactive server internal error',
@@ -306,7 +306,7 @@ export class RoleAdminController {
   @Patch('/update/:role/active')
   async active(@GetRole() role: IRoleEntity): Promise<void> {
     try {
-      await this.roleService.active(role._id);
+      await this.roleService.active(role.id);
     } catch (e) {
       this.debuggerService.error(
         'Role active server internal error',

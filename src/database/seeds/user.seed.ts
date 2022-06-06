@@ -36,7 +36,7 @@ export class UserSeed {
         password: password.passwordHash,
         passwordExpired: password.passwordExpired,
         mobileNumber: '08111111111',
-        role: role._id,
+        role: role.id,
         salt: password.salt,
       });
 

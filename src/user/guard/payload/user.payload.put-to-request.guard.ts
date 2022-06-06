@@ -11,7 +11,7 @@ export class UserPayloadPutToRequestGuard implements CanActivate {
     const { user } = request;
 
     const check: IUserEntity = await this.userService.findOneById<IUserEntity>(
-      user._id,
+      user.id,
       {
         populate: {
           role: true,
