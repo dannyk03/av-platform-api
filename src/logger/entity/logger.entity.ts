@@ -6,10 +6,10 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'logs' })
+@Entity({ name: 'loggers' })
 export class LoggerEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  _id: string;
 
   @Column({ enum: ENUM_LOGGER_LEVEL })
   level: string;
