@@ -1,3 +1,4 @@
+import { RouterTestModule } from '@/router/router.test.module';
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { RouterAdminModule } from 'src/router/router.admin.module';
@@ -19,6 +20,7 @@ export class AppRouterModule {
           RouterPublicModule,
           RouterAdminModule,
           RouterCallbackModule,
+          RouterTestModule,
           RouterModule.register([
             {
               path: '/',
@@ -35,6 +37,10 @@ export class AppRouterModule {
             {
               path: '/callback',
               module: RouterCallbackModule,
+            },
+            {
+              path: '/test',
+              module: RouterTestModule,
             },
           ]),
         ],

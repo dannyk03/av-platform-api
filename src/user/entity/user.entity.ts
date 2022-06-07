@@ -7,13 +7,17 @@ import {
   Index,
   BeforeInsert,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { RoleEntity } from '@/role/entity/role.entity';
+import { BaseEntity } from '@/database/entities/base.entity';
 
 @Entity({ name: 'users' })
-export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class UserEntity extends BaseEntity {
+  // constructor(user?: Partial<UserEntity>) {
+  //   super();
+  //   Object.assign(this, user);
+  // }
 
   @Column()
   firstName?: string;
@@ -33,13 +37,6 @@ export class UserEntity {
   })
   email: string;
 
-  // @Column({
-  //   type: Types.ObjectId,
-  //   ref: RoleEntity.name,
-  // })
-  @ManyToMany(() => RoleEntity)
-  role: RoleEntity;
-
   @Column()
   password: string;
 
@@ -54,9 +51,20 @@ export class UserEntity {
   })
   isActive: boolean;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ManyToMany(() => RoleEntity, (role) => role.id, {
+    eager: true,
+    cascade: false,
+  })
+  @JoinTable({
+    name: 'users_roles',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  roles: RoleEntity[];
 }

@@ -46,64 +46,64 @@ export class PermissionAdminController {
     private readonly permissionService: PermissionService,
   ) {}
 
-  @ResponsePaging('permission.list')
-  @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
-  @Get('/list')
-  async list(
-    @Query()
-    {
-      page,
-      perPage,
-      sort,
-      search,
-      availableSort,
-      availableSearch,
-      isActive,
-    }: PermissionListDto,
-  ): Promise<IResponsePaging> {
-    const skip: number = await this.paginationService.skip(page, perPage);
-    const find: Record<string, any> = {
-      isActive: {
-        $in: isActive,
-      },
-    };
-    if (search) {
-      find['$or'] = [
-        {
-          name: {
-            $regex: new RegExp(search),
-            $options: 'i',
-          },
-        },
-      ];
-    }
+  // @ResponsePaging('permission.list')
+  // @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
+  // @Get('/list')
+  // async list(
+  //   @Query()
+  //   {
+  //     page,
+  //     perPage,
+  //     sort,
+  //     search,
+  //     availableSort,
+  //     availableSearch,
+  //     isActive,
+  //   }: PermissionListDto,
+  // ): Promise<IResponsePaging> {
+  //   const skip: number = await this.paginationService.skip(page, perPage);
+  //   const find: Record<string, any> = {
+  //     isActive: {
+  //       $in: isActive,
+  //     },
+  //   };
+  //   if (search) {
+  //     find['$or'] = [
+  //       {
+  //         name: {
+  //           $regex: new RegExp(search),
+  //           $options: 'i',
+  //         },
+  //       },
+  //     ];
+  //   }
 
-    const permissions: PermissionEntity[] =
-      await this.permissionService.findAll(find, {
-        skip: skip,
-        limit: perPage,
-        sort,
-      });
+  // const permissions: PermissionEntity[] =
+  // await this.permissionService.findAll(find, {
+  //   skip: skip,
+  //   limit: perPage,
+  //   sort,
+  // });
 
-    const totalData: number = await this.permissionService.getTotal(find);
-    const totalPage: number = await this.paginationService.totalPage(
-      totalData,
-      perPage,
-    );
+  //   const totalData: number = await this.permissionService.getTotal(find);
+  //   const totalPage: number = await this.paginationService.totalPage(
+  //     totalData,
+  //     perPage,
+  //   );
 
-    const data: PermissionListSerialization[] =
-      await this.permissionService.serializationList(permissions);
+  //   const data: PermissionListSerialization[] =
+  //     await this.permissionService.serializationList(permissions);
 
-    return {
-      totalData,
-      totalPage,
-      currentPage: page,
-      perPage,
-      availableSearch,
-      availableSort,
-      data,
-    };
-  }
+  //   return {
+  //     totalData,
+  //     totalPage,
+  //     currentPage: page,
+  //     perPage,
+  //     availableSearch,
+  //     availableSort,
+  //     data,
+  //   };
+  // }
 
   @Response('permission.get')
   @PermissionGetGuard()

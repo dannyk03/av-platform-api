@@ -5,7 +5,7 @@ import { IPermission } from '../permission.interface';
 import { PermissionEntity } from '../entity/permission.entity';
 import { PermissionGetSerialization } from '../serialization/permission.get.serialization';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionNames } from '@/database';
 import { IDatabaseFindAllOptions } from '@/database/database.interface';
@@ -18,18 +18,16 @@ export class PermissionService {
   ) {}
 
   async findAll(
-    find?: Record<string, any>,
-    options?: IDatabaseFindAllOptions,
-  ): Promise<any | any[]> {
-    // const findAll = this.permissionModel.find(find);
-    // if (options && options.limit !== undefined && options.skip !== undefined) {
-    //   findAll.limit(options.limit).skip(options.skip);
-    // }
-    // if (options && options.sort) {
-    //   findAll.sort(options.sort);
-    // }
-    // return findAll.lean();
+    find?: FindManyOptions<PermissionEntity>,
+  ): Promise<PermissionEntity[]> {
+    return this.permissionRepository.find(find);
   }
+
+  // async findAllBySlug(
+  //   slugs: FindManyOptions<PermissionEntity>,
+  // ): Promise<PermissionEntity[]> {
+  //   return this.permissionRepository.find(find);
+  // }
 
   async findOneById(id: string): Promise<any> {
     // return this.permissionModel.findById(id).lean();

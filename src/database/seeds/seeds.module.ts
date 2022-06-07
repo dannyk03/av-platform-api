@@ -15,14 +15,14 @@ import { AuthApiSeed } from './auth.api.seed';
     CoreModule,
     CommandModule,
     PermissionModule,
+    RoleModule,
     // AuthModule,
     // UserModule,
-    // RoleModule,
   ],
   providers: [
-    // AuthApiSeed,
     PermissionSeed,
-    // RoleSeed,
+    RoleSeed,
+    // AuthApiSeed,
     //  UserSeed
   ],
   exports: [],

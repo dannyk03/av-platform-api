@@ -4,9 +4,10 @@ import {
   IsNotEmpty,
   MaxLength,
   MinLength,
-  IsMongoId,
+  IsEnum,
   IsBoolean,
 } from 'class-validator';
+import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
 
 export class RoleCreateDto {
   @IsString()
@@ -16,11 +17,11 @@ export class RoleCreateDto {
   @Type(() => String)
   readonly name: string;
 
-  @IsMongoId({ each: true })
+  @IsEnum(ENUM_PERMISSIONS, { each: true })
   @IsNotEmpty()
-  readonly permissions: string[];
+  readonly permissions: ENUM_PERMISSIONS[];
 
-  @IsBoolean()
-  @IsNotEmpty()
-  readonly isAdmin: boolean;
+  // @IsBoolean()
+  // @IsNotEmpty()
+  // readonly isAdmin: boolean;
 }

@@ -6,6 +6,9 @@ import { RoleBulkService } from 'src/role/service/role.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { PermissionEntity } from '@/permission/entity/permission.entity';
 
+const ROLES_AND_PERMISSIONS = {};
+ROLES_AND_PERMISSIONS['super-admin'] = [];
+
 @Injectable()
 export class RoleSeed {
   constructor(
@@ -20,24 +23,20 @@ export class RoleSeed {
   })
   async insert(): Promise<void> {
     const permissions: PermissionEntity[] =
-      await this.permissionService.findAll({
-        slug: { $in: Object.values(ENUM_PERMISSIONS) },
-      });
+      await this.permissionService.findAll();
 
     try {
-      const permissionsMap = permissions.map((val) => val.id);
-      await this.roleBulkService.createMany([
-        {
-          name: 'admin',
-          permissions: permissionsMap,
-          isAdmin: true,
-        },
-        {
-          name: 'user',
-          permissions: [],
-          isAdmin: false,
-        },
-      ]);
+      // const permissionsMap = permissions.map((val) => val.id);
+      // await this.roleBulkService.createMany([
+      //   {
+      //     name: 'admin',
+      //     permissions: permissionsMap,
+      //   },
+      //   {
+      //     name: 'user',
+      //     permissions: [],
+      //   },
+      // ]);
 
       this.debuggerService.debug('Insert Role Succeed', 'RoleSeed', 'insert');
     } catch (e) {

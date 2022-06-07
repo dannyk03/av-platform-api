@@ -3,12 +3,16 @@ import { Injectable } from '@nestjs/common';
 import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import { PermissionBulkService } from 'src/permission/service/permission.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { PermissionService } from '@/permission/service/permission.service';
+import { In } from 'typeorm';
+import { PermissionEntity } from '@/permission/entity/permission.entity';
 
 @Injectable()
 export class PermissionSeed {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly permissionBulkService: PermissionBulkService,
+    private readonly permissionService: PermissionService,
   ) {}
 
   @Command({
@@ -17,12 +21,34 @@ export class PermissionSeed {
   })
   async insert(): Promise<void> {
     try {
-      const permissions = Object.values(ENUM_PERMISSIONS).map((val) => ({
-        slug: val,
-        description: 'Seed permission',
-      }));
+      const oldPermissions = await this.permissionService.findAll({});
+      const oldPermissionsSlugs = oldPermissions.map(({ slug }) => slug);
+      const systemPermissionSlugs = Object.values(ENUM_PERMISSIONS);
 
-      await this.permissionBulkService.createMany(permissions);
+      const permissions = oldPermissions.map((permission) => {
+        const { slug, isActive } = permission;
+        if (
+          isActive &&
+          !systemPermissionSlugs.includes(slug as ENUM_PERMISSIONS)
+        ) {
+          permission.isActive = false;
+        }
+        return permission;
+      });
+
+      systemPermissionSlugs.forEach((slug) => {
+        if (!oldPermissionsSlugs.includes(slug)) {
+          permissions.push(
+            new PermissionEntity({
+              slug,
+              isActive: true,
+              description: 'Seed permission',
+            }),
+          );
+        }
+      });
+
+      await this.permissionBulkService.saveMany(permissions);
 
       this.debuggerService.debug(
         'Insert Permission Succeed',

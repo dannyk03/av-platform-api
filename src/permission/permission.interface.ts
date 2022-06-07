@@ -1,7 +1,13 @@
 export interface IPermission {
   slug: string;
   description?: string;
-  isActive?: boolean;
+  isActive: boolean;
 }
 
-export type IPermissionCreate = Omit<IPermission, 'code'>;
+// export interface IPermissionCreate {
+//   isActive?: boolean;
+// }
+
+export interface IPermissionCreate extends Omit<IPermission, 'isActive'> {
+  isActive?: boolean;
+}

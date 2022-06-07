@@ -1,3 +1,4 @@
+import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
 import {
   Entity,
@@ -10,33 +11,19 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'permissions' })
-export class PermissionEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class PermissionEntity extends BaseEntity {
+  constructor(permission?: Partial<PermissionEntity>) {
+    super();
+    Object.assign(this, permission);
+  }
 
   @Index('permission_slug_index')
   @Column({
     update: false,
     unique: true,
+    length: 20,
   })
   slug: string;
-
-  // @Column({ unique: true })
-  // name: string;
-
-  // @ManyToMany(() => Role , (role) => role.id)
-  // @JoinTable({
-  //   name: 'Permission_Role',
-  //   joinColumn: {
-  //     name: 'permissionId',
-  //     referencedColumnName: 'id'
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'roleId',
-  //     referencedColumnName: 'id'
-  //   }
-  // })
-  // roles: Role[];
 
   @Column({
     default: true,
@@ -47,12 +34,6 @@ export class PermissionEntity {
     nullable: true,
   })
   description?: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   @BeforeInsert()
   beforeInsert() {

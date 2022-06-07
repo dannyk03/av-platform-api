@@ -9,22 +9,27 @@ import {
   JoinTable,
   ManyToMany,
 } from 'typeorm';
+import { BaseEntity } from '@/database/entities/base.entity';
 import { PermissionEntity } from '@/permission/entity/permission.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
 
 @Entity({ name: 'roles' })
-export class RoleEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class RoleEntity extends BaseEntity {
+  // constructor(role?: Partial<RoleEntity>) {
+  //   super();
+  //   Object.assign(this, role);
+  // }
 
   @Index('role_slug_index')
   @Column({
+    update: false,
     unique: true,
+    length: 20,
   })
   slug: string;
 
   @JoinTable({
-    name: 'role_permission',
+    name: 'roles_permissions',
     joinColumn: {
       name: 'role_id',
       referencedColumnName: 'id',
@@ -34,24 +39,33 @@ export class RoleEntity {
       referencedColumnName: 'id',
     },
   })
-  @ManyToMany(() => PermissionEntity, (role) => role.id)
+  @ManyToMany(() => PermissionEntity, (permission) => permission.id, {
+    eager: true,
+    cascade: false,
+  })
   permissions: PermissionEntity[];
+
+  @ManyToMany(
+    () => PermissionEntity,
+    //  (permission) => permission.role
+  )
+  @JoinTable({
+    name: 'role_permission',
+    joinColumn: {
+      name: 'roleId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'permissionId',
+      referencedColumnName: 'id',
+    },
+  })
+  permission: PermissionEntity[];
 
   @Column({
     default: true,
   })
   isActive: boolean;
-
-  // @Column({
-  //   default: false,
-  // })
-  // isAdmin: boolean;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   @BeforeInsert()
   beforeInsert() {

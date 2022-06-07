@@ -70,7 +70,7 @@ export class RoleService {
     return false;
   }
 
-  async create({ name, permissions, isAdmin }: RoleCreateDto): Promise<any> {
+  async create({ name, permissions }: RoleCreateDto): Promise<any> {
     // const create: RoleDocument = new this.roleRepository({
     //   name,
     //   permissions: permissions.map((val) => new Types.ObjectId(val)),
@@ -80,10 +80,7 @@ export class RoleService {
     // return create.save();
   }
 
-  async update(
-    id: string,
-    { name, permissions, isAdmin }: RoleUpdateDto,
-  ): Promise<any> {
+  async update(id: string, { name, permissions }: RoleUpdateDto): Promise<any> {
     // const update: RoleDocument = await this.roleRepository.findById(id);
     // update.name = name;
     // update.permissions = permissions.map((val) => new Types.ObjectId(val));

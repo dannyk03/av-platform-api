@@ -8,11 +8,22 @@ export enum ENUM_PERMISSIONS {
   ROLE_UPDATE = 'role-update',
   ROLE_READ = 'role-read',
   ROLE_DELETE = 'role-delete',
+  // ROLE_MANAGE = 'role-manage',
+  // ROLE_MANAGE1 = 'role-manage1',
+  // ROLE_MANAGE2 = 'role Manage2',
+
+  ORGANIZATION_CREATE = 'organization-create',
+  ORGANIZATION_UPDATE = 'organization-update',
+  ORGANIZATION_READ = 'organization-read',
+  ORGANIZATION_DELETE = 'organization-delete',
 
   PERMISSION_READ = 'permission-read',
   PERMISSION_UPDATE = 'permission-update',
 
+  PAYMENT_CREATE = 'payment-create',
+  PAYMENT_UPDATE = 'payment-update',
   PAYMENT_READ = 'payment-read',
+  PAYMENT_DELETE = 'payment-delete',
 
   SETTING_READ = 'setting-read',
   SETTING_UPDATE = 'setting-update',

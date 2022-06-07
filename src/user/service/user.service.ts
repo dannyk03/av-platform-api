@@ -97,7 +97,7 @@ export class UserService {
 
   async findOne<T>(
     find?: Record<string, any>,
-    options?: IDatabaseFindOneOptions,
+    options?: IDatabaseFindOneOptions<UserEntity>,
   ): Promise<any> {
     // const user = this.userRepository.findOne(find);
     // if (options && options.populate && options.populate.role) {

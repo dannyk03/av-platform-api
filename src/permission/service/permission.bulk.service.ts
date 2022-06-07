@@ -20,6 +20,10 @@ export class PermissionBulkService {
     return this.permissionRepository.save(permissions);
   }
 
+  async saveMany(data: PermissionEntity[]): Promise<PermissionEntity[]> {
+    return this.permissionRepository.save(data);
+  }
+
   async deleteManyBySlug(slugs: string[]): Promise<DeleteResult> {
     return this.permissionRepository.delete({ slug: In(slugs) });
   }
