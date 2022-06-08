@@ -29,7 +29,7 @@ export class RoleEntity extends BaseEntity {
   slug: string;
 
   @JoinTable({
-    name: 'roles_permissions',
+    name: 'role_permission',
     joinColumn: {
       name: 'role_id',
       referencedColumnName: 'id',
@@ -44,23 +44,6 @@ export class RoleEntity extends BaseEntity {
     cascade: false,
   })
   permissions: PermissionEntity[];
-
-  @ManyToMany(
-    () => PermissionEntity,
-    //  (permission) => permission.role
-  )
-  @JoinTable({
-    name: 'role_permission',
-    joinColumn: {
-      name: 'roleId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'permissionId',
-      referencedColumnName: 'id',
-    },
-  })
-  permission: PermissionEntity[];
 
   @Column({
     default: true,

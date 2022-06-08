@@ -29,6 +29,12 @@ export class PermissionService {
   //   return this.permissionRepository.find(find);
   // }
 
+  createPermissionEntity(
+    permission: Partial<PermissionEntity>,
+  ): PermissionEntity {
+    return this.permissionRepository.create(permission);
+  }
+
   async findOneById(id: string): Promise<any> {
     // return this.permissionModel.findById(id).lean();
   }

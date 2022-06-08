@@ -29,6 +29,26 @@ export class TestingCommonController {
     @UserAgent() userAgent: IResult,
     @ApiKey() apiKey: IAuthApiPayload,
   ): Promise<IResponse> {
+    const activePermissions: PermissionEntity[] =
+      await this.permissionService.findAll({ where: { isActive: true } });
+
+    try {
+      // const permissionsMap = permissions.map((val) => val.id);
+      // await this.roleBulkService.createMany([
+      //   {
+      //     name: 'admin',
+      //     permissions: permissionsMap,
+      //   },
+      //   {
+      //     name: 'user',
+      //     permissions: [],
+      //   },
+      // ]);
+
+      this.debuggerService.debug('Insert Role Succeed', 'RoleSeed', 'insert');
+    } catch (e) {
+      this.debuggerService.error(e.message, 'RoleSeed', 'insert');
+    }
     return { userAgent, apiKey };
   }
 }

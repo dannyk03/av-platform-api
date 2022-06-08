@@ -8,9 +8,6 @@ export enum ENUM_PERMISSIONS {
   ROLE_UPDATE = 'role-update',
   ROLE_READ = 'role-read',
   ROLE_DELETE = 'role-delete',
-  // ROLE_MANAGE = 'role-manage',
-  // ROLE_MANAGE1 = 'role-manage1',
-  // ROLE_MANAGE2 = 'role Manage2',
 
   ORGANIZATION_CREATE = 'organization-create',
   ORGANIZATION_UPDATE = 'organization-update',
@@ -28,6 +25,14 @@ export enum ENUM_PERMISSIONS {
   SETTING_READ = 'setting-read',
   SETTING_UPDATE = 'setting-update',
 }
+
+export const enum ENUM_PERMISSION_GROUPS {
+  SYSTEM = 'system',
+}
+
+export const PERMISSIONS_BY_GROUP = {
+  [ENUM_PERMISSION_GROUPS.SYSTEM]: Object.values(ENUM_PERMISSIONS),
+};
 
 export const PERMISSION_META_KEY = 'PermissionMetaKey';
 

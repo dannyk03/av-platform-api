@@ -1,20 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1654557556460 implements MigrationInterface {
-  name = 'migration1654557556460';
+export class migration1654690178886 implements MigrationInterface {
+  name = 'migration1654690178886';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            CREATE TABLE "loggers" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "level" character varying NOT NULL,
-                "action" character varying NOT NULL,
-                "description" character varying,
-                "tags" text array NOT NULL DEFAULT '{}',
-                "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
-            )
-        `);
     await queryRunner.query(`
             CREATE TABLE "authapis" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -32,10 +21,21 @@ export class migration1654557556460 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
+            CREATE TABLE "loggers" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" text array NOT NULL DEFAULT '{}',
+                "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
             CREATE TABLE "permissions" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "slug" character varying(20) NOT NULL,
                 "is_active" boolean NOT NULL DEFAULT true,
                 "description" character varying,
@@ -48,9 +48,9 @@ export class migration1654557556460 implements MigrationInterface {
         `);
     await queryRunner.query(`
             CREATE TABLE "roles" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "slug" character varying(20) NOT NULL,
                 "is_active" boolean NOT NULL DEFAULT true,
                 CONSTRAINT "uq_roles_slug" UNIQUE ("slug"),
@@ -62,9 +62,9 @@ export class migration1654557556460 implements MigrationInterface {
         `);
     await queryRunner.query(`
             CREATE TABLE "users" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "first_name" character varying NOT NULL,
                 "last_name" character varying NOT NULL,
                 "mobile_number" character varying NOT NULL,
@@ -72,7 +72,9 @@ export class migration1654557556460 implements MigrationInterface {
                 "password" character varying NOT NULL,
                 "password_expired" TIMESTAMP NOT NULL,
                 "salt" character varying NOT NULL,
-                "is_active" boolean NOT NULL DEFAULT true,
+                "is_active" boolean NOT NULL DEFAULT false,
+                "email_verified" boolean NOT NULL DEFAULT false,
+                "email_verification_token" character varying NOT NULL,
                 CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
                 CONSTRAINT "uq_users_email" UNIQUE ("email"),
                 CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
@@ -85,79 +87,79 @@ export class migration1654557556460 implements MigrationInterface {
             CREATE INDEX "user_email_index" ON "users" ("email")
         `);
     await queryRunner.query(`
-            CREATE TABLE "roles_permissions" (
+            CREATE TABLE "role_permission" (
                 "role_id" uuid NOT NULL,
                 "permission_id" uuid NOT NULL,
-                CONSTRAINT "pk_roles_permissions_permission_id_role_id" PRIMARY KEY ("role_id", "permission_id")
+                CONSTRAINT "pk_role_permission_permission_id_role_id" PRIMARY KEY ("role_id", "permission_id")
             )
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_roles_permissions_role_id" ON "roles_permissions" ("role_id")
+            CREATE INDEX "idx_role_permission_role_id" ON "role_permission" ("role_id")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_roles_permissions_permission_id" ON "roles_permissions" ("permission_id")
+            CREATE INDEX "idx_role_permission_permission_id" ON "role_permission" ("permission_id")
         `);
     await queryRunner.query(`
-            CREATE TABLE "users_roles" (
+            CREATE TABLE "user_role" (
                 "user_id" uuid NOT NULL,
                 "role_id" uuid NOT NULL,
-                CONSTRAINT "pk_users_roles_role_id_user_id" PRIMARY KEY ("user_id", "role_id")
+                CONSTRAINT "pk_user_role_role_id_user_id" PRIMARY KEY ("user_id", "role_id")
             )
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_roles_user_id" ON "users_roles" ("user_id")
+            CREATE INDEX "idx_user_role_user_id" ON "user_role" ("user_id")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_roles_role_id" ON "users_roles" ("role_id")
+            CREATE INDEX "idx_user_role_role_id" ON "user_role" ("role_id")
         `);
     await queryRunner.query(`
-            ALTER TABLE "roles_permissions"
-            ADD CONSTRAINT "fk_roles_permissions_role_id" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ALTER TABLE "role_permission"
+            ADD CONSTRAINT "fk_role_permission_role_id" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
     await queryRunner.query(`
-            ALTER TABLE "roles_permissions"
-            ADD CONSTRAINT "fk_roles_permissions_permission_id" FOREIGN KEY ("permission_id") REFERENCES "permissions"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ALTER TABLE "role_permission"
+            ADD CONSTRAINT "fk_role_permission_permission_id" FOREIGN KEY ("permission_id") REFERENCES "permissions"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
     await queryRunner.query(`
-            ALTER TABLE "users_roles"
-            ADD CONSTRAINT "fk_users_roles_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ALTER TABLE "user_role"
+            ADD CONSTRAINT "fk_user_role_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
     await queryRunner.query(`
-            ALTER TABLE "users_roles"
-            ADD CONSTRAINT "fk_users_roles_role_id" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ALTER TABLE "user_role"
+            ADD CONSTRAINT "fk_user_role_role_id" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            ALTER TABLE "users_roles" DROP CONSTRAINT "fk_users_roles_role_id"
+            ALTER TABLE "user_role" DROP CONSTRAINT "fk_user_role_role_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users_roles" DROP CONSTRAINT "fk_users_roles_user_id"
+            ALTER TABLE "user_role" DROP CONSTRAINT "fk_user_role_user_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "roles_permissions" DROP CONSTRAINT "fk_roles_permissions_permission_id"
+            ALTER TABLE "role_permission" DROP CONSTRAINT "fk_role_permission_permission_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "roles_permissions" DROP CONSTRAINT "fk_roles_permissions_role_id"
+            ALTER TABLE "role_permission" DROP CONSTRAINT "fk_role_permission_role_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_roles_role_id"
+            DROP INDEX "public"."idx_user_role_role_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_roles_user_id"
+            DROP INDEX "public"."idx_user_role_user_id"
         `);
     await queryRunner.query(`
-            DROP TABLE "users_roles"
+            DROP TABLE "user_role"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_roles_permissions_permission_id"
+            DROP INDEX "public"."idx_role_permission_permission_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_roles_permissions_role_id"
+            DROP INDEX "public"."idx_role_permission_role_id"
         `);
     await queryRunner.query(`
-            DROP TABLE "roles_permissions"
+            DROP TABLE "role_permission"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."user_email_index"
@@ -181,10 +183,10 @@ export class migration1654557556460 implements MigrationInterface {
             DROP TABLE "permissions"
         `);
     await queryRunner.query(`
-            DROP TABLE "authapis"
+            DROP TABLE "loggers"
         `);
     await queryRunner.query(`
-            DROP TABLE "loggers"
+            DROP TABLE "authapis"
         `);
   }
 }

@@ -6,9 +6,6 @@ import { RoleBulkService } from 'src/role/service/role.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { PermissionEntity } from '@/permission/entity/permission.entity';
 
-const ROLES_AND_PERMISSIONS = {};
-ROLES_AND_PERMISSIONS['super-admin'] = [];
-
 @Injectable()
 export class RoleSeed {
   constructor(

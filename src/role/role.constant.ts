@@ -1,3 +1,29 @@
+import {
+  PERMISSIONS_BY_GROUP,
+  ENUM_PERMISSION_GROUPS,
+} from '@/permission/permission.constant';
+
+const ROLES = {
+  SUPER_ADMIN: 'super-admin',
+  OWNER: 'owner',
+  ADMIN: 'admin',
+  MANAGER: 'manager',
+};
+
+const enum ACTIONS {
+  read,
+  create,
+  update,
+  delete,
+  manage,
+}
+
+const ROLES_AND_PERMISSIONS = {
+  [ROLES.SUPER_ADMIN]: PERMISSIONS_BY_GROUP[ENUM_PERMISSION_GROUPS.SYSTEM],
+};
+
+// ROLES_AND_PERMISSIONS[ROLES.SUPER_ADMIN]; =
+
 export const ROLE_DEFAULT_SORT = 'name@asc';
 export const ROLE_DEFAULT_PAGE = 1;
 export const ROLE_DEFAULT_PER_PAGE = 10;

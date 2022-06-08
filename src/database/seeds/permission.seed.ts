@@ -4,7 +4,6 @@ import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import { PermissionBulkService } from 'src/permission/service/permission.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { PermissionService } from '@/permission/service/permission.service';
-import { In } from 'typeorm';
 import { PermissionEntity } from '@/permission/entity/permission.entity';
 
 @Injectable()
@@ -39,7 +38,7 @@ export class PermissionSeed {
       systemPermissionSlugs.forEach((slug) => {
         if (!oldPermissionsSlugs.includes(slug)) {
           permissions.push(
-            new PermissionEntity({
+            this.permissionService.createPermissionEntity({
               slug,
               isActive: true,
               description: 'Seed permission',

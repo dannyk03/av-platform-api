@@ -12,10 +12,10 @@ import {
 
 @Entity({ name: 'permissions' })
 export class PermissionEntity extends BaseEntity {
-  constructor(permission?: Partial<PermissionEntity>) {
-    super();
-    Object.assign(this, permission);
-  }
+  // constructor(permission?: Partial<PermissionEntity>) {
+  //   super();
+  //   Object.assign(this, permission);
+  // }
 
   @Index('permission_slug_index')
   @Column({

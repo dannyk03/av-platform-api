@@ -35,28 +35,36 @@ export class UserEntity extends BaseEntity {
   @Column({
     unique: true,
   })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column()
-  passwordExpired: Date;
+  passwordExpired!: Date;
 
   @Column()
-  salt: string;
+  salt!: string;
 
   @Column({
-    default: true,
+    default: false,
   })
-  isActive: boolean;
+  isActive!: boolean;
+
+  @Column({
+    default: false,
+  })
+  emailVerified: boolean;
+
+  @Column()
+  emailVerificationToken: string;
 
   @ManyToMany(() => RoleEntity, (role) => role.id, {
     eager: true,
     cascade: false,
   })
   @JoinTable({
-    name: 'users_roles',
+    name: 'user_role',
     joinColumn: {
       name: 'user_id',
       referencedColumnName: 'id',
@@ -66,5 +74,5 @@ export class UserEntity extends BaseEntity {
       referencedColumnName: 'id',
     },
   })
-  roles: RoleEntity[];
+  roles!: RoleEntity[];
 }
