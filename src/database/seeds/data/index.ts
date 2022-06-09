@@ -1,1 +1,1 @@
-// exporty * from "./system-seed.data"
+export * from './super-seed.data';

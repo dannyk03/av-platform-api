@@ -1,4 +1,5 @@
 export enum AcpBaseSubjectEnum {
+  System = 'System',
   Organization = 'Organization',
   User = 'User',
   Policy = 'Policy',
@@ -7,6 +8,7 @@ export enum AcpBaseSubjectEnum {
   Ability = 'Ability',
   CreditCard = 'CreditCard',
   Invoice = 'Invoice',
+  Order = 'Order',
 }
 
 export enum AcpSubjectGroupEnum {
@@ -27,12 +29,14 @@ export const AcpGroupedSubjects = Object.freeze({
     AcpBaseSubjectEnum.User,
   ],
   [AcpSubjectGroupEnum.Security]: [
+    AcpSubjectGroupEnum.Security,
     AcpBaseSubjectEnum.Role,
     AcpBaseSubjectEnum.Policy,
     AcpBaseSubjectEnum.Subject,
     AcpBaseSubjectEnum.Ability,
   ],
   [AcpSubjectGroupEnum.Payment]: [
+    AcpSubjectGroupEnum.Payment,
     AcpBaseSubjectEnum.CreditCard,
     AcpBaseSubjectEnum.Invoice,
   ],
@@ -57,7 +61,7 @@ export const AcpSubjectTypeDict = Object.freeze({
   ...AcpCompositeSubjectEnum,
 });
 
-export type AcpSubjectTypeEnum = AcpBaseSubjectEnum | AcpCompositeSubjectEnum;
+export type AcpSubjectType = AcpBaseSubjectEnum | AcpCompositeSubjectEnum;
 
 export const AcpSubjectDict = Object.freeze({
   ...AcpBaseSubjectEnum,

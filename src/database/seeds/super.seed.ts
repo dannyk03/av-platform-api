@@ -1,7 +1,7 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { Organization } from '@/organization/organization.entity';
+import { Organization } from '@/organization/entity/organization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/user/entity/user.entity';
@@ -10,6 +10,7 @@ import { AcpRole } from '@acp/role';
 import { AcpSubject } from '@acp/subject';
 import { AcpAbility } from '@acp/ability';
 import { AuthService } from '@/auth/service/auth.service';
+import { superSeedData } from './data';
 
 @Injectable()
 export class SuperSeed {
@@ -36,11 +37,52 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
-      const systemOrganization = this.organizationRepository.create({
-        name: 'system',
+      const { salt, passwordExpired, passwordHash } =
+        await this.authService.createPassword(
+          process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+        );
+      const organizationOwner = this.userRepository.create({
+        ...superSeedData.owner,
+        mobileNumber: '+972546000000',
+        password: passwordHash,
+        salt,
+        passwordExpired,
       });
 
-      //   systemOrganization.roles = "fg"
+      const organizationRoles = superSeedData.roles.map((role) => {
+        const rolePolicies = role.policies.map((policy) => {
+          const policySubjects = policy.subjects.map((subject) => {
+            debugger;
+            const subjectAbilities = subject.abilities.map((ability) => {
+              return this.abilityRepository.create({
+                type: ability.type,
+                action: ability.action,
+              });
+            });
+            return this.subjectRepository.create({
+              type: subject.type,
+              sensitivityLevel: subject.sensitivityLevel,
+              abilities: subjectAbilities,
+            });
+          });
+          return this.policyRepository.create({
+            subjects: policySubjects,
+            sensitivityLevel: policy.sensitivityLevel,
+          });
+        });
+        return this.roleRepository.create({
+          name: role.name,
+          isActive: true,
+          policies: rolePolicies,
+        });
+      });
+
+      const systemOrganization = this.organizationRepository.create({
+        ...superSeedData.organization,
+        owner: organizationOwner,
+        roles: organizationRoles,
+      });
+      this.organizationRepository.save(systemOrganization);
 
       this.debuggerService.debug('Insert Super Succeed', 'SuperSeed', 'insert');
     } catch (e) {
