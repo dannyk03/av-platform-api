@@ -28,12 +28,12 @@ import {
   AuthJwtGuard,
   AuthRefreshJwtGuard,
   Token,
-  User,
+  ReqUser,
 } from '../auth.decorator';
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { LoggerService } from 'src/logger/service/logger.service';
-import { UserEntity } from '@/user/entity/user.entity';
+import { User } from '@/user/entity/user.entity';
 import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthChangePasswordDto } from '../dto/auth.change-password.dto';
@@ -154,7 +154,7 @@ export class AuthCommonController {
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   async refresh(
-    @User()
+    @ReqUser()
     { id, rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
@@ -235,9 +235,9 @@ export class AuthCommonController {
   @Patch('/change-password')
   async changePassword(
     @Body() body: AuthChangePasswordDto,
-    @User('id') id: string,
+    @ReqUser('id') id: string,
   ): Promise<void> {
-    const user: UserEntity = await this.userService.findOneById(id);
+    const user: User = await this.userService.findOneById(id);
     if (!user) {
       this.debuggerService.error(
         'User not found',

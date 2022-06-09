@@ -10,8 +10,8 @@ import {
   BeforeInsert,
 } from 'typeorm';
 
-@Entity({ name: 'permissions' })
-export class PermissionEntity extends BaseEntity {
+@Entity()
+export class Permission extends BaseEntity<Permission> {
   // constructor(permission?: Partial<PermissionEntity>) {
   //   super();
   //   Object.assign(this, permission);

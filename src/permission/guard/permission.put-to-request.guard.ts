@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { PermissionEntity } from '../entity/permission.entity';
+import { Permission } from '../entity/permission.entity';
 import { PermissionService } from '../service/permission.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class PermissionPutToRequestGuard implements CanActivate {
     const { params } = request;
     const { permission } = params;
 
-    const check: PermissionEntity = await this.permissionService.findOneById(
+    const check: Permission = await this.permissionService.findOneById(
       permission,
     );
     request.__permission = check;

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
-import { RoleEntity } from '@/role/entity/role.entity';
+import { Role } from '@/role/entity/role.entity';
 import { RoleService } from 'src/role/service/role.service';
 import { UserService } from 'src/user/service/user.service';
 import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
@@ -38,104 +38,105 @@ export class AuthPublicController {
     @Body()
     { email, mobileNumber, ...body }: AuthSignUpDto,
   ): Promise<IResponse> {
-    const role: RoleEntity = await this.roleService.findOne<RoleEntity>({
-      name: 'user',
-    });
-    if (!role) {
-      this.debuggerService.error('Role not found', 'AuthController', 'signUp');
+    // const role: Role = await this.roleService.findOne<Role>({
+    //   name: 'user',
+    // });
+    // if (!role) {
+    //   this.debuggerService.error('Role not found', 'AuthController', 'signUp');
 
-      throw new NotFoundException({
-        statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
-        message: 'role.error.notFound',
-      });
-    }
+    //   throw new NotFoundException({
+    //     statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+    //     message: 'role.error.notFound',
+    //   });
+    // }
 
-    const checkExist: IUserCheckExist = await this.userService.checkExist(
-      email,
-      mobileNumber,
-    );
+    // const checkExist: IUserCheckExist = await this.userService.checkExist(
+    //   email,
+    //   mobileNumber,
+    // );
 
-    if (checkExist.email && checkExist.mobileNumber) {
-      this.debuggerService.error(
-        'create user exist',
-        'UserController',
-        'create',
-      );
+    // if (checkExist.email && checkExist.mobileNumber) {
+    //   this.debuggerService.error(
+    //     'create user exist',
+    //     'UserController',
+    //     'create',
+    //   );
 
-      throw new BadRequestException({
-        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
-        message: 'user.error.exist',
-      });
-    } else if (checkExist.email) {
-      this.debuggerService.error(
-        'create user exist',
-        'UserController',
-        'create',
-      );
+    //   throw new BadRequestException({
+    //     statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+    //     message: 'user.error.exist',
+    //   });
+    // } else if (checkExist.email) {
+    //   this.debuggerService.error(
+    //     'create user exist',
+    //     'UserController',
+    //     'create',
+    //   );
 
-      throw new BadRequestException({
-        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
-        message: 'user.error.emailExist',
-      });
-    } else if (checkExist.mobileNumber) {
-      this.debuggerService.error(
-        'create user exist',
-        'UserController',
-        'create',
-      );
+    //   throw new BadRequestException({
+    //     statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+    //     message: 'user.error.emailExist',
+    //   });
+    // } else if (checkExist.mobileNumber) {
+    //   this.debuggerService.error(
+    //     'create user exist',
+    //     'UserController',
+    //     'create',
+    //   );
 
-      throw new BadRequestException({
-        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-        message: 'user.error.mobileNumberExist',
-      });
-    }
+    //   throw new BadRequestException({
+    //     statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+    //     message: 'user.error.mobileNumberExist',
+    //   });
+    // }
 
     try {
       const password = await this.authService.createPassword(body.password);
+      console.log({ password });
 
-      const create = await this.userService.create({
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email,
-        mobileNumber,
-        role: role.id,
-        password: password.passwordHash,
-        passwordExpired: password.passwordExpired,
-        salt: password.salt,
-      });
+      // const create = await this.userService.create({
+      //   firstName: body.firstName,
+      //   lastName: body.lastName,
+      //   email,
+      //   mobileNumber,
+      //   role: role.id,
+      //   password: password.passwordHash,
+      //   passwordExpired: password.passwordExpired,
+      //   salt: password.salt,
+      // });
 
-      const user: IUserEntity = await this.userService.findOneById<IUserEntity>(
-        create.id,
-        {
-          populate: {
-            role: true,
-            permission: true,
-          },
-        },
-      );
-      const safe: AuthLoginSerialization =
-        await this.authService.serializationLogin(user);
+      // const user: IUserEntity = await this.userService.findOneById<IUserEntity>(
+      //   create.id,
+      //   {
+      //     populate: {
+      //       role: true,
+      //       permission: true,
+      //     },
+      //   },
+      // );
+      // const safe: AuthLoginSerialization =
+      //   await this.authService.serializationLogin(user);
 
-      const payloadAccessToken: Record<string, any> =
-        await this.authService.createPayloadAccessToken(safe, false);
-      const payloadRefreshToken: Record<string, any> =
-        await this.authService.createPayloadRefreshToken(safe, false, {
-          loginDate: payloadAccessToken.loginDate,
-        });
+      // const payloadAccessToken: Record<string, any> =
+      //   await this.authService.createPayloadAccessToken(safe, false);
+      // const payloadRefreshToken: Record<string, any> =
+      //   await this.authService.createPayloadRefreshToken(safe, false, {
+      //     loginDate: payloadAccessToken.loginDate,
+      //   });
 
-      const accessToken: string = await this.authService.createAccessToken(
-        payloadAccessToken,
-      );
+      // const accessToken: string = await this.authService.createAccessToken(
+      //   payloadAccessToken,
+      // );
 
-      const refreshToken: string = await this.authService.createRefreshToken(
-        payloadRefreshToken,
-        false,
-      );
-
-      return {
-        accessToken,
-        refreshToken,
-      };
+      // const refreshToken: string = await this.authService.createRefreshToken(
+      //   payloadRefreshToken,
+      //   false,
+      // );
+      return {};
+      // return {
+      //   accessToken,
+      //   refreshToken,
+      // };
     } catch (err: any) {
       this.debuggerService.error(
         'Signup try catch',

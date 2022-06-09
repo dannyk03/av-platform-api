@@ -10,9 +10,9 @@ import { IAwsS3Response } from 'src/aws/aws.interface';
 import { IAuthPassword } from 'src/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
 import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
-import { UserEntity } from '../entity/user.entity';
-import { RoleEntity } from '@/role/entity/role.entity';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { User } from '../entity/user.entity';
+import { Role } from '@/role/entity/role.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 import {
   IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
@@ -29,8 +29,8 @@ export class UserService {
   private readonly uploadPath: string;
 
   constructor(
-    @InjectRepository(UserEntity, ConnectionNames.Default)
-    private userRepository: Repository<UserEntity>,
+    @InjectRepository(User, ConnectionNames.Default)
+    private userRepository: Repository<User>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,
   ) {
@@ -97,7 +97,7 @@ export class UserService {
 
   async findOne<T>(
     find?: Record<string, any>,
-    options?: IDatabaseFindOneOptions<UserEntity>,
+    options?: IDatabaseFindOneOptions<User>,
   ): Promise<any> {
     // const user = this.userRepository.findOne(find);
     // if (options && options.populate && options.populate.role) {

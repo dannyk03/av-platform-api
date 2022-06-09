@@ -7,7 +7,7 @@ import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { ApiKeyGuard } from './guard/api-key/auth.api-key.guard';
 import { ApiKeyStrategy } from './guard/api-key/auth.api-key.strategy';
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
-import { AuthApiEntity } from './entity/auth.api.entity';
+import { AuthApi } from './entity/auth.api.entity';
 import { AuthApiBulkService } from './service/auth.api.bulk.service';
 import { AuthApiService } from './service/auth.api.service';
 import { AuthService } from './service/auth.service';
@@ -35,6 +35,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   exports: [AuthService, AuthApiService, AuthApiBulkService],
   controllers: [],
-  imports: [TypeOrmModule.forFeature([AuthApiEntity], ConnectionNames.Default)],
+  imports: [TypeOrmModule.forFeature([AuthApi], ConnectionNames.Default)],
 })
 export class AuthModule {}

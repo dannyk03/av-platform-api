@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { RoleEntity } from '../entity/role.entity';
+import { Role } from '../entity/role.entity';
 import { IDatabaseFindAllOptions } from 'src/database/database.interface';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
@@ -13,8 +13,8 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(RoleEntity, ConnectionNames.Default)
-    private roleRepository: Repository<RoleEntity>,
+    @InjectRepository(Role, ConnectionNames.Default)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async findAll(
@@ -108,9 +108,7 @@ export class RoleService {
     return plainToInstance(RoleGetSerialization, data);
   }
 
-  async serializationList(
-    data: RoleEntity[],
-  ): Promise<RoleListSerialization[]> {
+  async serializationList(data: Role[]): Promise<RoleListSerialization[]> {
     return plainToInstance(RoleListSerialization, data);
   }
 }

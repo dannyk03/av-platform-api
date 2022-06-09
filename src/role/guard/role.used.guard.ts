@@ -7,7 +7,7 @@ import {
 import { ENUM_ROLE_STATUS_CODE_ERROR } from '../role.constant';
 import { UserService } from 'src/user/service/user.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { UserEntity } from '@/user/entity/user.entity';
+import { User } from '@/user/entity/user.entity';
 
 @Injectable()
 export class RoleUsedGuard implements CanActivate {
@@ -18,7 +18,7 @@ export class RoleUsedGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { __role } = context.switchToHttp().getRequest();
-    const check: UserEntity = await this.userService.findOne({
+    const check: User = await this.userService.findOne({
       role: __role.id,
     });
 

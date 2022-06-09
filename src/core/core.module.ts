@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MessageModule } from 'src/message/message.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { DebuggerModule } from 'src/debugger/debugger.module';
 import Configs from 'src/config/index';
@@ -17,7 +17,6 @@ import { ErrorModule } from 'src/utils/error/error.module';
 import { VersionModule } from 'src/utils/version/version.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from '@/database/service';
-import { DataSource } from 'typeorm';
 
 @Module({
   controllers: [],

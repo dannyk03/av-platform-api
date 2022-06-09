@@ -11,7 +11,7 @@ export class TypeormSnakeCaseNamingStrategy
   implements NamingStrategyInterface
 {
   tableName(className: string, userSpecifiedName: string): string {
-    return userSpecifiedName || snakeCase(className);
+    return userSpecifiedName || snakeCase(className) + 's';
   }
 
   columnName(

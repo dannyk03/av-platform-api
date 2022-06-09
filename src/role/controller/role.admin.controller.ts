@@ -39,8 +39,8 @@ import {
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { PaginationService } from 'src/utils/pagination/service/pagination.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { RoleEntity } from '../entity/role.entity';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Role } from '../entity/role.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 import { RoleListDto } from '../dto/role.list.dto';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { RoleUpdateDto } from '../dto/role.update.dto';
@@ -87,7 +87,7 @@ export class RoleAdminController {
       ];
     }
 
-    const roles: RoleEntity[] = await this.roleService.findAll(find, {
+    const roles: Role[] = await this.roleService.findAll(find, {
       skip: skip,
       limit: perPage,
       sort,
@@ -140,7 +140,7 @@ export class RoleAdminController {
     }
 
     for (const permission of permissions) {
-      const checkPermission: PermissionEntity =
+      const checkPermission: Permission =
         await this.permissionService.findOneById(permission);
 
       if (!checkPermission) {
@@ -188,7 +188,7 @@ export class RoleAdminController {
   @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
   @Put('/update/:role')
   async update(
-    @GetRole() role: RoleEntity,
+    @GetRole() role: Role,
     @Body()
     { name, permissions }: RoleUpdateDto,
   ): Promise<IResponse> {
@@ -207,7 +207,7 @@ export class RoleAdminController {
     }
 
     for (const permission of permissions) {
-      const checkPermission: PermissionEntity =
+      const checkPermission: Permission =
         await this.permissionService.findOneById(permission);
 
       if (!checkPermission) {

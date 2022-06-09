@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { RoleEntity } from '../entity/role.entity';
+import { Role } from '../entity/role.entity';
 import { RoleCreateDto } from '../dto/role.create.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,8 +9,8 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class RoleBulkService {
   constructor(
-    @InjectRepository(RoleEntity, ConnectionNames.Default)
-    private roleRepository: Repository<RoleEntity>,
+    @InjectRepository(Role, ConnectionNames.Default)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async deleteMany(find: Record<string, any>): Promise<any> {

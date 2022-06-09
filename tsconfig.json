@@ -21,7 +21,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@acp/*": ["src/access-control-policy/*"]
     }
   },
   "include": ["src", "test", "e2e", "integration"],

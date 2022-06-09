@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 
-import { UserEntity } from '../entity/user.entity';
+import { User } from '../entity/user.entity';
 
 @Injectable()
 export class UserBulkService {
   constructor(
-    @InjectRepository(UserEntity, ConnectionNames.Default)
-    private userRepository: Repository<UserEntity>,
+    @InjectRepository(User, ConnectionNames.Default)
+    private userRepository: Repository<User>,
   ) {}
 
   async deleteMany(find: Record<string, any>): Promise<DeleteResult | any> {

@@ -10,7 +10,7 @@ import { ENUM_PERMISSIONS } from '@/permission/permission.constant';
 import { PermissionBulkService } from '@/permission/service/permission.bulk.service';
 import { PermissionService } from '@/permission/service/permission.service';
 import { In } from 'typeorm';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -29,7 +29,7 @@ export class TestingCommonController {
     @UserAgent() userAgent: IResult,
     @ApiKey() apiKey: IAuthApiPayload,
   ): Promise<IResponse> {
-    const activePermissions: PermissionEntity[] =
+    const activePermissions: Permission[] =
       await this.permissionService.findAll({ where: { isActive: true } });
 
     try {

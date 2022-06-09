@@ -1,24 +1,9 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Index,
-  BeforeInsert,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
-import { RoleEntity } from '@/role/entity/role.entity';
+import { Entity, Column, Index, ManyToMany, JoinTable } from 'typeorm';
+import { AcpRole } from '@acp/role';
 import { BaseEntity } from '@/database/entities/base.entity';
 
-@Entity({ name: 'users' })
-export class UserEntity extends BaseEntity {
-  // constructor(user?: Partial<UserEntity>) {
-  //   super();
-  //   Object.assign(this, user);
-  // }
-
+@Entity()
+export class User extends BaseEntity<User> {
   @Column()
   firstName?: string;
 
@@ -29,7 +14,7 @@ export class UserEntity extends BaseEntity {
   @Column({
     unique: true,
   })
-  mobileNumber: string;
+  mobileNumber?: string;
 
   @Index('user_email_index')
   @Column({
@@ -54,14 +39,14 @@ export class UserEntity extends BaseEntity {
   @Column({
     default: false,
   })
-  emailVerified: boolean;
+  emailVerified!: boolean;
 
   @Column()
-  emailVerificationToken: string;
+  emailVerificationToken!: string;
 
-  @ManyToMany(() => RoleEntity, (role) => role.id, {
-    eager: true,
-    cascade: false,
+  @ManyToMany(() => AcpRole, (role) => role.id, {
+    // eager: true,
+    // cascade: false,
   })
   @JoinTable({
     name: 'user_role',
@@ -74,5 +59,5 @@ export class UserEntity extends BaseEntity {
       referencedColumnName: 'id',
     },
   })
-  roles!: RoleEntity[];
+  roles!: AcpRole[];
 }

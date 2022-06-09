@@ -63,7 +63,7 @@ export function AuthBasicGuard(): any {
 
 export const AuthExcludeApiKey = () => SetMetadata('excludeApiKey', true);
 
-export const User = createParamDecorator(
+export const ReqUser = createParamDecorator(
   (data: string, ctx: ExecutionContext): Record<string, any> => {
     const { user } = ctx.switchToHttp().getRequest();
     return data ? user[data] : user;

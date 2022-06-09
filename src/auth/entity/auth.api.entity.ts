@@ -8,8 +8,8 @@ import {
   BeforeInsert,
 } from 'typeorm';
 
-@Entity({ name: 'authapis' })
-export class AuthApiEntity {
+@Entity()
+export class AuthApi {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { IPermission } from '../permission.interface';
-import { PermissionEntity } from '../entity/permission.entity';
+import { Permission } from '../entity/permission.entity';
 import { PermissionGetSerialization } from '../serialization/permission.get.serialization';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -13,13 +13,11 @@ import { IDatabaseFindAllOptions } from '@/database/database.interface';
 @Injectable()
 export class PermissionService {
   constructor(
-    @InjectRepository(PermissionEntity, ConnectionNames.Default)
-    private permissionRepository: Repository<PermissionEntity>,
+    @InjectRepository(Permission, ConnectionNames.Default)
+    private permissionRepository: Repository<Permission>,
   ) {}
 
-  async findAll(
-    find?: FindManyOptions<PermissionEntity>,
-  ): Promise<PermissionEntity[]> {
+  async findAll(find?: FindManyOptions<Permission>): Promise<Permission[]> {
     return this.permissionRepository.find(find);
   }
 
@@ -29,9 +27,7 @@ export class PermissionService {
   //   return this.permissionRepository.find(find);
   // }
 
-  createPermissionEntity(
-    permission: Partial<PermissionEntity>,
-  ): PermissionEntity {
+  createPermissionEntity(permission: Partial<Permission>): Permission {
     return this.permissionRepository.create(permission);
   }
 
@@ -72,13 +68,13 @@ export class PermissionService {
   }
 
   async serializationGet(
-    data: PermissionEntity,
+    data: Permission,
   ): Promise<PermissionGetSerialization> {
     return plainToInstance(PermissionGetSerialization, data);
   }
 
   async serializationList(
-    data: PermissionEntity[],
+    data: Permission[],
   ): Promise<PermissionListSerialization[]> {
     return plainToInstance(PermissionListSerialization, data);
   }

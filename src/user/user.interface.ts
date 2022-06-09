@@ -1,7 +1,7 @@
 import { IRoleEntity } from 'src/role/role.interface';
-import { UserEntity } from './entity/user.entity';
+import { User } from './entity/user.entity';
 
-export interface IUserEntity extends Omit<UserEntity, 'role'> {
+export interface IUserEntity extends Omit<User, 'role'> {
   role: IRoleEntity;
 }
 

@@ -4,7 +4,7 @@ import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import { PermissionService } from 'src/permission/service/permission.service';
 import { RoleBulkService } from 'src/role/service/role.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 
 @Injectable()
 export class RoleSeed {
@@ -19,8 +19,7 @@ export class RoleSeed {
     describe: 'insert roles',
   })
   async insert(): Promise<void> {
-    const permissions: PermissionEntity[] =
-      await this.permissionService.findAll();
+    const permissions: Permission[] = await this.permissionService.findAll();
 
     try {
       // const permissionsMap = permissions.map((val) => val.id);

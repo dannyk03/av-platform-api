@@ -1,5 +1,5 @@
 import { Exclude, Transform, Type } from 'class-transformer';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 
 export class RoleGetSerialization {
   @Type(() => String)
@@ -19,7 +19,7 @@ export class RoleGetSerialization {
       })),
     { toClassOnly: true },
   )
-  readonly permissions: PermissionEntity[];
+  readonly permissions: Permission[];
 
   readonly createdAt: Date;
 

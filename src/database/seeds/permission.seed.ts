@@ -4,7 +4,7 @@ import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import { PermissionBulkService } from 'src/permission/service/permission.bulk.service';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { PermissionService } from '@/permission/service/permission.service';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 
 @Injectable()
 export class PermissionSeed {

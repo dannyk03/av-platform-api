@@ -5,7 +5,10 @@ import {
   //   BaseEntity
 } from 'typeorm';
 
-export abstract class BaseEntity {
+export abstract class BaseEntity<T> {
+  constructor(props: Partial<T>) {
+    Object.assign(this, props);
+  }
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

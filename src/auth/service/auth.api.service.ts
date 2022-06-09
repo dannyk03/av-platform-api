@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { AuthApiEntity } from '../entity/auth.api.entity';
+import { AuthApi } from '../entity/auth.api.entity';
 import { IDatabaseFindAllOptions } from 'src/database/database.interface';
 import { plainToInstance } from 'class-transformer';
 import { AuthApiListSerialization } from '../serialization/auth.api.list.serialization';
@@ -25,8 +25,8 @@ export class AuthApiService {
   private readonly env: string;
 
   constructor(
-    @InjectRepository(AuthApiEntity, ConnectionNames.Default)
-    private authapiRepository: Repository<AuthApiEntity>,
+    @InjectRepository(AuthApi, ConnectionNames.Default)
+    private authapiRepository: Repository<AuthApi>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,
     private readonly helperHashService: HelperHashService,
@@ -38,7 +38,7 @@ export class AuthApiService {
   async findAll(
     find?: Record<string, any>,
     options?: IDatabaseFindAllOptions,
-  ): Promise<AuthApiEntity[] | any> {
+  ): Promise<AuthApi[] | any> {
     // const users = this.authapiRepository.find(find).select({
     //   name: 1,
     //   key: 1,
@@ -58,37 +58,35 @@ export class AuthApiService {
     // return this.authapiRepository.countDocuments(find);
   }
 
-  async findOneById(id: string): Promise<AuthApiEntity | any> {
+  async findOneById(id: string): Promise<AuthApi | any> {
     // return this.authapiRepository.findById(id).lean();
   }
 
-  async findOne(find?: Record<string, any>): Promise<AuthApiEntity | any> {
+  async findOne(find?: Record<string, any>): Promise<AuthApi | any> {
     // return this.authapiRepository.findOne(find).lean();
   }
 
-  async findOneByKey(key: string): Promise<AuthApiEntity | any> {
+  async findOneByKey(key: string): Promise<AuthApi | any> {
     // return this.authapiRepository.findOne({ key }).lean();
   }
 
   async serializationList(
-    data: AuthApiEntity[],
+    data: AuthApi[],
   ): Promise<AuthApiListSerialization[]> {
     return plainToInstance(AuthApiListSerialization, data);
   }
 
-  async serializationGet(
-    data: AuthApiEntity,
-  ): Promise<AuthApiGetSerialization> {
+  async serializationGet(data: AuthApi): Promise<AuthApiGetSerialization> {
     return plainToInstance(AuthApiGetSerialization, data);
   }
 
-  async inactive(id: string): Promise<AuthApiEntity | any> {
+  async inactive(id: string): Promise<AuthApi | any> {
     // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // authApi.isActive = false;
     // return authApi.save();
   }
 
-  async active(id: string): Promise<AuthApiEntity | any> {
+  async active(id: string): Promise<AuthApi | any> {
     // const authApi: IAuthApiEntity = await this.authapiRepository.findById(id);
     // authApi.isActive = true;
     // return authApi.save();

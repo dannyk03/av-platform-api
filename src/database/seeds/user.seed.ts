@@ -4,7 +4,7 @@ import { UserService } from 'src/user/service/user.service';
 import { UserBulkService } from 'src/user/service/user.bulk.service';
 import { RoleService } from 'src/role/service/role.service';
 import { AuthService } from 'src/auth/service/auth.service';
-import { RoleEntity } from '@/role/entity/role.entity';
+import { Role } from '@/role/entity/role.entity';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class UserSeed {
     describe: 'insert users',
   })
   async insert(): Promise<void> {
-    const role: RoleEntity = await this.roleService.findOne<RoleEntity>({
+    const role: Role = await this.roleService.findOne<Role>({
       name: 'admin',
     });
 

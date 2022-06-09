@@ -10,23 +10,18 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { PermissionEntity } from '@/permission/entity/permission.entity';
+import { Permission } from '@/permission/entity/permission.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
 
-@Entity({ name: 'roles' })
-export class RoleEntity extends BaseEntity {
-  // constructor(role?: Partial<RoleEntity>) {
-  //   super();
-  //   Object.assign(this, role);
-  // }
-
-  @Index('role_slug_index')
-  @Column({
-    update: false,
-    unique: true,
-    length: 20,
-  })
-  slug: string;
+@Entity()
+export class Role extends BaseEntity<Role> {
+  // @Index('role_slug_index')
+  // @Column({
+  //   update: false,
+  //   unique: true,
+  //   length: 20,
+  // })
+  // slug: string;
 
   @JoinTable({
     name: 'role_permission',
@@ -39,11 +34,11 @@ export class RoleEntity extends BaseEntity {
       referencedColumnName: 'id',
     },
   })
-  @ManyToMany(() => PermissionEntity, (permission) => permission.id, {
+  @ManyToMany(() => Permission, (permission) => permission.id, {
     eager: true,
     cascade: false,
   })
-  permissions: PermissionEntity[];
+  permissions: Permission[];
 
   @Column({
     default: true,
@@ -52,6 +47,6 @@ export class RoleEntity extends BaseEntity {
 
   @BeforeInsert()
   beforeInsert() {
-    this.slug = createSlugFromString(this.slug);
+    // this.slug = createSlugFromString(this.slug);
   }
 }

@@ -28,7 +28,7 @@ import {
 } from 'src/utils/response/response.interface';
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { PaginationService } from 'src/utils/pagination/service/pagination.service';
-import { PermissionEntity } from '../entity/permission.entity';
+import { Permission } from '../entity/permission.entity';
 import { PermissionListDto } from '../dto/permission.list.dto';
 import { PermissionUpdateDto } from '../dto/permission.update.dto';
 import { PermissionListSerialization } from '../serialization/permission.list.serialization';
@@ -110,7 +110,7 @@ export class PermissionAdminController {
   @RequestParamGuard(PermissionRequestDto)
   @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
   @Get('/get/:permission')
-  async get(@GetPermission() permission: PermissionEntity): Promise<IResponse> {
+  async get(@GetPermission() permission: Permission): Promise<IResponse> {
     return this.permissionService.serializationGet(permission);
   }
 
@@ -123,7 +123,7 @@ export class PermissionAdminController {
   )
   @Put('/update/:permission')
   async update(
-    @GetPermission() permission: PermissionEntity,
+    @GetPermission() permission: Permission,
     @Body() body: PermissionUpdateDto,
   ): Promise<IResponse> {
     try {
@@ -155,7 +155,7 @@ export class PermissionAdminController {
     ENUM_PERMISSIONS.PERMISSION_UPDATE,
   )
   @Patch('/update/:permission/inactive')
-  async inactive(@GetPermission() permission: PermissionEntity): Promise<void> {
+  async inactive(@GetPermission() permission: Permission): Promise<void> {
     try {
       await this.permissionService.inactive(permission.id);
     } catch (e) {
@@ -184,7 +184,7 @@ export class PermissionAdminController {
     ENUM_PERMISSIONS.PERMISSION_UPDATE,
   )
   @Patch('/update/:permission/active')
-  async active(@GetPermission() permission: PermissionEntity): Promise<void> {
+  async active(@GetPermission() permission: Permission): Promise<void> {
     try {
       await this.permissionService.active(permission.id);
     } catch (e) {

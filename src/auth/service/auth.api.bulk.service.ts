@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import { Injectable } from '@nestjs/common';
-import { AuthApiEntity } from '../entity/auth.api.entity';
+import { AuthApi } from '../entity/auth.api.entity';
 import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,8 +9,8 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AuthApiBulkService {
   constructor(
-    @InjectRepository(AuthApiEntity, ConnectionNames.Default)
-    private authapiRepository: Repository<AuthApiEntity>,
+    @InjectRepository(AuthApi, ConnectionNames.Default)
+    private authapiRepository: Repository<AuthApi>,
   ) {}
 
   async deleteMany(find: Record<string, any>) {
