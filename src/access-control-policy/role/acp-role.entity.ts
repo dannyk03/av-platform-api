@@ -41,6 +41,7 @@ export class AcpRole extends BaseEntity<AcpRole> {
   })
   @ManyToMany(() => AcpPolicy, (policy) => policy.roles, {
     // eager: true,
+    cascade: true,
   })
   policies: AcpPolicy[];
 

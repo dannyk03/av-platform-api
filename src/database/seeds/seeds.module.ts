@@ -5,6 +5,7 @@ import { AcpSubject } from '@/access-control-policy/subject';
 import { AuthModule } from '@/auth/auth.module';
 import { Organization, OrganizationModule } from '@/organization';
 import { RoleModule } from '@/role/role.module';
+import { User } from '@/user/entity/user.entity';
 import { UserModule } from '@/user/user.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,7 +24,8 @@ import { SuperSeed } from './super.seed';
     TypeOrmModule.forFeature([AcpPolicy], ConnectionNames.Default),
     TypeOrmModule.forFeature([AcpSubject], ConnectionNames.Default),
     TypeOrmModule.forFeature([AcpAbility], ConnectionNames.Default),
-    UserModule,
+    TypeOrmModule.forFeature([User], ConnectionNames.Default),
+    // UserModule,
   ],
   providers: [SuperSeed],
   exports: [],

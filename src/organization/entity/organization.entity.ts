@@ -33,7 +33,7 @@ export class Organization extends BaseEntity<Organization> {
 
   @OneToMany(() => AcpRole, (role) => role.id, {
     // eager: true,
-    // cascade: false,
+    cascade: true,
   })
   @JoinTable({
     name: 'organization_role',
@@ -65,8 +65,11 @@ export class Organization extends BaseEntity<Organization> {
   })
   users: User[];
 
-  @OneToOne(() => User)
-  @JoinColumn({})
+  @OneToOne(() => User, {
+    cascade: true,
+    // onDelete: 'CASCADE',
+  })
+  @JoinColumn()
   owner: User;
 
   @BeforeInsert()

@@ -13,13 +13,10 @@ export abstract class BaseEntity<T> {
   id: string;
 
   @CreateDateColumn({
-    type: 'timestamp with time zone',
     update: false,
   })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp with time zone',
-  })
+  @UpdateDateColumn()
   updatedAt: Date;
 }

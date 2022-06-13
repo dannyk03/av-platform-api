@@ -32,7 +32,6 @@ export class LoggerEntity {
   tags?: string[];
 
   @CreateDateColumn({
-    type: 'timestamp with time zone',
     update: false,
   })
   createdAt: Date;

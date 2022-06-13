@@ -17,15 +17,15 @@ export class SuperSeed {
   constructor(
     @InjectRepository(Organization)
     private organizationRepository: Repository<Organization>,
-    @InjectRepository(Organization)
+    @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Organization)
+    @InjectRepository(AcpRole)
     private roleRepository: Repository<AcpRole>,
-    @InjectRepository(Organization)
+    @InjectRepository(AcpPolicy)
     private policyRepository: Repository<AcpPolicy>,
-    @InjectRepository(Organization)
+    @InjectRepository(AcpSubject)
     private subjectRepository: Repository<AcpSubject>,
-    @InjectRepository(Organization)
+    @InjectRepository(AcpAbility)
     private abilityRepository: Repository<AcpAbility>,
     private readonly debuggerService: DebuggerService,
     private readonly authService: AuthService,
@@ -52,7 +52,6 @@ export class SuperSeed {
       const organizationRoles = superSeedData.roles.map((role) => {
         const rolePolicies = role.policies.map((policy) => {
           const policySubjects = policy.subjects.map((subject) => {
-            debugger;
             const subjectAbilities = subject.abilities.map((ability) => {
               return this.abilityRepository.create({
                 type: ability.type,
@@ -77,12 +76,14 @@ export class SuperSeed {
         });
       });
 
+      // organizationOwner.role = null;
+
       const systemOrganization = this.organizationRepository.create({
         ...superSeedData.organization,
         owner: organizationOwner,
         roles: organizationRoles,
       });
-      this.organizationRepository.save(systemOrganization);
+      await this.organizationRepository.save(systemOrganization);
 
       this.debuggerService.debug('Insert Super Succeed', 'SuperSeed', 'insert');
     } catch (e) {

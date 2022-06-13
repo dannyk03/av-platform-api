@@ -94,10 +94,12 @@ export const superSeedData = {
             {
               sensitivityLevel: 10,
               type: AcpSubjectDict.System,
-              abilities: {
-                type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Read,
-              },
+              abilities: [
+                {
+                  type: AbilityTypeEnum.Can,
+                  action: AbilityActionEnum.Read,
+                },
+              ],
             },
           ],
         },
