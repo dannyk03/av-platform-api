@@ -8,7 +8,7 @@ import { AcpSubject } from '../entity/acp-subject.entity';
 @Injectable()
 export class AcpSubjectService {
   constructor(
-    @InjectRepository(AcpSubject, ConnectionNames.Default)
+    // @InjectRepository(AcpSubject, ConnectionNames.Default)
     private acpSubjectRepository: Repository<AcpSubject>,
     private readonly configService: ConfigService,
   ) {}

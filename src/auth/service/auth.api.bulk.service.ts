@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AuthApiBulkService {
   constructor(
-    @InjectRepository(AuthApi, ConnectionNames.Default)
+    // @InjectRepository(AuthApi, ConnectionNames.Default)
     private authapiRepository: Repository<AuthApi>,
   ) {}
 

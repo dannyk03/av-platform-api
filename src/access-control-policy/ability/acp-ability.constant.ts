@@ -1,7 +1,7 @@
 export enum AbilityActionEnum {
   Manage = 'manage',
   Modify = 'modify',
-  Create = 'Create',
+  Create = 'create',
   Update = 'update',
   Read = 'read',
   Delete = 'delete',

@@ -11,8 +11,6 @@ import { IAuthPassword } from 'src/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
 import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
 import { User } from '../entity/user.entity';
-import { Role } from '@/role/entity/role.entity';
-import { Permission } from '@/permission/entity/permission.entity';
 import {
   IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
@@ -29,7 +27,7 @@ export class UserService {
   private readonly uploadPath: string;
 
   constructor(
-    @InjectRepository(User, ConnectionNames.Default)
+    // @InjectRepository(User, ConnectionNames.Default)
     private userRepository: Repository<User>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,

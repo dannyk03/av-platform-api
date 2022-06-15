@@ -5,28 +5,30 @@ import { Organization } from '@/organization/entity/organization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/user/entity/user.entity';
-import { AcpPolicy } from '@/access-control-policy/policy';
-import { AcpRole, SystemRoleEnum } from '@/access-control-policy/role';
-import { AcpSubject } from '@/access-control-policy/subject';
-import { AcpAbility } from '@/access-control-policy/ability';
+import { SystemRoleEnum } from '@acp/role';
+import { AcpSubject } from '@/access-control-policy/subject/entity/acp-subject.entity';
+import { AcpAbility } from '@/access-control-policy/ability/entity/acp-ability.entity';
 import { AuthService } from '@/auth/service/auth.service';
 import { superSeedData } from './data';
+import { AcpRole } from '@/access-control-policy/role/entity/acp-role.entity';
+import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
 
 @Injectable()
 export class SuperSeed {
   constructor(
-    @InjectRepository(Organization)
-    private organizationRepository: Repository<Organization>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(AcpRole)
-    private roleRepository: Repository<AcpRole>,
-    @InjectRepository(AcpPolicy)
-    private policyRepository: Repository<AcpPolicy>,
-    @InjectRepository(AcpSubject)
-    private subjectRepository: Repository<AcpSubject>,
-    @InjectRepository(AcpAbility)
-    private abilityRepository: Repository<AcpAbility>,
+    // @InjectRepository(Organization)
+    // private organizationRepository: Repository<Organization>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
+    // @InjectRepository(AcpRole)
+    // private roleRepository: Repository<AcpRole>,
+    // @InjectRepository(AcpPolicy)
+    // private policyRepository: Repository<AcpPolicy>,
+    // @InjectRepository(AcpSubject)
+    // private subjectRepository: Repository<AcpSubject>,
+    // @InjectRepository(AcpAbility)
+    // private abilityRepository: Repository<AcpAbility>,
+
     private readonly debuggerService: DebuggerService,
     private readonly authService: AuthService,
   ) {}
@@ -37,57 +39,57 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
-      const { salt, passwordExpired, passwordHash } =
-        await this.authService.createPassword(
-          process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-        );
-      const superOwner = this.userRepository.create({
-        ...superSeedData.owner,
-        mobileNumber: '+972546000000',
-        password: passwordHash,
-        salt,
-        passwordExpired,
-      });
+      // const { salt, passwordExpired, passwordHash } =
+      //   await this.authService.createPassword(
+      //     process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+      //   );
+      // const superOwner = this.userRepository.create({
+      //   ...superSeedData.owner,
+      //   mobileNumber: '+972546000000',
+      //   password: passwordHash,
+      //   salt,
+      //   passwordExpired,
+      // });
 
-      const systemRoles = superSeedData.roles.map((role) => {
-        const { policy } = role;
-        const policySubjects = policy.subjects.map((subject) => {
-          const subjectAbilities = subject.abilities.map((ability) => {
-            return this.abilityRepository.create({
-              type: ability.type,
-              action: ability.action,
-            });
-          });
-          return this.subjectRepository.create({
-            type: subject.type,
-            sensitivityLevel: subject.sensitivityLevel,
-            abilities: subjectAbilities,
-          });
-        });
+      // const systemRoles = superSeedData.roles.map((role) => {
+      //   const { policy } = role;
+      //   const policySubjects = policy.subjects.map((subject) => {
+      //     const subjectAbilities = subject.abilities.map((ability) => {
+      //       return this.abilityRepository.create({
+      //         type: ability.type,
+      //         action: ability.action,
+      //       });
+      //     });
+      //     return this.subjectRepository.create({
+      //       type: subject.type,
+      //       sensitivityLevel: subject.sensitivityLevel,
+      //       abilities: subjectAbilities,
+      //     });
+      //   });
 
-        const rolePolicy = this.policyRepository.create({
-          subjects: policySubjects,
-          sensitivityLevel: policy.sensitivityLevel,
-        });
+      //   const rolePolicy = this.policyRepository.create({
+      //     subjects: policySubjects,
+      //     sensitivityLevel: policy.sensitivityLevel,
+      //   });
 
-        return this.roleRepository.create({
-          name: role.name,
-          isActive: true,
-          policy: rolePolicy,
-        });
-      });
+      //   return this.roleRepository.create({
+      //     name: role.name,
+      //     isActive: true,
+      //     policy: rolePolicy,
+      //   });
+      // });
 
-      superOwner.roles = [
-        systemRoles.find((role) => role.name == SystemRoleEnum.SuperAdmin),
-      ];
+      // superOwner.roles = [
+      //   systemRoles.find((role) => role.name == SystemRoleEnum.SuperAdmin),
+      // ];
 
-      const systemOrganization = this.organizationRepository.create({
-        ...superSeedData.organization,
-        // owner: superOwner,
-        users: [superOwner],
-        roles: systemRoles,
-      });
-      await this.organizationRepository.save(systemOrganization);
+      // const systemOrganization = this.organizationRepository.create({
+      //   ...superSeedData.organization,
+      //   // owner: superOwner,
+      //   // users: [superOwner],
+      //   // roles: systemRoles,
+      // });
+      // await this.organizationRepository.save(systemOrganization);
 
       this.debuggerService.debug('Insert Super Succeed', 'SuperSeed', 'insert');
     } catch (e) {

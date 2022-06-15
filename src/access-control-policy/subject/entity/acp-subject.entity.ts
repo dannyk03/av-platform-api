@@ -1,8 +1,8 @@
 import { Entity, Column, OneToMany, ManyToOne, Check } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { AcpAbility } from '../../ability/entity/acp-ability.entity';
-import { AcpPolicy } from '../../policy/entity/acp-policy.entity';
-import { AcpSubjectDict, AcpSubjectType } from '..';
+import { AcpSubjectDict, AcpSubjectType } from '../acp-subject.constant';
+import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
+import { AcpAbility } from '@/access-control-policy/ability/entity/acp-ability.entity';
 
 @Entity()
 // @Check('sensitivityLevel BETWEEN 1 AND 10')

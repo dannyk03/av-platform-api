@@ -8,7 +8,7 @@ import { AcpPolicy } from '../entity/acp-policy.entity';
 @Injectable()
 export class AcpPolicyService {
   constructor(
-    @InjectRepository(AcpPolicy, ConnectionNames.Default)
+    // @InjectRepository(AcpPolicy, ConnectionNames.Default)
     private acpPolicyRepository: Repository<AcpPolicy>,
     private readonly configService: ConfigService,
   ) {}

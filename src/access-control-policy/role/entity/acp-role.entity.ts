@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
-import { AcpPolicy } from '../../policy/entity/acp-policy.entity';
 import { Organization } from '@/organization/entity/organization.entity';
+import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
 
 @Entity()
 @Unique(['slug', 'name', 'organization'])
@@ -35,7 +35,6 @@ export class AcpRole extends BaseEntity<AcpRole> {
 
   @OneToOne(() => AcpPolicy, {
     cascade: true,
-    // onDelete: 'CASCADE',
   })
   @JoinColumn()
   policy: AcpPolicy;

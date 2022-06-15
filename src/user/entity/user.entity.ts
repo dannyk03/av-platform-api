@@ -6,9 +6,7 @@ import {
   JoinTable,
   ManyToOne,
 } from 'typeorm';
-import { AcpRole } from '@/access-control-policy/role';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { Organization } from '@/organization/entity/organization.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
@@ -52,23 +50,23 @@ export class User extends BaseEntity<User> {
   @Column()
   emailVerificationToken!: string;
 
-  @ManyToMany(() => AcpRole, (role) => role.id, {
-    // eager: true,
-    cascade: true,
-  })
-  @JoinTable({
-    name: 'user_role',
-    joinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'role_id',
-      referencedColumnName: 'id',
-    },
-  })
-  roles!: AcpRole[];
+  // @ManyToMany(() => AcpRole, (role) => role.id, {
+  //   // eager: true,
+  //   cascade: true,
+  // })
+  // @JoinTable({
+  //   name: 'user_role',
+  //   joinColumn: {
+  //     name: 'user_id',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'role_id',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
+  // roles!: AcpRole[];
 
-  @ManyToOne(() => Organization, (organization) => organization.users)
-  organization!: Organization;
+  // @ManyToOne(() => Organization, (organization) => organization.users)
+  // organization!: Organization;
 }
