@@ -1,6 +1,6 @@
 import { Exclude, Transform, Type } from 'class-transformer';
 import { IAwsS3Response } from 'src/aws/aws.interface';
-import { IRoleEntity } from 'src/role/role.interface';
+// import { IRoleEntity } from 'src/role/role.interface';
 
 export class AuthLoginSerialization {
   @Type(() => String)
@@ -18,8 +18,7 @@ export class AuthLoginSerialization {
     }),
     { toClassOnly: true },
   )
-  readonly role: IRoleEntity;
-
+  // readonly role: IRoleEntity;
   readonly email: string;
   readonly mobileNumber: string;
   readonly isActive: boolean;

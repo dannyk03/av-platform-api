@@ -27,7 +27,7 @@ export class UserService {
   private readonly uploadPath: string;
 
   constructor(
-    // @InjectRepository(User, ConnectionNames.Default)
+    @InjectRepository(User, ConnectionNames.Default)
     private userRepository: Repository<User>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,

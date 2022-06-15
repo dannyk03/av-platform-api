@@ -5,8 +5,12 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
+import { Organization } from '@/organization/entity/organization.entity';
+import { AcpRole } from '@/access-control-policy/role/entity/acp-role.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
@@ -65,8 +69,9 @@ export class User extends BaseEntity<User> {
   //     referencedColumnName: 'id',
   //   },
   // })
-  // roles!: AcpRole[];
+  @ManyToOne(() => AcpRole, (role) => role.users)
+  role!: AcpRole;
 
-  // @ManyToOne(() => Organization, (organization) => organization.users)
-  // organization!: Organization;
+  @ManyToOne(() => Organization, (organization) => organization.users)
+  organization!: Organization;
 }

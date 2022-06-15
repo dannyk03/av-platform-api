@@ -25,7 +25,7 @@ export class AuthApiService {
   private readonly env: string;
 
   constructor(
-    // @InjectRepository(AuthApi, ConnectionNames.Default)
+    @InjectRepository(AuthApi, ConnectionNames.Default)
     private authapiRepository: Repository<AuthApi>,
     private readonly helperStringService: HelperStringService,
     private readonly configService: ConfigService,

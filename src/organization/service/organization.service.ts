@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
-import { AcpSubject } from '../entity/acp-subject.entity';
+import { Organization } from '../entity/organization.entity';
 
 @Injectable()
-export class AcpSubjectService {
+export class OrganizationService {
   constructor(
-    @InjectRepository(AcpSubject, ConnectionNames.Default)
-    private acpSubjectRepository: Repository<AcpSubject>,
+    @InjectRepository(Organization, ConnectionNames.Default)
+    private acpRoleRepository: Repository<Organization>,
     private readonly configService: ConfigService,
   ) {}
 }

@@ -1,33 +1,24 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { Organization } from '@/organization/entity/organization.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from '@/user/entity/user.entity';
-import { SystemRoleEnum } from '@acp/role';
-import { AcpSubject } from '@/access-control-policy/subject/entity/acp-subject.entity';
-import { AcpAbility } from '@/access-control-policy/ability/entity/acp-ability.entity';
 import { AuthService } from '@/auth/service/auth.service';
 import { superSeedData } from './data';
-import { AcpRole } from '@/access-control-policy/role/entity/acp-role.entity';
-import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
+import { OrganizationService } from '@/organization';
+import { UserService } from '@/user';
+import { AcpPolicyService } from '@acp/policy';
+import { AcpSubjectService } from '@acp/subject';
+import { AcpAbilityService } from '@acp/ability';
+import { AcpRoleService, SystemRoleEnum } from '@acp/role';
 
 @Injectable()
 export class SuperSeed {
   constructor(
-    // @InjectRepository(Organization)
-    // private organizationRepository: Repository<Organization>,
-    // @InjectRepository(User)
-    // private userRepository: Repository<User>,
-    // @InjectRepository(AcpRole)
-    // private roleRepository: Repository<AcpRole>,
-    // @InjectRepository(AcpPolicy)
-    // private policyRepository: Repository<AcpPolicy>,
-    // @InjectRepository(AcpSubject)
-    // private subjectRepository: Repository<AcpSubject>,
-    // @InjectRepository(AcpAbility)
-    // private abilityRepository: Repository<AcpAbility>,
+    private readonly organizationService: OrganizationService,
+    private readonly userService: UserService,
+    private readonly acpRoleService: AcpRoleService,
+    private readonly acpPolicyService: AcpPolicyService,
+    private readonly acpSubjectService: AcpSubjectService,
+    private readonly acpAbilityService: AcpAbilityService,
 
     private readonly debuggerService: DebuggerService,
     private readonly authService: AuthService,
@@ -39,10 +30,10 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
-      // const { salt, passwordExpired, passwordHash } =
-      //   await this.authService.createPassword(
-      //     process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-      //   );
+      const { salt, passwordExpired, passwordHash } =
+        await this.authService.createPassword(
+          process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+        );
       // const superOwner = this.userRepository.create({
       //   ...superSeedData.owner,
       //   mobileNumber: '+972546000000',
@@ -79,7 +70,7 @@ export class SuperSeed {
       //   });
       // });
 
-      // superOwner.roles = [
+      // superOwner.role = [
       //   systemRoles.find((role) => role.name == SystemRoleEnum.SuperAdmin),
       // ];
 

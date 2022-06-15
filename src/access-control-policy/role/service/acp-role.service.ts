@@ -8,7 +8,7 @@ import { AcpRole } from '../entity/acp-role.entity';
 @Injectable()
 export class AcpRoleService {
   constructor(
-    // @InjectRepository(AcpRole, ConnectionNames.Default)
+    @InjectRepository(AcpRole, ConnectionNames.Default)
     private acpRoleRepository: Repository<AcpRole>,
     private readonly configService: ConfigService,
   ) {}

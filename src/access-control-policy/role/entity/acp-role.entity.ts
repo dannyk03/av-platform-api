@@ -7,11 +7,13 @@ import {
   OneToOne,
   ManyToOne,
   Unique,
+  OneToMany,
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
+import { User } from '@/user/entity/user.entity';
 
 @Entity()
 @Unique(['slug', 'name', 'organization'])
@@ -43,6 +45,9 @@ export class AcpRole extends BaseEntity<AcpRole> {
     default: true,
   })
   isActive: boolean;
+
+  @OneToMany(() => User, (user) => user.role)
+  users!: User;
 
   @BeforeInsert()
   beforeInsert() {
