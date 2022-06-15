@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { AcpSubject } from '../subject/acp-subject.entity';
-import { AbilityActionEnum, AbilityTypeEnum } from './acp-ability.constant';
+import { AcpSubject } from '../../subject/entity/acp-subject.entity';
+import { AbilityActionEnum, AbilityTypeEnum } from '../acp-ability.constant';
 
 @Entity()
 export class AcpAbility extends BaseEntity<AcpAbility> {

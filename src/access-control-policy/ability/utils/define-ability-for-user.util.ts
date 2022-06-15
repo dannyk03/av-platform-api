@@ -4,7 +4,7 @@ import { AbilityActionEnum } from '../acp-ability.constant';
 const resolveAction = createAliasResolver({
   [AbilityActionEnum.Modify]: [
     AbilityActionEnum.Update,
-    AbilityActionEnum.Delete,
+    AbilityActionEnum.Create,
     AbilityActionEnum.Read,
   ],
   // [AbilityActionEnum.ACCESS]: [

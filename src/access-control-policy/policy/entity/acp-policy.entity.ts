@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToMany, OneToMany, Check } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { AcpSubject } from '../subject/acp-subject.entity';
-import { AcpRole } from '../role/acp-role.entity';
+import { AcpSubject } from '../../subject/entity/acp-subject.entity';
+import { AcpRole } from '../../role/entity/acp-role.entity';
 
-@Entity()
+@Entity({ name: 'acp_policies' })
 // @Check('sensitivityLevel BETWEEN 1 AND 10')
 export class AcpPolicy extends BaseEntity<AcpPolicy> {
   @Column({
@@ -12,7 +12,9 @@ export class AcpPolicy extends BaseEntity<AcpPolicy> {
   })
   sensitivityLevel: number;
 
-  @OneToMany(() => AcpSubject, (subject) => subject.policy)
+  @OneToMany(() => AcpSubject, (subject) => subject.policy, {
+    cascade: true,
+  })
   subjects: AcpSubject[];
 
   @ManyToMany(() => AcpPolicy, (policy) => policy.roles)

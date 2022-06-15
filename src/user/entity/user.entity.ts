@@ -1,6 +1,14 @@
-import { Entity, Column, Index, ManyToMany, JoinTable } from 'typeorm';
-import { AcpRole } from '@acp/role';
+import {
+  Entity,
+  Column,
+  Index,
+  ManyToMany,
+  JoinTable,
+  ManyToOne,
+} from 'typeorm';
+import { AcpRole } from '@/access-control-policy/role';
 import { BaseEntity } from '@/database/entities/base.entity';
+import { Organization } from '@/organization/entity/organization.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
@@ -46,7 +54,7 @@ export class User extends BaseEntity<User> {
 
   @ManyToMany(() => AcpRole, (role) => role.id, {
     // eager: true,
-    // cascade: false,
+    cascade: true,
   })
   @JoinTable({
     name: 'user_role',
@@ -60,4 +68,7 @@ export class User extends BaseEntity<User> {
     },
   })
   roles!: AcpRole[];
+
+  @ManyToOne(() => Organization, (organization) => organization.users)
+  organization!: Organization;
 }

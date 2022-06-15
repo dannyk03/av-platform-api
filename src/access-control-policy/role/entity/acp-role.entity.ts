@@ -3,19 +3,22 @@ import {
   Column,
   Index,
   BeforeInsert,
-  JoinTable,
-  ManyToMany,
+  JoinColumn,
+  OneToOne,
+  ManyToOne,
+  Unique,
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
-import { AcpPolicy } from '../policy/acp-policy.entity';
+import { AcpPolicy } from '../../policy/entity/acp-policy.entity';
+import { Organization } from '@/organization/entity/organization.entity';
 
 @Entity()
+@Unique(['slug', 'name', 'organization'])
 export class AcpRole extends BaseEntity<AcpRole> {
   @Index('role_slug_index')
   @Column({
     update: false,
-    unique: true,
     length: 20,
   })
   slug: string;
@@ -23,27 +26,19 @@ export class AcpRole extends BaseEntity<AcpRole> {
   // TODO:  Do we really need name and slug together?
   @Column({
     update: false,
-    unique: true,
     length: 20,
   })
   name: string;
 
-  @JoinTable({
-    name: 'role_policy',
-    joinColumn: {
-      name: 'role_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'policy_id',
-      referencedColumnName: 'id',
-    },
-  })
-  @ManyToMany(() => AcpPolicy, (policy) => policy.roles, {
-    // eager: true,
+  @ManyToOne(() => Organization, (organization) => organization.roles)
+  organization!: Organization;
+
+  @OneToOne(() => AcpPolicy, {
     cascade: true,
+    // onDelete: 'CASCADE',
   })
-  policies: AcpPolicy[];
+  @JoinColumn()
+  policy: AcpPolicy;
 
   @Column({
     default: true,

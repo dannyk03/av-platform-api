@@ -5,10 +5,10 @@ import { Organization } from '@/organization/entity/organization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@/user/entity/user.entity';
-import { AcpPolicy } from '@acp/policy';
-import { AcpRole } from '@acp/role';
-import { AcpSubject } from '@acp/subject';
-import { AcpAbility } from '@acp/ability';
+import { AcpPolicy } from '@/access-control-policy/policy';
+import { AcpRole, SystemRoleEnum } from '@/access-control-policy/role';
+import { AcpSubject } from '@/access-control-policy/subject';
+import { AcpAbility } from '@/access-control-policy/ability';
 import { AuthService } from '@/auth/service/auth.service';
 import { superSeedData } from './data';
 
@@ -41,7 +41,7 @@ export class SuperSeed {
         await this.authService.createPassword(
           process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
         );
-      const organizationOwner = this.userRepository.create({
+      const superOwner = this.userRepository.create({
         ...superSeedData.owner,
         mobileNumber: '+972546000000',
         password: passwordHash,
@@ -49,39 +49,43 @@ export class SuperSeed {
         passwordExpired,
       });
 
-      const organizationRoles = superSeedData.roles.map((role) => {
-        const rolePolicies = role.policies.map((policy) => {
-          const policySubjects = policy.subjects.map((subject) => {
-            const subjectAbilities = subject.abilities.map((ability) => {
-              return this.abilityRepository.create({
-                type: ability.type,
-                action: ability.action,
-              });
-            });
-            return this.subjectRepository.create({
-              type: subject.type,
-              sensitivityLevel: subject.sensitivityLevel,
-              abilities: subjectAbilities,
+      const systemRoles = superSeedData.roles.map((role) => {
+        const { policy } = role;
+        const policySubjects = policy.subjects.map((subject) => {
+          const subjectAbilities = subject.abilities.map((ability) => {
+            return this.abilityRepository.create({
+              type: ability.type,
+              action: ability.action,
             });
           });
-          return this.policyRepository.create({
-            subjects: policySubjects,
-            sensitivityLevel: policy.sensitivityLevel,
+          return this.subjectRepository.create({
+            type: subject.type,
+            sensitivityLevel: subject.sensitivityLevel,
+            abilities: subjectAbilities,
           });
         });
+
+        const rolePolicy = this.policyRepository.create({
+          subjects: policySubjects,
+          sensitivityLevel: policy.sensitivityLevel,
+        });
+
         return this.roleRepository.create({
           name: role.name,
           isActive: true,
-          policies: rolePolicies,
+          policy: rolePolicy,
         });
       });
 
-      // organizationOwner.role = null;
+      superOwner.roles = [
+        systemRoles.find((role) => role.name == SystemRoleEnum.SuperAdmin),
+      ];
 
       const systemOrganization = this.organizationRepository.create({
         ...superSeedData.organization,
-        owner: organizationOwner,
-        roles: organizationRoles,
+        // owner: superOwner,
+        users: [superOwner],
+        roles: systemRoles,
       });
       await this.organizationRepository.save(systemOrganization);
 

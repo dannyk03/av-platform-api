@@ -7,7 +7,7 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-import { AcpRole } from '@acp/role';
+import { AcpRole } from '@/access-control-policy/role';
 import { User } from '@/user/entity/user.entity';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
@@ -35,42 +35,31 @@ export class Organization extends BaseEntity<Organization> {
     // eager: true,
     cascade: true,
   })
-  @JoinTable({
-    name: 'organization_role',
-    joinColumn: {
-      name: 'organization_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'role_id',
-      referencedColumnName: 'id',
-    },
-  })
   roles: AcpRole[];
 
-  @OneToMany(() => AcpRole, (role) => role.id, {
+  // @JoinTable({
+  //   name: 'organization_user',
+  //   joinColumn: {
+  //     name: 'organization_id',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'user_id',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
+  @OneToMany(() => User, (user) => user.id, {
     // eager: true,
-    // cascade: false,
-  })
-  @JoinTable({
-    name: 'organization_user',
-    joinColumn: {
-      name: 'organization_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
+    cascade: true,
   })
   users: User[];
 
-  @OneToOne(() => User, {
-    cascade: true,
-    // onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  owner: User;
+  // @OneToOne(() => User, {
+  //   cascade: true,
+  //   // onDelete: 'CASCADE',
+  // })
+  // @JoinColumn()
+  // owner: User;
 
   @BeforeInsert()
   beforeInsert() {

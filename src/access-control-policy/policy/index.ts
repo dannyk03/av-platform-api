@@ -1,1 +1,1 @@
-export * from './acp-policy.entity';
+export * from './entity/acp-policy.entity';

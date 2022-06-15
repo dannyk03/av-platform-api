@@ -2,7 +2,7 @@ import {
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  //   BaseEntity
+  DeleteDateColumn,
 } from 'typeorm';
 
 export abstract class BaseEntity<T> {
@@ -19,4 +19,7 @@ export abstract class BaseEntity<T> {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
