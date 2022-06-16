@@ -1,9 +1,6 @@
-import { IRoleEntity } from 'src/role/role.interface';
 import { User } from './entity/user.entity';
 
-export interface IUserEntity extends Omit<User, 'role'> {
-  role: IRoleEntity;
-}
+export type IUserEntity = Omit<User, 'role'>;
 
 export interface IUserCreate {
   firstName: string;
@@ -12,8 +9,8 @@ export interface IUserCreate {
   passwordExpired: Date;
   email: string;
   mobileNumber: string;
-  role: string;
   salt: string;
+  isActive?: boolean;
 }
 
 export type IUserUpdate = Pick<IUserCreate, 'firstName' | 'lastName'>;

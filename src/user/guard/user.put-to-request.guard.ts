@@ -11,16 +11,16 @@ export class UserPutToRequestGuard implements CanActivate {
     const { params } = request;
     const { user } = params;
 
-    const check: IUserEntity = await this.userService.findOneById<IUserEntity>(
-      user,
-      {
-        populate: {
-          role: true,
-          permission: true,
-        },
-      },
-    );
-    request.__user = check;
+    // const check: IUserEntity = await this.userService.findOneById<IUserEntity>(
+    //   user,
+    //   {
+    //     populate: {
+    //       role: true,
+    //       permission: true,
+    //     },
+    //   },
+    // );
+    request.__user = 'user';
 
     return true;
   }

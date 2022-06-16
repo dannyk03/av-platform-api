@@ -6,8 +6,9 @@ import AwsConfig from 'src/config/aws.config';
 import UserConfig from './user.config';
 import FileConfig from './file.config';
 import MiddlewareConfig from './middleware.config';
+import { ConfigModule } from '@nestjs/config';
 
-export default [
+export const Configs = [
   AppConfig,
   AuthConfig,
   DatabaseConfig,
@@ -17,3 +18,11 @@ export default [
   MiddlewareConfig,
   FileConfig,
 ];
+
+export const ConfigDynamicModule = ConfigModule.forRoot({
+  load: Configs,
+  ignoreEnvFile: false,
+  isGlobal: true,
+  cache: true,
+  envFilePath: ['.env'],
+});

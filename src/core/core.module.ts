@@ -3,7 +3,7 @@ import { MessageModule } from 'src/message/message.module';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { DebuggerModule } from 'src/debugger/debugger.module';
-import Configs from 'src/config/index';
+import { Configs } from 'src/config/index';
 import { AuthModule } from 'src/auth/auth.module';
 import { PaginationModule } from 'src/utils/pagination/pagination.module';
 import { HelperModule } from 'src/utils/helper/helper.module';

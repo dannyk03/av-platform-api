@@ -30,44 +30,45 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
-      const { salt, passwordExpired, passwordHash } =
-        await this.authService.createPassword(
-          process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-        );
-      // const superOwner = this.userRepository.create({
-      //   ...superSeedData.owner,
-      //   mobileNumber: '+972546000000',
-      //   password: passwordHash,
-      //   salt,
-      //   passwordExpired,
-      // });
-
       // const systemRoles = superSeedData.roles.map((role) => {
       //   const { policy } = role;
       //   const policySubjects = policy.subjects.map((subject) => {
       //     const subjectAbilities = subject.abilities.map((ability) => {
-      //       return this.abilityRepository.create({
+      //       return this.acpAbilityService.create({
       //         type: ability.type,
       //         action: ability.action,
       //       });
       //     });
-      //     return this.subjectRepository.create({
+      //     return this.acpSubjectService.create({
       //       type: subject.type,
       //       sensitivityLevel: subject.sensitivityLevel,
       //       abilities: subjectAbilities,
       //     });
       //   });
 
-      //   const rolePolicy = this.policyRepository.create({
+      //   const rolePolicy = this.acpPolicyService.create({
       //     subjects: policySubjects,
       //     sensitivityLevel: policy.sensitivityLevel,
       //   });
 
-      //   return this.roleRepository.create({
+      //   return this.acpRoleService.create({
       //     name: role.name,
       //     isActive: true,
       //     policy: rolePolicy,
       //   });
+      // });
+
+      // const { salt, passwordExpired, passwordHash } =
+      //   await this.authService.createPassword(
+      //     process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+      //   );
+
+      // const superOwner = this.userService.create({
+      //   ...superSeedData.owner,
+      //   mobileNumber: '+972546000000',
+      //   password: passwordHash,
+      //   salt,
+      //   passwordExpired,
       // });
 
       // superOwner.role = [

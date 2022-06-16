@@ -7,9 +7,9 @@ import {
   Post,
 } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
-import { Role } from '@/role/entity/role.entity';
-import { RoleService } from 'src/role/service/role.service';
+// import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
+// import { Role } from '@/role/entity/role.entity';
+// import { RoleService } from 'src/role/service/role.service';
 import { UserService } from 'src/user/service/user.service';
 import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
 import { IUserCheckExist, IUserEntity } from 'src/user/user.interface';
@@ -28,8 +28,7 @@ export class AuthPublicController {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly userService: UserService,
-    private readonly authService: AuthService,
-    private readonly roleService: RoleService,
+    private readonly authService: AuthService, // private readonly roleService: RoleService,
   ) {}
 
   @Response('auth.signUp')

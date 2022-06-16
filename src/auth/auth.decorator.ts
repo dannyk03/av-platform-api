@@ -5,11 +5,11 @@ import {
   applyDecorators,
   SetMetadata,
 } from '@nestjs/common';
-import { PermissionPayloadDefaultGuard } from 'src/permission/guard/payload/permission.default.guard';
+import { PermissionPayloadDefaultGuard } from '@acp/ability/guard';
 import {
-  ENUM_PERMISSIONS,
+  // ENUM_PERMISSIONS,
   PERMISSION_META_KEY,
-} from 'src/permission/permission.constant';
+} from '@acp/ability/acp-ability.constant';
 import { AUTH_ADMIN_META_KEY } from './auth.constant';
 import { BasicGuard } from './guard/basic/auth.basic.guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
@@ -17,6 +17,8 @@ import { JwtGuard } from './guard/jwt/auth.jwt.guard';
 import { AuthPayloadAdminGuard } from './guard/payload/auth.payload.admin.guard';
 import { AuthPayloadDefaultGuard } from './guard/payload/auth.payload.default.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.payload.password-expired.guard';
+
+type ENUM_PERMISSIONS = 'temp-stub';
 
 export function AuthJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
   return applyDecorators(

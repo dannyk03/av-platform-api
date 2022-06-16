@@ -12,4 +12,8 @@ export class AcpAbilityService {
     private acpAbilityRepository: Repository<AcpAbility>,
     private readonly configService: ConfigService,
   ) {}
+
+  async create(props: any): Promise<any> {
+    return this.acpAbilityRepository.create(props);
+  }
 }

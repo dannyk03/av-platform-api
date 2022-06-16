@@ -125,19 +125,20 @@ export class UserService {
     salt,
     email,
     mobileNumber,
-    role,
+    isActive = true,
   }: IUserCreate): Promise<any> {
-    // const user: UserEntity = {
-    //   firstName,
-    //   email,
-    //   mobileNumber,
-    //   password,
-    //   role: new Types.ObjectId(role),
-    //   isActive: true,
-    //   lastName: lastName || undefined,
-    //   salt,
-    //   passwordExpired,
-    // };
+    const user = {
+      firstName,
+      email,
+      mobileNumber,
+      password,
+      isActive,
+      lastName: lastName || undefined,
+      salt,
+      passwordExpired,
+    };
+
+    return this.userRepository.create(user);
     // const create: UserDocument = new this.userRepository(user);
     // return create.save();
   }

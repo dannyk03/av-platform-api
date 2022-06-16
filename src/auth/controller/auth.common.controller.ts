@@ -11,7 +11,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
-import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
+// import { ENUM_ROLE_STATUS_CODE_ERROR } from 'src/role/role.constant';
 import { UserService } from 'src/user/service/user.service';
 import { AuthService } from '../service/auth.service';
 import {
@@ -186,14 +186,15 @@ export class AuthCommonController {
         statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
         message: 'user.error.inactive',
       });
-    } else if (!user.role.isActive) {
-      this.debuggerService.error('Role Block', 'AuthController', 'refresh');
-
-      throw new ForbiddenException({
-        statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
-        message: 'role.error.inactive',
-      });
     }
+    // else if (!user.role.isActive) {
+    //   this.debuggerService.error('Role Block', 'AuthController', 'refresh');
+
+    //   throw new ForbiddenException({
+    //     // statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_IS_INACTIVE_ERROR,
+    //     message: 'role.error.inactive',
+    //   });
+    // }
 
     const today: Date = this.helperDateService.create();
     const passwordExpired: Date = this.helperDateService.create(
