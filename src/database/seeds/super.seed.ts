@@ -1,4 +1,5 @@
 import { Command } from 'nestjs-command';
+import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { AuthService } from '@/auth/service/auth.service';
@@ -9,6 +10,8 @@ import { AcpPolicyService } from '@acp/policy';
 import { AcpSubjectService } from '@acp/subject';
 import { AcpAbilityService } from '@acp/ability';
 import { AcpRoleService, SystemRoleEnum } from '@acp/role';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SuperSeed {
@@ -20,8 +23,10 @@ export class SuperSeed {
     private readonly acpSubjectService: AcpSubjectService,
     private readonly acpAbilityService: AcpAbilityService,
 
-    private readonly debuggerService: DebuggerService,
     private readonly authService: AuthService,
+    @InjectDataSource('default')
+    private dataSource: DataSource,
+    private readonly debuggerService: DebuggerService, // private readonly configService: ConfigService,
   ) {}
 
   @Command({
@@ -30,6 +35,8 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
+      // const ds = this.configService.get('database.default');
+      // console.log(ds.options);
       // const systemRoles = superSeedData.roles.map((role) => {
       //   const { policy } = role;
       //   const policySubjects = policy.subjects.map((subject) => {

@@ -8,7 +8,7 @@ import FileConfig from './file.config';
 import MiddlewareConfig from './middleware.config';
 import { ConfigModule } from '@nestjs/config';
 
-export const Configs = [
+const Configs = [
   AppConfig,
   AuthConfig,
   DatabaseConfig,

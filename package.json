@@ -25,11 +25,11 @@
     "seed:rollback": "nestjs-command remove:user && nestjs-command remove:role && nestjs-command remove:permission && nestjs-command remove:authapis",
     "seed": "nestjs-command insert:super",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "yarn typeorm migration:generate -d src/database/datasource/default.datasource.ts -p src/database/migrations/default/migration",
+    "migration:generate": "yarn typeorm migration:generate -d src/database/typeorm-cli/default.datasource.ts -p src/database/migrations/default/migration",
     "migration:create": "yarn typeorm  migration:create src/database/migrations/default/custom",
-    "migration:run": "yarn typeorm migration:run -d src/database/datasource/default.datasource.ts",
-    "migration:revert": "yarn typeorm migration:revert -d src/database/datasource/default.datasource.ts",
-    "schema:drop": "yarn typeorm schema:drop -d src/database/datasource/default.datasource.ts"
+    "migration:run": "yarn typeorm migration:run -d src/database/typeorm-cli/default.datasource.ts",
+    "migration:revert": "yarn typeorm migration:revert -d src/database/typeorm-cli/default.datasource.ts",
+    "schema:drop": "yarn typeorm schema:drop -d src/database/typeorm-cli/default.datasource.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.112.0",
