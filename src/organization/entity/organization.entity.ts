@@ -32,13 +32,13 @@ export class Organization extends BaseEntity<Organization> {
   })
   isActive!: boolean;
 
-  @OneToMany(() => AcpRole, (role) => role.id, {
+  @OneToMany(() => AcpRole, (role) => role.organization, {
     // eager: true,
     cascade: true,
   })
   roles: AcpRole[];
 
-  @OneToMany(() => User, (user) => user.id, {
+  @OneToMany(() => User, (user) => user.organization, {
     // eager: true,
     cascade: true,
   })

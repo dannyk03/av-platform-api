@@ -1,6 +1,6 @@
-import { Entity, Column, ManyToMany, OneToMany, Check } from 'typeorm';
+import { Entity, Column, OneToMany, Check } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { AcpSubject } from '@/access-control-policy/subject/entity/acp-subject.entity';
+import { AcpSubject } from '@acp/subject/entity/acp-subject.entity';
 
 @Entity({ name: 'acp_policies' })
 // @Check('sensitivityLevel BETWEEN 1 AND 10')
@@ -15,7 +15,4 @@ export class AcpPolicy extends BaseEntity<AcpPolicy> {
     cascade: true,
   })
   subjects: AcpSubject[];
-
-  // @ManyToMany(() => AcpPolicy, (policy) => policy.roles)
-  // roles: AcpRole[];
 }

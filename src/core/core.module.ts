@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MessageModule } from 'src/message/message.module';
-import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { DebuggerModule } from 'src/debugger/debugger.module';
 import { ConfigDynamicModule } from 'src/config/index';

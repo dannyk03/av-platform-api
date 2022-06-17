@@ -9,7 +9,7 @@ export default registerAs(
     [ConnectionNames.Default]: {
       type: 'postgres',
       host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+      port: parseInt(process.env.DATABASE_PORT, 10) || 123,
       database: process.env.DATABASE_NAME || 'avo',
       password: process.env.DATABASE_PASSWORD || null,
       username: process.env.DATABASE_USERNAME,

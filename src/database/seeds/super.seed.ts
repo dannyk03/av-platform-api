@@ -1,5 +1,4 @@
 import { Command } from 'nestjs-command';
-import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { DebuggerService } from 'src/debugger/service/debugger.service';
 import { AuthService } from '@/auth/service/auth.service';
@@ -12,21 +11,21 @@ import { AcpAbilityService } from '@acp/ability';
 import { AcpRoleService, SystemRoleEnum } from '@acp/role';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { ConnectionNames } from '../database.constant';
 
 @Injectable()
 export class SuperSeed {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
     private readonly acpRoleService: AcpRoleService,
     private readonly acpPolicyService: AcpPolicyService,
     private readonly acpSubjectService: AcpSubjectService,
     private readonly acpAbilityService: AcpAbilityService,
-
     private readonly authService: AuthService,
-    @InjectDataSource('default')
-    private dataSource: DataSource,
-    private readonly debuggerService: DebuggerService, // private readonly configService: ConfigService,
+    private readonly debuggerService: DebuggerService,
   ) {}
 
   @Command({
@@ -35,64 +34,94 @@ export class SuperSeed {
   })
   async insert(): Promise<void> {
     try {
-      // const ds = this.configService.get('database.default');
-      // console.log(ds.options);
-      // const systemRoles = superSeedData.roles.map((role) => {
-      //   const { policy } = role;
-      //   const policySubjects = policy.subjects.map((subject) => {
-      //     const subjectAbilities = subject.abilities.map((ability) => {
-      //       return this.acpAbilityService.create({
-      //         type: ability.type,
-      //         action: ability.action,
-      //       });
-      //     });
-      //     return this.acpSubjectService.create({
-      //       type: subject.type,
-      //       sensitivityLevel: subject.sensitivityLevel,
-      //       abilities: subjectAbilities,
-      //     });
-      //   });
+      await this.defaultDataSource.transaction(
+        'SERIALIZABLE',
+        async (transactionalEntityManager) => {
+          try {
+            const systemRoles = await Promise.all(
+              superSeedData.roles.map(async (role) => {
+                const { policy } = role;
+                const policySubjects = await Promise.all(
+                  policy.subjects.map(async (subject) => {
+                    const subjectAbilities = await Promise.all(
+                      subject.abilities.map(async (ability) => {
+                        const abilityEntity = this.acpAbilityService.create({
+                          type: ability.type,
+                          action: ability.action,
+                        });
 
-      //   const rolePolicy = this.acpPolicyService.create({
-      //     subjects: policySubjects,
-      //     sensitivityLevel: policy.sensitivityLevel,
-      //   });
+                        return transactionalEntityManager.save(abilityEntity);
+                      }),
+                    );
+                    const subjectEntity = this.acpSubjectService.create({
+                      type: subject.type,
+                      sensitivityLevel: subject.sensitivityLevel,
+                      abilities: subjectAbilities,
+                    });
 
-      //   return this.acpRoleService.create({
-      //     name: role.name,
-      //     isActive: true,
-      //     policy: rolePolicy,
-      //   });
-      // });
+                    return transactionalEntityManager.save(subjectEntity);
+                  }),
+                );
+                const policyEntity = this.acpPolicyService.create({
+                  subjects: policySubjects,
+                  sensitivityLevel: policy.sensitivityLevel,
+                });
 
-      // const { salt, passwordExpired, passwordHash } =
-      //   await this.authService.createPassword(
-      //     process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-      //   );
+                await transactionalEntityManager.save(policyEntity);
+                const roleEntity = this.acpRoleService.create({
+                  name: role.name,
+                  isActive: true,
+                  policy: policyEntity,
+                });
 
-      // const superOwner = this.userService.create({
-      //   ...superSeedData.owner,
-      //   mobileNumber: '+972546000000',
-      //   password: passwordHash,
-      //   salt,
-      //   passwordExpired,
-      // });
+                return transactionalEntityManager.save(roleEntity);
+              }),
+            );
 
-      // superOwner.role = [
-      //   systemRoles.find((role) => role.name == SystemRoleEnum.SuperAdmin),
-      // ];
+            const systemOrganization = this.organizationService.create({
+              ...superSeedData.organization,
+              roles: systemRoles,
+            });
 
-      // const systemOrganization = this.organizationRepository.create({
-      //   ...superSeedData.organization,
-      //   // owner: superOwner,
-      //   // users: [superOwner],
-      //   // roles: systemRoles,
-      // });
-      // await this.organizationRepository.save(systemOrganization);
+            await transactionalEntityManager.save(systemOrganization);
+
+            const { salt, passwordExpired, passwordHash } =
+              this.authService.createPassword(
+                process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+              );
+
+            const superAdmin = this.userService.create({
+              ...superSeedData.superAdmin,
+              mobileNumber: '+00000000000',
+              password: passwordHash,
+              salt,
+              passwordExpired,
+              organization: systemOrganization,
+              role: systemRoles.find(
+                (role) => role.name === SystemRoleEnum.SuperAdmin,
+              ),
+            });
+
+            await transactionalEntityManager.save(superAdmin);
+
+            this.debuggerService.debug(
+              'Insert Super Succeed',
+              'SuperSeed',
+              'insert',
+            );
+          } catch (err) {
+            this.debuggerService.error(
+              err.message,
+              'SuperSeed',
+              'insert transaction',
+            );
+          }
+        },
+      );
 
       this.debuggerService.debug('Insert Super Succeed', 'SuperSeed', 'insert');
-    } catch (e) {
-      this.debuggerService.error(e.message, 'SuperSeed', 'insert');
+    } catch (err) {
+      this.debuggerService.error(err.message, 'SuperSeed', 'insert');
     }
   }
 

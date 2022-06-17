@@ -7,7 +7,9 @@ import { ConnectionNames } from '../database.constant';
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
-  createTypeOrmOptions(connectionName?: ConnectionNames): TypeOrmModuleOptions {
+  createTypeOrmOptions(
+    connectionName: ConnectionNames = ConnectionNames.Default,
+  ): TypeOrmModuleOptions {
     return this.configService.get(`database.${connectionName}`);
   }
 }

@@ -9,7 +9,7 @@ export const superSeedData = {
   organization: {
     name: 'system',
   },
-  owner: {
+  superAdmin: {
     firstName: 'Avo',
     lastName: 'SuperAdmin',
     email: 'superadmin@avonow.com',

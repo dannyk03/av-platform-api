@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
 import { AcpSubject } from '../entity/acp-subject.entity';
 
@@ -12,4 +12,12 @@ export class AcpSubjectService {
     private acpSubjectRepository: Repository<AcpSubject>,
     private readonly configService: ConfigService,
   ) {}
+
+  create(props: DeepPartial<AcpSubject>): AcpSubject {
+    return this.acpSubjectRepository.create(props);
+  }
+
+  createMany(props: DeepPartial<AcpSubject>[]): AcpSubject[] {
+    return this.acpSubjectRepository.create(props);
+  }
 }

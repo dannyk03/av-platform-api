@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
 import { AcpAbility } from '../entity/acp-ability.entity';
 
@@ -13,7 +13,11 @@ export class AcpAbilityService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(props: any): Promise<any> {
+  create(props: DeepPartial<AcpAbility>): AcpAbility {
+    return this.acpAbilityRepository.create(props);
+  }
+
+  createMany(props: DeepPartial<AcpAbility>[]): AcpAbility[] {
     return this.acpAbilityRepository.create(props);
   }
 }
