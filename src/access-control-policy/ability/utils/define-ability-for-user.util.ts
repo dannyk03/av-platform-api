@@ -1,4 +1,4 @@
-import { defineAbility, createAliasResolver } from '@casl/ability';
+import { defineAbility, createAliasResolver, MongoQuery } from '@casl/ability';
 import { AbilityActionEnum } from '../acp-ability.constant';
 
 const resolveAction = createAliasResolver({

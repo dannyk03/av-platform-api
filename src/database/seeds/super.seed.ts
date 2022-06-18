@@ -47,7 +47,7 @@ export class SuperSeed {
                       subject.abilities.map(async (ability) => {
                         const abilityEntity = this.acpAbilityService.create({
                           type: ability.type,
-                          action: ability.action,
+                          actions: ability.actions,
                         });
 
                         return transactionalEntityManager.save(abilityEntity);

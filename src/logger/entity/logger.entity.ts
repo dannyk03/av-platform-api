@@ -28,7 +28,13 @@ export class LoggerEntity {
   @Column({ nullable: true, update: false })
   description: string;
 
-  @Column({ type: 'text', array: true, default: [], update: false })
+  @Column({
+    type: 'varchar',
+    array: true,
+    length: 20,
+    nullable: true,
+    update: false,
+  })
   tags?: string[];
 
   @CreateDateColumn({

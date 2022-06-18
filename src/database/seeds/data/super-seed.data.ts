@@ -29,7 +29,7 @@ export const superSeedData = {
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Manage,
+                actions: [AbilityActionEnum.Manage],
               },
             ],
           },
@@ -47,7 +47,7 @@ export const superSeedData = {
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Modify,
+                actions: [AbilityActionEnum.Modify],
               },
             ],
           },
@@ -65,7 +65,7 @@ export const superSeedData = {
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Manage,
+                actions: [AbilityActionEnum.Manage],
               },
             ],
           },
@@ -75,7 +75,7 @@ export const superSeedData = {
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Read,
+                actions: [AbilityActionEnum.Read],
               },
             ],
           },
@@ -93,7 +93,7 @@ export const superSeedData = {
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                action: AbilityActionEnum.Read,
+                actions: [AbilityActionEnum.Read],
               },
             ],
           },

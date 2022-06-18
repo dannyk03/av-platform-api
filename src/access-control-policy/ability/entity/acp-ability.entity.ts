@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { AbilityActionEnum, AbilityTypeEnum } from '../acp-ability.constant';
 import { AcpSubject } from '@/access-control-policy/subject/entity/acp-subject.entity';
+import { AbilityCondition } from '../ability.interface';
 
 @Entity()
 export class AcpAbility extends BaseEntity<AcpAbility> {
@@ -14,21 +15,23 @@ export class AcpAbility extends BaseEntity<AcpAbility> {
   @Column({
     type: 'enum',
     enum: AbilityActionEnum,
+    array: true,
   })
-  action!: AbilityActionEnum;
+  actions!: AbilityActionEnum[];
 
   @Column({
     type: 'varchar',
+    length: 20,
     array: true,
-    default: ['*'],
+    nullable: true,
   })
-  fieldsAccess!: string[];
+  fieldsAccess?: string[];
 
   @Column({
     type: 'jsonb',
-    default: {},
+    nullable: true,
   })
-  conditions!: string[];
+  conditions?: AbilityCondition;
 
   @ManyToOne(() => AcpSubject, (subject) => subject.abilities)
   subject!: AcpSubject;
