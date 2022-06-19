@@ -5,19 +5,17 @@ import {
   MaxLength,
   IsBoolean,
   IsOptional,
-  ValidateIf,
   IsString,
 } from 'class-validator';
 
 export class AuthLoginDto {
   @IsEmail()
   @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(50)
   readonly email: string;
 
   @IsOptional()
   @IsBoolean()
-  @ValidateIf((e) => e.rememberMe !== '')
   readonly rememberMe?: boolean;
 
   @IsNotEmpty()

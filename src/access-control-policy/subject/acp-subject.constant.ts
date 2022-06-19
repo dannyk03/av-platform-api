@@ -12,12 +12,6 @@ export enum AcpBaseSubjectEnum {
   Order = 'Order',
 }
 
-export enum AcpSubjectGroupEnum {
-  Organization = 'Organization',
-  Security = 'Security',
-  Finance = 'Finance',
-}
-
 export enum AcpCompositeSubjectEnum {
   Organization = 'Organization',
   Security = 'Security',
@@ -25,19 +19,19 @@ export enum AcpCompositeSubjectEnum {
 }
 
 export const AcpGroupedSubjects = Object.freeze({
-  [AcpSubjectGroupEnum.Organization]: [
+  [AcpCompositeSubjectEnum.Organization]: [
     AcpBaseSubjectEnum.Organization,
     AcpBaseSubjectEnum.User,
   ],
-  [AcpSubjectGroupEnum.Security]: [
-    AcpSubjectGroupEnum.Security,
+  [AcpCompositeSubjectEnum.Security]: [
+    AcpCompositeSubjectEnum.Security,
     AcpBaseSubjectEnum.Role,
     AcpBaseSubjectEnum.Policy,
     AcpBaseSubjectEnum.Subject,
     AcpBaseSubjectEnum.Ability,
   ],
-  [AcpSubjectGroupEnum.Finance]: [
-    AcpSubjectGroupEnum.Finance,
+  [AcpCompositeSubjectEnum.Finance]: [
+    AcpCompositeSubjectEnum.Finance,
     AcpBaseSubjectEnum.Payment,
     AcpBaseSubjectEnum.CreditCard,
     AcpBaseSubjectEnum.Invoice,
@@ -46,15 +40,15 @@ export const AcpGroupedSubjects = Object.freeze({
 
 export const AcpCompositeSubjects = Object.freeze({
   [AcpCompositeSubjectEnum.Organization]: [
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Organization],
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Security],
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Finance],
+    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Organization],
+    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Security],
+    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Finance],
   ],
   [AcpCompositeSubjectEnum.Security]: [
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Security],
+    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Security],
   ],
   [AcpCompositeSubjectEnum.Finance]: [
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Finance],
+    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Finance],
   ],
 });
 
@@ -69,5 +63,3 @@ export const AcpSubjectDict = Object.freeze({
   ...AcpBaseSubjectEnum,
   ...AcpCompositeSubjects,
 });
-
-console.log({ AcpSubjectDict });
