@@ -12,6 +12,7 @@ import { AcpRoleService, SystemRoleEnum } from '@acp/role';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConnectionNames } from '../database.constant';
+import { HelperDateService } from '@/utils/helper';
 
 @Injectable()
 export class SuperSeed {
@@ -25,6 +26,7 @@ export class SuperSeed {
     private readonly acpSubjectService: AcpSubjectService,
     private readonly acpAbilityService: AcpAbilityService,
     private readonly authService: AuthService,
+    private readonly helperDateService: HelperDateService,
     private readonly debuggerService: DebuggerService,
   ) {}
 
@@ -85,17 +87,16 @@ export class SuperSeed {
 
             await transactionalEntityManager.save(systemOrganization);
 
-            const { salt, passwordExpired, passwordHash } =
-              this.authService.createPassword(
-                process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-              );
+            const { salt, passwordHash } = this.authService.createPassword(
+              process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+            );
 
             const superAdmin = this.userService.create({
               ...superSeedData.superAdmin,
               mobileNumber: '+00000000000',
               password: passwordHash,
               salt,
-              passwordExpired,
+              passwordExpired: this.helperDateService.forwardInDays(365 * 10),
               organization: systemOrganization,
               role: systemRoles.find(
                 (role) => role.name === SystemRoleEnum.SuperAdmin,
@@ -113,7 +114,7 @@ export class SuperSeed {
             this.debuggerService.error(
               err.message,
               'SuperSeed',
-              'insert transaction',
+              'insert seed transaction',
             );
           }
         },

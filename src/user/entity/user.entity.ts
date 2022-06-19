@@ -1,16 +1,7 @@
-import {
-  Entity,
-  Column,
-  Index,
-  ManyToMany,
-  JoinTable,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
+import { Entity, Column, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
-import { AcpRole } from '@/access-control-policy/role/entity/acp-role.entity';
+import { AcpRole } from '@acp/role/entity/acp-role.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {

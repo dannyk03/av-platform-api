@@ -108,6 +108,8 @@ export class AuthCommonController {
     const safeData: AuthLoginSerialization =
       await this.authService.serializationLogin(user);
 
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
     const payloadAccessToken: Record<string, any> =
       await this.authService.createPayloadAccessToken(safeData, rememberMe);
     const payloadRefreshToken: Record<string, any> =

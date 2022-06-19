@@ -1,1 +1,1 @@
-export * from './acp-role.login.serialization';
+export * from './acp-role.auth.serialization';

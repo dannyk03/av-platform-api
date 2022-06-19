@@ -1,11 +1,13 @@
-import { AcpRoleLoginSerialization } from '@acp/role';
+import { AcpRoleAuthSerialization } from '@acp/role';
 import { AcpRole } from '@acp/role/entity/acp-role.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
 export class AuthLoginSerialization {
   readonly id: string;
 
-  @Transform(({ value }) => plainToInstance(AcpRoleLoginSerialization, value))
+  @Transform(({ value: role }) =>
+    plainToInstance(AcpRoleAuthSerialization, role),
+  )
   readonly role: AcpRole;
 
   readonly email: string;
@@ -13,6 +15,15 @@ export class AuthLoginSerialization {
   readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
+
+  @Exclude()
+  readonly mobileNumber: string;
+
+  @Exclude()
+  readonly emailVerified: boolean;
+
+  @Exclude()
+  readonly emailVerificationToken: string;
 
   @Exclude()
   readonly firstName: string;
