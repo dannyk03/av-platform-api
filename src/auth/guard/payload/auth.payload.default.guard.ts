@@ -4,8 +4,8 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
+import { DebuggerService } from '@/debugger';
 
 @Injectable()
 export class AuthPayloadDefaultGuard implements CanActivate {

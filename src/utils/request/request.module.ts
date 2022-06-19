@@ -6,7 +6,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger';
 import { ENUM_REQUEST_STATUS_CODE_ERROR } from './request.constant';
 import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';
 import { IsPasswordStrongConstraint } from './validation/request.is-password-strong.validation';

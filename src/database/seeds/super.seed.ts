@@ -1,8 +1,7 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { AuthService } from '@/auth/service/auth.service';
-import { superSeedData } from './data';
+import { DebuggerService } from '@/debugger';
+import { AuthService } from '@/auth';
 import { OrganizationService } from '@/organization';
 import { UserService } from '@/user';
 import { AcpPolicyService } from '@acp/policy';
@@ -11,8 +10,9 @@ import { AcpAbilityService } from '@acp/ability';
 import { AcpRoleService, SystemRoleEnum } from '@acp/role';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { ConnectionNames } from '../database.constant';
 import { HelperDateService } from '@/utils/helper';
+import { ConnectionNames } from '../database.constant';
+import { superSeedData } from './data';
 
 @Injectable()
 export class SuperSeed {

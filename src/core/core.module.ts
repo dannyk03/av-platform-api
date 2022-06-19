@@ -1,21 +1,19 @@
 import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageModule } from '@/message';
-import { DebuggerModule } from '@/debugger';
+import { DebuggerModule, DebuggerOptionService } from '@/debugger';
 import { ConfigDynamicModule } from '@/config';
 import { AuthModule } from '@/auth';
 import { PaginationModule } from '@/utils/pagination';
 import { HelperModule } from '@/utils/helper';
 import { MiddlewareModule } from '@/utils/middleware';
-import { DebuggerOptionService } from 'src/debugger/service/debugger.option.service';
-import { DatabaseModule } from 'src/database/database.module';
-import { ConnectionNames } from 'src/database/database.constant';
-import { LoggerModule } from 'src/logger/logger.module';
-import { RequestModule } from 'src/utils/request/request.module';
-import { ErrorModule } from 'src/utils/error/error.module';
-import { VersionModule } from 'src/utils/version/version.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigService } from '@/database/service';
+import { DatabaseModule, ConnectionNames } from '@/database/';
+import { LoggerModule } from '@/logger';
+import { RequestModule } from '@/utils/request';
+import { ErrorModule } from '@/utils/error';
+import { VersionModule } from '@/utils/version';
+import { TypeOrmConfigService } from '@/database';
 
 @Module({
   controllers: [],

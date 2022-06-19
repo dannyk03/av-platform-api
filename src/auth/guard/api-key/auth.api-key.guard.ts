@@ -4,10 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
+import { DebuggerService } from '@/debugger';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
 
 @Injectable()
 export class ApiKeyGuard extends AuthGuard('api-key') {

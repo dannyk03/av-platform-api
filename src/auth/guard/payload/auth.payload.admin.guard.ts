@@ -4,12 +4,9 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import {
-  AUTH_ADMIN_META_KEY,
-  ENUM_AUTH_STATUS_CODE_ERROR,
-} from 'src/auth/auth.constant';
+import { AUTH_ADMIN_META_KEY, ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
 import { Reflector } from '@nestjs/core';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger';
 
 @Injectable()
 export class AuthPayloadAdminGuard implements CanActivate {
