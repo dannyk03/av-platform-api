@@ -7,7 +7,7 @@ import { OrganizationModule } from '@/organization';
 import { UserModule } from '@/user';
 import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
-import { CoreModule } from 'src/core/core.module';
+import { CoreModule } from '@/core/core.module';
 import { SuperSeed } from './super.seed';
 
 @Module({

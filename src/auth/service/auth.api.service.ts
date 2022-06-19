@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthApi } from '../entity/auth.api.entity';
-import { IDatabaseFindAllOptions } from 'src/database/database.interface';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
 import { plainToInstance } from 'class-transformer';
 import { AuthApiListSerialization } from '../serialization/auth.api.list.serialization';
 import { AuthApiGetSerialization } from '../serialization/auth.api.get.serialization';
@@ -9,11 +9,11 @@ import {
   IAuthApiRequestHashedData,
   IAuthApiCreate,
 } from '../auth.interface';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { ConfigService } from '@nestjs/config';
-import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
+import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 import { AuthApiUpdateDto } from '../dto/auth.api.update.dto';
-import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
+import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
 import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

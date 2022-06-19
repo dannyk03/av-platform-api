@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
 import { DebuggerService } from '@/debugger';
 import { HelperDateService } from '@/utils/helper';
 

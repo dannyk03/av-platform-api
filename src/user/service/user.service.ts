@@ -4,17 +4,17 @@ import {
   IUserCreate,
   IUserUpdate,
   IUserCheckExist,
-} from 'src/user/user.interface';
+} from '@/user/user.interface';
 import { plainToInstance } from 'class-transformer';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { IAuthPassword } from 'src/auth/auth.interface';
+import { IAwsS3Response } from '@/aws/aws.interface';
+import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
-import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
+import { HelperStringService } from '@/utils/helper/service/helper.string.service';
 import { User } from '../entity/user.entity';
 import {
   IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
-} from 'src/database/database.interface';
+} from '@/database/database.interface';
 import { UserProfileSerialization } from '../serialization/user.profile.serialization';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserGetSerialization } from '../serialization/user.get.serialization';

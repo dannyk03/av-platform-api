@@ -4,7 +4,7 @@ import {
   HealthIndicator,
   HealthIndicatorResult,
 } from '@nestjs/terminus';
-import { AwsS3Service } from 'src/aws/service/aws.s3.service';
+import { AwsS3Service } from '@/aws/service/aws.s3.service';
 
 @Injectable()
 export class AwsHealthIndicator extends HealthIndicator {

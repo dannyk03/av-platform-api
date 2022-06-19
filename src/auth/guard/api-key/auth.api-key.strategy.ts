@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-headerapikey';
-import { AuthApiService } from 'src/auth/service/auth.api.service';
+import { AuthApiService } from '@/auth/service/auth.api.service';
 import { Request } from 'express';
 import { AuthApi } from '@/auth/entity/auth.api.entity';
-import { IAuthApiRequestHashedData } from 'src/auth/auth.interface';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/auth/auth.constant';
+import { IAuthApiRequestHashedData } from '@/auth/auth.interface';
+import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {

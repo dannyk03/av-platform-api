@@ -1,10 +1,10 @@
 import { RouterTestModule } from '@/router/router.test.module';
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { RouterAdminModule } from 'src/router/router.admin.module';
-import { RouterCallbackModule } from 'src/router/router.callback.module';
-import { RouterCommonModule } from 'src/router/router.common.module';
-import { RouterPublicModule } from 'src/router/router.public.module';
+import { RouterAdminModule } from '@/router/router.admin.module';
+import { RouterCallbackModule } from '@/router/router.callback.module';
+import { RouterCommonModule } from '@/router/router.common.module';
+import { RouterPublicModule } from '@/router/router.public.module';
 
 @Module({})
 export class AppRouterModule {

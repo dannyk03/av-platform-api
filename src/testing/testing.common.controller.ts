@@ -1,8 +1,8 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
-import { UserAgent } from 'src/utils/request/request.decorator';
-import { Response } from 'src/utils/response/response.decorator';
-import { IResponse } from 'src/utils/response/response.interface';
-import { GetVersion } from 'src/utils/version/version.decorator';
+import { UserAgent } from '@/utils/request/request.decorator';
+import { Response } from '@/utils/response/response.decorator';
+import { IResponse } from '@/utils/response/response.interface';
+import { GetVersion } from '@/utils/version/version.decorator';
 import { IResult } from 'ua-parser-js';
 
 @Controller({
