@@ -1,1 +1,1 @@
-export const DEBUGGER_NAME = 'system';
+export const DEBUGGER_NAME = 'system-debug';

@@ -8,13 +8,14 @@ export enum AcpBaseSubjectEnum {
   Ability = 'Ability',
   CreditCard = 'CreditCard',
   Invoice = 'Invoice',
+  Payment = 'Payment',
   Order = 'Order',
 }
 
 export enum AcpSubjectGroupEnum {
   Organization = 'Organization',
   Security = 'Security',
-  Payment = 'Payment',
+  Finance = 'Finance',
 }
 
 export enum AcpCompositeSubjectEnum {
@@ -35,8 +36,9 @@ export const AcpGroupedSubjects = Object.freeze({
     AcpBaseSubjectEnum.Subject,
     AcpBaseSubjectEnum.Ability,
   ],
-  [AcpSubjectGroupEnum.Payment]: [
-    AcpSubjectGroupEnum.Payment,
+  [AcpSubjectGroupEnum.Finance]: [
+    AcpSubjectGroupEnum.Finance,
+    AcpBaseSubjectEnum.Payment,
     AcpBaseSubjectEnum.CreditCard,
     AcpBaseSubjectEnum.Invoice,
   ],
@@ -46,13 +48,13 @@ export const AcpCompositeSubjects = Object.freeze({
   [AcpCompositeSubjectEnum.Organization]: [
     ...AcpGroupedSubjects[AcpSubjectGroupEnum.Organization],
     ...AcpGroupedSubjects[AcpSubjectGroupEnum.Security],
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Payment],
+    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Finance],
   ],
   [AcpCompositeSubjectEnum.Security]: [
     ...AcpGroupedSubjects[AcpSubjectGroupEnum.Security],
   ],
   [AcpCompositeSubjectEnum.Finance]: [
-    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Payment],
+    ...AcpGroupedSubjects[AcpSubjectGroupEnum.Finance],
   ],
 });
 
@@ -67,3 +69,5 @@ export const AcpSubjectDict = Object.freeze({
   ...AcpBaseSubjectEnum,
   ...AcpCompositeSubjects,
 });
+
+console.log({ AcpSubjectDict });

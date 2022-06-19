@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 import { Injectable } from '@nestjs/common';
 import { AuthApi } from '../entity/auth.api.entity';
 import { ConnectionNames } from '@/database';

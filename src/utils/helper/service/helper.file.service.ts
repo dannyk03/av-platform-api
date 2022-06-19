@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import excelJs from 'exceljs';
