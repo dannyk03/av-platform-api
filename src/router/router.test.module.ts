@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TestingCommonController } from '@/testing/testing.common.controller';
-import { UserModule } from '@/user/user.module';
-import { AuthModule } from '@/auth/auth.module';
+import { TestingCommonController } from '@/testing';
+import { UserModule } from '@/user';
+import { AuthModule } from '@/auth';
 
 @Module({
   controllers: [TestingCommonController],

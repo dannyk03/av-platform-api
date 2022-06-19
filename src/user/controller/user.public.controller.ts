@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
-import { AwsS3Service } from 'src/aws/service/aws.s3.service';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+import { AwsS3Service } from '@/aws';
+import { DebuggerService } from '@/debugger';
 import { UserService } from '../service/user.service';
 
 @Controller({

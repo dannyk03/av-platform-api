@@ -1,13 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { AuthModule } from 'src/auth/auth.module';
-import { AuthCommonController } from 'src/auth/controller/auth.common.controller';
-import { HealthController } from '@/health/controller/health.controller';
-import { HealthModule } from 'src/health/health.module';
-// import { PermissionModule } from '@/permission/permission.module';
-// import { RoleModule } from 'src/role/role.module';
-import { UserModule } from 'src/user/user.module';
+import { AuthCommonController, AuthModule } from '@/auth';
+import { HealthModule, HealthController } from '@/health';
+import { UserModule } from '@/user';
+import { AcpRoleModule } from '@acp/role';
+import { AcpPolicyModule } from '@acp/policy';
+import { AcpSubjectModule } from '@acp/subject';
+import { AcpAbilityModule } from '@acp/ability';
 
 @Module({
   controllers: [AuthCommonController, HealthController],
@@ -16,8 +16,10 @@ import { UserModule } from 'src/user/user.module';
   imports: [
     UserModule,
     AuthModule,
-    // RoleModule,
-    // PermissionModule,
+    AcpRoleModule,
+    AcpPolicyModule,
+    AcpSubjectModule,
+    AcpAbilityModule,
     TerminusModule,
     HttpModule,
     HealthModule,
