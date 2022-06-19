@@ -42,4 +42,10 @@ export class UserService {
   createMany(props: DeepPartial<User>[]): User[] {
     return this.userRepository.create(props);
   }
+
+  async findOne(find: Record<string, any>): Promise<User> {
+    const user = await this.userRepository.findOne(find);
+
+    return user;
+  }
 }

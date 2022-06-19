@@ -1,26 +1,14 @@
-import { Exclude, Transform, Type } from 'class-transformer';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-// import { IRoleEntity } from 'src/role/role.interface';
+import { AcpRoleLoginSerialization } from '@acp/role';
+import { AcpRole } from '@acp/role/entity/acp-role.entity';
+import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
 export class AuthLoginSerialization {
-  @Type(() => String)
   readonly id: string;
 
-  @Transform(
-    ({ value }) => ({
-      name: value.name,
-      permissions: value.permissions.map((val: Record<string, any>) => ({
-        code: val.code,
-        isActive: val.isActive,
-      })),
-      isActive: value.isActive,
-      isAdmin: value.isAdmin,
-    }),
-    { toClassOnly: true },
-  )
-  // readonly role: IRoleEntity;
+  @Transform(({ value }) => plainToInstance(AcpRoleLoginSerialization, value))
+  readonly role: AcpRole;
+
   readonly email: string;
-  readonly mobileNumber: string;
   readonly isActive: boolean;
   readonly passwordExpired: Date;
   readonly loginDate: Date;
@@ -33,9 +21,6 @@ export class AuthLoginSerialization {
   readonly lastName: string;
 
   @Exclude()
-  readonly photo?: IAwsS3Response;
-
-  @Exclude()
   readonly password: string;
 
   @Exclude()
@@ -46,4 +31,7 @@ export class AuthLoginSerialization {
 
   @Exclude()
   readonly updatedAt: Date;
+
+  @Exclude()
+  readonly deletedAt: Date;
 }
