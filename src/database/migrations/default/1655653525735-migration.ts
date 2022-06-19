@@ -1,25 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655650060831 implements MigrationInterface {
-  name = 'migration1655650060831';
+export class migration1655653525735 implements MigrationInterface {
+  name = 'migration1655653525735';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            CREATE TABLE "auth_apis" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "name" character varying NOT NULL,
-                "description" character varying,
-                "key" character varying NOT NULL,
-                "hash" character varying NOT NULL,
-                "encryption_key" character varying NOT NULL,
-                "passphrase" character varying NOT NULL,
-                "is_active" boolean NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "uq_auth_apis_key" UNIQUE ("key"),
-                CONSTRAINT "pk_auth_apis_id" PRIMARY KEY ("id")
-            )
-        `);
     await queryRunner.query(`
             CREATE TYPE "public"."acp_abilitys_type_enum" AS ENUM('can', 'cannot')
         `);
@@ -73,6 +57,9 @@ export class migration1655650060831 implements MigrationInterface {
                 "sensitivity_level" integer NOT NULL DEFAULT '1',
                 "type" "public"."acp_subjects_type_enum" NOT NULL,
                 "policy_id" uuid,
+                CONSTRAINT "sensitivity_level" CHECK (
+                    sensitivity_level BETWEEN 1 AND 10
+                ),
                 CONSTRAINT "pk_acp_subjects_id" PRIMARY KEY ("id")
             )
         `);
@@ -83,6 +70,9 @@ export class migration1655650060831 implements MigrationInterface {
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
                 "sensitivity_level" smallint NOT NULL DEFAULT '1',
+                CONSTRAINT "sensitivity_level" CHECK (
+                    sensitivity_level BETWEEN 1 AND 10
+                ),
                 CONSTRAINT "pk_acp_policies_id" PRIMARY KEY ("id")
             )
         `);
@@ -126,7 +116,7 @@ export class migration1655650060831 implements MigrationInterface {
                 "is_active" boolean NOT NULL DEFAULT true,
                 "organization_id" uuid,
                 "policy_id" uuid,
-                CONSTRAINT "uq_acp_roles_name_organization_id_slug" UNIQUE ("slug", "name", "organization_id"),
+                CONSTRAINT "unique_role_organization" UNIQUE ("slug", "name", "organization_id"),
                 CONSTRAINT "rel_acp_roles_policy_id" UNIQUE ("policy_id"),
                 CONSTRAINT "pk_acp_roles_id" PRIMARY KEY ("id")
             )
@@ -157,6 +147,22 @@ export class migration1655650060831 implements MigrationInterface {
                 "tags" character varying(20) array,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "auth_apis" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "name" character varying NOT NULL,
+                "description" character varying,
+                "key" character varying NOT NULL,
+                "hash" character varying NOT NULL,
+                "encryption_key" character varying NOT NULL,
+                "passphrase" character varying NOT NULL,
+                "is_active" boolean NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                CONSTRAINT "uq_auth_apis_key" UNIQUE ("key"),
+                CONSTRAINT "pk_auth_apis_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
@@ -205,6 +211,9 @@ export class migration1655650060831 implements MigrationInterface {
             ALTER TABLE "acp_abilitys" DROP CONSTRAINT "fk_acp_abilitys_subject_id"
         `);
     await queryRunner.query(`
+            DROP TABLE "auth_apis"
+        `);
+    await queryRunner.query(`
             DROP TABLE "loggers"
         `);
     await queryRunner.query(`
@@ -242,9 +251,6 @@ export class migration1655650060831 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TYPE "public"."acp_abilitys_type_enum"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "auth_apis"
         `);
   }
 }

@@ -1,9 +1,6 @@
-import {
-  AbilityActionEnum,
-  AbilityTypeEnum,
-} from '@/access-control-policy/ability';
-import { AcpSubjectDict } from '@/access-control-policy/subject';
-import { SystemRoleEnum } from '@/access-control-policy/role';
+import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
+import { AcpSubjectDict } from '@acp/subject';
+import { SystemRoleEnum } from '@acp/role';
 
 export const superSeedData = {
   organization: {

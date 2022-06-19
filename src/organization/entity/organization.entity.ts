@@ -1,16 +1,7 @@
-import {
-  Entity,
-  Column,
-  JoinTable,
-  OneToMany,
-  BeforeInsert,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
-
+import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
-import { AcpRole } from '@/access-control-policy/role/entity/acp-role.entity';
+import { createSlugFromString } from '@/utils/helper';
+import { AcpRole } from '@acp/role/entity/acp-role.entity';
 import { User } from '@/user/entity/user.entity';
 
 @Entity()
@@ -33,13 +24,11 @@ export class Organization extends BaseEntity<Organization> {
   isActive!: boolean;
 
   @OneToMany(() => AcpRole, (role) => role.organization, {
-    // eager: true,
     cascade: true,
   })
   roles: AcpRole[];
 
   @OneToMany(() => User, (user) => user.organization, {
-    // eager: true,
     cascade: true,
   })
   users: User[];

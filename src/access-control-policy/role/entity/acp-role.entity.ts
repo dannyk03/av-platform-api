@@ -10,13 +10,13 @@ import {
   OneToMany,
 } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { createSlugFromString } from '@/utils/helper/service/helper.slug.service';
+import { createSlugFromString } from '@/utils/helper/service';
 import { Organization } from '@/organization/entity/organization.entity';
-import { AcpPolicy } from '@/access-control-policy/policy/entity/acp-policy.entity';
+import { AcpPolicy } from '@acp/policy/entity/acp-policy.entity';
 import { User } from '@/user/entity/user.entity';
 
 @Entity()
-@Unique(['slug', 'name', 'organization'])
+@Unique('unique_role_organization', ['slug', 'name', 'organization'])
 export class AcpRole extends BaseEntity<AcpRole> {
   @Index('role_slug_index')
   @Column({
