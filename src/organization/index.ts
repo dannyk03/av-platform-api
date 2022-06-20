@@ -1,2 +1,4 @@
 export * from './organization.module';
-export * from './service/organization.service';
+export * from './service';
+export * from './entity';
+export * from './organization.constant';

@@ -1,3 +1,4 @@
+import { Organization } from '@/organization';
 import { AcpRoleAuthSerialization } from '@acp/role';
 import { AcpRole } from '@acp/role/entity/acp-role.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
@@ -15,6 +16,9 @@ export class AuthLoginSerialization {
   readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
+
+  @Exclude()
+  readonly organization: Organization;
 
   @Exclude()
   readonly mobileNumber: string;

@@ -77,3 +77,10 @@ export const Token = createParamDecorator(
     return authorization ? authorization.split(' ')[1] : undefined;
   },
 );
+
+export const User = createParamDecorator(
+  (data: string, ctx: ExecutionContext): Record<string, any> => {
+    const { user } = ctx.switchToHttp().getRequest();
+    return data ? user[data] : user;
+  },
+);
