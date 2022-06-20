@@ -92,7 +92,7 @@ export class AuthService {
     return this.helperEncryptionService.jwtDecrypt(token);
   }
 
-  async validateUser(
+  async validateUserPassword(
     passwordString: string,
     passwordHash: string,
   ): Promise<boolean> {

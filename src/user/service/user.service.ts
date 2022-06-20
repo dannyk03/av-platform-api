@@ -47,10 +47,23 @@ export class UserService {
     return this.userRepository.findOne(find);
   }
 
-  async findOneById(id: string, options: Record<string, any>): Promise<User> {
+  async findOneById(id: string, options?: Record<string, any>): Promise<User> {
     return this.userRepository.findOne({
       where: { id },
-      relations: options.relations,
+      relations: options?.relations,
     });
+  }
+
+  async updatePassword(
+    id: string,
+    { salt, passwordHash, passwordExpired }: IAuthPassword,
+  ): Promise<User> {
+    const user: User = await this.userRepository.findOneBy({ id });
+
+    user.password = passwordHash;
+    user.passwordExpired = passwordExpired;
+    user.salt = salt;
+
+    return this.userRepository.save(user);
   }
 }

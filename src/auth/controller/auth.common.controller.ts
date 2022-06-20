@@ -7,12 +7,14 @@ import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
+  InternalServerErrorException,
+  Patch,
 } from '@nestjs/common';
 import { UserService, ENUM_USER_STATUS_CODE_ERROR } from '@/user';
 import { DebuggerService } from '@/debugger';
 import { LoggerService, ENUM_LOGGER_ACTION } from '@/logger';
 import { HelperDateService } from '@/utils/helper';
-import { SuccessException } from '@/utils/error';
+import { ENUM_STATUS_CODE_ERROR, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
 import { ENUM_ROLE_STATUS_CODE_ERROR } from '@acp/role';
@@ -23,7 +25,13 @@ import {
   ENUM_AUTH_STATUS_CODE_SUCCESS,
 } from '../auth.constant';
 import { ENUM_ORGANIZATION_STATUS_CODE_ERROR } from '@/organization';
-import { AuthRefreshJwtGuard, Token, User } from '../auth.decorator';
+import {
+  AuthJwtGuard,
+  AuthRefreshJwtGuard,
+  Token,
+  User,
+} from '../auth.decorator';
+import { AuthChangePasswordDto } from '../dto';
 
 @Controller({
   version: '1',
@@ -94,7 +102,7 @@ export class AuthCommonController {
       });
     }
 
-    const validate: boolean = await this.authService.validateUser(
+    const validate: boolean = await this.authService.validateUserPassword(
       body.password,
       user.password,
     );
@@ -289,5 +297,84 @@ export class AuthCommonController {
       accessToken,
       refreshToken,
     };
+  }
+
+  @Response('auth.changePassword')
+  @AuthJwtGuard()
+  @Patch('/change-password')
+  async changePassword(
+    @Body() body: AuthChangePasswordDto,
+    @User('id') id: string,
+  ): Promise<void> {
+    const user = await this.userService.findOneById(id);
+
+    if (!user) {
+      this.debuggerService.error(
+        'User not found',
+        'AuthController',
+        'changePassword',
+      );
+
+      throw new NotFoundException({
+        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+        message: 'user.error.notFound',
+      });
+    }
+
+    const matchPassword: boolean = await this.authService.validateUserPassword(
+      body.oldPassword,
+      user.password,
+    );
+    if (!matchPassword) {
+      this.debuggerService.error(
+        "Old password don't match",
+        'AuthController',
+        'changePassword',
+      );
+
+      throw new BadRequestException({
+        statusCode: ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NOT_MATCH_ERROR,
+        message: 'auth.error.passwordNotMatch',
+      });
+    }
+
+    const newMatchPassword: boolean =
+      await this.authService.validateUserPassword(
+        body.newPassword,
+        user.password,
+      );
+    if (newMatchPassword) {
+      this.debuggerService.error(
+        "New password cant't same with old password",
+        'AuthController',
+        'changePassword',
+      );
+
+      throw new BadRequestException({
+        statusCode:
+          ENUM_AUTH_STATUS_CODE_ERROR.AUTH_PASSWORD_NEW_MUST_DIFFERENCE_ERROR,
+        message: 'auth.error.newPasswordMustDifference',
+      });
+    }
+
+    try {
+      const password = await this.authService.createPassword(body.newPassword);
+
+      await this.userService.updatePassword(user.id, password);
+    } catch (err) {
+      this.debuggerService.error(
+        'Change password error internal server error',
+        'AuthController',
+        'changePassword',
+        err,
+      );
+
+      throw new InternalServerErrorException({
+        statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+        message: 'http.serverError.internalServerError',
+      });
+    }
+
+    return;
   }
 }
