@@ -87,9 +87,10 @@ export class SuperSeed {
 
             await transactionalEntityManager.save(systemOrganization);
 
-            const { salt, passwordHash } = this.authService.createPassword(
-              process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
-            );
+            const { salt, passwordHash } =
+              await this.authService.createPassword(
+                process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+              );
 
             const superAdmin = this.userService.create({
               ...superSeedData.superAdmin,

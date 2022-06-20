@@ -127,7 +127,7 @@ export class AuthService {
     return plainToInstance(AuthLoginSerialization, data);
   }
 
-  createPassword(password: string): IAuthPassword {
+  async createPassword(password: string): Promise<IAuthPassword> {
     const saltLength: number = this.configService.get<number>(
       'auth.password.saltLength',
     );
