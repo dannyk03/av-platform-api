@@ -327,7 +327,7 @@ export class AuthCommonController {
     );
     if (!matchPassword) {
       this.debuggerService.error(
-        "Old password don't match",
+        "Old password doesn't match",
         'AuthController',
         'changePassword',
       );
@@ -345,7 +345,7 @@ export class AuthCommonController {
       );
     if (newMatchPassword) {
       this.debuggerService.error(
-        "New password cant't same with old password",
+        "New password cant't be the same as old password",
         'AuthController',
         'changePassword',
       );
