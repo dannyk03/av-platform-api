@@ -1,6 +1,6 @@
 import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
 import { AcpSubjectDict } from '@acp/subject';
-import { SystemRoleEnum } from '@acp/role';
+import { EnumSystemRole } from '@acp/role';
 
 export const superSeedData = {
   organization: {
@@ -16,7 +16,7 @@ export const superSeedData = {
   },
   roles: [
     {
-      name: SystemRoleEnum.SuperAdmin,
+      name: EnumSystemRole.SuperAdmin,
       policy: {
         sensitivityLevel: 10,
         subjects: [
@@ -34,7 +34,7 @@ export const superSeedData = {
       },
     },
     {
-      name: SystemRoleEnum.SystemAdmin,
+      name: EnumSystemRole.SystemAdmin,
       policy: {
         sensitivityLevel: 9,
         subjects: [
@@ -52,7 +52,7 @@ export const superSeedData = {
       },
     },
     {
-      name: SystemRoleEnum.SystemManager,
+      name: EnumSystemRole.SystemManager,
       policy: {
         sensitivityLevel: 5,
         subjects: [
@@ -80,7 +80,7 @@ export const superSeedData = {
       },
     },
     {
-      name: SystemRoleEnum.SystemReadOnly,
+      name: EnumSystemRole.SystemReadOnly,
       policy: {
         sensitivityLevel: 5,
         subjects: [

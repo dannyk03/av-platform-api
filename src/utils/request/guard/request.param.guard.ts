@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from '../request.constant';
+import { EnumRequestStatusCodeError } from '../request.constant';
 
 export function ParamGuard(
   classValidation: ClassConstructor<any>[],
@@ -24,7 +24,7 @@ export function ParamGuard(
 
         if (errors.length > 0) {
           throw new BadRequestException({
-            statusCode: ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+            statusCode: EnumRequestStatusCodeError.RequestValidationError,
             message: 'http.clientError.badRequest',
             errors: errors,
           });

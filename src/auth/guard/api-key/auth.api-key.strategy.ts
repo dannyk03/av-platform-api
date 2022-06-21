@@ -5,7 +5,7 @@ import { AuthApiService } from '@/auth/service/auth.api.service';
 import { Request } from 'express';
 import { AuthApi } from '@/auth/entity/auth.api.entity';
 import { IAuthApiRequestHashedData } from '@/auth/auth.interface';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth/auth.constant';
+import { EnumAuthStatusCodeError } from '@/auth/auth.constant';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
@@ -43,13 +43,13 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
       verified(
         null,
         null,
-        `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_NOT_FOUND_ERROR}`,
+        `${EnumAuthStatusCodeError.AuthGuardApiKeyNotFoundError}`,
       );
     } else if (!authApi.isActive) {
       verified(
         null,
         null,
-        `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INACTIVE_ERROR}`,
+        `${EnumAuthStatusCodeError.AuthGuardApiKeyInactiveError}`,
       );
     }
 
@@ -72,18 +72,18 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
       verified(
         null,
         null,
-        `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_SCHEMA_INVALID_ERROR}`,
+        `${EnumAuthStatusCodeError.AuthGuardApiKeySchemaInvalidError}`,
       );
     } else if (key !== decrypted.key) {
       verified(
         null,
         null,
-        `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
+        `${EnumAuthStatusCodeError.AuthGuardApiKeyInvalidError}`,
       );
     } else if (timestamp !== decrypted.timestamp) {
       verified(
         new Error(
-          `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_TIMESTAMP_NOT_MATCH_WITH_REQUEST_ERROR}`,
+          `${EnumAuthStatusCodeError.AuthGuardApiKeyTimestampNotMatchWithRequestError}`,
         ),
       );
     }
@@ -97,7 +97,7 @@ export class ApiKeyStrategy extends PassportStrategy(Strategy, 'api-key') {
       verified(
         null,
         null,
-        `${ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_API_KEY_INVALID_ERROR}`,
+        `${EnumAuthStatusCodeError.AuthGuardApiKeyInvalidError}`,
       );
     }
 

@@ -1,16 +1,16 @@
-export enum ENUM_FILE_IMAGE_MIME {
-  JPG = 'image/jpg',
-  JPEG = 'image/jpeg',
-  PNG = 'image/png',
+export enum EnumFileImageMime {
+  Jpg = 'image/jpg',
+  Jpeg = 'image/jpeg',
+  Png = 'image/png',
 }
 
-export enum ENUM_FILE_TYPE {
-  IMAGE = 'IMAGE',
+export enum EnumFileType {
+  Image = 'IMAGE',
 }
 
-export enum ENUM_FILE_STATUS_CODE_ERROR {
-  FILE_NEEDED_ERROR = 5950,
-  FILE_MAX_SIZE_ERROR = 5951,
-  FILE_EXTENSION_ERROR = 5952,
-  FILE_MAX_ERROR = 5953,
+export enum EnumFileStatusCodeError {
+  FileNeededError = 5950,
+  FileMaxSizeError = 5951,
+  FileExtensionError = 5952,
+  FileMaxError = 5953,
 }

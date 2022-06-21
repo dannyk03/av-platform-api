@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ILogger } from '../logger.interface';
-import { ENUM_LOGGER_LEVEL } from '../logger.constant';
+import { EnumLoggerLevel } from '../logger.constant';
 import { LoggerEntity } from '../entity/logger.entity';
 import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,7 +21,7 @@ export class LoggerService {
     tags,
   }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
-    //   level: ENUM_LOGGER_LEVEL.INFO,
+    //   level: EnumLoggerLevel.Info,
     //   user: new Types.ObjectId(user),
     //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
@@ -40,7 +40,7 @@ export class LoggerService {
     tags,
   }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
-    //   level: ENUM_LOGGER_LEVEL.DEBUG,
+    //   level: EnumLoggerLevel.Debug,
     //   user: new Types.ObjectId(user),
     //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
@@ -59,7 +59,7 @@ export class LoggerService {
     tags,
   }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
-    //   level: ENUM_LOGGER_LEVEL.WARM,
+    //   level: EnumLoggerLevel.Warn,
     //   user: new Types.ObjectId(user),
     //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
@@ -78,7 +78,7 @@ export class LoggerService {
     tags,
   }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
-    //   level: ENUM_LOGGER_LEVEL.FATAL,
+    //   level: EnumLoggerLevel.Fatal,
     //   user: new Types.ObjectId(user),
     //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,

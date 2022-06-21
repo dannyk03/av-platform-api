@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DebuggerService } from '@/debugger';
-import { ENUM_USER_STATUS_CODE_ERROR } from '../user.constant';
+import { EnumUserStatusCodeError } from '../user.constant';
 
 @Injectable()
 export class UserNotFoundGuard implements CanActivate {
@@ -22,7 +22,7 @@ export class UserNotFoundGuard implements CanActivate {
       );
 
       throw new NotFoundException({
-        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
         message: 'user.error.notFound',
       });
     }

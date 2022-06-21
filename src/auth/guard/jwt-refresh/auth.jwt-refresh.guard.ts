@@ -1,6 +1,6 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
+import { EnumAuthStatusCodeError } from '@/auth';
 import { DebuggerService } from '@/debugger';
 
 @Injectable()
@@ -18,8 +18,7 @@ export class JwtRefreshGuard extends AuthGuard('jwtRefresh') {
       this.debuggerService.error(info, 'JwtRefreshGuard', 'handleRequest', err);
 
       throw new UnauthorizedException({
-        statusCode:
-          ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_JWT_REFRESH_TOKEN_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardJwtRefreshTokenError,
         message: 'http.clientError.unauthorized',
       });
     }

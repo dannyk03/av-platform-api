@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { AUTH_ADMIN_META_KEY, ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
+import { AUTH_ADMIN_META_KEY, EnumAuthStatusCodeError } from '@/auth';
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger';
 
@@ -34,7 +34,7 @@ export class AuthPayloadAdminGuard implements CanActivate {
       );
 
       throw new ForbiddenException({
-        statusCode: ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_ADMIN_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardAdminError,
         message: 'auth.error.admin',
       });
     }

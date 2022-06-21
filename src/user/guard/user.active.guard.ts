@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger';
 import {
-  ENUM_USER_STATUS_CODE_ERROR,
+  EnumUserStatusCodeError,
   USER_ACTIVE_META_KEY,
 } from '../user.constant';
 
@@ -38,7 +38,7 @@ export class UserActiveGuard implements CanActivate {
       );
 
       throw new BadRequestException({
-        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_ACTIVE_ERROR,
+        statusCode: EnumUserStatusCodeError.UserActiveError,
         message: 'user.error.active',
       });
     }

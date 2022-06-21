@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { DebuggerService } from '@/debugger';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from './request.constant';
+import { EnumRequestStatusCodeError } from './request.constant';
 import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';
 import { IsPasswordStrongConstraint } from './validation/request.is-password-strong.validation';
 import { IsPasswordWeakConstraint } from './validation/request.is-password-weak.validation';
@@ -43,8 +43,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
             );
 
             return new UnprocessableEntityException({
-              statusCode:
-                ENUM_REQUEST_STATUS_CODE_ERROR.REQUEST_VALIDATION_ERROR,
+              statusCode: EnumRequestStatusCodeError.RequestValidationError,
               message: 'http.clientError.unprocessableEntity',
               errors,
             });

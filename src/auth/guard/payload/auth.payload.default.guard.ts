@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
+import { EnumAuthStatusCodeError } from '@/auth';
 import { DebuggerService } from '@/debugger';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class AuthPayloadDefaultGuard implements CanActivate {
       );
 
       throw new ForbiddenException({
-        statusCode: ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_INACTIVE_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardInactiveError,
         message: 'auth.error.blocked',
       });
     } else if (!user.role.isActive) {
@@ -33,7 +33,7 @@ export class AuthPayloadDefaultGuard implements CanActivate {
       );
 
       throw new ForbiddenException({
-        statusCode: ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_ROLE_INACTIVE_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardRoleInactiveError,
         message: 'auth.error.roleBlocked',
       });
     }

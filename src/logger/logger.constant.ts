@@ -1,10 +1,10 @@
-export enum ENUM_LOGGER_LEVEL {
-  DEBUG = 'DEBUG',
-  INFO = 'INFO',
-  WARM = 'WARM',
-  FATAL = 'FATAL',
+export enum EnumLoggerLevel {
+  Debug = 'DEBUG',
+  Info = 'INFO',
+  Warn = 'WARN',
+  Fatal = 'FATAL',
 }
 
-export enum ENUM_LOGGER_ACTION {
-  LOGIN = 'LOGIN',
+export enum EnumLoggerAction {
+  Login = 'LOGIN',
 }

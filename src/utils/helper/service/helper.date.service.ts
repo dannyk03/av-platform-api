@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import moment from 'moment-timezone';
 import {
-  ENUM_HELPER_DATE_DIFF,
-  ENUM_HELPER_DATE_FORMAT,
+  EnumHelperDateDiff,
+  EnumHelperDateFormat,
   IHelperDateFormatOptions,
 } from '../helper.constant';
 
@@ -19,7 +19,7 @@ export class HelperDateService {
     return moment().diff(dateOfBirth, 'years');
   }
 
-  diff(dateOne: Date, dateTwo: Date, format?: ENUM_HELPER_DATE_DIFF): number {
+  diff(dateOne: Date, dateTwo: Date, format?: EnumHelperDateDiff): number {
     const mDateOne = moment(dateOne);
     const mDateTwo = moment(dateTwo);
     const diff = moment.duration(mDateTwo.diff(mDateOne));
@@ -53,9 +53,7 @@ export class HelperDateService {
     return moment(date)
       .tz(options && options.timezone ? options.timezone : this.tz)
       .format(
-        options && options.format
-          ? options.format
-          : ENUM_HELPER_DATE_FORMAT.DATE,
+        options && options.format ? options.format : EnumHelperDateFormat.Date,
       );
   }
 

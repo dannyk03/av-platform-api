@@ -7,7 +7,7 @@ import { UserService } from '@/user';
 import { AcpPolicyService } from '@acp/policy';
 import { AcpSubjectService } from '@acp/subject';
 import { AcpAbilityService } from '@acp/ability';
-import { AcpRoleService, SystemRoleEnum } from '@acp/role';
+import { AcpRoleService, EnumSystemRole } from '@acp/role';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { HelperDateService } from '@/utils/helper';
@@ -100,7 +100,7 @@ export class SuperSeed {
               passwordExpired: this.helperDateService.forwardInDays(365 * 10),
               organization: systemOrganization,
               role: systemRoles.find(
-                (role) => role.name === SystemRoleEnum.SuperAdmin,
+                (role) => role.name === EnumSystemRole.SuperAdmin,
               ),
             });
 

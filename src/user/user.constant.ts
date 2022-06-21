@@ -1,10 +1,10 @@
-export enum ENUM_USER_STATUS_CODE_ERROR {
-  USER_NOT_FOUND_ERROR = 5400,
-  USER_EXISTS_ERROR = 5401,
-  USER_IS_INACTIVE_ERROR = 5402,
-  USER_EMAIL_EXIST_ERROR = 5403,
-  USER_MOBILE_NUMBER_EXIST_ERROR = 5404,
-  USER_ACTIVE_ERROR = 5405,
+export enum EnumUserStatusCodeError {
+  UserNotFoundError = 5400,
+  UserExistsError = 5401,
+  UserIsInactiveError = 5402,
+  UserEmailExistError = 5403,
+  UserMobileNumberExistError = 5404,
+  UserActiveError = 5405,
 }
 
 export const USER_ACTIVE_META_KEY = 'UserActiveMetaKey';

@@ -1,4 +1,4 @@
-import { ENUM_LOGGER_ACTION, ENUM_LOGGER_LEVEL } from '../logger.constant';
+import { EnumLoggerAction, EnumLoggerLevel } from '../logger.constant';
 import {
   Entity,
   Column,
@@ -11,10 +11,10 @@ export class LoggerEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ enum: ENUM_LOGGER_LEVEL, update: false })
+  @Column({ enum: EnumLoggerLevel, update: false })
   level: string;
 
-  @Column({ enum: ENUM_LOGGER_ACTION, update: false })
+  @Column({ enum: EnumLoggerAction, update: false })
   action: string;
 
   // @OneToOne(() => User)

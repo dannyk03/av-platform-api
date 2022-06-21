@@ -2,7 +2,7 @@ import { Module, Global } from '@nestjs/common';
 import * as path from 'path';
 import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n';
 import { ConfigService } from '@nestjs/config';
-import { ENUM_MESSAGE_LANGUAGE } from './message.constant';
+import { EnumMessageLanguage } from './message.constant';
 import { MessageService } from './service/message.service';
 
 @Global()
@@ -13,7 +13,7 @@ import { MessageService } from './service/message.service';
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         fallbackLanguage: configService.get<string>('app.language'),
-        fallbacks: Object.values(ENUM_MESSAGE_LANGUAGE).reduce(
+        fallbacks: Object.values(EnumMessageLanguage).reduce(
           (a, v) => ({ ...a, [`${v}-*`]: v }),
           {},
         ),

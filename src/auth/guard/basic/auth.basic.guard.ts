@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { ENUM_AUTH_STATUS_CODE_ERROR } from '@/auth';
+import { EnumAuthStatusCodeError } from '@/auth';
 import { DebuggerService } from '@/debugger';
 import { AuthApiService } from '@/auth';
 
@@ -39,8 +39,7 @@ export class BasicGuard implements CanActivate {
       );
 
       throw new UnauthorizedException({
-        statusCode:
-          ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_BASIC_TOKEN_NEEDED_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardBasicTokenNeededError,
         message: 'http.clientError.unauthorized',
       });
     }
@@ -65,8 +64,7 @@ export class BasicGuard implements CanActivate {
       );
 
       throw new UnauthorizedException({
-        statusCode:
-          ENUM_AUTH_STATUS_CODE_ERROR.AUTH_GUARD_BASIC_TOKEN_INVALID_ERROR,
+        statusCode: EnumAuthStatusCodeError.AuthGuardBasicTokenInvalidError,
         message: 'http.clientError.unauthorized',
       });
     }

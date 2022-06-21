@@ -1,8 +1,8 @@
-export enum ENUM_ORGANIZATION_STATUS_CODE_ERROR {
-  ORGANIZATION_NOT_FOUND_ERROR = 5450,
-  ORGANIZATION_EXISTS_ERROR = 5451,
-  ORGANIZATION_IS_INACTIVE_ERROR = 5452,
-  ORGANIZATION_ACTIVE_ERROR = 5453,
+export enum EnumOrganizationStatusCodeError {
+  OrganizationNotFoundError = 5450,
+  OrganizationExistsError = 5451,
+  OrganizationIsInactiveError = 5452,
+  OrganizationActiveError = 5453,
 }
 
 export const ORGANIZATION_ACTIVE_META_KEY = 'OrganizationActiveMetaKey';

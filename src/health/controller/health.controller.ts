@@ -1,5 +1,5 @@
 import { ConnectionNames } from '@/database';
-import { ENUM_STATUS_CODE_ERROR } from '@/utils/error/error.constant';
+import { EnumStatusCodeError } from '@/utils/error/error.constant';
 import { IResponse } from '@/utils/response/response.interface';
 import {
   Controller,
@@ -63,7 +63,7 @@ export class HealthController {
       return this.healthService.check([this.checkDatabase]);
     } catch (e) {
       throw new InternalServerErrorException({
-        statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+        statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
       });
     }
@@ -76,7 +76,7 @@ export class HealthController {
       return this.healthService.check([this.checkMemoryHeap]);
     } catch (e) {
       throw new InternalServerErrorException({
-        statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+        statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
       });
     }
@@ -89,7 +89,7 @@ export class HealthController {
       return this.healthService.check([this.checkMemoryRss]);
     } catch (e) {
       throw new InternalServerErrorException({
-        statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+        statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
       });
     }
@@ -102,7 +102,7 @@ export class HealthController {
       return this.healthService.check([this.checkStorage]);
     } catch (e) {
       throw new InternalServerErrorException({
-        statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+        statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
       });
     }

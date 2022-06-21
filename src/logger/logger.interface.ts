@@ -1,6 +1,6 @@
-import { ENUM_LOGGER_ACTION } from './logger.constant';
+import { EnumLoggerAction } from './logger.constant';
 export interface ILogger {
-  action: ENUM_LOGGER_ACTION;
+  action: EnumLoggerAction;
   description: string;
   apiKey?: string;
   user?: string;
