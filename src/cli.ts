@@ -11,11 +11,9 @@ async function bootstrap() {
   const logger = new Logger();
 
   try {
-    await app.select(CommandModule).init();
-    await app.get(CommandService).exec();
+    await app.select(CommandModule).get(CommandService).exec();
     await app.close();
   } catch (error) {
-    debugger;
     logger.error(error, 'NestJsCommand');
     await app.close();
     process.exit(1);

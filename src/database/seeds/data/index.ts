@@ -1,1 +1,1 @@
-export * from './super-seed.data';
+export * from './system-seed.data';

@@ -12,10 +12,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { HelperDateService } from '@/utils/helper';
 import { ConnectionNames } from '../database.constant';
-import { superSeedData } from './data';
+import { systemSeedData } from './data';
 
 @Injectable()
-export class SuperSeed {
+export class SystemSeed {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
@@ -31,8 +31,8 @@ export class SuperSeed {
   ) {}
 
   @Command({
-    command: 'insert:super',
-    describe: 'insert super data',
+    command: 'insert:system',
+    describe: 'insert system data',
   })
   async insert(): Promise<void> {
     try {
@@ -41,7 +41,7 @@ export class SuperSeed {
         async (transactionalEntityManager) => {
           try {
             const systemRoles = await Promise.all(
-              superSeedData.roles.map(async (role) => {
+              systemSeedData.roles.map(async (role) => {
                 const { policy } = role;
                 const policySubjects = await Promise.all(
                   policy.subjects.map(async (subject) => {
@@ -81,7 +81,7 @@ export class SuperSeed {
             );
 
             const systemOrganization = this.organizationService.create({
-              ...superSeedData.organization,
+              ...systemSeedData.organization,
               roles: systemRoles,
             });
 
@@ -93,7 +93,7 @@ export class SuperSeed {
               );
 
             const superAdmin = this.userService.create({
-              ...superSeedData.superAdmin,
+              ...systemSeedData.superAdmin,
               mobileNumber: '+00000000000',
               password: passwordHash,
               salt,
@@ -121,23 +121,30 @@ export class SuperSeed {
         },
       );
 
-      this.debuggerService.debug('Insert Super Succeed', 'SuperSeed', 'insert');
+      this.debuggerService.debug(
+        'Insert Super Succeed',
+        'SystemSeed',
+        'insert',
+      );
     } catch (err) {
-      this.debuggerService.error(err.message, 'SuperSeed', 'insert');
+      this.debuggerService.error(err.message, 'SystemSeed', 'insert');
     }
   }
 
   @Command({
-    command: 'remove:super',
-    describe: 'remove super data',
+    command: 'remove:system',
+    describe: 'remove system data',
   })
   async remove(): Promise<void> {
     try {
-      //   await this.userBulkService.deleteMany({});
-
-      this.debuggerService.debug('Remove Super Succeed', 'SuperSeed', 'remove');
+      throw new Error('Not Implemented remove:system');
+      this.debuggerService.debug(
+        'Remove System Succeed',
+        'SystemSeed',
+        'remove',
+      );
     } catch (e) {
-      this.debuggerService.error(e.message, 'SuperSeed', 'remove');
+      this.debuggerService.error(e.message, 'SystemSeed', 'remove');
     }
   }
 }

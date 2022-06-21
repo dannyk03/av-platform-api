@@ -2,7 +2,7 @@ import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
 import { AcpSubjectDict } from '@acp/subject';
 import { EnumSystemRole } from '@acp/role';
 
-export const superSeedData = {
+export const systemSeedData = {
   organization: {
     name: 'system',
   },

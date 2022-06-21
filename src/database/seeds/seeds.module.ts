@@ -8,7 +8,7 @@ import { UserModule } from '@/user';
 import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
 import { CoreModule } from '@/core/core.module';
-import { SuperSeed } from './super.seed';
+import { SystemSeed } from './system.seed';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { SuperSeed } from './super.seed';
     AcpSubjectModule,
     AcpAbilityModule,
   ],
-  providers: [SuperSeed],
+  providers: [SystemSeed],
   exports: [],
 })
 export class SeedsModule {}
