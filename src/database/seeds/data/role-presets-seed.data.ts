@@ -1,5 +1,5 @@
 import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
-import { AcpSubjectDict } from '@acp/subject';
+import { AcpSubjectTypeDict } from '@acp/subject';
 import { EnumOrganizationRole } from '@acp/role';
 
 export const rolePresetsSeedData = {
@@ -11,11 +11,19 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 9,
-            type: AcpSubjectDict.Organization,
+            type: AcpSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
                 actions: [AbilityActionEnum.Manage],
+              },
+              {
+                type: AbilityTypeEnum.Cannot,
+                actions: [AbilityActionEnum.Create],
+              },
+              {
+                type: AbilityTypeEnum.Cannot,
+                actions: [AbilityActionEnum.Delete],
               },
             ],
           },
@@ -29,11 +37,31 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.User,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Modify],
+                actions: [AbilityActionEnum.Manage],
+              },
+            ],
+          },
+          {
+            sensitivityLevel: 10,
+            type: AcpSubjectTypeDict.FinanceNamespace,
+            abilities: [
+              {
+                type: AbilityTypeEnum.Can,
+                actions: [AbilityActionEnum.Manage],
+              },
+            ],
+          },
+          {
+            sensitivityLevel: 10,
+            type: AcpSubjectTypeDict.SecurityNamespace,
+            abilities: [
+              {
+                type: AbilityTypeEnum.Can,
+                actions: [AbilityActionEnum.Read],
               },
             ],
           },
@@ -47,7 +75,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 5,
-            type: AcpSubjectDict.Order,
+            type: AcpSubjectTypeDict.Order,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -57,7 +85,17 @@ export const rolePresetsSeedData = {
           },
           {
             sensitivityLevel: 5,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.Gift,
+            abilities: [
+              {
+                type: AbilityTypeEnum.Can,
+                actions: [AbilityActionEnum.Manage],
+              },
+            ],
+          },
+          {
+            sensitivityLevel: 5,
+            type: AcpSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -75,7 +113,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,

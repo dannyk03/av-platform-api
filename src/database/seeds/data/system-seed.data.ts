@@ -1,5 +1,5 @@
 import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
-import { AcpSubjectDict } from '@acp/subject';
+import { AcpSubjectTypeDict } from '@acp/subject';
 import { EnumSystemRole } from '@acp/role';
 
 export const systemSeedData = {
@@ -22,7 +22,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -40,7 +40,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 5,
-            type: AcpSubjectDict.Order,
+            type: AcpSubjectTypeDict.Order,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -50,7 +50,7 @@ export const systemSeedData = {
           },
           {
             sensitivityLevel: 5,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -68,7 +68,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectDict.System,
+            type: AcpSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,

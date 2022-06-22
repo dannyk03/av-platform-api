@@ -4,7 +4,7 @@ import { AbilityActionEnum, AbilityTypeEnum } from '../acp-ability.constant';
 import { AcpSubject } from '@/access-control-policy/subject/entity/acp-subject.entity';
 import { AbilityCondition } from '../ability.interface';
 
-@Entity()
+@Entity({ name: 'acp_abilities' })
 export class AcpAbility extends BaseEntity<AcpAbility> {
   @Column({
     type: 'enum',

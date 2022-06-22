@@ -81,4 +81,4 @@ export const AcpSubjectDict = Object.freeze({
   ...AcpCompositeSubjects,
 });
 
-// console.log(AcpSubjectDict);
+console.log(AcpSubjectTypeDict);

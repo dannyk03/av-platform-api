@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655894540618 implements MigrationInterface {
-  name = 'migration1655894540618';
+export class migration1655903896082 implements MigrationInterface {
+  name = 'migration1655903896082';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -21,10 +21,21 @@ export class migration1655894540618 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TYPE "public"."acp_abilitys_type_enum" AS ENUM('can', 'cannot')
+            CREATE TABLE "loggers" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" character varying(20) array,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            CREATE TYPE "public"."acp_abilitys_actions_enum" AS ENUM(
+            CREATE TYPE "public"."acp_abilities_type_enum" AS ENUM('can', 'cannot')
+        `);
+    await queryRunner.query(`
+            CREATE TYPE "public"."acp_abilities_actions_enum" AS ENUM(
                 'manage',
                 'modify',
                 'create',
@@ -34,17 +45,17 @@ export class migration1655894540618 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TABLE "acp_abilitys" (
+            CREATE TABLE "acp_abilities" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
-                "type" "public"."acp_abilitys_type_enum" NOT NULL,
-                "actions" "public"."acp_abilitys_actions_enum" array NOT NULL,
+                "type" "public"."acp_abilities_type_enum" NOT NULL,
+                "actions" "public"."acp_abilities_actions_enum" array NOT NULL,
                 "fields_access" character varying(20) array,
                 "conditions" jsonb,
                 "subject_id" uuid,
-                CONSTRAINT "pk_acp_abilitys_id" PRIMARY KEY ("id")
+                CONSTRAINT "pk_acp_abilities_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
@@ -158,17 +169,6 @@ export class migration1655894540618 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TABLE "loggers" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "level" character varying NOT NULL,
-                "action" character varying NOT NULL,
-                "description" character varying,
-                "tags" character varying(20) array,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
             CREATE TABLE "acp_role_presets" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -187,8 +187,8 @@ export class migration1655894540618 implements MigrationInterface {
             CREATE INDEX "role_preset_slug_index" ON "acp_role_presets" ("slug")
         `);
     await queryRunner.query(`
-            ALTER TABLE "acp_abilitys"
-            ADD CONSTRAINT "fk_acp_abilitys_subject_id" FOREIGN KEY ("subject_id") REFERENCES "acp_subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "acp_abilities"
+            ADD CONSTRAINT "fk_acp_abilities_subject_id" FOREIGN KEY ("subject_id") REFERENCES "acp_subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acp_subjects"
@@ -236,16 +236,13 @@ export class migration1655894540618 implements MigrationInterface {
             ALTER TABLE "acp_subjects" DROP CONSTRAINT "fk_acp_subjects_policy_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "acp_abilitys" DROP CONSTRAINT "fk_acp_abilitys_subject_id"
+            ALTER TABLE "acp_abilities" DROP CONSTRAINT "fk_acp_abilities_subject_id"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."role_preset_slug_index"
         `);
     await queryRunner.query(`
             DROP TABLE "acp_role_presets"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "loggers"
         `);
     await queryRunner.query(`
             DROP TABLE "organizations"
@@ -275,13 +272,16 @@ export class migration1655894540618 implements MigrationInterface {
             DROP TYPE "public"."acp_subjects_type_enum"
         `);
     await queryRunner.query(`
-            DROP TABLE "acp_abilitys"
+            DROP TABLE "acp_abilities"
         `);
     await queryRunner.query(`
-            DROP TYPE "public"."acp_abilitys_actions_enum"
+            DROP TYPE "public"."acp_abilities_actions_enum"
         `);
     await queryRunner.query(`
-            DROP TYPE "public"."acp_abilitys_type_enum"
+            DROP TYPE "public"."acp_abilities_type_enum"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "loggers"
         `);
     await queryRunner.query(`
             DROP TABLE "auth_apis"
