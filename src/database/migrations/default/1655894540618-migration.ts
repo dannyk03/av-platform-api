@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655806295365 implements MigrationInterface {
-  name = 'migration1655806295365';
+export class migration1655894540618 implements MigrationInterface {
+  name = 'migration1655894540618';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -60,8 +60,11 @@ export class migration1655806295365 implements MigrationInterface {
                 'Invoice',
                 'Payment',
                 'Order',
-                'Security',
-                'Finance'
+                'Gift',
+                'OrganizationNamespace',
+                'SecurityNamespace',
+                'FinanceNamespace',
+                'GiftingNamespace'
             )
         `);
     await queryRunner.query(`
@@ -91,6 +94,35 @@ export class migration1655806295365 implements MigrationInterface {
                 ),
                 CONSTRAINT "pk_acp_policies_id" PRIMARY KEY ("id")
             )
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "users" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "first_name" character varying NOT NULL,
+                "last_name" character varying NOT NULL,
+                "mobile_number" character varying NOT NULL,
+                "email" character varying NOT NULL,
+                "password" character varying NOT NULL,
+                "password_expired" TIMESTAMP NOT NULL,
+                "salt" character varying NOT NULL,
+                "is_active" boolean NOT NULL DEFAULT false,
+                "email_verified" boolean NOT NULL DEFAULT false,
+                "email_verification_token" character varying NOT NULL,
+                "role_id" uuid,
+                "organization_id" uuid,
+                CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
+                CONSTRAINT "uq_users_email" UNIQUE ("email"),
+                CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "user_mobile_index" ON "users" ("mobile_number")
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "user_email_index" ON "users" ("email")
         `);
     await queryRunner.query(`
             CREATE TABLE "acp_roles" (
@@ -126,35 +158,6 @@ export class migration1655806295365 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TABLE "users" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "first_name" character varying NOT NULL,
-                "last_name" character varying NOT NULL,
-                "mobile_number" character varying NOT NULL,
-                "email" character varying NOT NULL,
-                "password" character varying NOT NULL,
-                "password_expired" TIMESTAMP NOT NULL,
-                "salt" character varying NOT NULL,
-                "is_active" boolean NOT NULL DEFAULT false,
-                "email_verified" boolean NOT NULL DEFAULT false,
-                "email_verification_token" character varying NOT NULL,
-                "role_id" uuid,
-                "organization_id" uuid,
-                CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
-                CONSTRAINT "uq_users_email" UNIQUE ("email"),
-                CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "user_mobile_index" ON "users" ("mobile_number")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "user_email_index" ON "users" ("email")
-        `);
-    await queryRunner.query(`
             CREATE TABLE "loggers" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "level" character varying NOT NULL,
@@ -166,12 +169,38 @@ export class migration1655806295365 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
+            CREATE TABLE "acp_role_presets" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "slug" character varying(20) NOT NULL,
+                "name" character varying(20) NOT NULL,
+                "policy_id" uuid,
+                CONSTRAINT "uq_acp_role_presets_slug" UNIQUE ("slug"),
+                CONSTRAINT "uq_acp_role_presets_name" UNIQUE ("name"),
+                CONSTRAINT "rel_acp_role_presets_policy_id" UNIQUE ("policy_id"),
+                CONSTRAINT "pk_acp_role_presets_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "role_preset_slug_index" ON "acp_role_presets" ("slug")
+        `);
+    await queryRunner.query(`
             ALTER TABLE "acp_abilitys"
             ADD CONSTRAINT "fk_acp_abilitys_subject_id" FOREIGN KEY ("subject_id") REFERENCES "acp_subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acp_subjects"
             ADD CONSTRAINT "fk_acp_subjects_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acp_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "users"
+            ADD CONSTRAINT "fk_users_role_id" FOREIGN KEY ("role_id") REFERENCES "acp_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "users"
+            ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acp_roles"
@@ -182,21 +211,14 @@ export class migration1655806295365 implements MigrationInterface {
             ADD CONSTRAINT "fk_acp_roles_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acp_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "fk_users_role_id" FOREIGN KEY ("role_id") REFERENCES "acp_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "acp_role_presets"
+            ADD CONSTRAINT "fk_acp_role_presets_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acp_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id"
+            ALTER TABLE "acp_role_presets" DROP CONSTRAINT "fk_acp_role_presets_policy_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "acp_roles" DROP CONSTRAINT "fk_acp_roles_policy_id"
@@ -205,22 +227,25 @@ export class migration1655806295365 implements MigrationInterface {
             ALTER TABLE "acp_roles" DROP CONSTRAINT "fk_acp_roles_organization_id"
         `);
     await queryRunner.query(`
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id"
+        `);
+    await queryRunner.query(`
             ALTER TABLE "acp_subjects" DROP CONSTRAINT "fk_acp_subjects_policy_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "acp_abilitys" DROP CONSTRAINT "fk_acp_abilitys_subject_id"
         `);
     await queryRunner.query(`
+            DROP INDEX "public"."role_preset_slug_index"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "acp_role_presets"
+        `);
+    await queryRunner.query(`
             DROP TABLE "loggers"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."user_email_index"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."user_mobile_index"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "users"
         `);
     await queryRunner.query(`
             DROP TABLE "organizations"
@@ -230,6 +255,15 @@ export class migration1655806295365 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TABLE "acp_roles"
+        `);
+    await queryRunner.query(`
+            DROP INDEX "public"."user_email_index"
+        `);
+    await queryRunner.query(`
+            DROP INDEX "public"."user_mobile_index"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "users"
         `);
     await queryRunner.query(`
             DROP TABLE "acp_policies"

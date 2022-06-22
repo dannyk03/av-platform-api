@@ -1,4 +1,4 @@
-import { defineAbility, createAliasResolver, MongoQuery } from '@casl/ability';
+import { defineAbility, createAliasResolver } from '@casl/ability';
 import { AbilityActionEnum } from '../acp-ability.constant';
 
 const resolveAction = createAliasResolver({
@@ -7,7 +7,7 @@ const resolveAction = createAliasResolver({
     AbilityActionEnum.Create,
     AbilityActionEnum.Read,
   ],
-  // [AbilityActionEnum.ACCESS]: [
+  // [AbilityActionEnum.Access]: [
   //   AbilityActionEnum.READ,
   //   AbilityActionEnum.MODIFY,
   // ],

@@ -1,28 +1,17 @@
 import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
 import { AcpSubjectDict } from '@acp/subject';
-import { EnumSystemRole } from '@acp/role';
+import { EnumOrganizationRole } from '@acp/role';
 
-export const systemSeedData = {
-  organization: {
-    name: 'system',
-  },
-  superAdmin: {
-    firstName: 'Avo',
-    lastName: 'SuperAdmin',
-    email: 'superadmin@avonow.com',
-    isActive: true,
-    emailVerified: true,
-    emailVerificationToken: 'superadmin',
-  },
+export const rolePresetsSeedData = {
   roles: [
     {
-      name: EnumSystemRole.SystemAdmin,
+      name: EnumOrganizationRole.Owner,
       policy: {
-        sensitivityLevel: 10,
+        sensitivityLevel: 9,
         subjects: [
           {
-            sensitivityLevel: 10,
-            type: AcpSubjectDict.System,
+            sensitivityLevel: 9,
+            type: AcpSubjectDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -34,7 +23,25 @@ export const systemSeedData = {
       },
     },
     {
-      name: EnumSystemRole.SystemManager,
+      name: EnumOrganizationRole.Admin,
+      policy: {
+        sensitivityLevel: 9,
+        subjects: [
+          {
+            sensitivityLevel: 10,
+            type: AcpSubjectDict.System,
+            abilities: [
+              {
+                type: AbilityTypeEnum.Can,
+                actions: [AbilityActionEnum.Modify],
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: EnumOrganizationRole.Manager,
       policy: {
         sensitivityLevel: 5,
         subjects: [
@@ -62,7 +69,7 @@ export const systemSeedData = {
       },
     },
     {
-      name: EnumSystemRole.SystemObserver,
+      name: EnumOrganizationRole.Observer,
       policy: {
         sensitivityLevel: 5,
         subjects: [

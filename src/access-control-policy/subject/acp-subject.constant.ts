@@ -10,56 +10,75 @@ export enum AcpBaseSubjectEnum {
   Invoice = 'Invoice',
   Payment = 'Payment',
   Order = 'Order',
+  Gift = 'Gift',
 }
 
-export enum AcpCompositeSubjectEnum {
-  Organization = 'Organization',
-  Security = 'Security',
-  Finance = 'Finance',
+export enum AcpNamespaceSubjectEnum {
+  OrganizationNamespace = 'OrganizationNamespace',
+  SecurityNamespace = 'SecurityNamespace',
+  FinanceNamespace = 'FinanceNamespace',
+  GiftingNamespace = 'GiftingNamespace',
 }
 
-export const AcpGroupedSubjects = Object.freeze({
-  [AcpCompositeSubjectEnum.Organization]: [
-    AcpBaseSubjectEnum.Organization,
-    AcpBaseSubjectEnum.User,
+export const AcpNamespaceSubjects = Object.freeze({
+  [AcpNamespaceSubjectEnum.OrganizationNamespace]: [
+    ...Object.values(AcpBaseSubjectEnum),
+    ...Object.values(AcpNamespaceSubjectEnum),
   ],
-  [AcpCompositeSubjectEnum.Security]: [
-    AcpCompositeSubjectEnum.Security,
+  [AcpNamespaceSubjectEnum.SecurityNamespace]: [
     AcpBaseSubjectEnum.Role,
     AcpBaseSubjectEnum.Policy,
     AcpBaseSubjectEnum.Subject,
     AcpBaseSubjectEnum.Ability,
   ],
-  [AcpCompositeSubjectEnum.Finance]: [
-    AcpCompositeSubjectEnum.Finance,
+  [AcpNamespaceSubjectEnum.FinanceNamespace]: [
     AcpBaseSubjectEnum.Payment,
     AcpBaseSubjectEnum.CreditCard,
     AcpBaseSubjectEnum.Invoice,
   ],
+  [AcpNamespaceSubjectEnum.GiftingNamespace]: [AcpBaseSubjectEnum.Gift],
 });
 
 export const AcpCompositeSubjects = Object.freeze({
-  [AcpCompositeSubjectEnum.Organization]: [
-    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Organization],
-    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Security],
-    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Finance],
+  [AcpNamespaceSubjectEnum.OrganizationNamespace]: [
+    ...new Set([
+      AcpNamespaceSubjectEnum.OrganizationNamespace,
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.OrganizationNamespace],
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.SecurityNamespace],
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.FinanceNamespace],
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.GiftingNamespace],
+    ]),
   ],
-  [AcpCompositeSubjectEnum.Security]: [
-    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Security],
+  [AcpNamespaceSubjectEnum.SecurityNamespace]: [
+    ...new Set([
+      AcpNamespaceSubjectEnum.SecurityNamespace,
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.SecurityNamespace],
+    ]),
   ],
-  [AcpCompositeSubjectEnum.Finance]: [
-    ...AcpGroupedSubjects[AcpCompositeSubjectEnum.Finance],
+  [AcpNamespaceSubjectEnum.FinanceNamespace]: [
+    ...new Set([
+      AcpNamespaceSubjectEnum.FinanceNamespace,
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.FinanceNamespace],
+    ]),
+  ],
+  [AcpNamespaceSubjectEnum.GiftingNamespace]: [
+    ...new Set([
+      AcpNamespaceSubjectEnum.GiftingNamespace,
+      ...AcpNamespaceSubjects[AcpNamespaceSubjectEnum.GiftingNamespace],
+    ]),
   ],
 });
 
 export const AcpSubjectTypeDict = Object.freeze({
   ...AcpBaseSubjectEnum,
-  ...AcpCompositeSubjectEnum,
+  ...AcpNamespaceSubjectEnum,
 });
 
-export type AcpSubjectType = AcpBaseSubjectEnum | AcpCompositeSubjectEnum;
+export type AcpSubjectType = AcpBaseSubjectEnum | AcpNamespaceSubjectEnum;
 
 export const AcpSubjectDict = Object.freeze({
   ...AcpBaseSubjectEnum,
   ...AcpCompositeSubjects,
 });
+
+// console.log(AcpSubjectDict);

@@ -9,6 +9,7 @@ import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
 import { CoreModule } from '@/core/core.module';
 import { SystemSeed } from './system.seed';
+import { RolePresetsSeed } from './role-presets.seed';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { SystemSeed } from './system.seed';
     AcpSubjectModule,
     AcpAbilityModule,
   ],
-  providers: [SystemSeed],
+  providers: [SystemSeed, RolePresetsSeed],
   exports: [],
 })
 export class SeedsModule {}

@@ -1,15 +1,15 @@
 export enum EnumSystemRole {
-  SuperAdmin = 'Super Admin',
   SystemAdmin = 'System Admin',
   SystemManager = 'System Manager',
-  SystemReadOnly = 'System Read Only',
+  SystemObserver = 'System Observer',
 }
 
-export enum EnumRole {
+export enum EnumOrganizationRole {
   Owner = 'Owner',
   Admin = 'Admin',
   Manager = 'Manager',
-  ReadOnly = 'Read Only',
+  User = 'User',
+  Observer = 'Observer',
 }
 
 export enum EnumRoleStatusCodeError {
