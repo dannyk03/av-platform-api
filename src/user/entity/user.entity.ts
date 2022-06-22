@@ -1,19 +1,20 @@
-import { Entity, Column, Index, ManyToOne } from 'typeorm';
+import { Entity, Column, Index, ManyToOne, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AcpRole } from '@acp/role/entity/acp-role.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
-  @Column()
-  firstName?: string;
+  @Column({ nullable: true })
+  firstName!: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName?: string;
 
   @Index('user_mobile_index')
   @Column({
     unique: true,
+    nullable: true,
   })
   mobileNumber?: string;
 
@@ -42,27 +43,17 @@ export class User extends BaseEntity<User> {
   })
   emailVerified!: boolean;
 
-  @Column()
-  emailVerificationToken!: string;
+  @Column({ nullable: true })
+  emailVerificationToken?: string;
 
-  // @ManyToMany(() => AcpRole, (role) => role.id, {
-  //   // eager: true,
-  //   cascade: true,
-  // })
-  // @JoinTable({
-  //   name: 'user_role',
-  //   joinColumn: {
-  //     name: 'user_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'role_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
   @ManyToOne(() => AcpRole, (role) => role.users)
   role!: AcpRole;
 
   @ManyToOne(() => Organization, (organization) => organization.users)
   organization!: Organization;
+
+  @BeforeInsert()
+  beforeInsert() {
+    this.firstName = this.firstName || this.email;
+  }
 }

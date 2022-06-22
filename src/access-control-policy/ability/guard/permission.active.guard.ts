@@ -5,7 +5,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { DebuggerService } from '@/debugger';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+//
 import {
   PermissionsStatusCodeError,
   PERMISSION_ACTIVE_META_KEY,

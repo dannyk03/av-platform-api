@@ -8,21 +8,21 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { DebuggerService } from '@/debugger';
 // import { AuthAdminJwtGuard } from '@/auth';
-import { UserService } from '@/user';
 import { Response, IResponse } from '@/utils/response';
 import { EnumStatusCodeError } from '@/utils/error';
-import {
-  AcpRolePresetService,
-  AcpRoleService,
-  EnumOrganizationRole,
-} from '@acp/role';
+import { EnumOrganizationRole } from '@acp/role';
 import { ConnectionNames } from '@/database';
-import { AcpAbilityService } from '@acp/ability';
-import { AcpPolicyService } from '@acp/policy';
-import { AcpSubjectService } from '@acp/subject';
-import { AuthService } from '@/auth';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { UserService } from '@/user/service/user.service';
+import { AcpRoleService } from '@acp/role/service/acp-role.service';
+import { AcpRolePresetService } from '@acp/role/service/acp-role-preset.service';
+import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
+import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
+import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
+import { AuthService } from '@/auth/service/auth.service';
+//
 import { OrganizationService } from '../service/organization.service';
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
@@ -63,6 +63,7 @@ export class OrganizationAdminController {
         'create organization exist',
         'OrganizationController',
         'create',
+        body.name,
       );
 
       throw new BadRequestException({
@@ -74,6 +75,7 @@ export class OrganizationAdminController {
         'create organization user exist',
         'OrganizationController',
         'create',
+        body.email,
       );
 
       throw new BadRequestException({
@@ -85,7 +87,7 @@ export class OrganizationAdminController {
 
     const rolePresets = await this.rolePresetService.findAll();
 
-    await this.defaultDataSource.transaction(
+    const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         try {
@@ -142,6 +144,9 @@ export class OrganizationAdminController {
             await this.authService.createPassword(body.password);
 
           const organizationOwner = await this.userService.create({
+            // TODO change to false when email validation flow will be ready
+            isActive: true,
+            email: body.email,
             password: passwordHash,
             salt,
             passwordExpired,
@@ -182,6 +187,6 @@ export class OrganizationAdminController {
         }
       },
     );
-    return;
+    return result;
   }
 }

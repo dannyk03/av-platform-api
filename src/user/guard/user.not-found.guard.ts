@@ -4,7 +4,9 @@ import {
   ExecutionContext,
   NotFoundException,
 } from '@nestjs/common';
-import { DebuggerService } from '@/debugger';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+//
 import { EnumUserStatusCodeError } from '../user.constant';
 
 @Injectable()

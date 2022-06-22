@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
 import { Organization } from '../entity/organization.entity';
+import { HelperSlugService } from '@/utils/helper';
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @InjectRepository(Organization, ConnectionNames.Default)
-    private organizationRepository: Repository<Organization>,
-    private readonly configService: ConfigService,
+    private readonly organizationRepository: Repository<Organization>,
+    private readonly slugService: HelperSlugService,
   ) {}
 
   async create(props: DeepPartial<Organization>): Promise<Organization> {
@@ -25,7 +25,7 @@ export class OrganizationService {
 
   async checkExistByName(name: string): Promise<boolean> {
     const exists = await this.organizationRepository.findOne({
-      where: { name },
+      where: { slug: this.slugService.slugify(name) },
     });
 
     return Boolean(exists);

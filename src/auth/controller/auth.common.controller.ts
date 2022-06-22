@@ -10,10 +10,14 @@ import {
   InternalServerErrorException,
   Patch,
 } from '@nestjs/common';
-import { UserService, EnumUserStatusCodeError } from '@/user';
-import { DebuggerService } from '@/debugger';
-import { LoggerService, EnumLoggerAction } from '@/logger';
+// Services
+import { UserService } from '@/user/service/user.service';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { LoggerService } from '@/logger/service/logger.service';
 import { HelperDateService } from '@/utils/helper';
+//
+import { EnumUserStatusCodeError } from '@/user';
+import { EnumLoggerAction } from '@/logger';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';

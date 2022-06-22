@@ -28,6 +28,7 @@ import { HelperSlugService } from './service/helper.slug.service';
   ],
   exports: [
     HelperService,
+    HelperSlugService,
     HelperArrayService,
     HelperDateService,
     HelperEncryptionService,

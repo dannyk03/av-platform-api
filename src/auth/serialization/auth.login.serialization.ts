@@ -1,4 +1,4 @@
-import { Organization } from '@/organization';
+import { Organization } from '@/organization/entity/organization.entity';
 import { AcpRoleAuthSerialization } from '@acp/role';
 import { AcpRole } from '@acp/role/entity/acp-role.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';

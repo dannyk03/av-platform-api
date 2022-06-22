@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
+// Modules
 import { AuthModule } from '@/auth/auth.module';
-import { UserModule, UserAdminController } from '@/user';
-import { AcpRoleModule } from '@acp/role';
-import { AcpPolicyModule } from '@acp/policy';
-import { AcpSubjectModule } from '@acp/subject';
-import { AcpAbilityModule } from '@acp/ability';
-import { AwsModule } from '@/aws';
-import {
-  OrganizationAdminController,
-  OrganizationModule,
-} from '@/organization';
-import { AuthService } from '@/auth';
+import { AcpRoleModule } from '@acp/role/acp-role.module';
+import { AcpPolicyModule } from '@acp/policy/acp-policy.module';
+import { AcpSubjectModule } from '@acp/subject/acp-subject.module';
+import { AcpAbilityModule } from '@acp/ability/acp-ability.module';
+import { OrganizationModule } from '@/organization/organization.module';
+import { UserModule } from '@/user/user.module';
+//
+import { UserAdminController } from '@/user';
+import { OrganizationAdminController } from '@/organization';
 
 @Module({
-  controllers: [UserAdminController, OrganizationAdminController],
-  providers: [AuthService],
+  controllers: [OrganizationAdminController, UserAdminController],
+  providers: [],
   exports: [],
   imports: [
     AuthModule,

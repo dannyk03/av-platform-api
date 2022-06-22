@@ -1,19 +1,24 @@
 import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MessageModule } from '@/message';
-import { DebuggerModule, DebuggerOptionService } from '@/debugger';
+// Modules
+import { AuthModule } from '@/auth/auth.module';
+import { MessageModule } from '@/message/message.module';
+import { DebuggerModule } from '@/debugger/debugger.module';
+import { DatabaseModule } from '@/database/database.module';
+import { MiddlewareModule } from '@/utils/middleware';
+import { LoggerModule } from '@/logger/logger.module';
 import { ConfigDynamicModule } from '@/config';
-import { AuthModule } from '@/auth';
+import { ErrorModule } from '@/utils/error';
 import { PaginationModule } from '@/utils/pagination';
 import { HelperModule } from '@/utils/helper';
-import { MiddlewareModule } from '@/utils/middleware';
-import { DatabaseModule, ConnectionNames } from '@/database/';
-import { LoggerModule } from '@/logger';
 import { RequestModule } from '@/utils/request';
-import { ErrorModule } from '@/utils/error';
 import { VersionModule } from '@/utils/version';
-import { TypeOrmConfigService } from '@/database';
+// Services
+import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
+import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
+//
+import { ConnectionNames } from '@/database/';
 
 @Module({
   controllers: [],

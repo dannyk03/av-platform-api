@@ -6,7 +6,9 @@ import {
 } from '@nestjs/common';
 import { AUTH_ADMIN_META_KEY, EnumAuthStatusCodeError } from '@/auth';
 import { Reflector } from '@nestjs/core';
-import { DebuggerService } from '@/debugger';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+//
 
 @Injectable()
 export class AuthPayloadAdminGuard implements CanActivate {

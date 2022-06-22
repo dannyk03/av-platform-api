@@ -1,16 +1,19 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { DebuggerService } from '@/debugger';
-import { AuthService } from '@/auth';
-import { OrganizationService } from '@/organization';
-import { UserService } from '@/user';
-import { AcpPolicyService } from '@acp/policy';
-import { AcpSubjectService } from '@acp/subject';
-import { AcpAbilityService } from '@acp/ability';
-import { AcpRoleService, EnumSystemRole } from '@acp/role';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { AuthService } from '@/auth/service/auth.service';
+import { OrganizationService } from '@/organization/service/organization.service';
+import { UserService } from '@/user/service/user.service';
+import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
+import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
+import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
+import { AcpRoleService } from '@acp/role/service/acp-role.service';
 import { HelperDateService } from '@/utils/helper';
+//
+import { EnumSystemRole } from '@acp/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
 

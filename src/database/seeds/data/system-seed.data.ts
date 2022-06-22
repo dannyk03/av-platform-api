@@ -4,7 +4,7 @@ import { EnumSystemRole } from '@acp/role';
 
 export const systemSeedData = {
   organization: {
-    name: 'system',
+    name: 'System',
   },
   superAdmin: {
     firstName: 'Avo',

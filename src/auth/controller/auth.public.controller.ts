@@ -1,7 +1,9 @@
 import { Controller } from '@nestjs/common';
-import { DebuggerService } from '@/debugger';
-import { UserService } from '@/user';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { UserService } from '@/user/service/user.service';
 import { AuthService } from '../service/auth.service';
+//
 
 @Controller({
   version: '1',

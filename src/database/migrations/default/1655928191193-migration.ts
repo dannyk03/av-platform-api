@@ -1,9 +1,20 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655903896082 implements MigrationInterface {
-  name = 'migration1655903896082';
+export class migration1655928191193 implements MigrationInterface {
+  name = 'migration1655928191193';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+            CREATE TABLE "loggers" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" character varying(20) array,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+            )
+        `);
     await queryRunner.query(`
             CREATE TABLE "auth_apis" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -18,17 +29,6 @@ export class migration1655903896082 implements MigrationInterface {
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 CONSTRAINT "uq_auth_apis_key" UNIQUE ("key"),
                 CONSTRAINT "pk_auth_apis_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "loggers" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "level" character varying NOT NULL,
-                "action" character varying NOT NULL,
-                "description" character varying,
-                "tags" character varying(20) array,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
@@ -112,16 +112,16 @@ export class migration1655903896082 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
-                "first_name" character varying NOT NULL,
-                "last_name" character varying NOT NULL,
-                "mobile_number" character varying NOT NULL,
+                "first_name" character varying,
+                "last_name" character varying,
+                "mobile_number" character varying,
                 "email" character varying NOT NULL,
                 "password" character varying NOT NULL,
                 "password_expired" TIMESTAMP NOT NULL,
                 "salt" character varying NOT NULL,
                 "is_active" boolean NOT NULL DEFAULT false,
                 "email_verified" boolean NOT NULL DEFAULT false,
-                "email_verification_token" character varying NOT NULL,
+                "email_verification_token" character varying,
                 "role_id" uuid,
                 "organization_id" uuid,
                 CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
@@ -281,10 +281,10 @@ export class migration1655903896082 implements MigrationInterface {
             DROP TYPE "public"."acp_abilities_type_enum"
         `);
     await queryRunner.query(`
-            DROP TABLE "loggers"
+            DROP TABLE "auth_apis"
         `);
     await queryRunner.query(`
-            DROP TABLE "auth_apis"
+            DROP TABLE "loggers"
         `);
   }
 }

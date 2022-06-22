@@ -25,7 +25,7 @@ export class AcpRolePresetService {
 
   async findAll(): Promise<AcpRolePreset[]> {
     const presets = await this.acpRolePresetRepository.find({
-      relations: ['policy'],
+      relations: ['policy', 'policy.subjects', 'policy.subjects.abilities'],
     });
     return presets;
   }

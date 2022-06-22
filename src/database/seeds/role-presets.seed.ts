@@ -1,14 +1,16 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { DebuggerService } from '@/debugger';
-import { AcpPolicyService } from '@acp/policy';
-import { AcpSubjectService } from '@acp/subject';
-import { AcpAbilityService } from '@acp/ability';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+// Services
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
+import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
+import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
+import { AcpRolePresetService } from '@acp/role/service/acp-role-preset.service';
+//
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';
-import { AcpRolePresetService } from '@/access-control-policy/role/service/acp-role-preset.service';
 
 @Injectable()
 export class RolePresetsSeed {
