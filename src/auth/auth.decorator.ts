@@ -11,7 +11,6 @@ import {
   PERMISSION_META_KEY,
 } from '@acp/ability/acp-ability.constant';
 import { AUTH_ADMIN_META_KEY } from './auth.constant';
-import { BasicGuard } from './guard/basic/auth.basic.guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
 import { AuthPayloadAdminGuard } from './guard/payload/auth.payload.admin.guard';
@@ -57,10 +56,6 @@ export function AuthAdminJwtGuard(...permissions: ENUM_PERMISSIONS[]) {
 
 export function AuthRefreshJwtGuard(): any {
   return applyDecorators(UseGuards(JwtRefreshGuard));
-}
-
-export function AuthBasicGuard(): any {
-  return applyDecorators(UseGuards(BasicGuard));
 }
 
 export const ReqUser = createParamDecorator(
