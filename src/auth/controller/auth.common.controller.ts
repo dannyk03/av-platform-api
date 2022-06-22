@@ -15,6 +15,7 @@ import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { LoggerService } from '@/logger/service/logger.service';
 import { HelperDateService } from '@/utils/helper';
+import { AuthService } from '../service/auth.service';
 //
 import { EnumUserStatusCodeError } from '@/user';
 import { EnumLoggerAction } from '@/logger';
@@ -23,11 +24,7 @@ import { Response, IResponse } from '@/utils/response';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
 import { EnumRoleStatusCodeError } from '@acp/role';
 import { AuthLoginDto } from '../dto/auth.login.dto';
-import { AuthService } from '../service/auth.service';
-import {
-  EnumAuthStatusCodeError,
-  EnumAuthStatusCodeSuccess,
-} from '../auth.constant';
+import { EnumAuthStatusCodeError } from '../auth.constant';
 import { EnumOrganizationStatusCodeError } from '@/organization';
 import {
   AuthJwtGuard,
@@ -50,7 +47,7 @@ export class AuthCommonController {
     private readonly loggerService: LoggerService,
   ) {}
 
-  @Response('auth.login', EnumAuthStatusCodeSuccess.AuthLoginSuccess)
+  @Response('auth.login')
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(@Body() body: AuthLoginDto): Promise<IResponse> {
@@ -196,7 +193,7 @@ export class AuthCommonController {
     };
   }
 
-  @Response('auth.refresh', EnumAuthStatusCodeSuccess.AuthRefreshSuccess)
+  @Response('auth.refresh')
   @AuthRefreshJwtGuard()
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')

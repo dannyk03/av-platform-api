@@ -20,9 +20,4 @@ export enum EnumAuthStatusCodeError {
   AuthGuardApiKeyInvalidError = 5127,
 }
 
-export enum EnumAuthStatusCodeSuccess {
-  AuthLoginSuccess = 1001,
-  AuthRefreshSuccess = 1002,
-}
-
 export const AUTH_ADMIN_META_KEY = 'AuthAdminMetaKey';

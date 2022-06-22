@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
   Post,
@@ -48,6 +50,7 @@ export class OrganizationAdminController {
 
   @Response('organization.create')
   // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
+  @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(
     @Body()
