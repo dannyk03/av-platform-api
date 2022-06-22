@@ -11,12 +11,18 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 9,
-            type: AcpSubjectTypeDict.Organization,
+            type: AcpSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
                 actions: [AbilityActionEnum.Manage],
               },
+            ],
+          },
+          {
+            sensitivityLevel: 9,
+            type: AcpSubjectTypeDict.Organization,
+            abilities: [
               {
                 type: AbilityTypeEnum.Cannot,
                 actions: [AbilityActionEnum.Create],
@@ -36,7 +42,7 @@ export const rolePresetsSeedData = {
         sensitivityLevel: 9,
         subjects: [
           {
-            sensitivityLevel: 10,
+            sensitivityLevel: 8,
             type: AcpSubjectTypeDict.User,
             abilities: [
               {
@@ -46,7 +52,7 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 10,
+            sensitivityLevel: 8,
             type: AcpSubjectTypeDict.FinanceNamespace,
             abilities: [
               {
@@ -56,7 +62,7 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 10,
+            sensitivityLevel: 9,
             type: AcpSubjectTypeDict.SecurityNamespace,
             abilities: [
               {
@@ -112,7 +118,7 @@ export const rolePresetsSeedData = {
         sensitivityLevel: 5,
         subjects: [
           {
-            sensitivityLevel: 10,
+            sensitivityLevel: 9,
             type: AcpSubjectTypeDict.Organization,
             abilities: [
               {
