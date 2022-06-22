@@ -13,6 +13,7 @@ export class AcpPolicy extends BaseEntity<AcpPolicy> {
 
   @OneToMany(() => AcpSubject, (subject) => subject.policy, {
     cascade: true,
+    eager: true,
   })
   subjects: AcpSubject[];
 }

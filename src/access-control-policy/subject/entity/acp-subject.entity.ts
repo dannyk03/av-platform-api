@@ -18,7 +18,10 @@ export class AcpSubject extends BaseEntity<AcpSubject> {
   })
   type: AcpSubjectType;
 
-  @OneToMany(() => AcpAbility, (ability) => ability.subject, { cascade: true })
+  @OneToMany(() => AcpAbility, (ability) => ability.subject, {
+    cascade: true,
+    eager: true,
+  })
   abilities: AcpAbility[];
 
   @ManyToOne(() => AcpPolicy, (policy) => policy.subjects)

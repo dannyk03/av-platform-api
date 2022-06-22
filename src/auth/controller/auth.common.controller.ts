@@ -29,7 +29,7 @@ import {
   AuthJwtGuard,
   AuthRefreshJwtGuard,
   Token,
-  User,
+  ReqUser,
 } from '../auth.decorator';
 import { AuthChangePasswordDto } from '../dto';
 
@@ -197,7 +197,7 @@ export class AuthCommonController {
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   async refresh(
-    @User()
+    @ReqUser()
     { id, rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
@@ -300,7 +300,7 @@ export class AuthCommonController {
   @Patch('/change-password')
   async changePassword(
     @Body() body: AuthChangePasswordDto,
-    @User('id') id: string,
+    @ReqUser('id') id: string,
   ): Promise<void> {
     const user = await this.userService.findOneById(id);
 

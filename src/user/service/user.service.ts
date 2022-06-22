@@ -35,11 +35,11 @@ export class UserService {
     this.uploadPath = this.configService.get<string>('user.uploadPath');
   }
 
-  create(props: DeepPartial<User>): User {
+  async create(props: DeepPartial<User>): Promise<User> {
     return this.userRepository.create(props);
   }
 
-  createMany(props: DeepPartial<User>[]): User[] {
+  async createMany(props: DeepPartial<User>[]): Promise<User[]> {
     return this.userRepository.create(props);
   }
 
@@ -59,11 +59,18 @@ export class UserService {
     { salt, passwordHash, passwordExpired }: IAuthPassword,
   ): Promise<User> {
     const user: User = await this.userRepository.findOneBy({ id });
-
     user.password = passwordHash;
     user.passwordExpired = passwordExpired;
     user.salt = salt;
 
     return this.userRepository.save(user);
+  }
+
+  async checkExistByEmail(email: string): Promise<boolean> {
+    const exists = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    return Boolean(exists);
   }
 }

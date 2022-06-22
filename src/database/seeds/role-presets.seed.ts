@@ -39,15 +39,16 @@ export class RolePresetsSeed {
                   policy.subjects.map(async (subject) => {
                     const subjectAbilities = await Promise.all(
                       subject.abilities.map(async (ability) => {
-                        const abilityEntity = this.acpAbilityService.create({
-                          type: ability.type,
-                          actions: ability.actions,
-                        });
+                        const abilityEntity =
+                          await this.acpAbilityService.create({
+                            type: ability.type,
+                            actions: ability.actions,
+                          });
 
                         return transactionalEntityManager.save(abilityEntity);
                       }),
                     );
-                    const subjectEntity = this.acpSubjectService.create({
+                    const subjectEntity = await this.acpSubjectService.create({
                       type: subject.type,
                       sensitivityLevel: subject.sensitivityLevel,
                       abilities: subjectAbilities,
@@ -56,13 +57,13 @@ export class RolePresetsSeed {
                     return transactionalEntityManager.save(subjectEntity);
                   }),
                 );
-                const policyEntity = this.acpPolicyService.create({
+                const policyEntity = await this.acpPolicyService.create({
                   subjects: policySubjects,
                   sensitivityLevel: policy.sensitivityLevel,
                 });
 
                 await transactionalEntityManager.save(policyEntity);
-                const roleEntity = this.acpRolePresetService.create({
+                const roleEntity = await this.acpRolePresetService.create({
                   name: role.name,
                   policy: policyEntity,
                 });

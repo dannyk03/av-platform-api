@@ -11,5 +11,6 @@ export class UserAdminController {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {}
 }

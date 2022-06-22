@@ -13,11 +13,11 @@ export class AcpPolicyService {
     private readonly configService: ConfigService,
   ) {}
 
-  create(props: DeepPartial<AcpPolicy>): AcpPolicy {
+  async create(props: DeepPartial<AcpPolicy>): Promise<AcpPolicy> {
     return this.acpPolicyRepository.create(props);
   }
 
-  createMany(props: DeepPartial<AcpPolicy>[]): AcpPolicy[] {
+  async createMany(props: DeepPartial<AcpPolicy>[]): Promise<AcpPolicy[]> {
     return this.acpPolicyRepository.create(props);
   }
 }

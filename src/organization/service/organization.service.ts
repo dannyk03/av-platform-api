@@ -13,11 +13,21 @@ export class OrganizationService {
     private readonly configService: ConfigService,
   ) {}
 
-  create(props: DeepPartial<Organization>): Organization {
+  async create(props: DeepPartial<Organization>): Promise<Organization> {
     return this.organizationRepository.create(props);
   }
 
-  createMany(props: DeepPartial<Organization>[]): Organization[] {
+  async createMany(
+    props: DeepPartial<Organization>[],
+  ): Promise<Organization[]> {
     return this.organizationRepository.create(props);
+  }
+
+  async checkExistByName(name: string): Promise<boolean> {
+    const exists = await this.organizationRepository.findOne({
+      where: { name },
+    });
+
+    return Boolean(exists);
   }
 }

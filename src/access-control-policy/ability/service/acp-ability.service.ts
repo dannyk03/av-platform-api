@@ -13,11 +13,11 @@ export class AcpAbilityService {
     private readonly configService: ConfigService,
   ) {}
 
-  create(props: DeepPartial<AcpAbility>): AcpAbility {
+  async create(props: DeepPartial<AcpAbility>): Promise<AcpAbility> {
     return this.acpAbilityRepository.create(props);
   }
 
-  createMany(props: DeepPartial<AcpAbility>[]): AcpAbility[] {
+  async createMany(props: DeepPartial<AcpAbility>[]): Promise<AcpAbility[]> {
     return this.acpAbilityRepository.create(props);
   }
 }

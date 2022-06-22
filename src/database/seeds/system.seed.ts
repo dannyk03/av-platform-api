@@ -47,15 +47,16 @@ export class SystemSeed {
                   policy.subjects.map(async (subject) => {
                     const subjectAbilities = await Promise.all(
                       subject.abilities.map(async (ability) => {
-                        const abilityEntity = this.acpAbilityService.create({
-                          type: ability.type,
-                          actions: ability.actions,
-                        });
+                        const abilityEntity =
+                          await this.acpAbilityService.create({
+                            type: ability.type,
+                            actions: ability.actions,
+                          });
 
                         return transactionalEntityManager.save(abilityEntity);
                       }),
                     );
-                    const subjectEntity = this.acpSubjectService.create({
+                    const subjectEntity = await this.acpSubjectService.create({
                       type: subject.type,
                       sensitivityLevel: subject.sensitivityLevel,
                       abilities: subjectAbilities,
@@ -64,13 +65,13 @@ export class SystemSeed {
                     return transactionalEntityManager.save(subjectEntity);
                   }),
                 );
-                const policyEntity = this.acpPolicyService.create({
+                const policyEntity = await this.acpPolicyService.create({
                   subjects: policySubjects,
                   sensitivityLevel: policy.sensitivityLevel,
                 });
 
                 await transactionalEntityManager.save(policyEntity);
-                const roleEntity = this.acpRoleService.create({
+                const roleEntity = await this.acpRoleService.create({
                   name: role.name,
                   isActive: true,
                   policy: policyEntity,
@@ -80,7 +81,7 @@ export class SystemSeed {
               }),
             );
 
-            const systemOrganization = this.organizationService.create({
+            const systemOrganization = await this.organizationService.create({
               ...systemSeedData.organization,
               roles: systemRoles,
             });
@@ -92,7 +93,7 @@ export class SystemSeed {
                 process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
               );
 
-            const superAdmin = this.userService.create({
+            const superAdmin = await this.userService.create({
               ...systemSeedData.superAdmin,
               mobileNumber: '+00000000000',
               password: passwordHash,

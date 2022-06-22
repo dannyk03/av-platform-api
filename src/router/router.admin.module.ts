@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '@/auth/auth.module';
-import { UserModule, UserAdminController, UserPublicController } from '@/user';
+import { UserModule, UserAdminController } from '@/user';
 import { AcpRoleModule } from '@acp/role';
 import { AcpPolicyModule } from '@acp/policy';
 import { AcpSubjectModule } from '@acp/subject';
 import { AcpAbilityModule } from '@acp/ability';
 import { AwsModule } from '@/aws';
+import {
+  OrganizationAdminController,
+  OrganizationModule,
+} from '@/organization';
+import { AuthService } from '@/auth';
 
 @Module({
-  controllers: [
-    // TODO add role and permissions controllers
-    UserAdminController,
-    UserPublicController,
-  ],
-  providers: [],
+  controllers: [UserAdminController, OrganizationAdminController],
+  providers: [AuthService],
   exports: [],
   imports: [
     AuthModule,
@@ -22,7 +23,7 @@ import { AwsModule } from '@/aws';
     AcpSubjectModule,
     AcpAbilityModule,
     UserModule,
-    AwsModule,
+    OrganizationModule,
   ],
 })
 export class RouterAdminModule {}
