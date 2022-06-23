@@ -46,7 +46,7 @@ export class OrganizationAdminController {
   ) {}
 
   @Response('organization.create')
-  // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
+  @AuthAdminJwtGuard()
   @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(
