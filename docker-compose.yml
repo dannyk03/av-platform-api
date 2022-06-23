@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  platform-api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOST=postgres
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+    volumes:
+      - .:/usr/src/app
+      - ./usr/src/app/node_modules
+    restart: unless-stopped
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    command: >
+      sh -c "yarn migration:run && yarn start:dev"
+
+  postgres:
+    image: postgres:14.2
+    networks:
+      - app-network
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+volumes:
+  dbdata:
