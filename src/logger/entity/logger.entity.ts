@@ -21,8 +21,6 @@ export class LoggerEntity {
   // @JoinColumn()
   // user?: User;
 
-  // apiKey: Types.ObjectId;
-
   // anonymous: boolean;
 
   @Column({ nullable: true, update: false })

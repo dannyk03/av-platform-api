@@ -13,17 +13,10 @@ export class LoggerService {
     private loggerRepository: Repository<LoggerEntity>,
   ) {}
 
-  async info({
-    action,
-    description,
-    apiKey,
-    user,
-    tags,
-  }: ILogger): Promise<any> {
+  async info({ action, description, user, tags }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
     //   level: EnumLoggerLevel.Info,
     //   user: new Types.ObjectId(user),
-    //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
     //   action,
     //   description,
@@ -32,17 +25,10 @@ export class LoggerService {
     // return create.save();
   }
 
-  async debug({
-    action,
-    description,
-    apiKey,
-    user,
-    tags,
-  }: ILogger): Promise<any> {
+  async debug({ action, description, user, tags }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
     //   level: EnumLoggerLevel.Debug,
     //   user: new Types.ObjectId(user),
-    //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
     //   action,
     //   description,
@@ -51,17 +37,10 @@ export class LoggerService {
     // return create.save();
   }
 
-  async warning({
-    action,
-    description,
-    apiKey,
-    user,
-    tags,
-  }: ILogger): Promise<any> {
+  async warning({ action, description, user, tags }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
     //   level: EnumLoggerLevel.Warn,
     //   user: new Types.ObjectId(user),
-    //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
     //   action,
     //   description,
@@ -70,17 +49,10 @@ export class LoggerService {
     // return create.save();
   }
 
-  async fatal({
-    action,
-    description,
-    apiKey,
-    user,
-    tags,
-  }: ILogger): Promise<any> {
+  async fatal({ action, description, user, tags }: ILogger): Promise<any> {
     // const create = new this.loggerRepository({
     //   level: EnumLoggerLevel.Fatal,
     //   user: new Types.ObjectId(user),
-    //   apiKey: new Types.ObjectId(apiKey),
     //   anonymous: user ? false : true,
     //   action,
     //   description,

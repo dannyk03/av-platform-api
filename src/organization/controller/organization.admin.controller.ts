@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-// import { AuthAdminJwtGuard } from '@/auth';
+import { AuthAdminJwtGuard } from '@/auth';
 import { Response, IResponse } from '@/utils/response';
 import { EnumStatusCodeError } from '@/utils/error';
 import { EnumOrganizationRole } from '@acp/role';
@@ -42,9 +42,6 @@ export class OrganizationAdminController {
     private readonly userService: UserService,
     private readonly rolePresetService: AcpRolePresetService,
     private readonly acpRoleService: AcpRoleService,
-    private readonly acpPolicyService: AcpPolicyService,
-    private readonly acpSubjectService: AcpSubjectService,
-    private readonly acpAbilityService: AcpAbilityService,
     private readonly authService: AuthService,
   ) {}
 
@@ -94,47 +91,11 @@ export class OrganizationAdminController {
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         try {
-          const organizationRoles = await Promise.all(
-            rolePresets.map(async (role) => {
-              const { policy } = role;
-              const policySubjects = await Promise.all(
-                policy.subjects.map(async (subject) => {
-                  const subjectAbilities = await Promise.all(
-                    subject.abilities.map(async (ability) => {
-                      const abilityEntity = await this.acpAbilityService.create(
-                        {
-                          type: ability.type,
-                          actions: ability.actions,
-                        },
-                      );
-
-                      return transactionalEntityManager.save(abilityEntity);
-                    }),
-                  );
-                  const subjectEntity = await this.acpSubjectService.create({
-                    type: subject.type,
-                    sensitivityLevel: subject.sensitivityLevel,
-                    abilities: subjectAbilities,
-                  });
-
-                  return transactionalEntityManager.save(subjectEntity);
-                }),
-              );
-              const policyEntity = await this.acpPolicyService.create({
-                subjects: policySubjects,
-                sensitivityLevel: policy.sensitivityLevel,
-              });
-
-              await transactionalEntityManager.save(policyEntity);
-              const roleEntity = await this.acpRoleService.create({
-                name: role.name,
-                isActive: true,
-                policy: policyEntity,
-              });
-
-              return transactionalEntityManager.save(roleEntity);
-            }),
-          );
+          const organizationRoles =
+            await this.acpRoleService.cloneSaveRolesTree(
+              transactionalEntityManager,
+              rolePresets,
+            );
 
           const organization = await this.organizationService.create({
             name: body.name,

@@ -25,9 +25,6 @@ export class SystemSeed {
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
     private readonly acpRoleService: AcpRoleService,
-    private readonly acpPolicyService: AcpPolicyService,
-    private readonly acpSubjectService: AcpSubjectService,
-    private readonly acpAbilityService: AcpAbilityService,
     private readonly authService: AuthService,
     private readonly helperDateService: HelperDateService,
     private readonly debuggerService: DebuggerService,
@@ -43,45 +40,9 @@ export class SystemSeed {
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
           try {
-            const systemRoles = await Promise.all(
-              systemSeedData.roles.map(async (role) => {
-                const { policy } = role;
-                const policySubjects = await Promise.all(
-                  policy.subjects.map(async (subject) => {
-                    const subjectAbilities = await Promise.all(
-                      subject.abilities.map(async (ability) => {
-                        const abilityEntity =
-                          await this.acpAbilityService.create({
-                            type: ability.type,
-                            actions: ability.actions,
-                          });
-
-                        return transactionalEntityManager.save(abilityEntity);
-                      }),
-                    );
-                    const subjectEntity = await this.acpSubjectService.create({
-                      type: subject.type,
-                      sensitivityLevel: subject.sensitivityLevel,
-                      abilities: subjectAbilities,
-                    });
-
-                    return transactionalEntityManager.save(subjectEntity);
-                  }),
-                );
-                const policyEntity = await this.acpPolicyService.create({
-                  subjects: policySubjects,
-                  sensitivityLevel: policy.sensitivityLevel,
-                });
-
-                await transactionalEntityManager.save(policyEntity);
-                const roleEntity = await this.acpRoleService.create({
-                  name: role.name,
-                  isActive: true,
-                  policy: policyEntity,
-                });
-
-                return transactionalEntityManager.save(roleEntity);
-              }),
+            const systemRoles = await this.acpRoleService.cloneSaveRolesTree(
+              transactionalEntityManager,
+              systemSeedData.roles,
             );
 
             const systemOrganization = await this.organizationService.create({

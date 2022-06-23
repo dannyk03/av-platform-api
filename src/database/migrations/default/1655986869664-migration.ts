@@ -1,20 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655928191193 implements MigrationInterface {
-  name = 'migration1655928191193';
+export class migration1655986869664 implements MigrationInterface {
+  name = 'migration1655986869664';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            CREATE TABLE "loggers" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "level" character varying NOT NULL,
-                "action" character varying NOT NULL,
-                "description" character varying,
-                "tags" character varying(20) array,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
-            )
-        `);
     await queryRunner.query(`
             CREATE TABLE "auth_apis" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -169,6 +158,17 @@ export class migration1655928191193 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
+            CREATE TABLE "loggers" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" character varying(20) array,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
             CREATE TABLE "acp_role_presets" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -245,6 +245,9 @@ export class migration1655928191193 implements MigrationInterface {
             DROP TABLE "acp_role_presets"
         `);
     await queryRunner.query(`
+            DROP TABLE "loggers"
+        `);
+    await queryRunner.query(`
             DROP TABLE "organizations"
         `);
     await queryRunner.query(`
@@ -282,9 +285,6 @@ export class migration1655928191193 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TABLE "auth_apis"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "loggers"
         `);
   }
 }

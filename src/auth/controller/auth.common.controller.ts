@@ -115,7 +115,7 @@ export class AuthCommonController {
 
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
-        message: 'auth.error.passwordNotMatch',
+        message: 'auth.error.notMatch',
       });
     } else if (!user.isActive) {
       this.debuggerService.error(
