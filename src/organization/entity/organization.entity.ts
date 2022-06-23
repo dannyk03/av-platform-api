@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { createSlugFromString } from '@/utils/helper';
-import { AcpRole } from '@acp/role/entity/acp-role.entity';
+import { AclRole } from '@acl/role/entity/acl-role.entity';
 import { User } from '@/user/entity/user.entity';
 
 @Entity()
@@ -23,10 +23,10 @@ export class Organization extends BaseEntity<Organization> {
   })
   isActive!: boolean;
 
-  @OneToMany(() => AcpRole, (role) => role.organization, {
+  @OneToMany(() => AclRole, (role) => role.organization, {
     cascade: true,
   })
-  roles: AcpRole[];
+  roles: AclRole[];
 
   @OneToMany(() => User, (user) => user.organization, {
     cascade: true,

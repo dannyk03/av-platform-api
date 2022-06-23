@@ -1,6 +1,6 @@
-import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
-import { AcpSubjectTypeDict } from '@acp/subject';
-import { EnumSystemRole } from '@acp/role';
+import { AbilityActionEnum, AbilityTypeEnum } from '@acl/ability';
+import { AclSubjectTypeDict } from '@acl/subject';
+import { EnumSystemRole } from '@acl/role';
 
 export const systemSeedData = {
   organization: {
@@ -22,7 +22,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectTypeDict.System,
+            type: AclSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -40,7 +40,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 5,
-            type: AcpSubjectTypeDict.Order,
+            type: AclSubjectTypeDict.Order,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -50,7 +50,7 @@ export const systemSeedData = {
           },
           {
             sensitivityLevel: 5,
-            type: AcpSubjectTypeDict.System,
+            type: AclSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -68,7 +68,7 @@ export const systemSeedData = {
         subjects: [
           {
             sensitivityLevel: 10,
-            type: AcpSubjectTypeDict.System,
+            type: AclSubjectTypeDict.System,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,

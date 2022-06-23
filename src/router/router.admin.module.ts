@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 // Modules
 import { AuthModule } from '@/auth/auth.module';
-import { AcpRoleModule } from '@acp/role/acp-role.module';
-import { AcpPolicyModule } from '@acp/policy/acp-policy.module';
-import { AcpSubjectModule } from '@acp/subject/acp-subject.module';
-import { AcpAbilityModule } from '@acp/ability/acp-ability.module';
+import { AclRoleModule } from '@acl/role/acl-role.module';
+import { AclPolicyModule } from '@acl/policy/acl-policy.module';
+import { AclSubjectModule } from '@acl/subject/acl-subject.module';
+import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { UserModule } from '@/user/user.module';
 //
@@ -17,10 +17,10 @@ import { OrganizationAdminController } from '@/organization';
   exports: [],
   imports: [
     AuthModule,
-    AcpRoleModule,
-    AcpPolicyModule,
-    AcpSubjectModule,
-    AcpAbilityModule,
+    AclRoleModule,
+    AclPolicyModule,
+    AclSubjectModule,
+    AclAbilityModule,
     UserModule,
     OrganizationModule,
   ],

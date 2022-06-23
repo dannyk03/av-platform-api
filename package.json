@@ -111,6 +111,6 @@
   },
   "moduleNameMapper": {
     "@/(.*)": "<rootDir>/$1",
-    "@acp/(.*)": "<rootDir>/access-control-policy/$1"
+    "@acl/(.*)": "<rootDir>/access-control-list/$1"
   }
 }

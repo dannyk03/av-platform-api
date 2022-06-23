@@ -22,7 +22,7 @@ import { EnumLoggerAction } from '@/logger';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
-import { EnumRoleStatusCodeError } from '@acp/role';
+import { EnumRoleStatusCodeError } from '@acl/role';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { EnumAuthStatusCodeError } from '../auth.constant';
 import { EnumOrganizationStatusCodeError } from '@/organization';

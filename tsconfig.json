@@ -22,7 +22,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@acp/*": ["src/access-control-policy/*"]
+      "@acl/*": ["src/access-control-list/*"]
     }
   },
   "include": ["src", "test", "e2e", "integration"],

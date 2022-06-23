@@ -13,16 +13,16 @@ import { DataSource } from 'typeorm';
 import { AuthAdminJwtGuard } from '@/auth';
 import { Response, IResponse } from '@/utils/response';
 import { EnumStatusCodeError } from '@/utils/error';
-import { EnumOrganizationRole } from '@acp/role';
+import { EnumOrganizationRole } from '@acl/role';
 import { ConnectionNames } from '@/database';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserService } from '@/user/service/user.service';
-import { AcpRoleService } from '@acp/role/service/acp-role.service';
-import { AcpRolePresetService } from '@acp/role/service/acp-role-preset.service';
-import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
-import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
-import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
+import { AclRoleService } from '@acl/role/service/acl-role.service';
+import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service';
+import { AclAbilityService } from '@acl/ability/service/acl-ability.service';
+import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
+import { AclSubjectService } from '@acl/subject/service/acl-subject.service';
 import { AuthService } from '@/auth/service/auth.service';
 //
 import { OrganizationService } from '../service/organization.service';
@@ -40,8 +40,8 @@ export class OrganizationAdminController {
     private readonly debuggerService: DebuggerService,
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
-    private readonly rolePresetService: AcpRolePresetService,
-    private readonly acpRoleService: AcpRoleService,
+    private readonly rolePresetService: AclRolePresetService,
+    private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
   ) {}
 
@@ -92,7 +92,7 @@ export class OrganizationAdminController {
       async (transactionalEntityManager) => {
         try {
           const organizationRoles =
-            await this.acpRoleService.cloneSaveRolesTree(
+            await this.aclRoleService.cloneSaveRolesTree(
               transactionalEntityManager,
               rolePresets,
             );

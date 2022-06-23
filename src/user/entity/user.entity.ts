@@ -1,7 +1,7 @@
 import { Entity, Column, Index, ManyToOne, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
-import { AcpRole } from '@acp/role/entity/acp-role.entity';
+import { AclRole } from '@acl/role/entity/acl-role.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
@@ -46,8 +46,8 @@ export class User extends BaseEntity<User> {
   @Column({ nullable: true })
   emailVerificationToken?: string;
 
-  @ManyToOne(() => AcpRole, (role) => role.users)
-  role!: AcpRole;
+  @ManyToOne(() => AclRole, (role) => role.users)
+  role!: AclRole;
 
   @ManyToOne(() => Organization, (organization) => organization.users)
   organization!: Organization;

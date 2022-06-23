@@ -4,10 +4,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
-import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
-import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
-import { AcpRolePresetService } from '@acp/role/service/acp-role-preset.service';
+import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
+import { AclSubjectService } from '@acl/subject/service/acl-subject.service';
+import { AclAbilityService } from '@acl/ability/service/acl-ability.service';
+import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service';
 //
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';
@@ -17,10 +17,10 @@ export class RolePresetsSeed {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly acpRolePresetService: AcpRolePresetService,
-    private readonly acpPolicyService: AcpPolicyService,
-    private readonly acpSubjectService: AcpSubjectService,
-    private readonly acpAbilityService: AcpAbilityService,
+    private readonly aclRolePresetService: AclRolePresetService,
+    private readonly aclPolicyService: AclPolicyService,
+    private readonly aclSubjectService: AclSubjectService,
+    private readonly aclAbilityService: AclAbilityService,
     private readonly debuggerService: DebuggerService,
   ) {}
 
@@ -42,7 +42,7 @@ export class RolePresetsSeed {
                     const subjectAbilities = await Promise.all(
                       subject.abilities.map(async (ability) => {
                         const abilityEntity =
-                          await this.acpAbilityService.create({
+                          await this.aclAbilityService.create({
                             type: ability.type,
                             actions: ability.actions,
                           });
@@ -50,7 +50,7 @@ export class RolePresetsSeed {
                         return transactionalEntityManager.save(abilityEntity);
                       }),
                     );
-                    const subjectEntity = await this.acpSubjectService.create({
+                    const subjectEntity = await this.aclSubjectService.create({
                       type: subject.type,
                       sensitivityLevel: subject.sensitivityLevel,
                       abilities: subjectAbilities,
@@ -59,13 +59,13 @@ export class RolePresetsSeed {
                     return transactionalEntityManager.save(subjectEntity);
                   }),
                 );
-                const policyEntity = await this.acpPolicyService.create({
+                const policyEntity = await this.aclPolicyService.create({
                   subjects: policySubjects,
                   sensitivityLevel: policy.sensitivityLevel,
                 });
 
                 await transactionalEntityManager.save(policyEntity);
-                const roleEntity = await this.acpRolePresetService.create({
+                const roleEntity = await this.aclRolePresetService.create({
                   name: role.name,
                   policy: policyEntity,
                 });

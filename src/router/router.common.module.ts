@@ -4,10 +4,10 @@ import { TerminusModule } from '@nestjs/terminus';
 // Modules
 import { UserModule } from '@/user/user.module';
 import { AuthModule } from '@/auth/auth.module';
-import { AcpRoleModule } from '@acp/role/acp-role.module';
-import { AcpAbilityModule } from '@acp/ability/acp-ability.module';
-import { AcpPolicyModule } from '@acp/policy/acp-policy.module';
-import { AcpSubjectModule } from '@acp/subject/acp-subject.module';
+import { AclRoleModule } from '@acl/role/acl-role.module';
+import { AclAbilityModule } from '@acl/ability/acl-ability.module';
+import { AclPolicyModule } from '@acl/policy/acl-policy.module';
+import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { HealthModule } from '@/health/health.module';
 //
 import { AuthCommonController } from '@/auth';
@@ -20,10 +20,10 @@ import { HealthController } from '@/health';
   imports: [
     UserModule,
     AuthModule,
-    AcpRoleModule,
-    AcpPolicyModule,
-    AcpSubjectModule,
-    AcpAbilityModule,
+    AclRoleModule,
+    AclPolicyModule,
+    AclSubjectModule,
+    AclAbilityModule,
     TerminusModule,
     HttpModule,
     HealthModule,

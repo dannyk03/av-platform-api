@@ -7,13 +7,10 @@ import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '@/organization/service/organization.service';
 import { UserService } from '@/user/service/user.service';
-import { AcpPolicyService } from '@acp/policy/service/acp-policy.service';
-import { AcpSubjectService } from '@acp/subject/service/acp-subject.service';
-import { AcpAbilityService } from '@acp/ability/service/acp-ability.service';
-import { AcpRoleService } from '@acp/role/service/acp-role.service';
+import { AclRoleService } from '@acl/role/service/acl-role.service';
 import { HelperDateService } from '@/utils/helper';
 //
-import { EnumSystemRole } from '@acp/role';
+import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
 
@@ -24,7 +21,7 @@ export class SystemSeed {
     private defaultDataSource: DataSource,
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
-    private readonly acpRoleService: AcpRoleService,
+    private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
     private readonly helperDateService: HelperDateService,
     private readonly debuggerService: DebuggerService,
@@ -40,7 +37,7 @@ export class SystemSeed {
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
           try {
-            const systemRoles = await this.acpRoleService.cloneSaveRolesTree(
+            const systemRoles = await this.aclRoleService.cloneSaveRolesTree(
               transactionalEntityManager,
               systemSeedData.roles,
             );

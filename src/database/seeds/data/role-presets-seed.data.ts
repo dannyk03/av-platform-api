@@ -1,6 +1,6 @@
-import { AbilityActionEnum, AbilityTypeEnum } from '@acp/ability';
-import { AcpSubjectTypeDict } from '@acp/subject';
-import { EnumOrganizationRole } from '@acp/role';
+import { AbilityActionEnum, AbilityTypeEnum } from '@acl/ability';
+import { AclSubjectTypeDict } from '@acl/subject';
+import { EnumOrganizationRole } from '@acl/role';
 
 export const rolePresetsSeedData = {
   roles: [
@@ -11,7 +11,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 9,
-            type: AcpSubjectTypeDict.OrganizationNamespace,
+            type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -21,7 +21,7 @@ export const rolePresetsSeedData = {
           },
           {
             sensitivityLevel: 9,
-            type: AcpSubjectTypeDict.Organization,
+            type: AclSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Cannot,
@@ -43,7 +43,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 8,
-            type: AcpSubjectTypeDict.OrganizationNamespace,
+            type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -53,7 +53,7 @@ export const rolePresetsSeedData = {
           },
           {
             sensitivityLevel: 9,
-            type: AcpSubjectTypeDict.Organization,
+            type: AclSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Cannot,
@@ -71,7 +71,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 5,
-            type: AcpSubjectTypeDict.Order,
+            type: AclSubjectTypeDict.Order,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -81,7 +81,7 @@ export const rolePresetsSeedData = {
           },
           {
             sensitivityLevel: 5,
-            type: AcpSubjectTypeDict.Gift,
+            type: AclSubjectTypeDict.Gift,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -91,7 +91,7 @@ export const rolePresetsSeedData = {
           },
           {
             sensitivityLevel: 5,
-            type: AcpSubjectTypeDict.Organization,
+            type: AclSubjectTypeDict.Organization,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
@@ -109,7 +109,7 @@ export const rolePresetsSeedData = {
         subjects: [
           {
             sensitivityLevel: 9,
-            type: AcpSubjectTypeDict.OrganizationNamespace,
+            type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityTypeEnum.Can,
