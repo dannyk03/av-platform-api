@@ -1,10 +1,11 @@
 import { ConnectionNames } from '@/database';
 import { TypeormSnakeCaseNamingStrategy } from '@/database/naming-strategy';
 import { registerAs } from '@nestjs/config';
+import { DataSourceOptions } from 'typeorm';
 
 export default registerAs(
   'database',
-  (): Record<string, any> => ({
+  (): Record<string, boolean | DataSourceOptions> => ({
     debug: process.env.DATABASE_DEBUG === 'true',
     [ConnectionNames.Default]: {
       type: 'postgres',
