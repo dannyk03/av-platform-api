@@ -16,14 +16,14 @@ export class AclRolePreset extends BaseEntity<AclRolePreset> {
   @Column({
     update: false,
     unique: true,
-    length: 20,
+    length: 30,
   })
   slug: string;
 
   @Column({
     update: false,
     unique: true,
-    length: 20,
+    length: 30,
   })
   name: string;
 

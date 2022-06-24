@@ -9,13 +9,13 @@ import {
 @Entity({ name: 'loggers' })
 export class LoggerEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ enum: EnumLoggerLevel, update: false })
-  level: string;
+  level!: string;
 
   @Column({ enum: EnumLoggerAction, update: false })
-  action: string;
+  action!: string;
 
   // @OneToOne(() => User)
   // @JoinColumn()
@@ -23,7 +23,10 @@ export class LoggerEntity {
 
   // anonymous: boolean;
 
-  @Column({ nullable: true, update: false })
+  @Column({
+    nullable: true,
+    update: false,
+  })
   description: string;
 
   @Column({
@@ -38,5 +41,5 @@ export class LoggerEntity {
   @CreateDateColumn({
     update: false,
   })
-  createdAt: Date;
+  createdAt!: Date;
 }

@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { AuthAdminJwtGuard } from '@/auth';
 import { Response, IResponse } from '@/utils/response';
 import { EnumStatusCodeError } from '@/utils/error';
 import { EnumOrganizationRole } from '@acl/role';
@@ -28,6 +27,7 @@ import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '../service/organization.service';
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
+import { AuthAclGuard } from '@/auth/auth.decorator';
 
 @Controller({
   version: '1',
@@ -46,7 +46,7 @@ export class OrganizationAdminController {
   ) {}
 
   @Response('organization.create')
-  @AuthAdminJwtGuard()
+  @AuthAclGuard()
   @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(

@@ -21,14 +21,13 @@ export class AclRole extends BaseEntity<AclRole> {
   @Index('role_slug_index')
   @Column({
     update: false,
-    length: 20,
+    length: 30,
   })
   slug: string;
 
-  // TODO:  Do we really need name and slug together?
   @Column({
     update: false,
-    length: 20,
+    length: 30,
   })
   name: string;
 

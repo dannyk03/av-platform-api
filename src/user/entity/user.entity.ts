@@ -20,17 +20,25 @@ export class User extends BaseEntity<User> {
 
   @Index('user_email_index')
   @Column({
+    type: 'varchar',
     unique: true,
+    length: 100,
   })
   email!: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 100,
+  })
   password!: string;
 
   @Column()
   passwordExpired!: Date;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 100,
+  })
   salt!: string;
 
   @Column({
@@ -43,6 +51,7 @@ export class User extends BaseEntity<User> {
   })
   emailVerified!: boolean;
 
+  // TODO change to false after verification email flow will be ready
   @Column({ nullable: true })
   emailVerificationToken?: string;
 
