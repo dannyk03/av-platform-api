@@ -19,8 +19,8 @@ export class UserPutToRequestGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { params } = request;
-    const { user } = params;
+    const { user } = request;
+    // const { user } = params;
 
     const requestUser = await this.userService.findOneById(user.id, {
       relations: [
@@ -30,6 +30,11 @@ export class UserPutToRequestGuard implements CanActivate {
         'role.policy.subjects',
         'role.policy.subjects.abilities',
       ],
+      select: {
+        organization: {
+          isActive: true,
+        },
+      },
     });
 
     if (!requestUser) {

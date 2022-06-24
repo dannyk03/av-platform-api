@@ -36,6 +36,7 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
+        utc: this.env === 'production',
         level: 'error',
       }),
     );
@@ -47,6 +48,7 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
+        utc: this.env === 'production',
         level: 'info',
       }),
     );
@@ -58,6 +60,7 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
+        utc: this.env === 'production',
         level: 'debug',
       }),
     );

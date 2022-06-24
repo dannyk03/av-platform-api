@@ -43,6 +43,7 @@ export class UserService {
     return this.userRepository.findOne({
       where: { id },
       relations: options?.relations,
+      select: options?.select,
     });
   }
 
