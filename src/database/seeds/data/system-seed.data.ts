@@ -1,4 +1,4 @@
-import { AbilityActionEnum, AbilityTypeEnum } from '@acl/ability';
+import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
 import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumSystemRole } from '@acl/role';
 
@@ -25,8 +25,8 @@ export const systemSeedData = {
             type: AclSubjectTypeDict.System,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -43,8 +43,8 @@ export const systemSeedData = {
             type: AclSubjectTypeDict.Order,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -53,8 +53,8 @@ export const systemSeedData = {
             type: AclSubjectTypeDict.System,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Read],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Read],
               },
             ],
           },
@@ -71,8 +71,8 @@ export const systemSeedData = {
             type: AclSubjectTypeDict.System,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Read],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Read],
               },
             ],
           },

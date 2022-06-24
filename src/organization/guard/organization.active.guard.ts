@@ -4,29 +4,28 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 //
-import { EnumUserStatusCodeError } from '../user.constant';
+import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Injectable()
-export class ReqUserActiveGuard implements CanActivate {
+export class ReqUserOrganizationActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { __user } = context.switchToHttp().getRequest();
 
-    if (!__user.isActive) {
+    if (!__user.organization?.isActive) {
       this.debuggerService.error(
-        'User active error',
-        'UserActiveGuard',
+        'Organization active error',
+        'ReqUserOrganizationActiveGuard',
         'canActivate',
       );
 
       throw new BadRequestException({
-        statusCode: EnumUserStatusCodeError.UserActiveError,
-        message: 'user.error.active',
+        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
+        message: 'organization.error.active',
       });
     }
     return true;

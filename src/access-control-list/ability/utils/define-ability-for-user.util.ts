@@ -1,11 +1,11 @@
 import { defineAbility, createAliasResolver } from '@casl/ability';
-import { AbilityActionEnum } from '../acl-ability.constant';
+import { EnumAclAbilityAction } from '../acl-ability.constant';
 
 const resolveAction = createAliasResolver({
-  [AbilityActionEnum.Modify]: [
-    AbilityActionEnum.Update,
-    AbilityActionEnum.Create,
-    AbilityActionEnum.Read,
+  [EnumAclAbilityAction.Modify]: [
+    EnumAclAbilityAction.Update,
+    EnumAclAbilityAction.Create,
+    EnumAclAbilityAction.Read,
   ],
   // [AbilityActionEnum.Access]: [
   //   AbilityActionEnum.READ,

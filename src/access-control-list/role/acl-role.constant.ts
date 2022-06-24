@@ -13,11 +13,10 @@ export enum EnumOrganizationRole {
 }
 
 export enum EnumRoleStatusCodeError {
-  RoleIsInactiveError = 5500,
-  RoleNotFoundError = 5501,
-  RoleExistsError = 5502,
-  RoleActiveError = 5503,
-  RoleUsedError = 5504,
+  RoleNotFoundError = 5500,
+  RoleExistsError = 5501,
+  RoleActiveError = 5502,
+  RoleUsedError = 5503,
 }
 
 export const ROLE_ACTIVE_META_KEY = 'RoleActiveMetaKey';

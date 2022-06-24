@@ -27,10 +27,10 @@ import { AuthLoginDto } from '../dto/auth.login.dto';
 import { EnumAuthStatusCodeError } from '../auth.constant';
 import { EnumOrganizationStatusCodeError } from '@/organization';
 import {
-  AuthJwtGuard,
+  AuthChangePasswordGuard,
   AuthRefreshJwtGuard,
   Token,
-  ReqUser,
+  ReqJwtUser,
 } from '../auth.decorator';
 import { AuthChangePasswordDto } from '../dto';
 
@@ -96,7 +96,7 @@ export class AuthCommonController {
       );
 
       throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationIsInactiveError,
+        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
         message: 'organization.error.inactive',
       });
     }
@@ -125,7 +125,7 @@ export class AuthCommonController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserIsInactiveError,
+        statusCode: EnumUserStatusCodeError.UserActiveError,
         message: 'user.error.inactive',
       });
     } else if (!user.role.isActive) {
@@ -136,7 +136,7 @@ export class AuthCommonController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleIsInactiveError,
+        statusCode: EnumRoleStatusCodeError.RoleActiveError,
         message: 'role.error.inactive',
       });
     }
@@ -198,7 +198,7 @@ export class AuthCommonController {
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   async refresh(
-    @ReqUser()
+    @ReqJwtUser()
     { id, rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
@@ -225,14 +225,14 @@ export class AuthCommonController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserIsInactiveError,
+        statusCode: EnumUserStatusCodeError.UserActiveError,
         message: 'user.error.inactive',
       });
     } else if (!user.role.isActive) {
       this.debuggerService.error('Role Block', 'AuthController', 'refresh');
 
       throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleIsInactiveError,
+        statusCode: EnumRoleStatusCodeError.RoleActiveError,
         message: 'role.error.inactive',
       });
     }
@@ -256,7 +256,7 @@ export class AuthCommonController {
       );
 
       throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationIsInactiveError,
+        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
         message: 'organization.error.inactive',
       });
     }
@@ -297,11 +297,11 @@ export class AuthCommonController {
   }
 
   @Response('auth.changePassword')
-  @AuthJwtGuard()
+  @AuthChangePasswordGuard()
   @Patch('/change-password')
   async changePassword(
     @Body() body: AuthChangePasswordDto,
-    @ReqUser('id') id: string,
+    @ReqJwtUser('id') id: string,
   ): Promise<void> {
     const user = await this.userService.findOneById(id);
 

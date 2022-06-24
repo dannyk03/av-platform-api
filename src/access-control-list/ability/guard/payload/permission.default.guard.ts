@@ -9,26 +9,25 @@ import { Reflector } from '@nestjs/core';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 //
 import {
-  //   Permissions,
+  ABILITY_META_KEY,
   PermissionsStatusCodeError,
-  PERMISSION_META_KEY,
 } from '../../acl-ability.constant';
-// import { IPermission } from '../../ability.interface';
+import { IReqAclAbility } from '@acl/acl.interface';
 
 @Injectable()
-export class PermissionPayloadDefaultGuard implements CanActivate {
+export class AclAbilityGuard implements CanActivate {
   constructor(
     private readonly debuggerService: DebuggerService,
     private reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // const requiredPermission: Permissions[] = this.reflector.getAllAndOverride<
-    //   Permissions[]
-    // >(PERMISSION_META_KEY, [context.getHandler(), context.getClass()]);
-    // if (!requiredPermission) {
-    //   return true;
-    // }
+    const requiredAbilities = this.reflector.getAllAndOverride<
+      IReqAclAbility[]
+    >(ABILITY_META_KEY, [context.getHandler(), context.getClass()]);
+    if (!requiredAbilities) {
+      return true;
+    }
     // const { user } = context.switchToHttp().getRequest();
     // const { role } = user;
     // const permissions: string[] = role.permissions

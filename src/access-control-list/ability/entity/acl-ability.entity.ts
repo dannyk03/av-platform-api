@@ -1,6 +1,9 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
-import { AbilityActionEnum, AbilityTypeEnum } from '../acl-ability.constant';
+import {
+  EnumAclAbilityAction,
+  EnumAclAbilityType,
+} from '../acl-ability.constant';
 import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
 import { AbilityCondition } from '../acl-ability.interface';
 
@@ -8,16 +11,16 @@ import { AbilityCondition } from '../acl-ability.interface';
 export class AclAbility extends BaseEntity<AclAbility> {
   @Column({
     type: 'enum',
-    enum: AbilityTypeEnum,
+    enum: EnumAclAbilityType,
   })
-  type!: AbilityTypeEnum;
+  type!: EnumAclAbilityType;
 
   @Column({
     type: 'enum',
-    enum: AbilityActionEnum,
+    enum: EnumAclAbilityAction,
     array: true,
   })
-  actions!: AbilityActionEnum[];
+  actions!: EnumAclAbilityAction[];
 
   @Column({
     type: 'varchar',

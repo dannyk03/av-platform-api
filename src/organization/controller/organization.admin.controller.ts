@@ -10,24 +10,23 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { Response, IResponse } from '@/utils/response';
-import { EnumStatusCodeError } from '@/utils/error';
-import { EnumOrganizationRole } from '@acl/role';
-import { ConnectionNames } from '@/database';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserService } from '@/user/service/user.service';
 import { AclRoleService } from '@acl/role/service/acl-role.service';
 import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service';
-import { AclAbilityService } from '@acl/ability/service/acl-ability.service';
-import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
-import { AclSubjectService } from '@acl/subject/service/acl-subject.service';
 import { AuthService } from '@/auth/service/auth.service';
-//
 import { OrganizationService } from '../service/organization.service';
+//
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
-import { AuthAclGuard } from '@/auth/auth.decorator';
+import { EnumAclAbilityAction } from '@acl/ability';
+import { AclSubjectTypeDict } from '@acl/subject';
+import { Response, IResponse } from '@/utils/response';
+import { EnumStatusCodeError } from '@/utils/error';
+import { EnumOrganizationRole } from '@acl/role';
+import { ConnectionNames } from '@/database';
+import { AclGuard } from '@/auth';
 
 @Controller({
   version: '1',
@@ -46,7 +45,16 @@ export class OrganizationAdminController {
   ) {}
 
   @Response('organization.create')
-  @AuthAclGuard()
+  @AclGuard(
+    {
+      action: EnumAclAbilityAction.Create,
+      subject: AclSubjectTypeDict.Organization,
+    },
+    {
+      action: EnumAclAbilityAction.Create,
+      subject: AclSubjectTypeDict.User,
+    },
+  )
   @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(

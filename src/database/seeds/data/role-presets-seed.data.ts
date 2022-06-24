@@ -1,4 +1,4 @@
-import { AbilityActionEnum, AbilityTypeEnum } from '@acl/ability';
+import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
 import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumOrganizationRole } from '@acl/role';
 
@@ -14,8 +14,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -24,12 +24,12 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
-                type: AbilityTypeEnum.Cannot,
-                actions: [AbilityActionEnum.Create],
+                type: EnumAclAbilityType.Cannot,
+                actions: [EnumAclAbilityAction.Create],
               },
               {
-                type: AbilityTypeEnum.Cannot,
-                actions: [AbilityActionEnum.Delete],
+                type: EnumAclAbilityType.Cannot,
+                actions: [EnumAclAbilityAction.Delete],
               },
             ],
           },
@@ -46,8 +46,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -56,8 +56,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
-                type: AbilityTypeEnum.Cannot,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Cannot,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -74,8 +74,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.Order,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -84,8 +84,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.Gift,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Manage],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Manage],
               },
             ],
           },
@@ -94,8 +94,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Read],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Read],
               },
             ],
           },
@@ -112,8 +112,8 @@ export const rolePresetsSeedData = {
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
-                type: AbilityTypeEnum.Can,
-                actions: [AbilityActionEnum.Read],
+                type: EnumAclAbilityType.Can,
+                actions: [EnumAclAbilityAction.Read],
               },
             ],
           },

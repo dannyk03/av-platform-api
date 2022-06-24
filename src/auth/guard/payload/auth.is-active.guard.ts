@@ -10,7 +10,7 @@ import { DebuggerService } from '@/debugger/service/debugger.service';
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
-export class AuthPayloadDefaultGuard implements CanActivate {
+export class AuthActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -18,8 +18,8 @@ export class AuthPayloadDefaultGuard implements CanActivate {
 
     if (!user.isActive) {
       this.debuggerService.error(
-        'UserGuard Inactive',
-        'AuthDefaultGuard',
+        'User Inactive',
+        'AuthIsActiveGuard',
         'canActivate',
       );
 
@@ -27,16 +27,31 @@ export class AuthPayloadDefaultGuard implements CanActivate {
         statusCode: EnumAuthStatusCodeError.AuthGuardInactiveError,
         message: 'auth.error.blocked',
       });
-    } else if (!user.role.isActive) {
+    }
+
+    if (!user.role.isActive) {
       this.debuggerService.error(
-        'UserGuard Role Inactive',
-        'AuthDefaultGuard',
+        'User Role Inactive',
+        'AuthIsActiveGuard',
         'canActivate',
       );
 
       throw new ForbiddenException({
         statusCode: EnumAuthStatusCodeError.AuthGuardRoleInactiveError,
         message: 'auth.error.roleBlocked',
+      });
+    }
+
+    if (!user.organization.isActive) {
+      this.debuggerService.error(
+        'User Organization Inactive',
+        'AuthIsActiveGuard',
+        'canActivate',
+      );
+
+      throw new ForbiddenException({
+        statusCode: EnumAuthStatusCodeError.AuthGuardOrganizationInactiveError,
+        message: 'auth.error.organizationBlocked',
       });
     }
 

@@ -5,49 +5,37 @@ import {
   applyDecorators,
   SetMetadata,
 } from '@nestjs/common';
-import { PermissionPayloadDefaultGuard } from '@acl/ability/guard';
-import { PERMISSION_META_KEY } from '@acl/ability/acl-ability.constant';
-import { AUTH_ADMIN_META_KEY } from './auth.constant';
+import { AclAbilityGuard } from '@acl/ability/guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
-import { AuthPayloadAdminGuard } from './guard/payload/auth.payload.admin.guard';
-import { AuthPayloadDefaultGuard } from './guard/payload/auth.payload.default.guard';
-import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.payload.password-expired.guard';
+import { AuthActiveGuard } from './guard/payload/auth.is-active.guard';
+import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
+import { ABILITY_META_KEY } from '@/access-control-list/ability';
+import { IReqAclAbility } from '@/access-control-list/acl.interface';
+import { ReqUserAclRoleActiveGuard } from '@/access-control-list/role/guard/acl-role.active.guard';
+import { ReqUserOrganizationActiveGuard } from '@/organization/guard/organization.active.guard';
+import { ReqUserActiveGuard } from '@/user/guard/user.active.guard';
+import { UserPutToRequestGuard } from '@/user/guard/user.put-to-request.guard';
 
-type ENUM_PERMISSIONS = 'temp-stub';
-
-export function AuthJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
+export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
   return applyDecorators(
-    UseGuards(JwtGuard, AuthPayloadDefaultGuard, PermissionPayloadDefaultGuard),
-    SetMetadata(PERMISSION_META_KEY, permissions),
+    UseGuards(JwtGuard, AuthActiveGuard, AclAbilityGuard),
+    SetMetadata(ABILITY_META_KEY, abilities),
   );
 }
 
-export function AuthPublicJwtGuard(...permissions: ENUM_PERMISSIONS[]): any {
+export function AclGuard(...abilities: IReqAclAbility[]) {
   return applyDecorators(
     UseGuards(
       JwtGuard,
-      AuthPayloadDefaultGuard,
+      UserPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
       AuthPayloadPasswordExpiredGuard,
-      AuthPayloadAdminGuard,
-      PermissionPayloadDefaultGuard,
+      AclAbilityGuard,
     ),
-    SetMetadata(PERMISSION_META_KEY, permissions),
-    SetMetadata(AUTH_ADMIN_META_KEY, [false]),
-  );
-}
-
-export function AuthAdminJwtGuard(...permissions: ENUM_PERMISSIONS[]) {
-  return applyDecorators(
-    UseGuards(
-      JwtGuard,
-      AuthPayloadDefaultGuard,
-      AuthPayloadPasswordExpiredGuard,
-      AuthPayloadAdminGuard,
-      PermissionPayloadDefaultGuard,
-    ),
-    SetMetadata(PERMISSION_META_KEY, permissions),
-    SetMetadata(AUTH_ADMIN_META_KEY, [true]),
+    SetMetadata(ABILITY_META_KEY, abilities),
   );
 }
 
@@ -55,7 +43,7 @@ export function AuthRefreshJwtGuard(): any {
   return applyDecorators(UseGuards(JwtRefreshGuard));
 }
 
-export const ReqUser = createParamDecorator(
+export const ReqJwtUser = createParamDecorator(
   (data: string, ctx: ExecutionContext): Record<string, any> => {
     const { user } = ctx.switchToHttp().getRequest();
     return data ? user[data] : user;

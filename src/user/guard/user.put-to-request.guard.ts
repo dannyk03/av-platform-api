@@ -1,26 +1,51 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  NotFoundException,
+} from '@nestjs/common';
+// Services
 import { UserService } from '../service/user.service';
-import { IUserEntity } from '../user.interface';
+import { DebuggerService } from '@/debugger/service/debugger.service';
+//
+import { EnumUserStatusCodeError } from '../user.constant';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly debuggerService: DebuggerService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { params } = request;
     const { user } = params;
 
-    // const check: IUserEntity = await this.userService.findOneById<IUserEntity>(
-    //   user,
-    //   {
-    //     populate: {
-    //       role: true,
-    //       permission: true,
-    //     },
-    //   },
-    // );
-    request.__user = 'user';
+    const requestUser = await this.userService.findOneById(user.id, {
+      relations: [
+        'organization',
+        'role',
+        'role.policy',
+        'role.policy.subjects',
+        'role.policy.subjects.abilities',
+      ],
+    });
+
+    if (!requestUser) {
+      this.debuggerService.error(
+        'User not found',
+        'UserNotFoundGuard',
+        'canActivate',
+      );
+
+      throw new NotFoundException({
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
+        message: 'user.error.notFound',
+      });
+    }
+
+    request.__user = requestUser;
 
     return true;
   }

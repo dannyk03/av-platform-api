@@ -2,33 +2,32 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
+import { EnumRoleStatusCodeError } from '../acl-role.constant';
 //
-import { EnumUserStatusCodeError } from '../user.constant';
 
 @Injectable()
-export class UserNotFoundGuard implements CanActivate {
+export class ReqUserAclRoleActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { __user } = context.switchToHttp().getRequest();
 
-    if (!__user) {
+    if (!__user.role?.isActive) {
       this.debuggerService.error(
-        'User not found',
-        'UserNotFoundGuard',
+        'User Role active error',
+        'AclRoleActiveGuard',
         'canActivate',
       );
 
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserNotFoundError,
-        message: 'user.error.notFound',
+      throw new BadRequestException({
+        statusCode: EnumRoleStatusCodeError.RoleActiveError,
+        message: 'user.error.active',
       });
     }
-
     return true;
   }
 }
