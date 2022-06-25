@@ -1,1 +1,1 @@
-export * from './organization.admin.controller';
+export * from './organization.controller';

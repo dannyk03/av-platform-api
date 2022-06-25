@@ -1,16 +1,11 @@
-import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
   IsEmail,
   MaxLength,
   MinLength,
-  IsMongoId,
-  IsOptional,
-  ValidateIf,
 } from 'class-validator';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
-import { IsStartWith } from '@/utils/request/validation/request.is-start-with.validation';
 
 export class OrganizationCreateDto {
   @IsEmail()

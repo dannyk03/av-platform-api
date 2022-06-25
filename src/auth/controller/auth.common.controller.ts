@@ -13,12 +13,12 @@ import {
 // Services
 import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { LoggerService } from '@/logger/service/logger.service';
+import { LogService } from '@/log/service/log.service';
 import { HelperDateService } from '@/utils/helper';
 import { AuthService } from '../service/auth.service';
 //
 import { EnumUserStatusCodeError } from '@/user';
-import { EnumLoggerAction } from '@/logger';
+import { EnumLoggerAction, IReqLogData } from '@/log';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
@@ -33,6 +33,7 @@ import {
   ReqJwtUser,
 } from '../auth.decorator';
 import { AuthChangePasswordDto } from '../dto';
+import { ReqLogData } from '@/utils/request';
 
 @Controller({
   version: '1',
@@ -44,13 +45,17 @@ export class AuthCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly loggerService: LoggerService,
+    private readonly logService: LogService,
   ) {}
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
   @Post('/login')
-  async login(@Body() body: AuthLoginDto): Promise<IResponse> {
+  async login(
+    @Body() body: AuthLoginDto,
+    @ReqLogData()
+    logData: IReqLogData,
+  ): Promise<IResponse> {
     const rememberMe: boolean = body.rememberMe ? true : false;
 
     const user = await this.userService.findOne({
@@ -180,10 +185,11 @@ export class AuthCommonController {
       });
     }
 
-    await this.loggerService.info({
+    await this.logService.info({
+      ...logData,
       action: EnumLoggerAction.Login,
       description: `${user.id} do login`,
-      user: user.id,
+      user: user,
       tags: ['login', 'withEmail'],
     });
 

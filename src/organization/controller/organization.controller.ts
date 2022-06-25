@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
-  NotFoundException,
   Post,
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -17,6 +16,7 @@ import { AclRoleService } from '@acl/role/service/acl-role.service';
 import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '../service/organization.service';
+import { LogService } from '@/log/service/log.service';
 //
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
@@ -27,6 +27,10 @@ import { EnumStatusCodeError } from '@/utils/error';
 import { EnumOrganizationRole } from '@acl/role';
 import { ConnectionNames } from '@/database';
 import { AclGuard } from '@/auth';
+import { EnumLoggerAction, IReqLogData } from '@/log';
+import { GetReqUser } from '@/user/user.decorator';
+import { User } from '@/user/entity/user.entity';
+import { ReqLogData } from '@/utils/request';
 
 @Controller({
   version: '1',
@@ -42,6 +46,7 @@ export class OrganizationAdminController {
     private readonly rolePresetService: AclRolePresetService,
     private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
+    private readonly logService: LogService,
   ) {}
 
   @Response('organization.create')
@@ -60,11 +65,16 @@ export class OrganizationAdminController {
   async create(
     @Body()
     body: OrganizationCreateDto,
+    @GetReqUser()
+    user: User,
+    @ReqLogData()
+    logData: IReqLogData,
   ): Promise<IResponse> {
     const checkOrganizationExist =
       await this.organizationService.checkExistByName(body.name);
 
-    const checkUserExist = await this.userService.checkExistByEmail(body.email);
+    const checkOrganizationOwnerExist =
+      await this.userService.checkExistByEmail(body.email);
 
     if (checkOrganizationExist) {
       this.debuggerService.error(
@@ -78,7 +88,7 @@ export class OrganizationAdminController {
         statusCode: EnumOrganizationStatusCodeError.OrganizationExistsError,
         message: 'organization.error.exist',
       });
-    } else if (checkUserExist) {
+    } else if (checkOrganizationOwnerExist) {
       this.debuggerService.error(
         'create organization user exist',
         'OrganizationController',
@@ -159,6 +169,15 @@ export class OrganizationAdminController {
         }
       },
     );
+
+    await this.logService.info({
+      ...logData,
+      action: EnumLoggerAction.CreateOrganization,
+      description: `${user.id} created organization`,
+      user: user,
+      tags: ['create', 'organization'],
+    });
+
     return result;
   }
 }

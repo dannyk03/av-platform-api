@@ -7,7 +7,7 @@ import { MessageModule } from '@/message/message.module';
 import { DebuggerModule } from '@/debugger/debugger.module';
 import { DatabaseModule } from '@/database/database.module';
 import { MiddlewareModule } from '@/utils/middleware';
-import { LoggerModule } from '@/logger/logger.module';
+import { LogModule } from '@/log/log.module';
 import { ConfigDynamicModule } from '@/config';
 import { ErrorModule } from '@/utils/error';
 import { PaginationModule } from '@/utils/pagination';
@@ -28,8 +28,8 @@ import { ConnectionNames } from '@/database/';
     WinstonModule.forRootAsync({
       inject: [DebuggerOptionService],
       imports: [DebuggerModule],
-      useFactory: (loggerService: DebuggerOptionService) =>
-        loggerService.createLogger(),
+      useFactory: (debuggerOptionService: DebuggerOptionService) =>
+        debuggerOptionService.createLogger(),
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
@@ -52,7 +52,7 @@ import { ConnectionNames } from '@/database/';
     RequestModule,
     VersionModule,
     MiddlewareModule,
-    LoggerModule,
+    LogModule,
     AuthModule,
   ],
 })

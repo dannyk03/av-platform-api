@@ -1,12 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import {
-  IUserEntity,
-  IUserCreate,
-  IUserUpdate,
-  IUserCheckExist,
-} from '@/user/user.interface';
-import { plainToInstance } from 'class-transformer';
-import { IAwsS3Response } from '@/aws/aws.interface';
 import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../entity/user.entity';
