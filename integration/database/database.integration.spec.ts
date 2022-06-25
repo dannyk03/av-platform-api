@@ -37,7 +37,7 @@ describe('Database Integration', () => {
       .set('x-timestamp', timestamp.toString());
 
     expect(response.status).toEqual(HttpStatus.OK);
-    expect(response.body.status).toEqual('ok');
+    expect(response.body.statusCode).toEqual(HttpStatus.OK);
 
     return;
   });
