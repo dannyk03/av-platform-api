@@ -62,7 +62,7 @@ export class SystemSeed {
               passwordExpired: this.helperDateService.forwardInDays(365 * 10),
               organization: systemOrganization,
               role: systemRoles.find(
-                (role) => role.name === EnumSystemRole.SystemManager,
+                (role) => role.name === EnumSystemRole.SystemAdmin,
               ),
             });
 
