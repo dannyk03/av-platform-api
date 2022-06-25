@@ -11,9 +11,9 @@ import { DebuggerService } from '@/debugger/service/debugger.service';
 import {
   ABILITY_META_KEY,
   PermissionsStatusCodeError,
-} from '../../acl-ability.constant';
+} from '../acl-ability.constant';
 import { IReqAclAbility } from '@acl/acl.interface';
-import { defineAbilities } from '../../utils/define-ability-for-user.util';
+import { defineAbilities } from '../utils/define-ability-for-user.util';
 
 @Injectable()
 export class AclAbilityGuard implements CanActivate {

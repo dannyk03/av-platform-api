@@ -20,6 +20,7 @@ const resolveAction = createAliasResolver({
 });
 
 export const defineAbilities = (aclSubjects: AclSubject[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return (user: User) =>
     defineAbility(
       (can, cannot) => {
