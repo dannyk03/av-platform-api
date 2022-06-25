@@ -28,7 +28,6 @@ export default registerAs(
         'X-Requested-With',
         'x-custom-lang',
         'x-timestamp',
-        'x-api-key',
         'user-agent',
       ],
     },
