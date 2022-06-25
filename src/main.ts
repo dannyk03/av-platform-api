@@ -1,5 +1,10 @@
 import { NestApplication, NestFactory } from '@nestjs/core';
-import { Logger, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+  Logger,
+  RequestMethod,
+  VersioningType,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
 import { AppModule } from '@/app/app.module';
 import { ConfigService } from '@nestjs/config';
 import { useContainer } from 'class-validator';
@@ -23,7 +28,16 @@ async function bootstrap() {
   process.env.NODE_ENV = env;
 
   // Global Prefix
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [
+      { path: 'health', method: RequestMethod.GET },
+      { path: 'health/database', method: RequestMethod.GET },
+      { path: 'health/memory-heap', method: RequestMethod.GET },
+      { path: 'health/memory-rss', method: RequestMethod.GET },
+      { path: 'health/storage', method: RequestMethod.GET },
+    ],
+  });
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Versioning

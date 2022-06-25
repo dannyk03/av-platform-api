@@ -14,6 +14,8 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -21,6 +23,8 @@ import {
 })
 export class HealthController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly healthService: HealthCheckService,
     private readonly memoryHealthIndicator: MemoryHealthIndicator,
     private readonly diskHealthIndicator: DiskHealthIndicator,
@@ -29,7 +33,7 @@ export class HealthController {
 
   private checkDatabase = () =>
     this.databaseIndicator.pingCheck('database', {
-      connection: ConnectionNames.Default,
+      connection: this.defaultDataSource,
       timeout: 1500,
     });
 
