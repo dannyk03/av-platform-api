@@ -21,6 +21,7 @@ import { RateLimitMiddleware } from './rate-limit/rate-limit.middleware';
 import { UserAgentMiddleware } from './user-agent/user-agent.middleware';
 import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { CompressionMiddleware } from './compression/compression.middleware';
+import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
@@ -39,6 +40,7 @@ export class MiddlewareModule implements NestModule {
         HelmetMiddleware,
         RateLimitMiddleware,
         UserAgentMiddleware,
+        CorrelationIdMiddleware,
       )
       .forRoutes('*');
 

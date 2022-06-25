@@ -79,6 +79,7 @@
     "slugify": "^1.6.5",
     "typeorm": "^0.3.6",
     "ua-parser-js": "^1.0.2",
+    "uuid": "^8.3.2",
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.7.1",
     "yargs": "^17.5.1"
@@ -93,6 +94,7 @@
     "@types/node": "^18.0.0",
     "@types/passport-jwt": "^3.0.6",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^8.3.4",
     "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
