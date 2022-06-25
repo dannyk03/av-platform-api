@@ -7,14 +7,14 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 
 @Injectable()
 export class DebuggerOptionService {
-  private readonly env: string;
+  private readonly isProduction: boolean;
   private readonly debug: boolean;
   private readonly logger: boolean;
   private readonly maxSize: string;
   private readonly maxFiles: string;
 
   constructor(private configService: ConfigService) {
-    this.env = this.configService.get<string>('app.env');
+    this.isProduction = this.configService.get<boolean>('app.isProduction');
     this.debug = this.configService.get<boolean>('app.debug');
     this.logger = this.configService.get<boolean>('app.debugger.system.active');
     this.maxSize = this.configService.get<string>(
@@ -36,7 +36,7 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
-        utc: this.env === 'production',
+        utc: this.isProduction,
         level: 'error',
       }),
     );
@@ -48,7 +48,7 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
-        utc: this.env === 'production',
+        utc: this.isProduction,
         level: 'info',
       }),
     );
@@ -60,12 +60,12 @@ export class DebuggerOptionService {
         zippedArchive: true,
         maxSize: this.maxSize,
         maxFiles: this.maxFiles,
-        utc: this.env === 'production',
+        utc: this.isProduction,
         level: 'debug',
       }),
     );
 
-    if ((this.debug || this.logger) && this.env !== 'production') {
+    if ((this.debug || this.logger) && !this.isProduction) {
       transports.push(new winston.transports.Console());
     }
 
