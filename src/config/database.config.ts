@@ -9,11 +9,11 @@ export default registerAs(
     debug: process.env.DATABASE_DEBUG === 'true',
     [ConnectionNames.Default]: {
       type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT, 10) || 123,
-      database: process.env.DATABASE_NAME || 'avo',
-      password: process.env.DATABASE_PASSWORD || null,
-      username: process.env.DATABASE_USERNAME,
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT, 10) || 123,
+      database: process.env.POSTGRES_DB || 'avo',
+      password: process.env.POSTGRES_PASSWORD || null,
+      username: process.env.POSTGRES_USER,
       logging: process.env.DATABASE_DEBUG === 'true',
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       migrations: [

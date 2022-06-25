@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_HOST=postgres
+      - POSTGRES_HOST=postgres
     ports:
       - 8080:8080
     networks:
@@ -30,16 +30,12 @@ services:
     networks:
       - app-network
     ports:
-      - ${DATABASE_PORT}:5432
+      - ${POSTGRES_PORT}:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
 
 networks:
   app-network:

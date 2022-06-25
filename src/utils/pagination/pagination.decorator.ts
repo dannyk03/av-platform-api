@@ -2,7 +2,6 @@ import { applyDecorators } from '@nestjs/common';
 import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsMongoId,
   IsOptional,
   ValidateIf,
   IsEnum,
@@ -164,7 +163,6 @@ export function PaginationFilterId(
 ): any {
   return applyDecorators(
     Expose(),
-    IsMongoId(),
     options && options.required ? IsNotEmpty() : Skip(),
     options && options.required
       ? Skip()

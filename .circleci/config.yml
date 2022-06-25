@@ -13,6 +13,16 @@ jobs:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
           POSTGRES_USER: ${POSTGRES_USERNAME}
           POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    environment:
+      APP_ENV: production
+      APP_PORT: 8080
+      APP_VERSIONING: true
+      APP_HTTP_ON: true
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     steps:
       - checkout
       - node/install-packages:

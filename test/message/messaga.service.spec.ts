@@ -142,17 +142,19 @@ describe('MessageService', () => {
     it('multi message should be success', async () => {
       const message = await messageService.getRequestErrorsMessage(
         validationError,
-        ['en', 'id'],
+        // Optionally add more languages
+        ['en'],
       );
       jest
         .spyOn(messageService, 'getRequestErrorsMessage')
         .mockImplementation(async () => message);
 
       expect(
-        await messageService.getRequestErrorsMessage(validationError, [
-          'en',
-          'id',
-        ]),
+        await messageService.getRequestErrorsMessage(
+          validationError,
+          // Optionally add more languages
+          ['en'],
+        ),
       ).toBe(message);
     });
 

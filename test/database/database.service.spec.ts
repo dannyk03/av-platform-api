@@ -17,7 +17,7 @@ describe('DatabaseService', () => {
     expect(databaseService).toBeDefined();
   });
 
-  describe('createMongooseOptions', () => {
+  describe('createTypeOrmOptions', () => {
     it('should be called', async () => {
       const test = jest.spyOn(databaseService, 'createTypeOrmOptions');
 

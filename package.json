@@ -17,7 +17,7 @@
     "eslint:check": "eslint --cache --ignore-path .gitignore .",
     "lint:fix": "yarn eslint:check --fix && yarn format",
     "lint": "yarn eslint:check && yarn prettier:check",
-    "test": "yarn test:unit && yarn test:integration && yarn test:e2e",
+    "test": "yarn test:unit",
     "test:unit": "jest --config test/jest.json --detectOpenHandles --passWithNoTests --forceExit",
     "test:e2e": "jest --config e2e/jest.json --detectOpenHandles --passWithNoTests --forceExit",
     "test:integration": "jest --config integration/jest.json --detectOpenHandles --passWithNoTests --forceExit",

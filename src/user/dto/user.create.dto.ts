@@ -5,7 +5,6 @@ import {
   IsEmail,
   MaxLength,
   MinLength,
-  IsMongoId,
   IsOptional,
   ValidateIf,
 } from 'class-validator';
@@ -43,7 +42,6 @@ export class UserCreateDto {
   readonly mobileNumber: string;
 
   @IsNotEmpty()
-  @IsMongoId()
   readonly role: string;
 
   @IsNotEmpty()
