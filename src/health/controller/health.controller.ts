@@ -16,6 +16,7 @@ import {
 } from '@nestjs/terminus';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -49,8 +50,9 @@ export class HealthController {
       path: '/',
     });
 
-  @Get()
+  @Response('health.check')
   @HealthCheck()
+  @Get()
   checkAll() {
     return this.healthService.check([
       this.checkDatabase,
@@ -60,6 +62,7 @@ export class HealthController {
     ]);
   }
 
+  @Response('health.check')
   @HealthCheck()
   @Get('/database')
   async healthCheckDatabase(): Promise<IResponse> {
@@ -73,6 +76,7 @@ export class HealthController {
     }
   }
 
+  @Response('health.check')
   @HealthCheck()
   @Get('/memory-heap')
   async healthCheckMemoryHeap(): Promise<IResponse> {
@@ -86,6 +90,7 @@ export class HealthController {
     }
   }
 
+  @Response('health.check')
   @HealthCheck()
   @Get('/memory-rss')
   async healthCheckMemoryRss(): Promise<IResponse> {
@@ -99,6 +104,7 @@ export class HealthController {
     }
   }
 
+  @Response('health.check')
   @HealthCheck()
   @Get('/storage')
   async healthCheckStorage(): Promise<IResponse> {
