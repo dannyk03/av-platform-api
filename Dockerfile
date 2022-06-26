@@ -4,8 +4,8 @@
 
 FROM node:lts-alpine As development
 
-# Create app directory
 WORKDIR /usr/src/app
+ARG JFROG_AUTH_TOKEN
 
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
@@ -28,6 +28,7 @@ USER node
 FROM node:lts-alpine As build
 
 WORKDIR /usr/src/app
+ARG JFROG_AUTH_TOKEN
 
 COPY --chown=node:node package*.json ./
 
