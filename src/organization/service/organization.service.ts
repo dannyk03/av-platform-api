@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
 import { Organization } from '../entity/organization.entity';
-import { HelperSlugService } from '@/utils/helper';
+import { HelperSlugService } from '@/utils/helper/service';
 
 @Injectable()
 export class OrganizationService {

@@ -15,8 +15,8 @@ export function ParamGuard(
 ): Type<CanActivate> {
   @Injectable()
   class MixinParamGuard implements CanActivate {
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-      const { params } = context.switchToHttp().getRequest();
+    async canActivate(ctx: ExecutionContext): Promise<boolean> {
+      const { params } = ctx.switchToHttp().getRequest();
       for (const cv of classValidation) {
         const request = plainToInstance(cv, params);
 

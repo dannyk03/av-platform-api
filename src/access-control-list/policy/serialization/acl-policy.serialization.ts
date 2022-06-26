@@ -1,11 +1,11 @@
-import { AclSubjectAuthSerialization } from '@acl/subject';
+import { AclSubjectSerialization } from '@acl/subject';
 import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
-export class AclPolicyAuthSerialization {
+export class AclPolicySerialization {
   @Transform(({ value: subjects }) =>
     subjects.map((subject: AclSubject) =>
-      plainToInstance(AclSubjectAuthSerialization, subject),
+      plainToInstance(AclSubjectSerialization, subject),
     ),
   )
   readonly subjects: AclSubject[];

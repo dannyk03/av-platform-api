@@ -1,18 +1,17 @@
 import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
 import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumSystemRole } from '@acl/role';
+import { SYSTEM_ORGANIZATION_NAME } from '@/system';
 
 export const systemSeedData = {
   organization: {
-    name: 'System',
+    name: SYSTEM_ORGANIZATION_NAME,
   },
-  superAdmin: {
-    firstName: 'Avo',
-    lastName: 'SuperAdmin',
-    email: 'superadmin@avonow.com',
+  systemAdmin: {
+    firstName: 'SystemAdmin',
     isActive: true,
     emailVerified: true,
-    emailVerificationToken: 'superadmin',
+    emailVerificationToken: 'SystemAdmin',
   },
   roles: [
     {

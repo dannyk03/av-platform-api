@@ -11,10 +11,10 @@ import {
   Patch,
 } from '@nestjs/common';
 // Services
-import { UserService } from '@/user/service/user.service';
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { LogService } from '@/log/service/log.service';
-import { HelperDateService } from '@/utils/helper';
+import { UserService } from '@/user/service';
+import { DebuggerService } from '@/debugger/service';
+import { LogService } from '@/log/service';
+import { HelperDateService } from '@/utils/helper/service';
 import { AuthService } from '../service/auth.service';
 //
 import { EnumUserStatusCodeError } from '@/user';

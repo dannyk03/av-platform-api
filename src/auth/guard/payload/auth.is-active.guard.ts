@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';
 
@@ -13,8 +13,8 @@ import { EnumAuthStatusCodeError } from '@/auth';
 export class AuthActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { user } = context.switchToHttp().getRequest();
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const { user } = ctx.switchToHttp().getRequest();
 
     if (!user.isActive) {
       this.debuggerService.error(

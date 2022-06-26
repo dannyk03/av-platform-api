@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-export class AclAbilityAuthSerialization {
+export class AclAbilitySerialization {
   @Exclude()
   readonly id: string;
 

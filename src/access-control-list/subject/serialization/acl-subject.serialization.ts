@@ -1,11 +1,11 @@
-import { AclAbilityAuthSerialization } from '@acl/ability';
+import { AclAbilitySerialization } from '@acl/ability';
 import { AclAbility } from '@acl/ability/entity/acl-ability.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
-export class AclSubjectAuthSerialization {
+export class AclSubjectSerialization {
   @Transform(({ value: abilities }) =>
     abilities.map((ability: AclAbility) =>
-      plainToInstance(AclAbilityAuthSerialization, ability),
+      plainToInstance(AclAbilitySerialization, ability),
     ),
   )
   readonly abilities: AclAbility[];

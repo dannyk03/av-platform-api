@@ -5,16 +5,16 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { EnumRoleStatusCodeError } from '../acl-role.constant';
+import { DebuggerService } from '@/debugger/service';
 //
+import { EnumRoleStatusCodeError } from '../acl-role.constant';
 
 @Injectable()
 export class ReqUserAclRoleActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { __user } = context.switchToHttp().getRequest();
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const { __user } = ctx.switchToHttp().getRequest();
 
     if (!__user.role?.isActive) {
       this.debuggerService.error(

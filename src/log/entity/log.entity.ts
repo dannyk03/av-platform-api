@@ -7,7 +7,9 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { IResult } from 'ua-parser-js';
+// Entities
 import { User } from '@/user/entity/user.entity';
+//
 
 @Entity()
 export class Log {

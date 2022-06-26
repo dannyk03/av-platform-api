@@ -1,2 +1,3 @@
 export * from './organization.constant';
-export * from './controller';
+export * from './organization.decorator';
+export * from './organization.interface';

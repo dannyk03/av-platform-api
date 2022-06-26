@@ -10,13 +10,9 @@ import {
 const resolveAction = createAliasResolver({
   [EnumAclAbilityAction.Modify]: [
     EnumAclAbilityAction.Update,
-    EnumAclAbilityAction.Create,
     EnumAclAbilityAction.Read,
   ],
-  // [AbilityActionEnum.Access]: [
-  //   AbilityActionEnum.READ,
-  //   AbilityActionEnum.MODIFY,
-  // ],
+  access: [EnumAclAbilityAction.Modify, EnumAclAbilityAction.Create],
 });
 
 export const defineAbilities = (aclSubjects: AclSubject[]) => {

@@ -5,7 +5,6 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -13,10 +12,10 @@ export class VersionInterceptor implements NestInterceptor<Promise<any>> {
   constructor(private readonly configService: ConfigService) {}
 
   async intercept(
-    context: ExecutionContext,
+    ctx: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<Promise<any> | string>> {
-    const ctx: HttpArgumentsHost = context.switchToHttp();
+    const request = ctx.switchToHttp().getRequest();
 
     const globalPrefix: boolean =
       this.configService.get<boolean>('app.globalPrefix');
@@ -25,7 +24,6 @@ export class VersionInterceptor implements NestInterceptor<Promise<any>> {
     const versioningPrefix: string = this.configService.get<string>(
       'app.versioning.prefix',
     );
-    const request = ctx.getRequest<any>();
     const originalUrl: string = request.url;
 
     if (

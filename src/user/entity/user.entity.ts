@@ -1,7 +1,9 @@
 import { Entity, Column, Index, ManyToOne, BeforeInsert } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AclRole } from '@acl/role/entity/acl-role.entity';
+//
 
 @Entity()
 export class User extends BaseEntity<User> {

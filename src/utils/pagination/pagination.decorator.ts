@@ -99,7 +99,7 @@ export function PaginationSort(
           ? field
           : bSort;
         const convertType: number =
-          type === 'desc'
+          type === 'desc' || type === '-1'
             ? EnumPaginationAvailableSortType.Desc
             : EnumPaginationAvailableSortType.Asc;
 

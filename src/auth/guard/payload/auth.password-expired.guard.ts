@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { HelperDateService } from '@/utils/helper';
+import { HelperDateService } from '@/utils/helper/service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';
 
@@ -17,8 +17,8 @@ export class AuthPayloadPasswordExpiredGuard implements CanActivate {
     private readonly helperDateService: HelperDateService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { user } = context.switchToHttp().getRequest();
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const { user } = ctx.switchToHttp().getRequest();
     const { passwordExpired } = user;
     const today: Date = this.helperDateService.create();
     const passwordExpiredDate = this.helperDateService.create(passwordExpired);

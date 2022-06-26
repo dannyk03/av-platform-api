@@ -1,6 +1,8 @@
 import { Entity, Column, OneToMany, Check } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
 import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
+//
 
 @Entity({ name: 'acl_policies' })
 @Check('sensitivity_level', 'sensitivity_level BETWEEN 1 AND 10')

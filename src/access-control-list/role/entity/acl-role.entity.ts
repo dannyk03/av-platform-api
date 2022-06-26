@@ -9,11 +9,13 @@ import {
   Unique,
   OneToMany,
 } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
-import { createSlugFromString } from '@/utils/helper/service';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
 import { User } from '@/user/entity/user.entity';
+//
+import { slugify } from '@/utils/helper';
 
 @Entity()
 @Unique('unique_role_organization', ['slug', 'name', 'organization'])
@@ -50,6 +52,6 @@ export class AclRole extends BaseEntity<AclRole> {
 
   @BeforeInsert()
   beforeInsert() {
-    this.slug = createSlugFromString(this.name);
+    this.slug = slugify(this.name);
   }
 }

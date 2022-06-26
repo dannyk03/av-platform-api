@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, EntityManager, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, Equal, Repository } from 'typeorm';
 // Services
-import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
-import { AclAbilityService } from '@acl/ability/service/acl-ability.service';
-import { AclSubjectService } from '@acl/subject/service/acl-subject.service';
+import { AclPolicyService } from '@acl/policy/service';
+import { AclAbilityService } from '@acl/ability/service';
+import { AclSubjectService } from '@acl/subject/service';
 //
 import { ConnectionNames } from '@/database';
 import { AclRole } from '../entity/acl-role.entity';
+import { IDatabaseFindAllOptions } from '@/database/database.interface';
+import { plainToInstance } from 'class-transformer';
+import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
 
 @Injectable()
 export class AclRoleService {
@@ -27,6 +30,17 @@ export class AclRoleService {
 
   async createMany(props: DeepPartial<AclRole>[]): Promise<AclRole[]> {
     return this.aclRoleRepository.create(props);
+  }
+
+  async getTotal(find?: Record<string, any>): Promise<number> {
+    return this.aclRoleRepository.countBy(find);
+  }
+
+  async findAll(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions,
+  ): Promise<AclRole[]> {
+    return this.aclRoleRepository.find({ where: find, ...options });
   }
 
   async cloneSaveRolesTree(
@@ -73,5 +87,9 @@ export class AclRoleService {
       }),
     );
     return clone;
+  }
+
+  async serializationList(data: AclRole[]): Promise<RoleListSerialization[]> {
+    return plainToInstance(RoleListSerialization, data);
   }
 }

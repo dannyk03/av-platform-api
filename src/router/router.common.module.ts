@@ -9,9 +9,9 @@ import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { HealthModule } from '@/health/health.module';
-//
-import { AuthCommonController } from '@/auth';
-import { HealthController } from '@/health';
+// Controllers
+import { AuthCommonController } from '@/auth/controller';
+import { HealthController } from '@/health/controller';
 
 @Module({
   controllers: [AuthCommonController, HealthController],

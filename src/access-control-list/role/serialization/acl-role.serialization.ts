@@ -1,9 +1,9 @@
-import { AclPolicyAuthSerialization } from '@acl/policy';
+import { AclPolicySerialization } from '@acl/policy';
 import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
-export class AclRoleAuthSerialization {
-  @Transform(({ value }) => plainToInstance(AclPolicyAuthSerialization, value))
+export class AclRoleSerialization {
+  @Transform(({ value }) => plainToInstance(AclPolicySerialization, value))
   readonly policy: AclPolicy;
 
   readonly isActive: boolean;

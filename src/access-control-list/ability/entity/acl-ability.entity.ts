@@ -1,10 +1,12 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
+import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
+//
 import {
   EnumAclAbilityAction,
   EnumAclAbilityType,
 } from '../acl-ability.constant';
-import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
 import { AbilityCondition } from '../acl-ability.interface';
 
 @Entity({ name: 'acl_abilities' })

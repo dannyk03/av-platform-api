@@ -13,8 +13,8 @@ import { EnumOrganizationStatusCodeError } from '../organization.constant';
 export class ReqUserOrganizationActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { __user } = context.switchToHttp().getRequest();
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const { __user } = ctx.switchToHttp().getRequest();
 
     if (!__user.organization?.isActive) {
       this.debuggerService.error(

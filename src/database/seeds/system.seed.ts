@@ -5,10 +5,10 @@ import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AuthService } from '@/auth/service/auth.service';
-import { OrganizationService } from '@/organization/service/organization.service';
-import { UserService } from '@/user/service/user.service';
-import { AclRoleService } from '@acl/role/service/acl-role.service';
-import { HelperDateService } from '@/utils/helper';
+import { OrganizationService } from '@/organization/service';
+import { UserService } from '@/user/service';
+import { AclRoleService } from '@acl/role/service';
+import { HelperDateService } from '@/utils/helper/service';
 //
 import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
@@ -51,11 +51,12 @@ export class SystemSeed {
 
             const { salt, passwordHash } =
               await this.authService.createPassword(
-                process.env.AUTH_SUPER_ADMIN_INITIAL_PASS,
+                process.env.AUTH_SYSTEM_ADMIN_INITIAL_PASS,
               );
 
-            const superAdmin = await this.userService.create({
-              ...systemSeedData.superAdmin,
+            const systemAdmin = await this.userService.create({
+              ...systemSeedData.systemAdmin,
+              email: process.env.AUTH_SYSTEM_ADMIN_EMAIL,
               mobileNumber: '+00000000000',
               password: passwordHash,
               salt,
@@ -66,17 +67,17 @@ export class SystemSeed {
               ),
             });
 
-            await transactionalEntityManager.save(superAdmin);
+            await transactionalEntityManager.save(systemAdmin);
 
             this.debuggerService.debug(
-              'Insert Super Succeed',
-              'SuperSeed',
+              'Insert System Succeed',
+              'SystemSeed',
               'insert',
             );
           } catch (err) {
             this.debuggerService.error(
               err.message,
-              'SuperSeed',
+              'SystemSeed',
               'insert seed transaction',
             );
           }
@@ -84,7 +85,7 @@ export class SystemSeed {
       );
 
       this.debuggerService.debug(
-        'Insert Super Succeed',
+        'Insert System Succeed',
         'SystemSeed',
         'insert',
       );

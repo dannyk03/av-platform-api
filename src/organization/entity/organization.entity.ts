@@ -1,8 +1,10 @@
 import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
-import { createSlugFromString } from '@/utils/helper';
 import { AclRole } from '@acl/role/entity/acl-role.entity';
 import { User } from '@/user/entity/user.entity';
+//
+import { slugify } from '@/utils/helper';
 
 @Entity()
 export class Organization extends BaseEntity<Organization> {
@@ -35,6 +37,6 @@ export class Organization extends BaseEntity<Organization> {
 
   @BeforeInsert()
   beforeInsert() {
-    this.slug = createSlugFromString(this.name);
+    this.slug = slugify(this.name);
   }
 }

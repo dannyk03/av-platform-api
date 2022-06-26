@@ -1,9 +1,9 @@
 import { EnumPaginationAvailableSortType } from './pagination.constant';
 
 export interface IPaginationOptions {
-  limit?: number;
+  take?: number;
   skip?: number;
-  sort?: Record<string, EnumPaginationAvailableSortType>;
+  order?: Record<string, EnumPaginationAvailableSortType>;
 }
 
 export type IPaginationSort = Record<string, EnumPaginationAvailableSortType>;

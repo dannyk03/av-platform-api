@@ -10,7 +10,6 @@ import {
   mixin,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 import { EnumFileImageMime, EnumFileStatusCodeError } from '../file.constant';
 import { IFile } from '../file.interface';
@@ -23,11 +22,10 @@ export function FileImageInterceptor(
     constructor(private readonly configService: ConfigService) {}
 
     async intercept(
-      context: ExecutionContext,
+      ctx: ExecutionContext,
       next: CallHandler,
     ): Promise<Observable<Promise<any> | string>> {
-      const ctx: HttpArgumentsHost = context.switchToHttp();
-      const { file, files } = ctx.getRequest();
+      const { file, files } = ctx.switchToHttp().getRequest();
 
       const finalFiles = files || file;
 

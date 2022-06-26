@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import {
   ABILITY_META_KEY,
@@ -22,15 +22,15 @@ export class AclAbilityGuard implements CanActivate {
     private reflector: Reflector,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const requiredAbilities = this.reflector.getAllAndOverride<
       IReqAclAbility[]
-    >(ABILITY_META_KEY, [context.getHandler(), context.getClass()]);
+    >(ABILITY_META_KEY, [ctx.getHandler(), ctx.getClass()]);
     if (!requiredAbilities) {
       return true;
     }
 
-    const { __user, originalUrl, method } = context.switchToHttp().getRequest();
+    const { __user, originalUrl, method } = ctx.switchToHttp().getRequest();
     const { role } = __user;
     const {
       policy: { subjects },

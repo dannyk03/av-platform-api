@@ -12,8 +12,7 @@ import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserService } from '@/user/service/user.service';
-import { AclRoleService } from '@acl/role/service/acl-role.service';
-import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service';
+import { AclRoleService, AclRolePresetService } from '@acl/role/service';
 import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '../service/organization.service';
 import { LogService } from '@/log/service/log.service';
@@ -28,7 +27,7 @@ import { EnumOrganizationRole } from '@acl/role';
 import { ConnectionNames } from '@/database';
 import { AclGuard } from '@/auth';
 import { EnumLoggerAction, IReqLogData } from '@/log';
-import { GetReqUser } from '@/user/user.decorator';
+import { ReqUser } from '@/user/user.decorator';
 import { User } from '@/user/entity/user.entity';
 import { ReqLogData } from '@/utils/request';
 
@@ -65,8 +64,8 @@ export class OrganizationAdminController {
   async create(
     @Body()
     body: OrganizationCreateDto,
-    @GetReqUser()
-    user: User,
+    @ReqUser()
+    reqUser: User,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
@@ -173,8 +172,8 @@ export class OrganizationAdminController {
     await this.logService.info({
       ...logData,
       action: EnumLoggerAction.CreateOrganization,
-      description: `${user.id} created organization`,
-      user: user,
+      description: `${reqUser.id} created organization`,
+      user: reqUser,
       tags: ['create', 'organization'],
     });
 

@@ -1,1 +1,1 @@
-export * from './acl-subject.auth.serialization';
+export * from './acl-subject.serialization';

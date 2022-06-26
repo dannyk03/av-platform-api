@@ -6,9 +6,11 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
+// Entities
 import { BaseEntity } from '@/database/entities/base.entity';
-import { createSlugFromString } from '@/utils/helper/service';
 import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
+//
+import { slugify } from '@/utils/helper';
 
 @Entity()
 export class AclRolePreset extends BaseEntity<AclRolePreset> {
@@ -35,6 +37,6 @@ export class AclRolePreset extends BaseEntity<AclRolePreset> {
 
   @BeforeInsert()
   beforeInsert() {
-    this.slug = createSlugFromString(this.name);
+    this.slug = slugify(this.name);
   }
 }

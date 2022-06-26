@@ -17,10 +17,9 @@ export class UserPutToRequestGuard implements CanActivate {
     private readonly debuggerService: DebuggerService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const request = ctx.switchToHttp().getRequest();
     const { user } = request;
-    // const { user } = params;
 
     const requestUser = await this.userService.findOneById(user.id, {
       relations: [
@@ -33,6 +32,9 @@ export class UserPutToRequestGuard implements CanActivate {
       select: {
         organization: {
           isActive: true,
+          id: true,
+          name: true,
+          slug: true,
         },
       },
     });

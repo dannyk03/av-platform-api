@@ -1,14 +1,12 @@
 import { Organization } from '@/organization/entity/organization.entity';
-import { AclRoleAuthSerialization } from '@acl/role';
+import { AclRoleSerialization } from '@acl/role';
 import { AclRole } from '@acl/role/entity/acl-role.entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
 export class AuthLoginSerialization {
   readonly id: string;
 
-  @Transform(({ value: role }) =>
-    plainToInstance(AclRoleAuthSerialization, role),
-  )
+  @Transform(({ value: role }) => plainToInstance(AclRoleSerialization, role))
   readonly role: AclRole;
 
   readonly email: string;

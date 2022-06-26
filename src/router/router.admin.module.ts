@@ -7,12 +7,18 @@ import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { UserModule } from '@/user/user.module';
+// Controllers
+import { UserAdminController } from '@/user/controller';
+import { AclRoleAdminController } from '@acl/role/controller';
+import { OrganizationAdminController } from '@/organization/controller';
 //
-import { UserAdminController } from '@/user';
-import { OrganizationAdminController } from '@/organization';
 
 @Module({
-  controllers: [OrganizationAdminController, UserAdminController],
+  controllers: [
+    OrganizationAdminController,
+    UserAdminController,
+    AclRoleAdminController,
+  ],
   providers: [],
   exports: [],
   imports: [
