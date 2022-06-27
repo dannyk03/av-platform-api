@@ -9,7 +9,7 @@ import { UserService } from '../service/user.service';
   version: '1',
   path: 'user',
 })
-export class UserAdminController {
+export class UserController {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly userService: UserService,

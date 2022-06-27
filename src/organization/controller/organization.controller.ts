@@ -35,7 +35,7 @@ import { ReqLogData } from '@/utils/request';
   version: '1',
   path: 'organization',
 })
-export class OrganizationAdminController {
+export class OrganizationController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
