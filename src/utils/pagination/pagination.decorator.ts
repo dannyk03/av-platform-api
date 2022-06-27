@@ -163,10 +163,8 @@ export function PaginationFilterId(
 ): any {
   return applyDecorators(
     Expose(),
-    options && options.required ? IsNotEmpty() : Skip(),
-    options && options.required
-      ? Skip()
-      : ValidateIf((e) => e[field] !== '' && e[field]),
+    options?.required ? IsNotEmpty() : Skip(),
+    options?.required ? Skip() : ValidateIf((e) => e[field] !== '' && e[field]),
   );
 }
 
@@ -178,8 +176,8 @@ export function PaginationFilterDate(
     Expose(),
     IsDate(),
     Type(() => Date),
-    options && options.required ? IsNotEmpty() : IsOptional(),
-    options && options.required
+    options?.required ? IsNotEmpty() : IsOptional(),
+    options?.required
       ? Skip()
       : options.asEndDate
       ? ValidateIf(
@@ -190,10 +188,10 @@ export function PaginationFilterDate(
             e[options.asEndDate.moreThanField],
         )
       : ValidateIf((e) => e[field] !== '' && e[field]),
-    options && options.asEndDate
+    options?.asEndDate
       ? MinGreaterThan(options.asEndDate.moreThanField)
       : Skip(),
-    options && options.asEndDate
+    options?.asEndDate
       ? Transform(
           ({ value }) => {
             const result = new Date(value);
@@ -225,9 +223,7 @@ export function PaginationFilterString(
           },
         )
       : Skip(),
-    options && options.required ? IsNotEmpty() : IsOptional(),
-    options && options.required
-      ? Skip()
-      : ValidateIf((e) => e[field] !== '' && e[field]),
+    options?.required ? IsNotEmpty() : IsOptional(),
+    options?.required ? Skip() : ValidateIf((e) => e[field] !== '' && e[field]),
   );
 }

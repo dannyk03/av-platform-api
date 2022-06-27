@@ -51,10 +51,8 @@ export class HelperDateService {
 
   format(date: Date, options?: IHelperDateFormatOptions): string {
     return moment(date)
-      .tz(options && options.timezone ? options.timezone : this.tz)
-      .format(
-        options && options.format ? options.format : EnumHelperDateFormat.Date,
-      );
+      .tz(options?.timezone ? options.timezone : this.tz)
+      .format(options?.format ? options.format : EnumHelperDateFormat.Date);
   }
 
   forwardInMinutes(minutes: number, fromDate?: Date): Date {

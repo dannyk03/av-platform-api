@@ -88,8 +88,8 @@ export class AwsS3Service {
     content: string | Uint8Array | Buffer | Readable | ReadableStream | Blob,
     options?: IAwsS3PutItemOptions,
   ): Promise<IAwsS3Response> {
-    let path: string = options && options.path ? options.path : undefined;
-    const acl: string = options && options.acl ? options.acl : 'public-read';
+    let path: string = options?.path ? options.path : undefined;
+    const acl: string = options?.acl ? options.acl : 'public-read';
 
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 

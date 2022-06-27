@@ -105,7 +105,7 @@ export class MessageService {
   ): any {
     return this.i18n.translate(key, {
       lang: lang,
-      args: options && options.properties ? options.properties : undefined,
+      args: options?.properties ? options.properties : undefined,
     });
   }
 
