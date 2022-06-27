@@ -1,6 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
 // Services
-import { AuthService } from '@/auth/service';
 import { DebuggerService } from '@/debugger/service';
 import { PaginationService } from '@/utils/pagination/service';
 import { AclRoleService } from '../service';
