@@ -10,6 +10,7 @@ services:
       - .env
     environment:
       - POSTGRES_HOST=postgres
+      - JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}
     ports:
       - 8080:8080
     networks:
@@ -23,7 +24,7 @@ services:
     depends_on:
       - postgres
     command: >
-      sh -c "yarn migration:run && yarn start:dev"
+      sh -c "yarn start:dev"
 
   postgres:
     image: postgres:14.2

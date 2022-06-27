@@ -21,8 +21,9 @@ export default registerAs(
           `/../database/migrations/${ConnectionNames.Default}/**/*{.ts,.js}`,
       ],
       namingStrategy: new TypeormSnakeCaseNamingStrategy(),
-      migrationsRun: process.env.APP_ENV === 'production',
+      migrationsRun: true,
       // autoLoadEntities: true,
+      synchronize: false,
     },
   }),
 );
