@@ -9,6 +9,7 @@ import { Response } from 'express';
 import { IErrorException } from './error.interface';
 import { IMessage } from '@/message/message.interface';
 import { MessageService } from '@/message/service/message.service';
+import { ThrottlerException } from '@nestjs/throttler';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
@@ -19,9 +20,18 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const statusHttp: number = exception.getStatus();
     const responseHttp: any = ctx.getResponse<Response>();
 
-    const appLanguages: string[] = ctx.getRequest().i18nLang
-      ? ctx.getRequest().i18nLang.split(',')
-      : undefined;
+    const appLanguages: string[] = ctx.getRequest().i18nLang?.split(',');
+
+    if (exception instanceof ThrottlerException) {
+      const rMessage: string | IMessage = await this.messageService.get(
+        'request.error.tooManyRequests',
+        { appLanguages },
+      );
+      return responseHttp.status(statusHttp).json({
+        statusCode: 500,
+        message: rMessage,
+      });
+    }
 
     // Restructure
     const response = exception.getResponse() as IErrorException;
