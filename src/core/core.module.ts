@@ -19,10 +19,18 @@ import { DebuggerOptionService } from '@/debugger/service/debugger.option.servic
 import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
 //
 import { ConnectionNames } from '@/database/';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   imports: [
     ConfigDynamicModule,
     WinstonModule.forRootAsync({
@@ -34,14 +42,18 @@ import { ConnectionNames } from '@/database/';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       name: ConnectionNames.Default,
-      // useFactory: (configService: ConfigService) =>
-      // configService.get(`database.${ConnectionNames.Default}`),
-      // imports: [ConfigModule],
-      // inject: [ConfigService],
-      // dataSourceFactory: async (options) => {
-      //   const dataSource = await new DataSource(options).initialize();
-      //   return dataSource;
-      // },
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        ttl: configService.get<number>('middleware.rateLimit.resetTime'),
+        limit: configService.get<number>(
+          'middleware.rateLimit.maxRequestPerIp',
+        ),
+        // TODO The built in storage is an in memory cache that keeps track of the requests made until they have passed the TTL
+        // storage: Redis ThrottlerStorage
+      }),
     }),
     DatabaseModule,
     HelperModule,

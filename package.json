@@ -49,6 +49,7 @@
     "@nestjs/platform-express": "^8.4.7",
     "@nestjs/schedule": "^2.0.1",
     "@nestjs/terminus": "^8.1.0",
+    "@nestjs/throttler": "^2.0.1",
     "@nestjs/typeorm": "^8.1.4",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",

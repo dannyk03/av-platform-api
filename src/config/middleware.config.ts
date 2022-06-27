@@ -33,8 +33,8 @@ export default registerAs(
       ],
     },
     rateLimit: {
-      resetTime: 1 * 500, // 0.5 secs
-      maxRequestPerId: 1, // max request per reset time
+      resetTime: 1, // secs per route
+      maxRequestPerIp: 1, // max request per reset time
     },
     timestamp: {
       toleranceTimeInMinutes:

@@ -17,7 +17,6 @@ import {
   HttpDebuggerResponseMiddleware,
 } from './http-debugger/http-debugger.middleware';
 import { HelmetMiddleware } from './helmet/helmet.middleware';
-import { RateLimitMiddleware } from './rate-limit/rate-limit.middleware';
 import { UserAgentMiddleware } from './user-agent/user-agent.middleware';
 import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { CompressionMiddleware } from './compression/compression.middleware';
@@ -38,7 +37,6 @@ export class MiddlewareModule implements NestModule {
         HttpDebuggerResponseMiddleware,
         HttpDebuggerMiddleware,
         HelmetMiddleware,
-        RateLimitMiddleware,
         UserAgentMiddleware,
         CorrelationIdMiddleware,
       )
