@@ -20,9 +20,8 @@ export class AclAbility extends BaseEntity<AclAbility> {
   @Column({
     type: 'enum',
     enum: EnumAclAbilityAction,
-    array: true,
   })
-  actions!: EnumAclAbilityAction[];
+  action!: EnumAclAbilityAction;
 
   @Column({
     type: 'varchar',
@@ -30,7 +29,7 @@ export class AclAbility extends BaseEntity<AclAbility> {
     array: true,
     nullable: true,
   })
-  fieldsAccess?: string[];
+  fields?: string[];
 
   @Column({
     type: 'jsonb',

@@ -1,8 +1,10 @@
 import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
 import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumOrganizationRole } from '@acl/role';
+import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
+import { DeepPartial } from 'typeorm';
 
-export const rolePresetsSeedData = {
+export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
   roles: [
     {
       name: EnumOrganizationRole.Owner,
@@ -13,7 +15,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -22,11 +24,11 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Cannot,
-                actions: [EnumAclAbilityAction.Create],
+                action: EnumAclAbilityAction.Create,
               },
               {
                 type: EnumAclAbilityType.Cannot,
-                actions: [EnumAclAbilityAction.Delete],
+                action: EnumAclAbilityAction.Delete,
               },
             ],
           },
@@ -42,7 +44,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -51,7 +53,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Cannot,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -67,7 +69,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -76,7 +78,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -85,7 +87,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Read],
+                action: EnumAclAbilityAction.Read,
               },
             ],
           },
@@ -101,7 +103,7 @@ export const rolePresetsSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Read],
+                action: EnumAclAbilityAction.Read,
               },
             ],
           },

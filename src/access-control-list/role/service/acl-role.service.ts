@@ -56,7 +56,7 @@ export class AclRoleService {
               subject.abilities.map(async (ability) => {
                 const abilityEntity = await this.aclAbilityService.create({
                   type: ability.type,
-                  actions: ability.actions,
+                  action: ability.action,
                 });
 
                 return transactionalEntityManager.save(abilityEntity);

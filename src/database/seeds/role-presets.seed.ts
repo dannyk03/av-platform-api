@@ -1,7 +1,7 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, DeepPartial } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
@@ -11,6 +11,9 @@ import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service'
 //
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';
+import { AclAbility } from '@/access-control-list/ability/entity/acl-ability.entity';
+import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
+import { AclSubject } from '@/access-control-list/subject/entity/acl-subject.entity';
 
 @Injectable()
 export class RolePresetsSeed {
@@ -35,16 +38,16 @@ export class RolePresetsSeed {
         async (transactionalEntityManager) => {
           try {
             const rolePresets = await Promise.all(
-              rolePresetsSeedData.roles.map(async (role) => {
+              rolePresetsSeedData.roles.map(async (role: AclRole) => {
                 const { policy } = role;
                 const policySubjects = await Promise.all(
-                  policy.subjects.map(async (subject) => {
+                  policy.subjects.map(async (subject: AclSubject) => {
                     const subjectAbilities = await Promise.all(
-                      subject.abilities.map(async (ability) => {
+                      subject.abilities.map(async (ability: AclAbility) => {
                         const abilityEntity =
                           await this.aclAbilityService.create({
                             type: ability.type,
-                            actions: ability.actions,
+                            action: ability.action,
                           });
 
                         return transactionalEntityManager.save(abilityEntity);

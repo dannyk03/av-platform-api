@@ -24,15 +24,15 @@ export const defineAbilities = (aclSubjects: AclSubject[]) => {
           const { type: subjectType, abilities } = subject;
 
           abilities.forEach((ability) => {
-            const { type: abilityType, actions } = ability;
+            const { type: abilityType, action } = ability;
             const subject =
               subjectType === AclSubjectTypeDict.System
                 ? 'all'
                 : AclSubjectDict[subjectType];
             if (abilityType === EnumAclAbilityType.Can) {
-              can(actions, subject);
+              can(action, subject);
             } else if (abilityType === EnumAclAbilityType.Cannot) {
-              cannot(actions, subject);
+              cannot(action, subject);
             }
           });
         });

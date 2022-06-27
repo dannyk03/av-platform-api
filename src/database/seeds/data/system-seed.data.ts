@@ -1,9 +1,19 @@
 import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
+import { DeepPartial } from 'typeorm';
+// Entities
+import { User } from '@/user/entity/user.entity';
+import { Organization } from '@/organization/entity';
+import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
+//
 import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumSystemRole } from '@acl/role';
 import { SYSTEM_ORGANIZATION_NAME } from '@/system';
 
-export const systemSeedData = {
+export const systemSeedData: {
+  systemAdmin: DeepPartial<User>;
+  roles: DeepPartial<AclRole>[];
+  organization: DeepPartial<Organization>;
+} = {
   organization: {
     name: SYSTEM_ORGANIZATION_NAME,
   },
@@ -23,7 +33,7 @@ export const systemSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -39,7 +49,7 @@ export const systemSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Manage],
+                action: EnumAclAbilityAction.Manage,
               },
             ],
           },
@@ -48,7 +58,7 @@ export const systemSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Read],
+                action: EnumAclAbilityAction.Read,
               },
             ],
           },
@@ -64,7 +74,7 @@ export const systemSeedData = {
             abilities: [
               {
                 type: EnumAclAbilityType.Can,
-                actions: [EnumAclAbilityAction.Read],
+                action: EnumAclAbilityAction.Read,
               },
             ],
           },
