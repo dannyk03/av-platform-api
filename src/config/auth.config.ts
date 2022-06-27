@@ -16,7 +16,9 @@ export default registerAs(
         expirationTimeRememberMe:
           process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRED || '30d', // recommendation for production is 30d
         notBeforeExpirationTime:
-          process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED || '30', // recommendation for production is 30m
+          process.env.APP_NAME === 'production'
+            ? process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED || '30m' // recommendation for production is 30m
+            : '0',
       },
     },
 
