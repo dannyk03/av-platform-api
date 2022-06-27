@@ -21,7 +21,7 @@ import {
   version: '1',
   path: 'role',
 })
-export class AclRoleAdminController {
+export class AclRoleController {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly aclRoleService: AclRoleService,

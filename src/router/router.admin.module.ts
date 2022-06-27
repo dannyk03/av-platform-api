@@ -9,7 +9,7 @@ import { OrganizationModule } from '@/organization/organization.module';
 import { UserModule } from '@/user/user.module';
 // Controllers
 import { UserAdminController } from '@/user/controller';
-import { AclRoleAdminController } from '@acl/role/controller';
+import { AclRoleController } from '@acl/role/controller';
 import { OrganizationAdminController } from '@/organization/controller';
 //
 
@@ -17,7 +17,7 @@ import { OrganizationAdminController } from '@/organization/controller';
   controllers: [
     OrganizationAdminController,
     UserAdminController,
-    AclRoleAdminController,
+    AclRoleController,
   ],
   providers: [],
   exports: [],

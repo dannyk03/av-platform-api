@@ -1,2 +1,1 @@
-export * from './user.admin.controller';
-export * from './user.public.controller';
+export * from './user.controller';

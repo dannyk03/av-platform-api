@@ -1,1 +1,1 @@
-export * from './acl-role.admin.controller';
+export * from './acl-role.controller';
