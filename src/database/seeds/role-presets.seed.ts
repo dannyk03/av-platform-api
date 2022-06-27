@@ -52,7 +52,6 @@ export class RolePresetsSeed {
                     );
                     const subjectEntity = await this.aclSubjectService.create({
                       type: subject.type,
-                      sensitivityLevel: subject.sensitivityLevel,
                       abilities: subjectAbilities,
                     });
 
@@ -61,7 +60,6 @@ export class RolePresetsSeed {
                 );
                 const policyEntity = await this.aclPolicyService.create({
                   subjects: policySubjects,
-                  sensitivityLevel: policy.sensitivityLevel,
                 });
 
                 await transactionalEntityManager.save(policyEntity);

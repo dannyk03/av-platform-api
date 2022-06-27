@@ -17,10 +17,8 @@ export const systemSeedData = {
     {
       name: EnumSystemRole.SystemAdmin,
       policy: {
-        sensitivityLevel: 10,
         subjects: [
           {
-            sensitivityLevel: 10,
             type: AclSubjectTypeDict.System,
             abilities: [
               {
@@ -35,10 +33,8 @@ export const systemSeedData = {
     {
       name: EnumSystemRole.SystemManager,
       policy: {
-        sensitivityLevel: 5,
         subjects: [
           {
-            sensitivityLevel: 5,
             type: AclSubjectTypeDict.Order,
             abilities: [
               {
@@ -48,7 +44,6 @@ export const systemSeedData = {
             ],
           },
           {
-            sensitivityLevel: 5,
             type: AclSubjectTypeDict.System,
             abilities: [
               {
@@ -63,10 +58,8 @@ export const systemSeedData = {
     {
       name: EnumSystemRole.SystemObserver,
       policy: {
-        sensitivityLevel: 5,
         subjects: [
           {
-            sensitivityLevel: 10,
             type: AclSubjectTypeDict.System,
             abilities: [
               {

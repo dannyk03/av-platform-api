@@ -7,10 +7,8 @@ export const rolePresetsSeedData = {
     {
       name: EnumOrganizationRole.Owner,
       policy: {
-        sensitivityLevel: 9,
         subjects: [
           {
-            sensitivityLevel: 9,
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
@@ -20,7 +18,6 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 9,
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
@@ -39,10 +36,8 @@ export const rolePresetsSeedData = {
     {
       name: EnumOrganizationRole.Admin,
       policy: {
-        sensitivityLevel: 9,
         subjects: [
           {
-            sensitivityLevel: 8,
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {
@@ -52,7 +47,6 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 9,
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
@@ -67,10 +61,8 @@ export const rolePresetsSeedData = {
     {
       name: EnumOrganizationRole.Manager,
       policy: {
-        sensitivityLevel: 5,
         subjects: [
           {
-            sensitivityLevel: 5,
             type: AclSubjectTypeDict.Order,
             abilities: [
               {
@@ -80,7 +72,6 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 5,
             type: AclSubjectTypeDict.Gift,
             abilities: [
               {
@@ -90,7 +81,6 @@ export const rolePresetsSeedData = {
             ],
           },
           {
-            sensitivityLevel: 5,
             type: AclSubjectTypeDict.Organization,
             abilities: [
               {
@@ -105,10 +95,8 @@ export const rolePresetsSeedData = {
     {
       name: EnumOrganizationRole.Observer,
       policy: {
-        sensitivityLevel: 5,
         subjects: [
           {
-            sensitivityLevel: 9,
             type: AclSubjectTypeDict.OrganizationNamespace,
             abilities: [
               {

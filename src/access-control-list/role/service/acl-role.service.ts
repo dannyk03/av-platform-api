@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, EntityManager, Equal, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, Repository } from 'typeorm';
 // Services
 import { AclPolicyService } from '@acl/policy/service';
 import { AclAbilityService } from '@acl/ability/service';
@@ -64,7 +64,6 @@ export class AclRoleService {
             );
             const subjectEntity = await this.aclSubjectService.create({
               type: subject.type,
-              sensitivityLevel: subject.sensitivityLevel,
               abilities: subjectAbilities,
             });
 
@@ -73,7 +72,6 @@ export class AclRoleService {
         );
         const policyEntity = await this.aclPolicyService.create({
           subjects: policySubjects,
-          sensitivityLevel: policy.sensitivityLevel,
         });
 
         await transactionalEntityManager.save(policyEntity);
