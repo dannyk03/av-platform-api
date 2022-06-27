@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1655989482847 implements MigrationInterface {
-  name = 'migration1655989482847';
+export class migration1656331307647 implements MigrationInterface {
+  name = 'migration1656331307647';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -101,8 +101,8 @@ export class migration1655989482847 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
-                "slug" character varying(20) NOT NULL,
-                "name" character varying(20) NOT NULL,
+                "slug" character varying(30) NOT NULL,
+                "name" character varying(30) NOT NULL,
                 "is_active" boolean NOT NULL DEFAULT true,
                 "organization_id" uuid,
                 "policy_id" uuid,
@@ -137,10 +137,10 @@ export class migration1655989482847 implements MigrationInterface {
                 "first_name" character varying,
                 "last_name" character varying,
                 "mobile_number" character varying,
-                "email" character varying NOT NULL,
-                "password" character varying NOT NULL,
+                "email" character varying(100) NOT NULL,
+                "password" character varying(100) NOT NULL,
                 "password_expired" TIMESTAMP NOT NULL,
-                "salt" character varying NOT NULL,
+                "salt" character varying(100) NOT NULL,
                 "is_active" boolean NOT NULL DEFAULT false,
                 "email_verified" boolean NOT NULL DEFAULT false,
                 "email_verification_token" character varying,
@@ -158,14 +158,19 @@ export class migration1655989482847 implements MigrationInterface {
             CREATE INDEX "user_email_index" ON "users" ("email")
         `);
     await queryRunner.query(`
-            CREATE TABLE "loggers" (
+            CREATE TABLE "logs" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "level" character varying NOT NULL,
                 "action" character varying NOT NULL,
                 "description" character varying,
                 "tags" character varying(20) array,
+                "correlation_id" uuid NOT NULL,
+                "user_agent" json NOT NULL,
+                "method" character varying(20) NOT NULL,
+                "original_url" character varying(50) NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                CONSTRAINT "pk_loggers_id" PRIMARY KEY ("id")
+                "user_id" uuid,
+                CONSTRAINT "pk_logs_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
@@ -174,8 +179,8 @@ export class migration1655989482847 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
-                "slug" character varying(20) NOT NULL,
-                "name" character varying(20) NOT NULL,
+                "slug" character varying(30) NOT NULL,
+                "name" character varying(30) NOT NULL,
                 "policy_id" uuid,
                 CONSTRAINT "uq_acl_role_presets_slug" UNIQUE ("slug"),
                 CONSTRAINT "uq_acl_role_presets_name" UNIQUE ("name"),
@@ -211,6 +216,10 @@ export class migration1655989482847 implements MigrationInterface {
             ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
+            ALTER TABLE "logs"
+            ADD CONSTRAINT "fk_logs_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
             ALTER TABLE "acl_role_presets"
             ADD CONSTRAINT "fk_acl_role_presets_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -219,6 +228,9 @@ export class migration1655989482847 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE "acl_role_presets" DROP CONSTRAINT "fk_acl_role_presets_policy_id"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "logs" DROP CONSTRAINT "fk_logs_user_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
@@ -245,7 +257,7 @@ export class migration1655989482847 implements MigrationInterface {
             DROP TABLE "acl_role_presets"
         `);
     await queryRunner.query(`
-            DROP TABLE "loggers"
+            DROP TABLE "logs"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."user_email_index"
