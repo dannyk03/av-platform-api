@@ -67,6 +67,12 @@ export class AuthCommonController {
         'role.policy.subjects',
         'role.policy.subjects.abilities',
       ],
+      select: {
+        organization: {
+          isActive: true,
+          name: true,
+        },
+      },
     });
 
     if (!user) {

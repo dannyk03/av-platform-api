@@ -10,7 +10,7 @@ import { DebuggerService } from '@/debugger/service';
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
-export class AuthActiveGuard implements CanActivate {
+export class JwtUserActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {

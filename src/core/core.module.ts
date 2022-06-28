@@ -34,8 +34,8 @@ import { APP_GUARD } from '@nestjs/core';
   imports: [
     ConfigDynamicModule,
     WinstonModule.forRootAsync({
-      inject: [DebuggerOptionService],
       imports: [DebuggerModule],
+      inject: [DebuggerOptionService],
       useFactory: (debuggerOptionService: DebuggerOptionService) =>
         debuggerOptionService.createLogger(),
     }),

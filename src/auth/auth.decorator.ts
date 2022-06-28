@@ -8,7 +8,6 @@ import {
 import { AclAbilityGuard } from '@acl/ability/guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
-import { AuthActiveGuard } from './guard/payload/auth.is-active.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
 import { ABILITY_META_KEY } from '@acl/ability';
 import { IReqAclAbility } from '@acl/acl.interface';
@@ -17,9 +16,27 @@ import { ReqUserOrganizationActiveGuard } from '@/organization/guard/organizatio
 import { ReqUserActiveGuard } from '@/user/guard/user.active.guard';
 import { UserPutToRequestGuard } from '@/user/guard/user.put-to-request.guard';
 
+export function IsActiveGuard(): any {
+  return applyDecorators(
+    UseGuards(
+      UserPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
+    ),
+  );
+}
+
 export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
   return applyDecorators(
-    UseGuards(JwtGuard, AuthActiveGuard, AclAbilityGuard),
+    UseGuards(
+      JwtGuard,
+      UserPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
+      AclAbilityGuard,
+    ),
     SetMetadata(ABILITY_META_KEY, abilities),
   );
 }

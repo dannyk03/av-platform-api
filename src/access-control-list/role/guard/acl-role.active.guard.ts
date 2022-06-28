@@ -16,7 +16,7 @@ export class ReqUserAclRoleActiveGuard implements CanActivate {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { __user } = ctx.switchToHttp().getRequest();
 
-    if (!__user.role?.isActive) {
+    if (!__user?.role?.isActive) {
       this.debuggerService.error(
         'User Role active error',
         'AclRoleActiveGuard',
