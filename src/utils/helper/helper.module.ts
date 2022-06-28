@@ -11,6 +11,7 @@ import { HelperStringService } from './service/helper.string.service';
 import { HelperFileService } from './service/helper.file.service';
 import { HelperGeoService } from './service/helper.geo.service';
 import { HelperSlugService } from './service/helper.slug.service';
+import { HelperJwtService } from './service';
 
 @Global()
 @Module({
@@ -25,6 +26,7 @@ import { HelperSlugService } from './service/helper.slug.service';
     HelperStringService,
     HelperFileService,
     HelperGeoService,
+    HelperJwtService,
   ],
   exports: [
     HelperService,
@@ -37,6 +39,7 @@ import { HelperSlugService } from './service/helper.slug.service';
     HelperStringService,
     HelperFileService,
     HelperGeoService,
+    HelperJwtService,
   ],
   controllers: [],
   imports: [

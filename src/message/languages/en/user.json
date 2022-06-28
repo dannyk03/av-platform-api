@@ -10,7 +10,7 @@
   "active": "Active Succeed",
   "error": {
     "notFound": "User not found.",
-    "inactive": "User inactive",
+    "inactive": "User not active",
     "emailExist": "Email user used",
     "mobileNumberExist": "Mobile Number user used",
     "active": "User status active invalid",

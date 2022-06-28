@@ -15,7 +15,7 @@ export enum EnumOrganizationRole {
 export enum EnumRoleStatusCodeError {
   RoleNotFoundError = 5500,
   RoleExistsError = 5501,
-  RoleActiveError = 5502,
+  RoleInactiveError = 5502,
   RoleUsedError = 5503,
 }
 

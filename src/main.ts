@@ -11,7 +11,9 @@ import { useContainer } from 'class-validator';
 import { ConnectionNames } from './database';
 
 async function bootstrap() {
-  const app: NestApplication = await NestFactory.create(AppModule);
+  const app: NestApplication = await NestFactory.create(AppModule, {
+    bodyParser: true,
+  });
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.env');
   const tz: string = configService.get<string>('app.timezone');

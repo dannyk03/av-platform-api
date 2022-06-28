@@ -2,7 +2,8 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
@@ -16,16 +17,27 @@ export class ReqUserActiveGuard implements CanActivate {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { __user } = ctx.switchToHttp().getRequest();
 
-    if (!__user.isActive) {
+    if (!__user) {
       this.debuggerService.error(
-        'User active error',
-        'UserActiveGuard',
+        'User not found error',
+        'ReqUserActiveGuard',
         'canActivate',
       );
 
-      throw new BadRequestException({
-        statusCode: EnumUserStatusCodeError.UserActiveError,
-        message: 'user.error.active',
+      throw new NotFoundException({
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
+        message: 'user.error.notFound',
+      });
+    } else if (!__user.isActive) {
+      this.debuggerService.error(
+        'Role inactive error',
+        'ReqUserActiveGuard',
+        'canActivate',
+      );
+
+      throw new ForbiddenException({
+        statusCode: EnumUserStatusCodeError.UserInactiveError,
+        message: 'user.error.inactive',
       });
     }
     return true;

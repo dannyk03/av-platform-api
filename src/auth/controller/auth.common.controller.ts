@@ -9,15 +9,17 @@ import {
   NotFoundException,
   InternalServerErrorException,
   Patch,
+  Res,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 // Services
 import { UserService } from '@/user/service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
-import { HelperDateService } from '@/utils/helper/service';
+import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
 import { AuthService } from '../service/auth.service';
 //
-import { EnumUserStatusCodeError } from '@/user';
+import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumLoggerAction, IReqLogData } from '@/log';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
@@ -34,6 +36,8 @@ import {
 } from '../auth.decorator';
 import { AuthChangePasswordDto } from '../dto';
 import { ReqLogData } from '@/utils/request';
+import { Response as ExpressResponse } from 'express';
+import { User } from '@/user/entity/user.entity';
 
 @Controller({
   version: '1',
@@ -46,16 +50,23 @@ export class AuthCommonController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly logService: LogService,
+    private readonly configService: ConfigService,
+    private readonly helperJwtService: HelperJwtService,
   ) {}
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(
-    @Body() body: AuthLoginDto,
+    @Res({ passthrough: true })
+    response: ExpressResponse,
+    @Body()
+    body: AuthLoginDto,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
     const rememberMe: boolean = body.rememberMe ? true : false;
 
     const user = await this.userService.findOne({
@@ -107,7 +118,7 @@ export class AuthCommonController {
       );
 
       throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
+        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
         message: 'organization.error.inactive',
       });
     }
@@ -136,7 +147,7 @@ export class AuthCommonController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserActiveError,
+        statusCode: EnumUserStatusCodeError.UserInactiveError,
         message: 'user.error.inactive',
       });
     } else if (!user.role.isActive) {
@@ -147,7 +158,7 @@ export class AuthCommonController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleActiveError,
+        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
         message: 'role.error.inactive',
       });
     }
@@ -199,6 +210,13 @@ export class AuthCommonController {
       tags: ['login', 'withEmail'],
     });
 
+    response.cookie('accessToken', accessToken, {
+      secure: isSecureMode,
+      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
+
     return {
       accessToken,
       refreshToken,
@@ -210,75 +228,22 @@ export class AuthCommonController {
   @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   async refresh(
+    @Res({ passthrough: true })
+    response: ExpressResponse,
+    @ReqUser()
+    reqUser: User,
     @ReqJwtUser()
-    { id, rememberMe, loginDate }: Record<string, any>,
+    { rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
-    const user = await this.userService.findOneById(id, {
-      relations: ['role', 'organization'],
-    });
-
-    if (!user) {
-      this.debuggerService.error(
-        'Authorized error user not found',
-        'AuthController',
-        'refresh',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserNotFoundError,
-        message: 'user.error.notFound',
-      });
-    } else if (!user.isActive) {
-      this.debuggerService.error(
-        'Auth Block Not Active',
-        'AuthController',
-        'refresh',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserActiveError,
-        message: 'user.error.inactive',
-      });
-    } else if (!user.role.isActive) {
-      this.debuggerService.error('Role Block', 'AuthController', 'refresh');
-
-      throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleActiveError,
-        message: 'role.error.inactive',
-      });
-    }
-
-    if (!user.organization) {
-      this.debuggerService.error(
-        'Authorized error organization not found',
-        'AuthController',
-        'refresh',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
-        message: 'organization.error.notFound',
-      });
-    } else if (!user.organization.isActive) {
-      this.debuggerService.error(
-        'Organization Block Not Active',
-        'AuthController',
-        'refresh',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
-        message: 'organization.error.inactive',
-      });
-    }
-
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
     const today: Date = this.helperDateService.create();
-    const passwordExpired: Date = this.helperDateService.create(
-      user.passwordExpired,
+    const userPasswordExpired: Date = this.helperDateService.create(
+      reqUser.passwordExpired,
     );
 
-    if (today > passwordExpired) {
+    if (today > userPasswordExpired) {
       this.debuggerService.error(
         'Password expired',
         'AuthController',
@@ -291,16 +256,26 @@ export class AuthCommonController {
       });
     }
 
-    const safe: AuthLoginSerialization =
-      await this.authService.serializationLogin(user);
+    const safeData: AuthLoginSerialization =
+      await this.authService.serializationLogin(reqUser);
+
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
     const payloadAccessToken: Record<string, any> =
-      await this.authService.createPayloadAccessToken(safe, rememberMe, {
+      await this.authService.createPayloadAccessToken(safeData, rememberMe, {
         loginDate,
       });
 
     const accessToken: string = await this.authService.createAccessToken(
       payloadAccessToken,
     );
+
+    response.cookie('accessToken', accessToken, {
+      secure: isSecureMode,
+      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
 
     return {
       accessToken,

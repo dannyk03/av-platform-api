@@ -6,13 +6,6 @@ import {
 } from '@nestjs/common';
 import { CorsMiddleware } from './cors/cors.middleware';
 import {
-  HtmlBodyParserMiddleware,
-  JsonBodyParserMiddleware,
-  RawBodyParserMiddleware,
-  TextBodyParserMiddleware,
-  UrlencodedBodyParserMiddleware,
-} from './body-parser/body-parser.middleware';
-import {
   HttpDebuggerMiddleware,
   HttpDebuggerResponseMiddleware,
 } from './http-debugger/http-debugger.middleware';
@@ -21,17 +14,13 @@ import { UserAgentMiddleware } from './user-agent/user-agent.middleware';
 import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middleware';
+import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(
-        JsonBodyParserMiddleware,
-        RawBodyParserMiddleware,
-        HtmlBodyParserMiddleware,
-        TextBodyParserMiddleware,
-        UrlencodedBodyParserMiddleware,
         CompressionMiddleware,
         CorsMiddleware,
         HttpDebuggerResponseMiddleware,
@@ -39,6 +28,7 @@ export class MiddlewareModule implements NestModule {
         HelmetMiddleware,
         UserAgentMiddleware,
         CorrelationIdMiddleware,
+        CookieParserMiddleware,
       )
       .forRoutes('*');
 

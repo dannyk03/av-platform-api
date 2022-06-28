@@ -12,9 +12,10 @@ export class TimestampMiddleware implements NestMiddleware {
   ) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
-    const mode: string = this.configService.get<string>('app.mode');
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
 
-    if (mode === 'secure') {
+    if (isSecureMode) {
       const toleranceTimeInMinutes = this.configService.get<number>(
         'middleware.timestamp.toleranceTimeInMinutes',
       );

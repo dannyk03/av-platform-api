@@ -2,7 +2,8 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
@@ -14,20 +15,33 @@ export class ReqUserOrganizationActiveGuard implements CanActivate {
   constructor(private readonly debuggerService: DebuggerService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const { __user } = ctx.switchToHttp().getRequest();
+    const request = ctx.switchToHttp().getRequest();
+    const { __user } = request;
 
-    if (!__user.organization?.isActive) {
+    if (!__user.organization) {
       this.debuggerService.error(
-        'Organization active error',
+        'Organization not found error',
         'ReqUserOrganizationActiveGuard',
         'canActivate',
       );
 
-      throw new BadRequestException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationActiveError,
-        message: 'organization.error.active',
+      throw new NotFoundException({
+        statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
+        message: 'organization.error.notFound',
+      });
+    } else if (!__user.organization?.isActive) {
+      this.debuggerService.error(
+        'Organization inactive error',
+        'ReqUserOrganizationActiveGuard',
+        'canActivate',
+      );
+
+      throw new ForbiddenException({
+        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
+        message: 'organization.error.inactive',
       });
     }
+
     return true;
   }
 }

@@ -57,13 +57,21 @@ export function AclGuard(...abilities: IReqAclAbility[]) {
 }
 
 export function AuthRefreshJwtGuard(): any {
-  return applyDecorators(UseGuards(JwtRefreshGuard));
+  return applyDecorators(
+    UseGuards(
+      JwtRefreshGuard,
+      UserPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
+    ),
+  );
 }
 
 export const ReqJwtUser = createParamDecorator(
-  (data: string, ctx: ExecutionContext): Record<string, any> => {
+  (key: string, ctx: ExecutionContext): Record<string, any> => {
     const { user } = ctx.switchToHttp().getRequest();
-    return data ? user[data] : user;
+    return key ? user[key] : user;
   },
 );
 

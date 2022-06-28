@@ -3,6 +3,8 @@ import {
   CanActivate,
   ExecutionContext,
   BadRequestException,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service';
@@ -16,18 +18,30 @@ export class ReqUserAclRoleActiveGuard implements CanActivate {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { __user } = ctx.switchToHttp().getRequest();
 
-    if (!__user?.role?.isActive) {
+    if (!__user.role) {
       this.debuggerService.error(
-        'User Role active error',
-        'AclRoleActiveGuard',
+        'Role not found error',
+        'ReqUserAclRoleActiveGuard',
         'canActivate',
       );
 
-      throw new BadRequestException({
-        statusCode: EnumRoleStatusCodeError.RoleActiveError,
-        message: 'user.error.active',
+      throw new NotFoundException({
+        statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
+        message: 'role.error.notFound',
+      });
+    } else if (!__user.role.isActive) {
+      this.debuggerService.error(
+        'Role inactive error',
+        'ReqUserAclRoleActiveGuard',
+        'canActivate',
+      );
+
+      throw new ForbiddenException({
+        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
+        message: 'role.error.inactive',
       });
     }
+
     return true;
   }
 }
