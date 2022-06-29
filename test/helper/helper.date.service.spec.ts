@@ -223,6 +223,42 @@ describe('HelperDateService', () => {
     });
   });
 
+  describe('forwardInHours', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'forwardInHours');
+
+      helperDateService.forwardInHours(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.forwardInHours(2);
+      jest
+        .spyOn(helperDateService, 'forwardInHours')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInHours(2)).toBe(result);
+    });
+  });
+
+  describe('backwardInHours', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'backwardInHours');
+
+      helperDateService.backwardInHours(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.backwardInHours(2);
+      jest
+        .spyOn(helperDateService, 'backwardInHours')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInHours(2)).toBe(result);
+    });
+  });
+
   describe('forwardInDays', () => {
     it('should be called', async () => {
       const test = jest.spyOn(helperDateService, 'forwardInDays');

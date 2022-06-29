@@ -73,10 +73,10 @@ export class OrganizationController {
     logData: IReqLogData,
   ): Promise<IResponse> {
     const checkOrganizationExist =
-      await this.organizationService.checkExistByName(body.name);
+      await this.organizationService.checkExistsByName(body.name);
 
     const checkOrganizationOwnerExist =
-      await this.userService.checkExistByEmail(body.email);
+      await this.userService.checkExistsByEmail(body.email);
 
     if (checkOrganizationExist) {
       this.debuggerService.error(

@@ -14,7 +14,7 @@ import { slugify } from '@/utils/helper';
 
 @Entity()
 export class AclRolePreset extends BaseEntity<AclRolePreset> {
-  @Index('role_preset_slug_index')
+  @Index()
   @Column({
     update: false,
     unique: true,

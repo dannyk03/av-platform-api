@@ -1,11 +1,11 @@
 {
-  "list": "List Organization Success.",
-  "get": "Get Organization Success.",
-  "create": "Create Organization Success.",
-  "delete": "Delete Organization Success.",
-  "update": "Update Organization Success.",
-  "inactive": "Inactive Succeed",
-  "active": "Active Succeed",
+  "list": "List organization success.",
+  "get": "Get organization success.",
+  "create": "Create organization success.",
+  "delete": "Delete organization success.",
+  "update": "Update organization success.",
+  "inactive": "Inactive succeed",
+  "active": "Active succeed",
   "error": {
     "notFound": "Organization not found.",
     "inactive": "Organization not active",

@@ -14,13 +14,14 @@ import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
 import { User } from '@/user/entity/user.entity';
+import { UserInvite } from '@/user/entity/user-invite.entity';
 //
 import { slugify } from '@/utils/helper';
 
 @Entity()
 @Unique('unique_role_organization', ['slug', 'name', 'organization'])
 export class AclRole extends BaseEntity<AclRole> {
-  @Index('role_slug_index')
+  @Index()
   @Column({
     update: false,
     length: 30,
@@ -49,6 +50,9 @@ export class AclRole extends BaseEntity<AclRole> {
 
   @OneToMany(() => User, (user) => user.role)
   users!: User;
+
+  @OneToMany(() => UserInvite, (userInvite) => userInvite.role)
+  invites!: UserInvite;
 
   @BeforeInsert()
   beforeInsert() {

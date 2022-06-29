@@ -1,0 +1,9 @@
+{
+  "email": {
+    "error": {
+      "send": "Failed to send email",
+      "resend": "Failed to resend email",
+      "userInviteCode": "Invalid user invitation code"
+    }
+  }
+}

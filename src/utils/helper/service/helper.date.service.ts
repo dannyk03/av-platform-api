@@ -63,6 +63,14 @@ export class HelperDateService {
     return moment(fromDate, true).subtract(minutes, 'm').toDate();
   }
 
+  forwardInHours(hours: number, fromDate?: Date): Date {
+    return moment(fromDate, true).add(hours, 'h').toDate();
+  }
+
+  backwardInHours(hours: number, fromDate?: Date): Date {
+    return moment(fromDate, true).subtract(hours, 'h').toDate();
+  }
+
   forwardInDays(days: number, fromDate?: Date): Date {
     return moment(fromDate, true).add(days, 'd').toDate();
   }

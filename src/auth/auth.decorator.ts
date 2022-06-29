@@ -50,7 +50,7 @@ export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
 
 export function AclGuard(
   abilities: IReqAclAbility[] = [],
-  { systemOnly = false } = {},
+  { systemOnly }: { systemOnly: boolean } = { systemOnly: false },
 ) {
   return applyDecorators(
     UseGuards(
@@ -64,7 +64,7 @@ export function AclGuard(
       AclAbilityGuard,
     ),
     SetMetadata(ABILITY_META_KEY, abilities),
-    SetMetadata(SYSTEM_ONLY_META_KEY, [systemOnly]),
+    SetMetadata(SYSTEM_ONLY_META_KEY, systemOnly),
   );
 }
 

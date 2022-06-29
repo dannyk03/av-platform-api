@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Index,
 } from 'typeorm';
 
 export abstract class BaseEntity<T> {
@@ -10,6 +11,7 @@ export abstract class BaseEntity<T> {
     Object.assign(this, props);
   }
 
+  @Index()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

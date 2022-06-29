@@ -7,6 +7,7 @@ import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { UserModule } from '@/user/user.module';
+import { MessagingModule } from '@/messaging/messaging.module';
 // Controllers
 import { UserController } from '@/user/controller';
 import { AclRoleController } from '@acl/role/controller';
@@ -25,6 +26,7 @@ import { OrganizationController } from '@/organization/controller';
     AclAbilityModule,
     UserModule,
     OrganizationModule,
+    MessagingModule,
   ],
 })
 export class RouterAdminModule {}

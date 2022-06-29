@@ -3,14 +3,14 @@
     "ok": "OK",
     "created": "Created",
     "accepted": "Accepted",
-    "noContent": "No Content"
+    "noContent": "No content"
   },
   "redirection": {
-    "movePermanently": "Move Permanently",
+    "movePermanently": "Move permanently",
     "found": "Found",
-    "notModified": "Not Modified",
-    "temporaryRedirect": "Temporary Redirect",
-    "permanentRedirect": "Permanent Redirect"
+    "notModified": "Not modified",
+    "temporaryRedirect": "Temporary redirect",
+    "permanentRedirect": "Permanent redirect"
   },
   "clientError": {
     "badRequest": "Bad Request",
@@ -21,12 +21,12 @@
     "notAcceptable": "Not Acceptable",
     "requestTimeOut": "Request time out",
     "payloadToLarge": "Payload To Large",
-    "uriToLarge": "Uri To Large",
-    "unSupportMediaType": "Not Found",
-    "unprocessableEntity": "Unprocessable Entity",
-    "tooManyRequest": "Too Many Request",
-    "requestHeaderFieldsTooLarge": "Request Header Fields Too Large",
-    "unavailableForLegalReasons": "Unavailable For Legal Reasons"
+    "uriToLarge": "Uri too large",
+    "unSupportMediaType": "Not found",
+    "unprocessableEntity": "Unprocessable entity",
+    "tooManyRequest": "Too many request",
+    "requestHeaderFieldsTooLarge": "Request header fields too large",
+    "unavailableForLegalReasons": "Unavailable for legal reasons"
   },
   "serverError": {
     "internalServerError": "Internal Server Error",

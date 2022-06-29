@@ -23,7 +23,7 @@ export class OrganizationService {
     return this.organizationRepository.create(props);
   }
 
-  async checkExistByName(name: string): Promise<boolean> {
+  async checkExistsByName(name: string): Promise<boolean> {
     const exists = await this.organizationRepository.findOne({
       where: { slug: this.slugService.slugify(name) },
     });

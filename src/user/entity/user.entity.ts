@@ -13,14 +13,14 @@ export class User extends BaseEntity<User> {
   @Column({ nullable: true })
   lastName?: string;
 
-  @Index('user_mobile_index')
+  @Index()
   @Column({
     unique: true,
     nullable: true,
   })
   mobileNumber?: string;
 
-  @Index('user_email_index')
+  @Index()
   @Column({
     type: 'varchar',
     unique: true,

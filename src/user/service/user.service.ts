@@ -51,7 +51,7 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async checkExistByEmail(email: string): Promise<boolean> {
+  async checkExistsByEmail(email: string): Promise<boolean> {
     const exists = await this.userRepository.findOne({
       where: { email },
     });

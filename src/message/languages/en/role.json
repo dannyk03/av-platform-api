@@ -1,15 +1,15 @@
 {
-  "list": "List Role Success.",
-  "get": "Get Role Success.",
-  "create": "Create Succeed",
-  "delete": "Delete Succeed",
-  "update": "Update Succeed",
-  "inactive": "Inactive Succeed",
-  "active": "Active Succeed",
+  "list": "List role success",
+  "get": "Get role success.",
+  "create": "Create succeed",
+  "delete": "Delete succeed",
+  "update": "Update succeed",
+  "inactive": "Inactive succeed",
+  "active": "Active succeed",
   "error": {
     "notFound": "Role not found",
     "inactive": "Role not active",
     "exist": "Role exist",
-    "used": "Role in used"
+    "used": "Role is used"
   }
 }

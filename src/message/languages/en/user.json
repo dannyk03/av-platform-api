@@ -1,19 +1,21 @@
 {
-  "list": "List User Success.",
-  "get": "Get User Success.",
-  "create": "Create User Success.",
-  "delete": "Delete User Success.",
-  "update": "Update User Success.",
-  "profile": "Profile Success",
-  "upload": "Upload Success",
-  "inactive": "Inactive Succeed",
-  "active": "Active Succeed",
+  "list": "List user success",
+  "get": "Get user success",
+  "create": "Create user success",
+  "delete": "Delete user success",
+  "update": "Update user success",
+  "profile": "Profile success",
+  "upload": "Upload success",
+  "inactive": "Inactive succeed",
+  "active": "Active succeed",
+  "invite": "Invite succeed",
   "error": {
-    "notFound": "User not found.",
+    "notFound": "User not found",
     "inactive": "User not active",
     "emailExist": "Email user used",
-    "mobileNumberExist": "Mobile Number user used",
+    "mobileNumberExist": "User mobile number already used",
     "active": "User status active invalid",
-    "exist": "User exist"
+    "exist": "User exist",
+    "alreadyInvited": "User already invited"
   }
 }

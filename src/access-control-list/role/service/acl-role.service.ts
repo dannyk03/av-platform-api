@@ -1,17 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { plainToInstance } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, EntityManager, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  EntityManager,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
+import { isUUID } from 'class-validator';
 // Services
 import { AclPolicyService } from '@acl/policy/service';
 import { AclAbilityService } from '@acl/ability/service';
 import { AclSubjectService } from '@acl/subject/service';
+import { HelperSlugService } from '@/utils/helper/service';
 //
 import { ConnectionNames } from '@/database';
 import { AclRole } from '../entity/acl-role.entity';
-import { IDatabaseFindAllOptions } from '@/database/database.interface';
-import { plainToInstance } from 'class-transformer';
 import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
+import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()
 export class AclRoleService {
@@ -21,7 +27,7 @@ export class AclRoleService {
     private readonly aclSubjectService: AclSubjectService,
     private readonly aclPolicyService: AclPolicyService,
     private readonly aclAbilityService: AclAbilityService,
-    private readonly configService: ConfigService,
+    private readonly helperSlugService: HelperSlugService,
   ) {}
 
   async create(props: DeepPartial<AclRole>): Promise<AclRole> {
@@ -38,9 +44,13 @@ export class AclRoleService {
 
   async findAll(
     find?: Record<string, any>,
-    options?: IDatabaseFindAllOptions,
+    options?: IPaginationOptions,
   ): Promise<AclRole[]> {
     return this.aclRoleRepository.find({ where: find, ...options });
+  }
+
+  async findOne(find?: FindOneOptions<AclRole>): Promise<AclRole> {
+    return this.aclRoleRepository.findOne({ ...find });
   }
 
   async cloneSaveRolesTree(
@@ -85,6 +95,36 @@ export class AclRoleService {
       }),
     );
     return clone;
+  }
+
+  async findBy(
+    roleIdOrSlug: string,
+    organizationIdOrSlug: string,
+  ): Promise<AclRole | null> {
+    const organizationId = isUUID(organizationIdOrSlug)
+      ? organizationIdOrSlug
+      : undefined;
+    const organizationSlug = !organizationId
+      ? this.helperSlugService.slugify(organizationIdOrSlug)
+      : undefined;
+
+    const roleId = isUUID(roleIdOrSlug) ? roleIdOrSlug : undefined;
+    const roleSlug = !roleId
+      ? this.helperSlugService.slugify(roleIdOrSlug)
+      : undefined;
+
+    if ((roleId || roleSlug) && (organizationId || organizationSlug)) {
+      const role = await this.aclRoleRepository.findOneBy({
+        ...(roleId ? { id: roleId } : { slug: roleSlug }),
+        ...(organizationId
+          ? { organization: { id: organizationId } }
+          : { organization: { slug: organizationSlug } }),
+      });
+
+      return role;
+    }
+
+    return null;
   }
 
   async serializationList(data: AclRole[]): Promise<RoleListSerialization[]> {
