@@ -50,14 +50,17 @@ export class OrganizationController {
 
   @Response('organization.create')
   @AclGuard(
-    {
-      action: EnumAclAbilityAction.Create,
-      subject: AclSubjectTypeDict.Organization,
-    },
-    {
-      action: EnumAclAbilityAction.Create,
-      subject: AclSubjectTypeDict.User,
-    },
+    [
+      {
+        action: EnumAclAbilityAction.Create,
+        subject: AclSubjectTypeDict.Organization,
+      },
+      {
+        action: EnumAclAbilityAction.Create,
+        subject: AclSubjectTypeDict.User,
+      },
+    ],
+    { systemOnly: true },
   )
   @HttpCode(HttpStatus.OK)
   @Post('/create')

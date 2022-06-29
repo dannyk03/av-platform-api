@@ -5,16 +5,23 @@ import {
   applyDecorators,
   SetMetadata,
 } from '@nestjs/common';
-import { AclAbilityGuard } from '@acl/ability/guard';
-import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
-import { JwtGuard } from './guard/jwt/auth.jwt.guard';
-import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
 import { ABILITY_META_KEY } from '@acl/ability';
 import { IReqAclAbility } from '@acl/acl.interface';
-import { ReqUserAclRoleActiveGuard } from '@acl/role/guard/acl-role.active.guard';
-import { ReqUserOrganizationActiveGuard } from '@/organization/guard/organization.active.guard';
-import { ReqUserActiveGuard } from '@/user/guard/user.active.guard';
-import { UserPutToRequestGuard } from '@/user/guard/user.put-to-request.guard';
+import { SYSTEM_ONLY_META_KEY } from '@/system';
+// Guards
+import {
+  ReqUserActiveGuard,
+  ReqUserSystemOnlyGuard,
+  UserPutToRequestGuard,
+} from '@/user/guard';
+import { AclAbilityGuard } from '@acl/ability/guard';
+import { JwtGuard } from './guard/jwt/auth.jwt.guard';
+import { ReqUserAclRoleActiveGuard } from '@acl/role/guard';
+import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
+import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
+import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
+
+//
 
 export function IsActiveGuard(): any {
   return applyDecorators(
@@ -41,7 +48,10 @@ export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
   );
 }
 
-export function AclGuard(...abilities: IReqAclAbility[]) {
+export function AclGuard(
+  abilities: IReqAclAbility[] = [],
+  { systemOnly = false } = {},
+) {
   return applyDecorators(
     UseGuards(
       JwtGuard,
@@ -50,9 +60,11 @@ export function AclGuard(...abilities: IReqAclAbility[]) {
       ReqUserAclRoleActiveGuard,
       ReqUserOrganizationActiveGuard,
       AuthPayloadPasswordExpiredGuard,
+      ReqUserSystemOnlyGuard,
       AclAbilityGuard,
     ),
     SetMetadata(ABILITY_META_KEY, abilities),
+    SetMetadata(SYSTEM_ONLY_META_KEY, [systemOnly]),
   );
 }
 

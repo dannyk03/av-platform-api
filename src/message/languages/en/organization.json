@@ -10,6 +10,7 @@
     "notFound": "Organization not found.",
     "inactive": "Organization not active",
     "exist": "Organization exist",
-    "ownerExist": "Organization owner exist"
+    "ownerExist": "Organization owner exist",
+    "systemOnly": "Organization not system"
   }
 }

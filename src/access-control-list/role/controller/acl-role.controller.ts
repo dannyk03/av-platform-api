@@ -28,10 +28,12 @@ export class AclRoleController {
   ) {}
 
   @ResponsePaging('role.list')
-  @AclGuard({
-    action: EnumAclAbilityAction.Read,
-    subject: AclSubjectTypeDict.Role,
-  })
+  @AclGuard([
+    {
+      action: EnumAclAbilityAction.Read,
+      subject: AclSubjectTypeDict.Role,
+    },
+  ])
   @Get('/list')
   async list(
     @Query()

@@ -3,7 +3,6 @@ import { EnumRequestStatusCodeError } from '@/utils/request';
 import {
   createParamDecorator,
   ExecutionContext,
-  Query,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { isUUID } from 'class-validator';
