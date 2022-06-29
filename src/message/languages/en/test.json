@@ -1,3 +1,4 @@
 {
-  "hello": "This is test endpoint."
+  "ping": "This is test endpoint.",
+  "auth": "This is auth test endpoint."
 }

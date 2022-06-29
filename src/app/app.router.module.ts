@@ -38,10 +38,10 @@ export class AppRouterModule {
             //   path: '/callback',
             //   module: RouterCallbackModule,
             // },
-            // {
-            //   path: '/test',
-            //   module: RouterTestModule,
-            // },
+            {
+              path: '/test',
+              module: RouterTestModule,
+            },
           ]),
         ],
       };

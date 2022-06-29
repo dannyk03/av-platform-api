@@ -1,20 +1,23 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
-import { UserAgent } from '@/utils/request/request.decorator';
-import { Response } from '@/utils/response/response.decorator';
-import { IResponse } from '@/utils/response/response.interface';
-import { GetVersion } from '@/utils/version/version.decorator';
+import { UserAgent } from '@/utils/request';
+import { Response, IResponse } from '@/utils/response';
 import { IResult } from 'ua-parser-js';
+import { AclGuard } from '@/auth';
 
 @Controller({
   version: VERSION_NEUTRAL,
 })
 export class TestingCommonController {
-  @Response('test.hello')
-  @Get('/hello')
-  async hello(
-    @UserAgent() userAgent: IResult,
-    @GetVersion() version: number,
-  ): Promise<IResponse> {
-    return { userAgent, version };
+  @Response('test.ping')
+  @Get()
+  async hello(@UserAgent() userAgent: IResult): Promise<IResponse> {
+    return { userAgent };
+  }
+
+  @Response('test.auth')
+  @AclGuard()
+  @Get('/auth')
+  async helloAuth(@UserAgent() userAgent: IResult): Promise<IResponse> {
+    return { userAgent };
   }
 }
