@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { DataSourceOptions } from 'typeorm';
 import { ConnectionNames } from '../database.constant';
+import { createDB } from '../utils';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
-  createTypeOrmOptions(
+  async createTypeOrmOptions(
     connectionName: ConnectionNames = ConnectionNames.Default,
-  ): TypeOrmModuleOptions {
+  ): Promise<TypeOrmModuleOptions> {
+    if (this.configService.get<boolean>('database.autoCreateDB')) {
+      await createDB(
+        this.configService.get<DataSourceOptions>(
+          `database.${ConnectionNames.Default}`,
+        ),
+      );
+    }
+
     return this.configService.get(`database.${connectionName}`);
   }
 }
