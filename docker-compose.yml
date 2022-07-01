@@ -30,13 +30,13 @@ services:
     image: postgres:14.2
     networks:
       - app-network
+    env_file:
+      - .env
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
     restart: unless-stopped
-    env_file:
-      - .env
 
 networks:
   app-network:
