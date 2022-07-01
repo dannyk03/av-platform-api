@@ -26,7 +26,8 @@
         "${workspaceFolder}/**",
         "!**/node_modules/**" // Disable the "could not read source map" error for node_modules
       ],
-      "restart": true
+      "restart": true,
+      "stopOnEntry": false
     },
     {
       "type": "node",

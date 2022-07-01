@@ -1779,6 +1779,13 @@
   resolved "https://registry.yarnpkg.com/@sqltools/formatter/-/formatter-1.2.3.tgz#1185726610acc37317ddab11c3c7f9066966bd20"
   integrity sha512-O3uyB/JbkAEMZaP3YqyHH7TMnex7tWyCbCI4EfJdOCoN6HIhqdJBWTM6aCCiWQ/5f5wxjgU735QAIpJbjDvmzg==
 
+"@trapi/query@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@trapi/query/-/query-2.1.3.tgz#de5cfcde05e734adeab56061eb5a8aadbc705a69"
+  integrity sha512-qOG7X1BUlxJ339lsmA8voTCHzLEz0JPmBobXDzseg/nAeNMbkvRAAPq1itAM6yqqhEGFxuuYxsWM1Cn6qIwEMA==
+  dependencies:
+    minimatch "^5.0.1"
+
 "@ts-morph/common@~0.12.3":
   version "0.12.3"
   resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.12.3.tgz#a96e250217cd30e480ab22ec6a0ebbe65fd784ff"
@@ -2752,6 +2759,13 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
+
+brace-expansion@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-2.0.1.tgz#1edc459e0f0c548486ecf9fc99f2221364b9a0ae"
+  integrity sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==
+  dependencies:
+    balanced-match "^1.0.0"
 
 braces@^3.0.2, braces@~3.0.2:
   version "3.0.2"
@@ -4224,6 +4238,17 @@ glob@^7.0.0, glob@^7.1.3, glob@^7.1.4, glob@^7.2.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
+glob@^8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-8.0.3.tgz#415c6eb2deed9e502c68fa44a272e6da6eeca42e"
+  integrity sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^5.0.1"
+    once "^1.3.0"
+
 globals@^11.1.0:
   version "11.12.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
@@ -5182,6 +5207,13 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
+locter@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/locter/-/locter-0.1.2.tgz#f90bf356d05603b4b8feebdc8dafa69834044bb4"
+  integrity sha512-0fFZZBj16mgUcDFdiGL8wqrS+vskVWZ6UN0P33wn03v+2pKk8DY66/TAELS+7C/KVcoVAjslVpF3fSMCdoOyMA==
+  dependencies:
+    glob "^8.0.3"
+
 lodash.compact@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/lodash.compact/-/lodash.compact-3.0.1.tgz#540ce3837745975807471e16b4a2ba21e7256ca5"
@@ -5477,6 +5509,13 @@ minimatch@^3.0.4, minimatch@^3.1.1, minimatch@^3.1.2:
   integrity sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==
   dependencies:
     brace-expansion "^1.1.7"
+
+minimatch@^5.0.1:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-5.1.0.tgz#1717b464f4971b144f6aabe8f2d0b8e4511e09c7"
+  integrity sha512-9TPBGGak4nHfGZsPBohm9AWg6NoT7QTCehS3BIJABslyZbzxfV78QM2Y6+i741OPZIafFAaiiEMh5OyIrJPgtg==
+  dependencies:
+    brace-expansion "^2.0.1"
 
 minimist@1.2.6, minimist@^1.2.0, minimist@^1.2.6:
   version "1.2.6"
@@ -7058,6 +7097,17 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
+
+typeorm-extension@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-2.1.4.tgz#6673aa08698acd6f83de5c19f26ff1dd1441ce84"
+  integrity sha512-2AT8GNSqDvl0kchY+LQPX5P59tBEonUzpK2i5Glci8ikBaef6ZBAjkV7qwZaTG86VTIXB6cC/YtzVRMbIkt88A==
+  dependencies:
+    "@faker-js/faker" "^7.3.0"
+    "@trapi/query" "^2.1.3"
+    locter "^0.1.2"
+    reflect-metadata "^0.1.13"
+    yargs "^17.5.1"
 
 typeorm@^0.3.6:
   version "0.3.7"
