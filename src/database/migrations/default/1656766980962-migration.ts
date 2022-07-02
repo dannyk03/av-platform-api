@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1656526083855 implements MigrationInterface {
-  name = 'migration1656526083855';
+export class migration1656766980962 implements MigrationInterface {
+  name = 'migration1656766980962';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -81,24 +81,36 @@ export class migration1656526083855 implements MigrationInterface {
             CREATE INDEX "idx_acl_policies_id" ON "acl_policies" ("id")
         `);
     await queryRunner.query(`
-            CREATE TABLE "user_invites" (
+            CREATE TABLE "users" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
+                "first_name" character varying,
+                "last_name" character varying,
+                "mobile_number" character varying,
                 "email" character varying(100) NOT NULL,
-                "expires" TIMESTAMP,
+                "password" character varying(100) NOT NULL,
+                "password_expired" TIMESTAMP NOT NULL,
+                "salt" character varying(100) NOT NULL,
+                "is_active" boolean NOT NULL DEFAULT false,
+                "email_verified" boolean NOT NULL DEFAULT false,
+                "email_verification_token" character varying,
                 "role_id" uuid,
                 "organization_id" uuid,
-                CONSTRAINT "uq_user_invites_email" UNIQUE ("email"),
-                CONSTRAINT "pk_user_invites_id" PRIMARY KEY ("id")
+                CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
+                CONSTRAINT "uq_users_email" UNIQUE ("email"),
+                CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_user_invites_id" ON "user_invites" ("id")
+            CREATE INDEX "idx_users_id" ON "users" ("id")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_user_invites_email" ON "user_invites" ("email")
+            CREATE INDEX "idx_users_mobile_number" ON "users" ("mobile_number")
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_users_email" ON "users" ("email")
         `);
     await queryRunner.query(`
             CREATE TABLE "acl_roles" (
@@ -140,36 +152,30 @@ export class migration1656526083855 implements MigrationInterface {
             CREATE INDEX "idx_organizations_id" ON "organizations" ("id")
         `);
     await queryRunner.query(`
-            CREATE TABLE "users" (
+            CREATE TABLE "organization_invites" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "deleted_at" TIMESTAMP,
-                "first_name" character varying,
-                "last_name" character varying,
-                "mobile_number" character varying,
-                "email" character varying(100) NOT NULL,
-                "password" character varying(100) NOT NULL,
-                "password_expired" TIMESTAMP NOT NULL,
-                "salt" character varying(100) NOT NULL,
-                "is_active" boolean NOT NULL DEFAULT false,
-                "email_verified" boolean NOT NULL DEFAULT false,
-                "email_verification_token" character varying,
+                "email" character varying(50) NOT NULL,
+                "invite_code" character varying(32) NOT NULL,
+                "used_at" TIMESTAMP,
+                "expires_at" TIMESTAMP,
                 "role_id" uuid,
                 "organization_id" uuid,
-                CONSTRAINT "uq_users_mobile_number" UNIQUE ("mobile_number"),
-                CONSTRAINT "uq_users_email" UNIQUE ("email"),
-                CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
+                CONSTRAINT "uq_organization_invites_email" UNIQUE ("email"),
+                CONSTRAINT "uq_organization_invites_invite_code" UNIQUE ("invite_code"),
+                CONSTRAINT "pk_organization_invites_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_id" ON "users" ("id")
+            CREATE INDEX "idx_organization_invites_id" ON "organization_invites" ("id")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_mobile_number" ON "users" ("mobile_number")
+            CREATE INDEX "idx_organization_invites_email" ON "organization_invites" ("email")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_email" ON "users" ("email")
+            CREATE INDEX "idx_organization_invites_invite_code" ON "organization_invites" ("invite_code")
         `);
     await queryRunner.query(`
             CREATE TABLE "logs" (
@@ -217,12 +223,12 @@ export class migration1656526083855 implements MigrationInterface {
             ADD CONSTRAINT "fk_acl_subjects_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "user_invites"
-            ADD CONSTRAINT "fk_user_invites_role_id" FOREIGN KEY ("role_id") REFERENCES "acl_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "users"
+            ADD CONSTRAINT "fk_users_role_id" FOREIGN KEY ("role_id") REFERENCES "acl_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "user_invites"
-            ADD CONSTRAINT "fk_user_invites_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "users"
+            ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_roles"
@@ -233,12 +239,12 @@ export class migration1656526083855 implements MigrationInterface {
             ADD CONSTRAINT "fk_acl_roles_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "fk_users_role_id" FOREIGN KEY ("role_id") REFERENCES "acl_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "organization_invites"
+            ADD CONSTRAINT "fk_organization_invites_role_id" FOREIGN KEY ("role_id") REFERENCES "acl_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "organization_invites"
+            ADD CONSTRAINT "fk_organization_invites_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "logs"
@@ -258,10 +264,10 @@ export class migration1656526083855 implements MigrationInterface {
             ALTER TABLE "logs" DROP CONSTRAINT "fk_logs_user_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
+            ALTER TABLE "organization_invites" DROP CONSTRAINT "fk_organization_invites_organization_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id"
+            ALTER TABLE "organization_invites" DROP CONSTRAINT "fk_organization_invites_role_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_roles" DROP CONSTRAINT "fk_acl_roles_policy_id"
@@ -270,10 +276,10 @@ export class migration1656526083855 implements MigrationInterface {
             ALTER TABLE "acl_roles" DROP CONSTRAINT "fk_acl_roles_organization_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "user_invites" DROP CONSTRAINT "fk_user_invites_organization_id"
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "user_invites" DROP CONSTRAINT "fk_user_invites_role_id"
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_subjects" DROP CONSTRAINT "fk_acl_subjects_policy_id"
@@ -294,16 +300,16 @@ export class migration1656526083855 implements MigrationInterface {
             DROP TABLE "logs"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_email"
+            DROP INDEX "public"."idx_organization_invites_invite_code"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_mobile_number"
+            DROP INDEX "public"."idx_organization_invites_email"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_id"
+            DROP INDEX "public"."idx_organization_invites_id"
         `);
     await queryRunner.query(`
-            DROP TABLE "users"
+            DROP TABLE "organization_invites"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_organizations_id"
@@ -321,13 +327,16 @@ export class migration1656526083855 implements MigrationInterface {
             DROP TABLE "acl_roles"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_user_invites_email"
+            DROP INDEX "public"."idx_users_email"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_user_invites_id"
+            DROP INDEX "public"."idx_users_mobile_number"
         `);
     await queryRunner.query(`
-            DROP TABLE "user_invites"
+            DROP INDEX "public"."idx_users_id"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "users"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_acl_policies_id"

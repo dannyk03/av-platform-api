@@ -2,6 +2,7 @@ import { ConnectionNames } from '@/database';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { v4 as uuidV4 } from 'uuid';
 // Entities
 import { OrganizationInvite } from '../entity/organization-invite.entity';
 //
@@ -14,9 +15,12 @@ export class OrganizationInviteService {
   ) {}
 
   async create(
-    props: DeepPartial<OrganizationInvite>,
+    props: DeepPartial<Omit<OrganizationInvite, 'inviteCode'>>,
   ): Promise<OrganizationInvite> {
-    return this.organizationInviteRepository.create(props);
+    return this.organizationInviteRepository.create({
+      ...props,
+      inviteCode: uuidV4().replaceAll('-', ''),
+    });
   }
 
   async save(props: OrganizationInvite): Promise<OrganizationInvite> {

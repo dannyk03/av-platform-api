@@ -10,7 +10,7 @@ import AwsConfig from '@/config/aws.config';
 import UserConfig from './user.config';
 import FileConfig from './file.config';
 import MiddlewareConfig from './middleware.config';
-import { DataSourceOptions } from 'typeorm';
+import OrganizationConfig from './organization.config';
 
 const Configs = [
   AppConfig,
@@ -21,6 +21,7 @@ const Configs = [
   UserConfig,
   MiddlewareConfig,
   FileConfig,
+  OrganizationConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
@@ -30,17 +31,3 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
   cache: true,
   envFilePath: ['.env'],
 });
-
-// (async () => {
-//   if (process.env.AUTO_CREATE_DB === 'true') {
-//     const options = dbConfiguration()[
-//       ConnectionNames.Default
-//     ] as DataSourceOptions;
-
-//     await createDatabase({
-//       ifNotExist: true,
-//       synchronize: false,
-//       options,
-//     });
-//   }
-// })();

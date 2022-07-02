@@ -100,8 +100,8 @@ export class OrganizationInviteController {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
-        message: 'role.error.inactive',
+        statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
+        message: 'role.error.notFound',
       });
     }
 
@@ -136,15 +136,15 @@ export class OrganizationInviteController {
       const emailSent = await this.emailService.sendOrganizationInvite({
         email,
         expiresInDays,
-        inviteCode: organizationInvite.id,
+        inviteCode: organizationInvite.inviteCode,
       });
 
       if (emailSent) {
-        organizationInvite.expires =
+        organizationInvite.expiresAt =
           this.helperDateService.forwardInDays(expiresInDays);
         await this.organizationInviteService.save(organizationInvite);
 
-        return { inviteCode: organizationInvite.id };
+        return { inviteCode: organizationInvite.inviteCode };
       } else {
         this.debuggerService.error(
           'Messaging Email error',
@@ -160,9 +160,9 @@ export class OrganizationInviteController {
     } else {
       const today = this.helperDateService.create();
       const inviteExpires =
-        alreadyExistingOrganizationInvite.expires &&
+        alreadyExistingOrganizationInvite.expiresAt &&
         this.helperDateService.create(
-          alreadyExistingOrganizationInvite.expires,
+          alreadyExistingOrganizationInvite.expiresAt,
         );
 
       // Resend invite if expired
@@ -170,16 +170,16 @@ export class OrganizationInviteController {
         const emailSent = await this.emailService.sendOrganizationInvite({
           email,
           expiresInDays,
-          inviteCode: alreadyExistingOrganizationInvite.id,
+          inviteCode: alreadyExistingOrganizationInvite.inviteCode,
         });
         if (emailSent) {
-          alreadyExistingOrganizationInvite.expires =
+          alreadyExistingOrganizationInvite.expiresAt =
             this.helperDateService.forwardInDays(expiresInDays);
           await this.organizationInviteService.save(
             alreadyExistingOrganizationInvite,
           );
 
-          return { inviteCode: alreadyExistingOrganizationInvite.id };
+          return { inviteCode: alreadyExistingOrganizationInvite.inviteCode };
         } else {
           this.debuggerService.error(
             'Organization Invite Email error',
@@ -197,7 +197,7 @@ export class OrganizationInviteController {
           statusCode:
             EnumOrganizationStatusCodeError.OrganizationUserAlreadyInvited,
           message: 'organization.error.alreadyInvited',
-          data: { inviteCode: alreadyExistingOrganizationInvite.id },
+          data: { inviteCode: alreadyExistingOrganizationInvite.inviteCode },
         });
       }
     }

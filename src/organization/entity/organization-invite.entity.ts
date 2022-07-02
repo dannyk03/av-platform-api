@@ -11,12 +11,23 @@ export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
   @Column({
     type: 'varchar',
     unique: true,
-    length: 100,
+    length: 50,
   })
   email!: string;
 
+  @Index()
+  @Column({
+    type: 'varchar',
+    unique: true,
+    length: 32,
+  })
+  inviteCode!: string;
+
   @Column({ nullable: true })
-  expires?: Date;
+  usedAt?: Date;
+
+  @Column({ nullable: true })
+  expiresAt?: Date;
 
   @ManyToOne(() => AclRole, (role) => role.invites)
   role!: AclRole;
