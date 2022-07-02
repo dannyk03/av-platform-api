@@ -11,19 +11,10 @@ import { MessagingModule } from '@/messaging/messaging.module';
 // Controllers
 import { UserController } from '@/user/controller';
 import { AclRoleController } from '@acl/role/controller';
-import {
-  OrganizationController,
-  OrganizationInviteController,
-} from '@/organization/controller';
 //
 
 @Module({
-  controllers: [
-    OrganizationController,
-    OrganizationInviteController,
-    UserController,
-    AclRoleController,
-  ],
+  controllers: [UserController, AclRoleController],
   providers: [],
   exports: [],
   imports: [

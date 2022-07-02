@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
-import { ConnectionNames } from '@/database';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
+// Entities
 import { Organization } from '../entity/organization.entity';
+// Services
 import { HelperSlugService } from '@/utils/helper/service';
+//
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class OrganizationService {
@@ -21,6 +29,14 @@ export class OrganizationService {
     props: DeepPartial<Organization>[],
   ): Promise<Organization[]> {
     return this.organizationRepository.create(props);
+  }
+
+  async findOne(find?: FindOneOptions<Organization>): Promise<Organization> {
+    return this.organizationRepository.findOne({ ...find });
+  }
+
+  async findBy(find?: FindOptionsWhere<Organization>): Promise<Organization[]> {
+    return this.organizationRepository.findBy({ ...find });
   }
 
   async checkExistsByName(name: string): Promise<boolean> {

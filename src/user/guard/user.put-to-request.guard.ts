@@ -2,13 +2,13 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 // Services
 import { UserService } from '../service/user.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 //
-import { EnumUserStatusCodeError } from '../user.constant';
+import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {
@@ -42,13 +42,13 @@ export class UserPutToRequestGuard implements CanActivate {
     if (!requestUser) {
       this.debuggerService.error(
         'User not found',
-        'UserNotFoundGuard',
+        'UserPutToRequestGuard',
         'canActivate',
       );
 
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserNotFoundError,
-        message: 'user.error.notFound',
+      throw new UnauthorizedException({
+        statusCode: EnumAuthStatusCodeError.AuthGuardJwtAccessTokenError,
+        message: 'http.clientError.unauthorized',
       });
     }
 

@@ -30,14 +30,14 @@ export class AppRouterModule {
               path: '/admin',
               module: RouterAdminModule,
             },
-            // {
-            //   path: '/public',
-            //   module: RouterPublicModule,
-            // },
-            // {
-            //   path: '/callback',
-            //   module: RouterCallbackModule,
-            // },
+            {
+              path: '/public',
+              module: RouterPublicModule,
+            },
+            {
+              path: '/callback',
+              module: RouterCallbackModule,
+            },
             {
               path: '/test',
               module: RouterTestModule,

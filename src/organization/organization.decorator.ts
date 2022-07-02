@@ -3,11 +3,20 @@ import { EnumRequestStatusCodeError } from '@/utils/request';
 import {
   createParamDecorator,
   ExecutionContext,
+  ForbiddenException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 import { IReqOrganizationIdentifierCtx } from './organization.interface';
 import { slugify } from '@/utils/helper';
+import { PermissionsStatusCodeError } from '@/access-control-list/ability';
+
+function throwForbiddenExceptionForCorruptedOrganizationCtx() {
+  throw new ForbiddenException({
+    statusCode: PermissionsStatusCodeError.Forbidden,
+    message: 'permission.error.forbidden',
+  });
+}
 
 export const ReqOrganizationIdentifierCtx = createParamDecorator(
   (data: string, ctx: ExecutionContext): IReqOrganizationIdentifierCtx => {
@@ -34,6 +43,11 @@ export const ReqOrganizationIdentifierCtx = createParamDecorator(
           : !(bodyOrganizationSlug || queryOrganizationSlug)
           ? reqUserOrganizationId
           : undefined
+        : (bodyOrganizationId &&
+            bodyOrganizationId !== __user.organization.id) ||
+          (queryOrganizationId &&
+            queryOrganizationId !== __user.organization.id)
+        ? throwForbiddenExceptionForCorruptedOrganizationCtx()
         : reqUserOrganizationId;
 
     const reqOrganizationSlugCtx: string | undefined =
@@ -43,6 +57,11 @@ export const ReqOrganizationIdentifierCtx = createParamDecorator(
           : !(bodyOrganizationId || queryOrganizationId)
           ? reqUserOrganizationSlug
           : undefined
+        : (bodyOrganizationSlug &&
+            bodyOrganizationSlug !== __user.organization.slug) ||
+          (queryOrganizationSlug &&
+            queryOrganizationSlug !== __user.organization.slug)
+        ? throwForbiddenExceptionForCorruptedOrganizationCtx()
         : reqUserOrganizationSlug;
 
     if (!(isUUID(reqOrganizationIdCtx) || reqOrganizationSlugCtx)) {

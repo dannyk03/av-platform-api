@@ -17,8 +17,9 @@ export const ABILITY_META_KEY = 'AbilityMetaKey';
 export const PERMISSION_ACTIVE_META_KEY = 'PermissionActiveMetaKey';
 
 export enum PermissionsStatusCodeError {
-  NotFoundError = 5200,
-  GuardInvalidError = 5201,
+  Forbidden = 5200,
+  NotFoundError = 5201,
+  GuardInvalidError = 5202,
   ActiveError = 5203,
 }
 

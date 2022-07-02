@@ -1,8 +1,14 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 // Services
 import { DebuggerService } from '@/debugger/service';
 import { PaginationService } from '@/utils/pagination/service';
 import { AclRoleService } from '../service';
+import { OrganizationService } from '@/organization/service';
 //
 import { ResponsePaging, IResponsePaging } from '@/utils/response';
 import { EnumAclAbilityAction } from '@acl/ability';
@@ -12,6 +18,7 @@ import { AclRoleListDto } from '../dto';
 import { ILike } from 'typeorm';
 import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
 import {
+  EnumOrganizationStatusCodeError,
   IReqOrganizationIdentifierCtx,
   ReqOrganizationIdentifierCtx,
 } from '@/organization';
@@ -24,6 +31,7 @@ export class AclRoleController {
   constructor(
     private readonly debuggerService: DebuggerService,
     private readonly aclRoleService: AclRoleService,
+    private readonly organizationService: OrganizationService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -61,6 +69,18 @@ export class AclRoleController {
         order: sort,
       },
     );
+
+    if (!roles.length) {
+      const reqOrganization = await this.organizationService.findOne({
+        where: organizationCtxFind.organization,
+      });
+      if (!reqOrganization) {
+        throw new UnprocessableEntityException({
+          statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
+          message: 'http.clientError.unprocessableEntity',
+        });
+      }
+    }
 
     const totalData: number =
       roles &&
