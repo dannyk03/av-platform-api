@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '@/organization/service';
-import { UserService } from '@/user/service';
+import { UserService } from '@/user/service/user.service';
 import { AclRoleService } from '@acl/role/service';
 import { HelperDateService } from '@/utils/helper/service';
 //

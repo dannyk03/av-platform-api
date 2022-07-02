@@ -51,7 +51,7 @@ export class ReqUserSystemOnlyGuard implements CanActivate {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationNotSystemError,
+        statusCode: EnumOrganizationStatusCodeError.OrganizationSystemOnlyError,
         message: 'organization.error.systemOnly',
       });
     }

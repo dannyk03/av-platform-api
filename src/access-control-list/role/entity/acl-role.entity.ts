@@ -14,7 +14,7 @@ import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
 import { User } from '@/user/entity/user.entity';
-import { UserInvite } from '@/user/entity/user-invite.entity';
+import { OrganizationInvite } from '@/organization/entity/organization-invite.entity';
 //
 import { slugify } from '@/utils/helper';
 
@@ -51,8 +51,8 @@ export class AclRole extends BaseEntity<AclRole> {
   @OneToMany(() => User, (user) => user.role)
   users!: User;
 
-  @OneToMany(() => UserInvite, (userInvite) => userInvite.role)
-  invites!: UserInvite;
+  @OneToMany(() => OrganizationInvite, (userInvite) => userInvite.role)
+  invites!: OrganizationInvite;
 
   @BeforeInsert()
   beforeInsert() {

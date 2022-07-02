@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // Services
-import { UserService } from '@/user/service';
+import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';

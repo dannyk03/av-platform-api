@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsEmail, MaxLength } from 'class-validator';
 
-export class UserInviteDto {
+export class OrganizationInviteDto {
   @IsString()
   @IsEmail()
   @IsNotEmpty()

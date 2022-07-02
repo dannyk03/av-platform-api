@@ -8,14 +8,12 @@
   "upload": "Upload success",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
-  "invite": "Invite succeed",
   "error": {
     "notFound": "User not found",
     "inactive": "User not active",
     "emailExist": "Email user used",
     "mobileNumberExist": "User mobile number already used",
     "active": "User status active invalid",
-    "exist": "User exist",
-    "alreadyInvited": "User already invited"
+    "exist": "User exist"
   }
 }

@@ -6,11 +6,13 @@
   "update": "Update organization success.",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
+  "invite": "Invite succeed",
   "error": {
     "notFound": "Organization not found.",
     "inactive": "Organization not active",
     "exist": "Organization exist",
     "ownerExist": "Organization owner exist",
-    "systemOnly": "Organization not system"
+    "systemOnly": "System only",
+    "alreadyInvited": "User already invited"
   }
 }

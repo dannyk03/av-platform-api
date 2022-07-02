@@ -6,7 +6,7 @@ import { AclRole } from '@acl/role/entity/acl-role.entity';
 //
 
 @Entity()
-export class UserInvite extends BaseEntity<UserInvite> {
+export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
   @Index()
   @Column({
     type: 'varchar',

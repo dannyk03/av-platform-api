@@ -11,7 +11,7 @@ export class EmailService {
     private readonly debuggerService: DebuggerService,
   ) {}
 
-  async sendUserInvite({
+  async sendOrganizationInvite({
     email,
     inviteCode,
     expiresInDays,

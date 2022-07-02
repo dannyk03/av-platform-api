@@ -4,7 +4,6 @@ export enum EnumUserStatusCodeError {
   UserInactiveError = 5402,
   UserEmailExistError = 5403,
   UserMobileNumberExistError = 5404,
-  UserAlreadyInvited = 5405,
 }
 
 export const USER_DEFAULT_PAGE = 1;

@@ -3,7 +3,7 @@ import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { AclRole } from '@acl/role/entity/acl-role.entity';
 import { User } from '@/user/entity/user.entity';
-import { UserInvite } from '@/user/entity/user-invite.entity';
+import { OrganizationInvite } from '@/organization/entity/organization-invite.entity';
 //
 import { slugify } from '@/utils/helper';
 
@@ -36,8 +36,8 @@ export class Organization extends BaseEntity<Organization> {
   })
   users: User[];
 
-  @OneToMany(() => UserInvite, (userInvite) => userInvite.organization)
-  invites!: UserInvite;
+  @OneToMany(() => OrganizationInvite, (userInvite) => userInvite.organization)
+  invites!: OrganizationInvite;
 
   @BeforeInsert()
   beforeInsert() {
