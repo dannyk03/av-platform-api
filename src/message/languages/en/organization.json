@@ -7,12 +7,15 @@
   "inactive": "Inactive succeed",
   "active": "Active succeed",
   "invite": "Invite succeed",
+  "inviteValid": "Invite valid",
+  "join": "Join succeed",
   "error": {
     "notFound": "Organization not found.",
     "inactive": "Organization not active",
     "exist": "Organization exist",
     "ownerExist": "Organization owner exist",
     "systemOnly": "System only",
-    "alreadyInvited": "User already invited"
+    "alreadyInvited": "User already invited",
+    "inviteInvalid": "Invite invalid"
   }
 }

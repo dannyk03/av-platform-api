@@ -49,6 +49,7 @@ export class OrganizationController {
   ) {}
 
   @Response('organization.create')
+  @HttpCode(HttpStatus.OK)
   @AclGuard(
     [
       {
@@ -62,7 +63,6 @@ export class OrganizationController {
     ],
     { systemOnly: true },
   )
-  @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(
     @Body()

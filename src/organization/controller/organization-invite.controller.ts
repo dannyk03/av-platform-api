@@ -1,22 +1,23 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
+  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Post,
+  Query,
 } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { isUUID } from 'class-validator';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
-
-import { AclRoleService, AclRolePresetService } from '@acl/role/service';
-
+import { AclRoleService } from '@acl/role/service';
 import { LogService } from '@/log/service/log.service';
+import { HelperSlugService, HelperDateService } from '@/utils/helper/service';
+import { EmailService } from '@/messaging/service';
+import { OrganizationInviteService } from '../service/organization-invite.service';
 //
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 import { EnumAclAbilityAction } from '@acl/ability';
@@ -25,17 +26,15 @@ import { Response, IResponse } from '@/utils/response';
 import { SuccessException } from '@/utils/error';
 import { EnumRoleStatusCodeError } from '@acl/role';
 import { AclGuard } from '@/auth';
-import { EnumLoggerAction, IReqLogData } from '@/log';
-import { ReqUser } from '@/user/user.decorator';
-import { ReqLogData } from '@/utils/request';
 import { EnumMessagingStatusCodeError } from '@/messaging/messaging.constant';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
 import { IReqOrganizationIdentifierCtx } from '../organization.interface';
-import { EmailService } from '@/messaging/service';
-import { HelperSlugService, HelperDateService } from '@/utils/helper/service';
 import { ConfigService } from '@nestjs/config';
-import { OrganizationInviteService } from '../service/organization-invite.service';
+import { OrganizationInviteValidateDto } from '../dto';
+import { EnumLoggerAction, IReqLogData } from '@/log';
+import { ReqUser } from '@/user/user.decorator';
+import { ReqLogData } from '@/utils/request';
 
 @Controller({
   version: '1',
@@ -54,6 +53,7 @@ export class OrganizationInviteController {
   ) {}
 
   @Response('organization.invite')
+  @HttpCode(HttpStatus.OK)
   @AclGuard([
     {
       action: EnumAclAbilityAction.Create,
@@ -158,7 +158,7 @@ export class OrganizationInviteController {
         });
       }
     } else {
-      const today = this.helperDateService.create();
+      const now = this.helperDateService.create();
       const inviteExpires =
         alreadyExistingOrganizationInvite.expiresAt &&
         this.helperDateService.create(
@@ -166,7 +166,7 @@ export class OrganizationInviteController {
         );
 
       // Resend invite if expired
-      if (!inviteExpires || today > inviteExpires) {
+      if (!inviteExpires || now > inviteExpires) {
         const emailSent = await this.emailService.sendOrganizationInvite({
           email,
           expiresInDays,
@@ -201,5 +201,63 @@ export class OrganizationInviteController {
         });
       }
     }
+  }
+
+  @Response('organization.inviteValid')
+  @Get('/join')
+  async joinValidate(
+    @Query()
+    { inviteCode }: OrganizationInviteValidateDto,
+  ) {
+    const existingInvite = await this.organizationInviteService.findOneBy({
+      inviteCode,
+    });
+
+    if (!existingInvite) {
+      throw new NotFoundException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationInviteNotFoundError,
+        message: 'organization.error.inviteInvalid',
+      });
+    }
+
+    const now = this.helperDateService.create();
+    const expiresAt = this.helperDateService.create(existingInvite.expiresAt);
+
+    if (now > expiresAt || existingInvite.usedAt) {
+      throw new ForbiddenException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationInviteExpiredError,
+        message: 'organization.error.inviteInvalid',
+      });
+    }
+
+    return;
+  }
+
+  @Response('organization.join')
+  @Post('/join')
+  async join(
+    @Query()
+    { inviteCode }: OrganizationInviteValidateDto,
+  ) {
+    const existingInvite = await this.organizationInviteService.findOneBy({
+      inviteCode,
+    });
+
+    if (existingInvite.usedAt) {
+      throw new ForbiddenException({
+        statusCode: EnumOrganizationStatusCodeError.OrganizationInviteUsedError,
+        message: 'organization.error.inviteInvalid',
+      });
+    }
+
+    // TODO create User
+    const now = this.helperDateService.create();
+    existingInvite.usedAt = now;
+
+    await this.organizationInviteService.save(existingInvite);
+
+    return;
   }
 }

@@ -184,12 +184,10 @@ export class AuthCommonController {
       rememberMe,
     );
 
-    const today: Date = this.helperDateService.create();
-    const passwordExpired: Date = this.helperDateService.create(
-      user.passwordExpired,
-    );
+    const now = this.helperDateService.create();
+    const passwordExpired = this.helperDateService.create(user.passwordExpired);
 
-    if (today > passwordExpired) {
+    if (now > passwordExpired) {
       this.debuggerService.error('Password expired', 'AuthController', 'login');
 
       throw new SuccessException({
@@ -224,8 +222,8 @@ export class AuthCommonController {
   }
 
   @Response('auth.refresh')
-  @AuthRefreshJwtGuard()
   @HttpCode(HttpStatus.OK)
+  @AuthRefreshJwtGuard()
   @Post('/refresh')
   async refresh(
     @Res({ passthrough: true })
@@ -238,12 +236,12 @@ export class AuthCommonController {
   ): Promise<IResponse> {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
-    const today: Date = this.helperDateService.create();
-    const userPasswordExpired: Date = this.helperDateService.create(
+    const now = this.helperDateService.create();
+    const userPasswordExpired = this.helperDateService.create(
       reqUser.passwordExpired,
     );
 
-    if (today > userPasswordExpired) {
+    if (now > userPasswordExpired) {
       this.debuggerService.error(
         'Password expired',
         'AuthController',

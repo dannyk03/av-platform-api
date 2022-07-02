@@ -26,6 +26,7 @@
   "IsPasswordStrongConstraint": "{property} must have strong pattern",
   "isPasswordMediumConstraint": "{property} must have medium pattern",
   "isPasswordWeakConstraint": "{property} must have weak pattern",
+  "isLength": "{property} length not allowed",
   "error": {
     "tooManyRequests": "Too many requests"
   }

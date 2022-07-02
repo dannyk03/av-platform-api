@@ -20,10 +20,10 @@ export class AuthPayloadPasswordExpiredGuard implements CanActivate {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { user } = ctx.switchToHttp().getRequest();
     const { passwordExpired } = user;
-    const today: Date = this.helperDateService.create();
+    const now = this.helperDateService.create();
     const passwordExpiredDate = this.helperDateService.create(passwordExpired);
 
-    if (today > passwordExpiredDate) {
+    if (now > passwordExpiredDate) {
       this.debuggerService.error(
         'Auth password expired',
         'AuthPasswordExpiredGuard',

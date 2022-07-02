@@ -2,6 +2,7 @@ import { NestApplication, NestFactory } from '@nestjs/core';
 import {
   Logger,
   RequestMethod,
+  ValidationPipe,
   VersioningType,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
