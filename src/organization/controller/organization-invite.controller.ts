@@ -71,10 +71,6 @@ export class OrganizationInviteController {
       organization: { id, slug },
     };
 
-    const expiresInDays = this.configService.get<number>(
-      'organization.inviteExpireInDays',
-    );
-
     const roleId = isUUID(role) ? role : undefined;
     const roleSlug = !roleId ? this.helperSlugService.slugify(role) : undefined;
 
@@ -92,115 +88,17 @@ export class OrganizationInviteController {
       },
     });
 
-    if (!existingRole?.isActive) {
-      this.debuggerService.error(
-        'Organization role inactive error',
-        'OrganizationInviteController',
-        'invite',
-      );
-
+    if (!existingRole) {
       throw new ForbiddenException({
         statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
         message: 'role.error.notFound',
       });
     }
 
-    if (!existingRole.organization.isActive) {
-      this.debuggerService.error(
-        'Organization inactive error',
-        'OrganizationInviteController',
-        'invite',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
-        message: 'organization.error.inactive',
-      });
-    }
-
-    const alreadyExistingOrganizationInvite =
-      await this.organizationInviteService.findOneBy({
-        email,
-      });
-
-    if (!alreadyExistingOrganizationInvite) {
-      const organizationInvite = await this.organizationInviteService.create({
-        email,
-        role: existingRole,
-        organization: existingRole.organization,
-        // Set expired field after email send succeeded
-      });
-
-      await this.organizationInviteService.save(organizationInvite);
-
-      const emailSent = await this.emailService.sendOrganizationInvite({
-        email,
-        expiresInDays,
-        inviteCode: organizationInvite.inviteCode,
-      });
-
-      if (emailSent) {
-        organizationInvite.expiresAt =
-          this.helperDateService.forwardInDays(expiresInDays);
-        await this.organizationInviteService.save(organizationInvite);
-
-        return { inviteCode: organizationInvite.inviteCode };
-      } else {
-        this.debuggerService.error(
-          'Messaging Email error',
-          'OrganizationInviteController',
-          'invite',
-        );
-
-        throw new InternalServerErrorException({
-          statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-          message: 'messaging.email.error.send',
-        });
-      }
-    } else {
-      const now = this.helperDateService.create();
-      const inviteExpires =
-        alreadyExistingOrganizationInvite.expiresAt &&
-        this.helperDateService.create(
-          alreadyExistingOrganizationInvite.expiresAt,
-        );
-
-      // Resend invite if expired
-      if (!inviteExpires || now > inviteExpires) {
-        const emailSent = await this.emailService.sendOrganizationInvite({
-          email,
-          expiresInDays,
-          inviteCode: alreadyExistingOrganizationInvite.inviteCode,
-        });
-        if (emailSent) {
-          alreadyExistingOrganizationInvite.expiresAt =
-            this.helperDateService.forwardInDays(expiresInDays);
-          await this.organizationInviteService.save(
-            alreadyExistingOrganizationInvite,
-          );
-
-          return { inviteCode: alreadyExistingOrganizationInvite.inviteCode };
-        } else {
-          this.debuggerService.error(
-            'Organization Invite Email error',
-            'OrganizationInviteController',
-            'invite',
-          );
-
-          throw new InternalServerErrorException({
-            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-            message: 'messaging.email.error.resend',
-          });
-        }
-      } else {
-        throw new SuccessException({
-          statusCode:
-            EnumOrganizationStatusCodeError.OrganizationUserAlreadyInvited,
-          message: 'organization.error.alreadyInvited',
-          data: { inviteCode: alreadyExistingOrganizationInvite.inviteCode },
-        });
-      }
-    }
+    return await this.organizationInviteService.invite({
+      email,
+      aclRole: existingRole,
+    });
   }
 
   @Response('organization.inviteValid')

@@ -6,6 +6,7 @@ import { OrganizationInvite } from './entity/organization-invite.entity';
 // Services
 import { OrganizationService } from './service/organization.service';
 import { OrganizationInviteService } from './service/organization-invite.service';
+import { EmailService } from '@/messaging/service/email/email.service';
 //
 import { ConnectionNames } from '@/database';
 
@@ -17,7 +18,7 @@ import { ConnectionNames } from '@/database';
     ),
   ],
   exports: [OrganizationService, OrganizationInviteService],
-  providers: [OrganizationService, OrganizationInviteService],
+  providers: [OrganizationService, OrganizationInviteService, EmailService],
   controllers: [],
 })
 export class OrganizationModule {}
