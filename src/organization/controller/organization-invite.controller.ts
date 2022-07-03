@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   NotFoundException,
   Post,
   Query,
@@ -16,17 +15,14 @@ import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AclRoleService } from '@acl/role/service';
 import { LogService } from '@/log/service/log.service';
 import { HelperSlugService, HelperDateService } from '@/utils/helper/service';
-import { EmailService } from '@/messaging/service';
 import { OrganizationInviteService } from '../service/organization-invite.service';
 //
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 import { EnumAclAbilityAction } from '@acl/ability';
 import { AclSubjectTypeDict } from '@acl/subject';
 import { Response, IResponse } from '@/utils/response';
-import { SuccessException } from '@/utils/error';
 import { EnumRoleStatusCodeError } from '@acl/role';
 import { AclGuard } from '@/auth';
-import { EnumMessagingStatusCodeError } from '@/messaging/messaging.constant';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
 import { IReqOrganizationIdentifierCtx } from '../organization.interface';
@@ -47,7 +43,6 @@ export class OrganizationInviteController {
     private readonly debuggerService: DebuggerService,
     private readonly aclRoleService: AclRoleService,
     private readonly organizationInviteService: OrganizationInviteService,
-    private readonly emailService: EmailService,
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
   ) {}

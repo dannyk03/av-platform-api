@@ -15,6 +15,7 @@ import { UserService } from '@/user/service/user.service';
 import { AclRoleService, AclRolePresetService } from '@acl/role/service';
 import { AuthService } from '@/auth/service/auth.service';
 import { OrganizationService } from '../service/organization.service';
+import { OrganizationInviteService } from '../service/organization-invite.service';
 import { LogService } from '@/log/service/log.service';
 //
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
@@ -41,6 +42,7 @@ export class OrganizationController {
     private defaultDataSource: DataSource,
     private readonly debuggerService: DebuggerService,
     private readonly organizationService: OrganizationService,
+    private readonly organizationInviteService: OrganizationInviteService,
     private readonly userService: UserService,
     private readonly rolePresetService: AclRolePresetService,
     private readonly aclRoleService: AclRoleService,
@@ -66,24 +68,28 @@ export class OrganizationController {
   @Post('/create')
   async create(
     @Body()
-    body: OrganizationCreateDto,
+    {
+      name: organizationName,
+      email: organizationOwnerEmail,
+      password: initialOwnerPassword,
+    }: OrganizationCreateDto,
     @ReqUser()
     reqUser: User,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
     const checkOrganizationExist =
-      await this.organizationService.checkExistsByName(body.name);
+      await this.organizationService.checkExistsByName(organizationName);
 
     const checkOrganizationOwnerExist =
-      await this.userService.checkExistsByEmail(body.email);
+      await this.userService.checkExistsByEmail(organizationOwnerEmail);
 
     if (checkOrganizationExist) {
       this.debuggerService.error(
         'create organization exist',
         'OrganizationController',
         'create',
-        body.name,
+        organizationName,
       );
 
       throw new BadRequestException({
@@ -95,7 +101,7 @@ export class OrganizationController {
         'create organization user exist',
         'OrganizationController',
         'create',
-        body.email,
+        organizationOwnerEmail,
       );
 
       throw new BadRequestException({
@@ -118,44 +124,63 @@ export class OrganizationController {
             );
 
           const organization = await this.organizationService.create({
-            name: body.name,
+            name: organizationName,
             roles: organizationRoles,
           });
 
           await transactionalEntityManager.save(organization);
 
           const { salt, passwordHash, passwordExpired } =
-            await this.authService.createPassword(body.password);
+            await this.authService.createPassword(initialOwnerPassword);
+
+          const organizationOwnerRole = organizationRoles.find(
+            (role) => role.name === EnumOrganizationRole.Owner,
+          );
+
+          organizationOwnerRole.organization = organization;
 
           const organizationOwner = await this.userService.create({
-            // TODO change to false when email validation flow will be ready
             isActive: true,
-            email: body.email,
+            emailVerified: false,
+            email: organizationOwnerEmail,
             password: passwordHash,
             salt,
             passwordExpired,
             organization,
-            role: organizationRoles.find(
-              (role) => role.name === EnumOrganizationRole.Owner,
-            ),
+            role: organizationOwnerRole,
           });
 
           await transactionalEntityManager.save(organizationOwner);
+
+          const inviteRes = await this.organizationInviteService.invite({
+            transactionalEntityManager,
+            email: organizationOwnerEmail,
+            aclRole: organizationOwnerRole,
+          });
+
+          const organizationCreateResult = {
+            organization: { id: organization.id },
+            owner: { id: organizationOwner.id },
+            invite: inviteRes,
+          };
 
           this.debuggerService.debug(
             'Organization Create Succeed',
             'OrganizationAdminController',
             'create',
-            {
-              organization: { id: organization.id },
-              owner: { id: organizationOwner.id },
-            },
+            organizationCreateResult,
           );
 
-          return {
-            organization: { id: organization.id },
-            owner: { id: organizationOwner.id },
-          };
+          await this.logService.info({
+            ...logData,
+            action: EnumLoggerAction.CreateOrganization,
+            description: `${reqUser.id} created organization`,
+            user: reqUser,
+            tags: ['create', 'organization'],
+            transactionalEntityManager,
+          });
+
+          return organizationCreateResult;
         } catch (err) {
           this.debuggerService.error(
             err.message,
@@ -171,14 +196,6 @@ export class OrganizationController {
         }
       },
     );
-
-    await this.logService.info({
-      ...logData,
-      action: EnumLoggerAction.CreateOrganization,
-      description: `${reqUser.id} created organization`,
-      user: reqUser,
-      tags: ['create', 'organization'],
-    });
 
     return result;
   }

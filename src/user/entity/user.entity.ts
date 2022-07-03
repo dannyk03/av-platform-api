@@ -53,18 +53,9 @@ export class User extends BaseEntity<User> {
   })
   emailVerified!: boolean;
 
-  // TODO change to false after verification email flow will be ready
-  @Column({ nullable: true })
-  emailVerificationToken?: string;
-
   @ManyToOne(() => AclRole, (role) => role.users)
   role!: AclRole;
 
   @ManyToOne(() => Organization, (organization) => organization.users)
   organization!: Organization;
-
-  @BeforeInsert()
-  beforeInsert() {
-    this.firstName = this.firstName || this.email;
-  }
 }

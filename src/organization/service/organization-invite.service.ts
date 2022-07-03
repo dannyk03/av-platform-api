@@ -5,7 +5,12 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOptionsWhere,
+  Repository,
+  EntityManager,
+} from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 // Services
 import { EmailService } from '@/messaging/service/email/email.service';
@@ -51,7 +56,15 @@ export class OrganizationInviteService {
     return this.organizationInviteRepository.findOneBy(find);
   }
 
-  async invite({ email, aclRole }: { email: string; aclRole: AclRole }) {
+  async invite({
+    email,
+    aclRole,
+    transactionalEntityManager,
+  }: {
+    email: string;
+    aclRole: AclRole;
+    transactionalEntityManager?: EntityManager;
+  }) {
     const expiresInDays = this.configService.get<number>(
       'organization.inviteExpireInDays',
     );
@@ -94,7 +107,10 @@ export class OrganizationInviteService {
         // Set expired field after email send succeeded
       });
 
-      await this.save(organizationInvite);
+      // If transactional, use transaction
+      transactionalEntityManager
+        ? await transactionalEntityManager.save(organizationInvite)
+        : await this.save(organizationInvite);
 
       const emailSent = await this.emailService.sendOrganizationInvite({
         email,
@@ -105,7 +121,11 @@ export class OrganizationInviteService {
       if (emailSent) {
         organizationInvite.expiresAt =
           this.helperDateService.forwardInDays(expiresInDays);
-        await this.save(organizationInvite);
+
+        // If transactional, use transaction
+        transactionalEntityManager
+          ? await transactionalEntityManager.save(organizationInvite)
+          : await this.save(organizationInvite);
 
         return { inviteCode: organizationInvite.inviteCode };
       } else {
@@ -138,7 +158,13 @@ export class OrganizationInviteService {
         if (emailSent) {
           alreadyExistingOrganizationInvite.expiresAt =
             this.helperDateService.forwardInDays(expiresInDays);
-          await this.save(alreadyExistingOrganizationInvite);
+
+          // If transactional use transaction
+          transactionalEntityManager
+            ? await transactionalEntityManager.save(
+                alreadyExistingOrganizationInvite,
+              )
+            : await this.save(alreadyExistingOrganizationInvite);
 
           return { inviteCode: alreadyExistingOrganizationInvite.inviteCode };
         } else {

@@ -22,6 +22,7 @@ export class LogService {
     userAgent,
     method,
     originalUrl,
+    transactionalEntityManager,
   }: ILog): Promise<any> {
     const create = this.logRepository.create({
       level: EnumLoggerLevel.Info,
@@ -34,10 +35,18 @@ export class LogService {
       method,
       originalUrl,
     });
-    return this.logRepository.save(create);
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
   }
 
-  async debug({ action, description, user, tags }: ILog): Promise<any> {
+  async debug({
+    action,
+    description,
+    user,
+    tags,
+    transactionalEntityManager,
+  }: ILog): Promise<any> {
     const create = this.logRepository.create({
       level: EnumLoggerLevel.Debug,
       user: user,
@@ -45,10 +54,19 @@ export class LogService {
       description,
       tags,
     });
-    return this.logRepository.save(create);
+
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
   }
 
-  async warning({ action, description, user, tags }: ILog): Promise<any> {
+  async warning({
+    action,
+    description,
+    user,
+    tags,
+    transactionalEntityManager,
+  }: ILog): Promise<any> {
     const create = this.logRepository.create({
       level: EnumLoggerLevel.Warn,
       user: user,
@@ -56,10 +74,19 @@ export class LogService {
       description,
       tags,
     });
-    return this.logRepository.save(create);
+
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
   }
 
-  async fatal({ action, description, user, tags }: ILog): Promise<any> {
+  async fatal({
+    action,
+    description,
+    user,
+    tags,
+    transactionalEntityManager,
+  }: ILog): Promise<any> {
     const create = this.logRepository.create({
       level: EnumLoggerLevel.Fatal,
       user: user,
@@ -67,6 +94,9 @@ export class LogService {
       description,
       tags,
     });
-    return this.logRepository.save(create);
+
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
   }
 }
