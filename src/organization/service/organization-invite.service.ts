@@ -10,6 +10,7 @@ import {
   FindOptionsWhere,
   Repository,
   EntityManager,
+  FindOneOptions,
 } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 // Services
@@ -48,6 +49,12 @@ export class OrganizationInviteService {
 
   async save(props: OrganizationInvite): Promise<OrganizationInvite> {
     return this.organizationInviteRepository.save(props);
+  }
+
+  async findOne(
+    find: FindOneOptions<OrganizationInvite>,
+  ): Promise<OrganizationInvite> {
+    return this.organizationInviteRepository.findOne(find);
   }
 
   async findOneBy(

@@ -117,7 +117,7 @@ export class AuthCommonController {
         'login',
       );
 
-      throw new NotFoundException({
+      throw new ForbiddenException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
         message: 'organization.error.inactive',
       });

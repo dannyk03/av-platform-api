@@ -11,11 +11,13 @@ import {
 } from '@nestjs/common';
 import { isUUID } from 'class-validator';
 // Services
+import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AclRoleService } from '@acl/role/service';
 import { LogService } from '@/log/service/log.service';
 import { HelperSlugService, HelperDateService } from '@/utils/helper/service';
 import { OrganizationInviteService } from '../service/organization-invite.service';
+import { AuthService } from '@/auth/service/auth.service';
 //
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 import { EnumAclAbilityAction } from '@acl/ability';
@@ -28,6 +30,7 @@ import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
 import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 import { ConfigService } from '@nestjs/config';
 import { OrganizationInviteValidateDto } from '../dto';
+import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { EnumLoggerAction, IReqLogData } from '@/log';
 import { ReqUser } from '@/user/user.decorator';
 import { ReqLogData } from '@/utils/request';
@@ -42,7 +45,9 @@ export class OrganizationInviteController {
     private readonly logService: LogService,
     private readonly debuggerService: DebuggerService,
     private readonly aclRoleService: AclRoleService,
+    private readonly userService: UserService,
     private readonly organizationInviteService: OrganizationInviteService,
+    private readonly authService: AuthService,
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
   ) {}
@@ -133,9 +138,12 @@ export class OrganizationInviteController {
   async join(
     @Query()
     { inviteCode }: OrganizationInviteValidateDto,
+    @Body()
+    { password, firstName, lastName }: OrganizationJoinDto,
   ) {
-    const existingInvite = await this.organizationInviteService.findOneBy({
-      inviteCode,
+    const existingInvite = await this.organizationInviteService.findOne({
+      where: { inviteCode },
+      relations: ['role', 'organization'],
     });
 
     if (existingInvite.usedAt) {
@@ -145,7 +153,52 @@ export class OrganizationInviteController {
       });
     }
 
-    // TODO create User
+    if (!existingInvite.organization.isActive) {
+      throw new ForbiddenException({
+        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
+        message: 'organization.error.inactive',
+      });
+    }
+
+    if (!existingInvite.role.isActive) {
+      throw new ForbiddenException({
+        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
+        message: 'role.error.inactive',
+      });
+    }
+
+    const existingUser = await this.userService.findOneBy({
+      email: existingInvite.email,
+    });
+
+    const { salt, passwordHash, passwordExpired } =
+      await this.authService.createPassword(password);
+
+    if (existingUser) {
+      await this.userService.save({
+        ...existingUser,
+        salt,
+        passwordExpired,
+        password: passwordHash,
+        firstName,
+        lastName,
+        emailVerified: true,
+      });
+    } else {
+      const joinUser = await this.userService.create({
+        isActive: true,
+        emailVerified: true,
+        email: existingInvite.email,
+        password: passwordHash,
+        salt,
+        passwordExpired,
+        organization: existingInvite.organization,
+        role: existingInvite.role,
+      });
+
+      await this.userService.save(joinUser);
+    }
+
     const now = this.helperDateService.create();
     existingInvite.usedAt = now;
 

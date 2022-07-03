@@ -4,7 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '../entity/user.entity';
 import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -23,12 +28,16 @@ export class UserService {
     return this.userRepository.create(props);
   }
 
-  async createMany(props: DeepPartial<User>[]): Promise<User[]> {
-    return this.userRepository.create(props);
+  async save(user: User): Promise<User> {
+    return this.userRepository.save<User>(user);
   }
 
-  async findOne(find: Record<string, any>): Promise<User> {
+  async findOne(find: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(find);
+  }
+
+  async findOneBy(find: FindOptionsWhere<User>): Promise<User> {
+    return this.userRepository.findOneBy(find);
   }
 
   async findOneById(id: string, options?: Record<string, any>): Promise<User> {
