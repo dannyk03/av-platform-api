@@ -1,7 +1,7 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, DeepPartial } from 'typeorm';
+import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AclPolicyService } from '@acl/policy/service/acl-policy.service';

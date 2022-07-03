@@ -1,7 +1,4 @@
 import { ConfigModule } from '@nestjs/config';
-import { createDatabase } from 'typeorm-extension';
-import dbConfiguration from '@/config/database.config';
-import { ConnectionNames } from '@/database/database.constant';
 import AppConfig from '@/config/app.config';
 import AuthConfig from '@/config/auth.config';
 import DatabaseConfig from '@/config/database.config';

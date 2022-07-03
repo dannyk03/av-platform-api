@@ -12,9 +12,6 @@ import { INTEGRATION_DATABASE_URL } from './database.constant';
 describe('Database Integration', () => {
   let app: INestApplication;
   let helperDateService: HelperDateService;
-
-  const apiKey = 'qwertyuiop12345zxcvbnmkjh';
-  let xApiKey: string;
   let timestamp: number;
 
   beforeEach(async () => {

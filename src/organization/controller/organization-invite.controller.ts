@@ -31,9 +31,9 @@ import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 import { ConfigService } from '@nestjs/config';
 import { OrganizationInviteValidateDto } from '../dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
-import { EnumLoggerAction, IReqLogData } from '@/log';
-import { ReqUser } from '@/user/user.decorator';
-import { ReqLogData } from '@/utils/request';
+// import { EnumLoggerAction, IReqLogData } from '@/log';
+// import { ReqUser } from '@/user/user.decorator';
+// import { ReqLogData } from '@/utils/request';
 
 @Controller({
   version: '1',
