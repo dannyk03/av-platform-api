@@ -31,6 +31,9 @@ import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 import { ConfigService } from '@nestjs/config';
 import { OrganizationInviteValidateDto } from '../dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
+import { ConnectionNames } from '@/database';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 // import { EnumLoggerAction, IReqLogData } from '@/log';
 // import { ReqUser } from '@/user/user.decorator';
 // import { ReqLogData } from '@/utils/request';
@@ -41,6 +44,8 @@ import { OrganizationJoinDto } from '../dto/organization.join.dto';
 })
 export class OrganizationInviteController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly configService: ConfigService,
     private readonly logService: LogService,
     private readonly debuggerService: DebuggerService,
@@ -167,42 +172,59 @@ export class OrganizationInviteController {
       });
     }
 
-    const existingUser = await this.userService.findOneBy({
-      email: existingInvite.email,
+    const existingUser = await this.userService.findOne({
+      where: { email: existingInvite.email },
+      relations: ['authConfig'],
+      select: {
+        authConfig: {
+          id: true,
+        },
+      },
     });
 
-    const { salt, passwordHash, passwordExpired } =
+    const { salt, passwordHash, passwordExpiredAt } =
       await this.authService.createPassword(password);
 
-    if (existingUser) {
-      await this.userService.save({
-        ...existingUser,
-        salt,
-        passwordExpired,
-        password: passwordHash,
-        firstName,
-        lastName,
-        emailVerified: true,
-      });
-    } else {
-      const joinUser = await this.userService.create({
-        isActive: true,
-        emailVerified: true,
-        email: existingInvite.email,
-        password: passwordHash,
-        salt,
-        passwordExpired,
-        organization: existingInvite.organization,
-        role: existingInvite.role,
-      });
+    await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        if (existingUser) {
+          existingUser.authConfig = {
+            ...existingUser.authConfig,
+            password: passwordHash,
+            salt,
+            passwordExpiredAt,
+            emailVerifiedAt: this.helperDateService.create(),
+          };
 
-      await this.userService.save(joinUser);
-    }
+          await transactionalEntityManager.save({
+            ...existingUser,
+            firstName,
+            lastName,
+          });
+        } else {
+          const joinUser = await this.userService.create({
+            isActive: true,
+            email: existingInvite.email,
+            authConfig: {
+              password: passwordHash,
+              emailVerifiedAt: this.helperDateService.create(),
+              salt,
+              passwordExpiredAt,
+            },
+            organization: existingInvite.organization,
+            role: existingInvite.role,
+          });
 
-    const now = this.helperDateService.create();
-    existingInvite.usedAt = now;
+          await transactionalEntityManager.save(joinUser);
+        }
 
-    await this.organizationInviteService.save(existingInvite);
+        const now = this.helperDateService.create();
+        existingInvite.usedAt = now;
+
+        await transactionalEntityManager.save(existingInvite);
+      },
+    );
 
     return;
   }

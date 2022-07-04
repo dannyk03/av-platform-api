@@ -130,7 +130,7 @@ export class OrganizationController {
 
           await transactionalEntityManager.save(organization);
 
-          const { salt, passwordHash, passwordExpired } =
+          const { salt, passwordHash, passwordExpiredAt } =
             await this.authService.createPassword(initialOwnerPassword);
 
           const organizationOwnerRole = organizationRoles.find(
@@ -141,11 +141,12 @@ export class OrganizationController {
 
           const organizationOwner = await this.userService.create({
             isActive: true,
-            emailVerified: false,
             email: organizationOwnerEmail,
-            password: passwordHash,
-            salt,
-            passwordExpired,
+            authConfig: {
+              password: passwordHash,
+              salt,
+              passwordExpiredAt,
+            },
             organization,
             role: organizationOwnerRole,
           });

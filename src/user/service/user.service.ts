@@ -50,12 +50,12 @@ export class UserService {
 
   async updatePassword(
     id: string,
-    { salt, passwordHash, passwordExpired }: IAuthPassword,
+    { salt, passwordHash, passwordExpiredAt }: IAuthPassword,
   ): Promise<User> {
     const user: User = await this.userRepository.findOneBy({ id });
-    user.password = passwordHash;
-    user.passwordExpired = passwordExpired;
-    user.salt = salt;
+    user.authConfig.password = passwordHash;
+    user.authConfig.passwordExpiredAt = passwordExpiredAt;
+    user.authConfig.salt = salt;
 
     return this.userRepository.save(user);
   }

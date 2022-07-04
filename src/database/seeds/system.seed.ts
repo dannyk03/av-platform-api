@@ -58,9 +58,14 @@ export class SystemSeed {
               ...systemSeedData.systemAdmin,
               email: process.env.AUTH_SYSTEM_ADMIN_EMAIL,
               mobileNumber: '+00000000000',
-              password: passwordHash,
-              salt,
-              passwordExpired: this.helperDateService.forwardInDays(365 * 10),
+              authConfig: {
+                password: passwordHash,
+                salt,
+                passwordExpiredAt: this.helperDateService.forwardInDays(
+                  365 * 10,
+                ),
+                emailVerifiedAt: this.helperDateService.create(),
+              },
               organization: systemOrganization,
               role: systemRoles.find(
                 (role) => role.name === EnumSystemRole.SystemAdmin,

@@ -73,6 +73,7 @@ export class AuthCommonController {
       where: { email: body.email },
       relations: [
         'organization',
+        'authConfig',
         'role',
         'role.policy',
         'role.policy.subjects',
@@ -82,6 +83,10 @@ export class AuthCommonController {
         organization: {
           isActive: true,
           name: true,
+        },
+        authConfig: {
+          password: true,
+          passwordExpiredAt: true,
         },
       },
     });
@@ -125,7 +130,7 @@ export class AuthCommonController {
 
     const validate: boolean = await this.authService.validateUserPassword(
       body.password,
-      user.password,
+      user.authConfig.password,
     );
 
     if (!validate) {
@@ -185,9 +190,11 @@ export class AuthCommonController {
     );
 
     const now = this.helperDateService.create();
-    const passwordExpired = this.helperDateService.create(user.passwordExpired);
+    const passwordExpiredAt = this.helperDateService.create(
+      user.authConfig.passwordExpiredAt,
+    );
 
-    if (now > passwordExpired) {
+    if (now > passwordExpiredAt) {
       this.debuggerService.error('Password expired', 'AuthController', 'login');
 
       throw new SuccessException({
@@ -237,11 +244,11 @@ export class AuthCommonController {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
     const now = this.helperDateService.create();
-    const userPasswordExpired = this.helperDateService.create(
-      reqUser.passwordExpired,
+    const userPasswordExpiredAt = this.helperDateService.create(
+      reqUser.authConfig.passwordExpiredAt,
     );
 
-    if (now > userPasswordExpired) {
+    if (now > userPasswordExpiredAt) {
       this.debuggerService.error(
         'Password expired',
         'AuthController',
@@ -288,7 +295,14 @@ export class AuthCommonController {
     @Body() body: AuthChangePasswordDto,
     @ReqJwtUser('id') id: string,
   ): Promise<void> {
-    const user = await this.userService.findOneById(id);
+    const user = await this.userService.findOneById(id, {
+      relations: ['authConfig'],
+      select: {
+        authConfig: {
+          password: true,
+        },
+      },
+    });
 
     if (!user) {
       this.debuggerService.error(
@@ -305,7 +319,7 @@ export class AuthCommonController {
 
     const matchPassword: boolean = await this.authService.validateUserPassword(
       body.oldPassword,
-      user.password,
+      user.authConfig.password,
     );
     if (!matchPassword) {
       this.debuggerService.error(
@@ -323,7 +337,7 @@ export class AuthCommonController {
     const newMatchPassword: boolean =
       await this.authService.validateUserPassword(
         body.newPassword,
-        user.password,
+        user.authConfig.password,
       );
     if (newMatchPassword) {
       this.debuggerService.error(

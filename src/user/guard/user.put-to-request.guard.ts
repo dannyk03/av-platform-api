@@ -24,6 +24,7 @@ export class UserPutToRequestGuard implements CanActivate {
     const requestUser = await this.userService.findOneById(user.id, {
       relations: [
         'organization',
+        'authConfig',
         'role',
         'role.policy',
         'role.policy.subjects',
@@ -35,6 +36,10 @@ export class UserPutToRequestGuard implements CanActivate {
           id: true,
           name: true,
           slug: true,
+        },
+        authConfig: {
+          password: true,
+          passwordExpiredAt: true,
         },
       },
     });

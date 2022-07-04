@@ -1,14 +1,22 @@
-import { Entity, Column, Index, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  Index,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entities/base.entity';
 import { Organization } from '@/organization/entity/organization.entity';
 import { AclRole } from '@acl/role/entity/acl-role.entity';
+import { UserAuthConfig } from '@/auth/entity/user-auth-config.entity';
 //
 
 @Entity()
 export class User extends BaseEntity<User> {
   @Column({ nullable: true })
-  firstName!: string;
+  firstName?: string;
 
   @Column({ nullable: true })
   lastName?: string;
@@ -31,27 +39,20 @@ export class User extends BaseEntity<User> {
   @Column({
     type: 'varchar',
     length: 100,
+    nullable: true,
   })
-  password!: string;
-
-  @Column()
-  passwordExpired!: Date;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-  })
-  salt!: string;
+  title?: string;
 
   @Column({
     default: false,
   })
   isActive!: boolean;
 
-  @Column({
-    default: false,
+  @OneToOne(() => UserAuthConfig, {
+    cascade: true,
   })
-  emailVerified!: boolean;
+  @JoinColumn()
+  authConfig!: UserAuthConfig;
 
   @ManyToOne(() => AclRole, (role) => role.users)
   role!: AclRole;

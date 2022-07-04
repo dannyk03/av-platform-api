@@ -20,7 +20,6 @@ export const systemSeedData: {
   systemAdmin: {
     firstName: 'SystemAdmin',
     isActive: true,
-    emailVerified: true,
   },
   roles: [
     {
