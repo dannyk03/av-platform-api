@@ -156,7 +156,10 @@ export class OrganizationInviteService {
         );
 
       // Resend invite if expired
-      if (!inviteExpires || now > inviteExpires) {
+      const isResend =
+        (!inviteExpires || now > inviteExpires) &&
+        !alreadyExistingOrganizationInvite.usedAt;
+      if (isResend) {
         const emailSent = await this.emailService.sendOrganizationInvite({
           email,
           expiresInDays,
@@ -191,7 +194,12 @@ export class OrganizationInviteService {
           statusCode:
             EnumOrganizationStatusCodeError.OrganizationUserAlreadyInvited,
           message: 'organization.error.alreadyInvited',
-          data: { inviteCode: alreadyExistingOrganizationInvite.inviteCode },
+
+          ...(!alreadyExistingOrganizationInvite.usedAt && {
+            data: {
+              inviteCode: alreadyExistingOrganizationInvite.inviteCode,
+            },
+          }),
         });
       }
     }
