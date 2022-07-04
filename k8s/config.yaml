@@ -86,6 +86,33 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: db
+
+            # APP
+            - name: APP_NAME
+              value: 'platform'
+            - name: APP_ENV
+              value: 'development'
+            - name: APP_MODE
+              value: 'simple'
+            - name: APP_LANGUAGE
+              value: 'en'
+            - name: APP_TZ
+              value: 'Asia/Jerusalem'
+            - name: APP_HOST
+              value: 'platform.us.stg.avoc.io'
+            - name: APP_PORT
+              value: '8080'
+            - name: APP_VERSIONING
+              value: 'true'
+            - name: APP_DEBUG
+              value: 'true'
+            - name: APP_HTTP_ON
+              value: 'true'
+            - name: APP_TASK_ON
+              value: 'false'
+            - name: MIDDLEWARE_TOLERANCE_TIMESTAMP
+              value: '5'
+
           livenessProbe:
             httpGet:
               path: /health
