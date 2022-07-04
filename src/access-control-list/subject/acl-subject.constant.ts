@@ -1,6 +1,7 @@
 export enum AclBaseSubjectEnum {
   System = 'System',
   Organization = 'Organization',
+  OrganizationInvite = 'OrganizationInvite',
   User = 'User',
   Policy = 'Policy',
   Role = 'Role',

@@ -62,7 +62,7 @@ export class OrganizationInviteController {
   @AclGuard([
     {
       action: EnumAclAbilityAction.Create,
-      subject: AclSubjectTypeDict.User,
+      subject: AclSubjectTypeDict.OrganizationInvite,
     },
   ])
   @Post('/invite')
