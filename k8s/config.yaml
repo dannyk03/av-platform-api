@@ -61,6 +61,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.hostIP
+            # DB
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
@@ -86,6 +87,42 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: db
+            # AUTH
+            - name: AUTH_SPUPER_ADMIN_INITIAL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: super-admin-initial-password
+            - name: AUTH_JWT_ACCESS_TOKEN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-access-token-secret-key
+            - name: AUTH_JWT_ACCESS_TOKEN_EXPIRED
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-access-token-expired
+            - name: AUTH_JWT_REFRESH_TOKEN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-refresh-token-secret-key
+            - name: AUTH_JWT_REFRESH_TOKEN_EXPIRED
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-refresh-token-expired
+            - name: AUTH_BASIC_TOKEN_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: basic-token-client-id
+            - name: AUTH_BASIC_TOKEN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: basic-token-client-secret
 
             # APP
             - name: APP_NAME
