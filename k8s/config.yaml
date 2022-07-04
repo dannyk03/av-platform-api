@@ -120,9 +120,9 @@ spec:
             - name: APP_TZ
               value: 'Asia/Jerusalem'
             - name: APP_HOST
-              value: 'platform.us.stg.avoc.io'
+              value: '0.0.0.0'
             - name: APP_PORT
-              value: '8080'
+              value: '3000'
             - name: APP_VERSIONING
               value: 'true'
             - name: APP_DEBUG
