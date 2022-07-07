@@ -1,11 +1,10 @@
-import { EnumAclAbilityAction, EnumAclAbilityType } from '@acl/ability';
 import { DeepPartial } from 'typeorm';
+import { Action, AbilityVerb, Subject } from '@avo/casl';
 // Entities
 import { User } from '@/user/entity/user.entity';
 import { Organization } from '@/organization/entity';
 import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
 //
-import { AclSubjectTypeDict } from '@acl/subject';
 import { EnumSystemRole } from '@acl/role';
 import { SYSTEM_ORGANIZATION_NAME } from '@/system';
 
@@ -27,11 +26,11 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: AclSubjectTypeDict.System,
+            type: Subject.System,
             abilities: [
               {
-                type: EnumAclAbilityType.Can,
-                action: EnumAclAbilityAction.Manage,
+                type: AbilityVerb.Can,
+                action: Action.Manage,
               },
             ],
           },
@@ -43,20 +42,20 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: AclSubjectTypeDict.Order,
+            type: Subject.Order,
             abilities: [
               {
-                type: EnumAclAbilityType.Can,
-                action: EnumAclAbilityAction.Manage,
+                type: AbilityVerb.Can,
+                action: Action.Manage,
               },
             ],
           },
           {
-            type: AclSubjectTypeDict.System,
+            type: Subject.System,
             abilities: [
               {
-                type: EnumAclAbilityType.Can,
-                action: EnumAclAbilityAction.Read,
+                type: AbilityVerb.Can,
+                action: Action.Read,
               },
             ],
           },
@@ -68,11 +67,11 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: AclSubjectTypeDict.System,
+            type: Subject.System,
             abilities: [
               {
-                type: EnumAclAbilityType.Can,
-                action: EnumAclAbilityAction.Read,
+                type: AbilityVerb.Can,
+                action: Action.Read,
               },
             ],
           },

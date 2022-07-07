@@ -37,6 +37,7 @@
     "schema:sync": "yarn typeorm schema:sync -d src/database/typeorm-cli/default.datasource.ts"
   },
   "dependencies": {
+    "@avo/casl": "^0.0.10",
     "@aws-sdk/client-s3": "^3.118.1",
     "@casl/ability": "^5.4.4",
     "@faker-js/faker": "^7.3.0",

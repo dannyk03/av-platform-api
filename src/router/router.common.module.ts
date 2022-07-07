@@ -8,6 +8,7 @@ import { UserModule } from '@/user/user.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
+import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 // Controllers
 import { AuthCommonController } from '@/auth/controller';
 import { HealthController } from '@/health/controller';
@@ -15,6 +16,7 @@ import {
   OrganizationController,
   OrganizationInviteController,
 } from '@/organization/controller';
+import { AclController } from '@acl/controller';
 
 @Module({
   controllers: [
@@ -22,6 +24,7 @@ import {
     AuthCommonController,
     OrganizationController,
     OrganizationInviteController,
+    AclController,
   ],
   providers: [],
   exports: [],
@@ -34,6 +37,7 @@ import {
     AuthModule,
     UserModule,
     AclRoleModule,
+    AclPolicyModule,
     OrganizationModule,
     MessagingModule,
   ],

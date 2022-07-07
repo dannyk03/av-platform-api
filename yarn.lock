@@ -68,6 +68,13 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
+"@avo/casl@^0.0.10":
+  version "0.0.10"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.10.tgz#e70be0ca5ffad5db7a0e650e217fa4665a82db16"
+  integrity sha512-QvV7KYtNT4XkQRr463LSxbWujHGvZQ86WEt90Lfq9iHvziDvmAYSQ0QyLeboFqbe1vM3Is72gYn0omwk6yYxaQ==
+  dependencies:
+    "@casl/ability" "^5.4.4"
+
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@aws-crypto/crc32/-/crc32-2.0.0.tgz#4ad432a3c03ec3087c5540ff6e41e6565d2dc153"

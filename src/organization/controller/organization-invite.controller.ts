@@ -9,6 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Action, Subject } from '@avo/casl';
 import { isUUID } from 'class-validator';
 // Services
 import { UserService } from '@/user/service/user.service';
@@ -20,8 +21,6 @@ import { OrganizationInviteService } from '../service/organization-invite.servic
 import { AuthService } from '@/auth/service/auth.service';
 //
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
-import { EnumAclAbilityAction } from '@acl/ability';
-import { AclSubjectTypeDict } from '@acl/subject';
 import { Response, IResponse } from '@/utils/response';
 import { EnumRoleStatusCodeError } from '@acl/role';
 import { AclGuard } from '@/auth';
@@ -61,8 +60,8 @@ export class OrganizationInviteController {
   @HttpCode(HttpStatus.OK)
   @AclGuard([
     {
-      action: EnumAclAbilityAction.Create,
-      subject: AclSubjectTypeDict.OrganizationInvite,
+      action: Action.Create,
+      subject: Subject.OrganizationInvite,
     },
   ])
   @Post('/invite')
@@ -139,6 +138,7 @@ export class OrganizationInviteController {
   }
 
   @Response('organization.join')
+  @HttpCode(HttpStatus.OK)
   @Post('/join')
   async join(
     @Query()

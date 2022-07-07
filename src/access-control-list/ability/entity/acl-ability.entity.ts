@@ -1,27 +1,24 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
+import { Action, AbilityVerb } from '@avo/casl';
 // Entities
 import { BaseEntity } from '@/database/entities/base.entity';
 import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
 //
-import {
-  EnumAclAbilityAction,
-  EnumAclAbilityType,
-} from '../acl-ability.constant';
 import { AbilityCondition } from '../acl-ability.interface';
 
 @Entity({ name: 'acl_abilities' })
 export class AclAbility extends BaseEntity<AclAbility> {
   @Column({
     type: 'enum',
-    enum: EnumAclAbilityType,
+    enum: AbilityVerb,
   })
-  type!: EnumAclAbilityType;
+  type!: AbilityVerb;
 
   @Column({
     type: 'enum',
-    enum: EnumAclAbilityAction,
+    enum: Action,
   })
-  action!: EnumAclAbilityAction;
+  action!: Action;
 
   @Column({
     type: 'varchar',

@@ -1,7 +1,6 @@
-import { EnumAclAbilityAction } from './ability';
-import { AclSubjectTypeDict } from './subject';
+import { Subject, Action } from '@avo/casl';
 
 export interface IReqAclAbility {
-  action: EnumAclAbilityAction;
-  subject: keyof typeof AclSubjectTypeDict;
+  action: Action;
+  subject: keyof typeof Subject;
 }

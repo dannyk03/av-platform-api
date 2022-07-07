@@ -4,6 +4,7 @@ import {
   Query,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Subject, Action } from '@avo/casl';
 // Services
 import { DebuggerService } from '@/debugger/service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -11,8 +12,6 @@ import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
 //
 import { ResponsePaging, IResponsePaging } from '@/utils/response';
-import { EnumAclAbilityAction } from '@acl/ability';
-import { AclSubjectTypeDict } from '@acl/subject';
 import { AclGuard } from '@/auth';
 import { AclRoleListDto } from '../dto';
 import { ILike } from 'typeorm';
@@ -38,8 +37,8 @@ export class AclRoleController {
   @ResponsePaging('role.list')
   @AclGuard([
     {
-      action: EnumAclAbilityAction.Read,
-      subject: AclSubjectTypeDict.Role,
+      action: Action.Read,
+      subject: Subject.Role,
     },
   ])
   @Get('/list')

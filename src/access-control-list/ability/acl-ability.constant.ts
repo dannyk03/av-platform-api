@@ -1,17 +1,3 @@
-export enum EnumAclAbilityAction {
-  Manage = 'manage',
-  Modify = 'modify',
-  Create = 'create',
-  Update = 'update',
-  Read = 'read',
-  Delete = 'delete',
-}
-
-export enum EnumAclAbilityType {
-  Can = 'can',
-  Cannot = 'cannot',
-}
-
 export const ABILITY_META_KEY = 'AbilityMetaKey';
 
 export const PERMISSION_ACTIVE_META_KEY = 'PermissionActiveMetaKey';

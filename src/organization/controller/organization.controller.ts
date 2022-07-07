@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { Subject, Action } from '@avo/casl';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { UserService } from '@/user/service/user.service';
@@ -20,8 +21,6 @@ import { LogService } from '@/log/service/log.service';
 //
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
-import { EnumAclAbilityAction } from '@acl/ability';
-import { AclSubjectTypeDict } from '@acl/subject';
 import { Response, IResponse } from '@/utils/response';
 import { EnumStatusCodeError } from '@/utils/error';
 import { EnumOrganizationRole } from '@acl/role';
@@ -55,12 +54,12 @@ export class OrganizationController {
   @AclGuard(
     [
       {
-        action: EnumAclAbilityAction.Create,
-        subject: AclSubjectTypeDict.Organization,
+        action: Action.Create,
+        subject: Subject.Organization,
       },
       {
-        action: EnumAclAbilityAction.Create,
-        subject: AclSubjectTypeDict.User,
+        action: Action.Create,
+        subject: Subject.User,
       },
     ],
     { systemOnly: true },
