@@ -19,14 +19,17 @@ EXPOSE 8080/tcp
 # Copying this first prevents re-running yarn install on every code change.
 COPY --chown=node:node package.json yarn.lock .npmrc ./
 
-# Install app dependencies using yarn
+
 # bcrycp package requires node-gyp + python (performance and security)
 # https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
-RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python && \
-  yarn install --quiet node-gyp -g &&\
-  yarn install --frozen-lockfile --quiet && \
-  apk del native-deps
+# RUN apk --no-cache add --virtual native-deps \
+#   g++ gcc libgcc libstdc++ linux-headers make python && \
+#   yarn install --quiet node-gyp -g &&\
+#   yarn install --frozen-lockfile --quiet && \
+#   apk del native-deps
+
+# Install app dependencies using yarn
+RUN yarn install --frozen-lockfile --quiet
 
 # Bundle app source
 COPY --chown=node:node . .
