@@ -25,11 +25,11 @@ COPY --chown=node:node package.json yarn.lock .npmrc ./
 # RUN apk --no-cache add --virtual native-deps \
 #   g++ gcc libgcc libstdc++ linux-headers make python && \
 #   yarn install --quiet node-gyp -g &&\
-#   yarn install --frozen-lockfile --quiet && \
+#   yarn install --immutable && \
 #   apk del native-deps
 
 # Install app dependencies using yarn
-RUN yarn install --frozen-lockfile --quiet
+RUN yarn install --immutable
 
 # Bundle app source
 COPY --chown=node:node . .
@@ -58,7 +58,7 @@ COPY --chown=node:node package.json yarn.lock .npmrc ./
 
 # In order to run `yarn build` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,
-# In the previous development stage we ran `yarn install --frozen-lockfile` which installed all dependencies.
+# In the previous development stage we ran `yarn install --immutable` which installed all dependencies.
 # So we can copy over the node_modules directory from the development image into this build image.
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
