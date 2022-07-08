@@ -72,7 +72,7 @@ ENV NODE_ENV production
 
 # Only production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
-RUN yarn install && npm cache clean --force
+RUN yarn install && yarn cache clean --all
 
 # Prevent 'error: An unexpected error occurred: "Failed to replace env in config: ${JFROG_AUTH_TOKEN}".' in runtime
 RUN rm -f .npmrc
