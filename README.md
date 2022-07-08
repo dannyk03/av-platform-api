@@ -139,4 +139,3 @@ Version of the main packages and main tools.
 [ref-jest]: https://jestjs.io/docs/getting-started
 [ref-docker]: https://docs.docker.com
 [ref-yarn]: https://yarnpkg.com
-[ref-postman-import-export]: https://learning.postman.com/docs/getting-started/importing-and-exporting-data/

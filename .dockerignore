@@ -1,6 +1,7 @@
 
 # Build dependencies
 node_modules/
+nginx/
 coverage/
 e2e-coverage/
 integration-coverage/

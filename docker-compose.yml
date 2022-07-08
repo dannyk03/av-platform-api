@@ -1,11 +1,25 @@
 version: '3.9'
 services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - 3000:80
+    networks:
+      - app-network
+    depends_on:
+      - platform-api
+
   platform-api:
     build:
       dockerfile: Dockerfile
       context: .
       # Only build development stage from our dockerfile
       target: development
+      args:
+        JFROG_AUTH_TOKEN: ${JFROG_AUTH_TOKEN}
     env_file:
       - .env
     environment:
@@ -17,7 +31,7 @@ services:
       - app-network
     volumes:
       - .:/usr/src/app
-      # - ./usr/src/app/node_modules
+      - /usr/src/app/node_modules
     restart: unless-stopped
     links:
       - postgres
