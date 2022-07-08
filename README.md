@@ -90,7 +90,7 @@ Version of the main packages and main tools.
 ## Prerequisites
 
 1. Understand [NestJs Fundamental](http://nestjs.com), Main Framework. NodeJs Framework with support fully TypeScript.
-2. Understand[Typescript Fundamental](https://www.typescriptlang.org), Programming Language. It will help us to write and read the code.
+2. Understand [Typescript Fundamental](https://www.typescriptlang.org), Programming Language. It will help us to write and read the code.
 3. Understand [ExpressJs Fundamental](https://nodejs.org), NodeJs Base Framework. It will help us in understanding how the NestJs Framework works.
 4. Understand what Sql is and how it works as a database, especially [PostgreSQL.](https://www.postgresql.org/docs/)
 5. Understand [Microservice Architecture](https://microservices.io) and the design pattern (TBD).
