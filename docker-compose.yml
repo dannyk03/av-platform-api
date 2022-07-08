@@ -4,13 +4,14 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      # Only will build development stage from our dockerfile
+      # Only build development stage from our dockerfile
       target: development
+      args:
+        JFROG_AUTH_TOKEN: ${JFROG_AUTH_TOKEN}
     env_file:
       - .env
     environment:
-      - POSTGRES_HOST=postgres
-      - JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}
+      POSTGRES_HOST: postgres
     ports:
       - 8080:8080
     networks:
@@ -28,6 +29,8 @@ services:
 
   postgres:
     image: postgres:14.2
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
     networks:
       - app-network
     env_file:

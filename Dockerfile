@@ -1,16 +1,22 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
+ARG NODE_IMAGE_TAG 18-alpine
 
-FROM node:lts-alpine As development
+###############################
+# BUILD FOR LOCAL DEVELOPMENT #
+###############################
+
+FROM node:${NODE_IMAGE_TAG} As development
+
+# Use the node user from the image (instead of the root user)
+USER node
 
 WORKDIR /usr/src/app
 ARG JFROG_AUTH_TOKEN
 
+EXPOSE 8080/tcp
+
 # Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running yarn install on every code change.
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json yarn.lock .npmrc ./
 
 # Install app dependencies using yarn
 RUN yarn install --frozen-lockfile
@@ -18,19 +24,24 @@ RUN yarn install --frozen-lockfile
 # Bundle app source
 COPY --chown=node:node . .
 
+# Prevent 'error: An unexpected error occurred: "Failed to replace env in config: ${JFROG_AUTH_TOKEN}".' in runtime
+RUN rm -f .npmrc
+
+
+########################
+# BUILD FOR PRODUCTION #
+########################
+
+FROM node:${NODE_IMAGE_TAG} As build
+
 # Use the node user from the image (instead of the root user)
 USER node
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:lts-alpine As build
 
 WORKDIR /usr/src/app
 ARG JFROG_AUTH_TOKEN
 
-COPY --chown=node:node package*.json ./
+# Copy application dependency manifests to the container image.
+COPY --chown=node:node package.json yarn.lock .npmrc ./
 
 # In order to run `yarn build` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,
@@ -50,13 +61,18 @@ ENV NODE_ENV production
 # This ensures that the node_modules directory is as optimized as possible.
 RUN yarn install && npm cache clean --force
 
+# Prevent 'error: An unexpected error occurred: "Failed to replace env in config: ${JFROG_AUTH_TOKEN}".' in runtime
+RUN rm -f .npmrc
+
+
+##############
+# PRODUCTION #
+##############
+
+FROM node:${NODE_IMAGE_TAG} As production
+
+# Use the node user from the image (instead of the root user)
 USER node
-
-###################
-# PRODUCTION
-###################
-
-FROM node:lts-alpine As production
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
