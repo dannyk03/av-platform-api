@@ -9,9 +9,10 @@ export class CorrelationIdMiddleware implements NestMiddleware {
   constructor(private readonly configService: ConfigService) {}
 
   use(req: IRequestApp, res: Response, next: NextFunction): void {
-    const correlationHeader = req.header('x-correlation-id') || uuidV4();
-    req.headers['x-correlation-id'] = correlationHeader;
-    res.set('X-Correlation-Id', correlationHeader);
+    const correlationId = req.header('x-correlation-id') || uuidV4();
+    req.headers['x-correlation-id'] = correlationId;
+    req.correlationId = correlationId;
+    res.set('X-Correlation-Id', correlationId);
     next();
   }
 }
