@@ -68,7 +68,7 @@ COPY --chown=node:node . .
 RUN yarn build
 
 # Set NODE_ENV environment variable
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Only production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
