@@ -25,5 +25,4 @@ logs/
 .editorconfig
 dockerfile
 docker-compose.yml
-cspell.json
 README.md

@@ -1,13 +1,14 @@
-ARG NODE_IMAGE_TAG 18-alpine
+ARG NODE_IMAGE_TAG=18-alpine
 
 ###############################
 # BUILD FOR LOCAL DEVELOPMENT #
 ###############################
 
-FROM node:${NODE_IMAGE_TAG} As development
+FROM node:$NODE_IMAGE_TAG As development
 
-# Use the node user from the image (instead of the root user)
-USER node
+# bcrycp package requires python (performance and security)
+# RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python
+# RUN npm install --quiet node-gyp -g
 
 WORKDIR /usr/src/app
 ARG JFROG_AUTH_TOKEN
@@ -19,7 +20,13 @@ EXPOSE 8080/tcp
 COPY --chown=node:node package.json yarn.lock .npmrc ./
 
 # Install app dependencies using yarn
-RUN yarn install --frozen-lockfile
+# bcrycp package requires node-gyp + python (performance and security)
+# https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
+RUN apk --no-cache add --virtual native-deps \
+  g++ gcc libgcc libstdc++ linux-headers make python && \
+  yarn install --quiet node-gyp -g &&\
+  yarn install --frozen-lockfile --quiet && \
+  apk del native-deps
 
 # Bundle app source
 COPY --chown=node:node . .
@@ -27,18 +34,21 @@ COPY --chown=node:node . .
 # Prevent 'error: An unexpected error occurred: "Failed to replace env in config: ${JFROG_AUTH_TOKEN}".' in runtime
 RUN rm -f .npmrc
 
+# Use the node user from the image (instead of the root user)
+USER node
+
 
 ########################
 # BUILD FOR PRODUCTION #
 ########################
 
-FROM node:${NODE_IMAGE_TAG} As build
-
-# Use the node user from the image (instead of the root user)
-USER node
+FROM node:$NODE_IMAGE_TAG As build
 
 WORKDIR /usr/src/app
 ARG JFROG_AUTH_TOKEN
+
+# bcrycp package requires python (performance and security)
+# RUN apt-get update || : && apt-get install python -y
 
 # Copy application dependency manifests to the container image.
 COPY --chown=node:node package.json yarn.lock .npmrc ./
@@ -63,6 +73,9 @@ RUN yarn install && npm cache clean --force
 
 # Prevent 'error: An unexpected error occurred: "Failed to replace env in config: ${JFROG_AUTH_TOKEN}".' in runtime
 RUN rm -f .npmrc
+
+# Use the node user from the image (instead of the root user)
+USER node
 
 
 ##############

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 services:
   platform-api:
     build:
@@ -6,19 +6,18 @@ services:
       context: .
       # Only build development stage from our dockerfile
       target: development
-      args:
-        JFROG_AUTH_TOKEN: ${JFROG_AUTH_TOKEN}
     env_file:
       - .env
     environment:
       POSTGRES_HOST: postgres
+      JFROG_AUTH_TOKEN: ${JFROG_AUTH_TOKEN}
     ports:
       - 8080:8080
     networks:
       - app-network
     volumes:
       - .:/usr/src/app
-      - ./usr/src/app/node_modules
+      # - ./usr/src/app/node_modules
     restart: unless-stopped
     links:
       - postgres
