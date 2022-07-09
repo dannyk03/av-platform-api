@@ -3,6 +3,7 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
@@ -28,8 +29,21 @@ export class ErrorHttpFilter implements ExceptionFilter {
         { appLanguages },
       );
       return responseHttp.status(statusHttp).json({
-        statusCode: 500,
         message: rMessage,
+      });
+    }
+
+    if (exception instanceof ServiceUnavailableException) {
+      const response = exception.getResponse() as {
+        error: Record<string, any>;
+      };
+      const rMessage: string | IMessage = await this.messageService.get(
+        'health.error.check',
+        { appLanguages },
+      );
+      return responseHttp.status(statusHttp).json({
+        message: rMessage,
+        data: response,
       });
     }
 

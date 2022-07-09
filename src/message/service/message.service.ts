@@ -103,10 +103,12 @@ export class MessageService {
     key: string,
     options?: IMessageSetOptions,
   ): any {
-    return this.i18n.translate(key, {
-      lang: lang,
-      args: options?.properties ? options.properties : undefined,
-    });
+    return key
+      ? this.i18n.translate(key, {
+          lang: lang,
+          args: options?.properties ? options.properties : undefined,
+        })
+      : null;
   }
 
   async getLanguages(): Promise<string[]> {
