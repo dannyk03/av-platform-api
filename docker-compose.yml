@@ -23,6 +23,8 @@ services:
       - .:/usr/src/app
       - node_modules:/usr/src/app/node_modules
     restart: unless-stopped
+    profiles:
+      - full
     links:
       - postgres
     depends_on:
@@ -45,6 +47,9 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
     restart: unless-stopped
+    profiles:
+      - full
+      - db
 
 networks:
   app-network:
