@@ -1,17 +1,5 @@
 version: '3.9'
 services:
-  # nginx:
-  #   restart: always
-  #   build:
-  #     dockerfile: Dockerfile.dev
-  #     context: ./nginx
-  #   ports:
-  #     - 3000:80
-  #   networks:
-  #     - app-network
-  #   depends_on:
-  #     - platform-api
-
   platform-api:
     container_name: platform-api
     build:
