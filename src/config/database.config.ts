@@ -22,7 +22,7 @@ export default registerAs(
           `/../database/migrations/${ConnectionNames.Default}/**/*{.ts,.js}`,
       ],
       namingStrategy: new TypeormSnakeCaseNamingStrategy(),
-      migrationsRun: false,
+      migrationsRun: true,
       synchronize: false, // Don't change never!!!
       // autoLoadEntities: true,
     },

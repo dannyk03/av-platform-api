@@ -11,9 +11,6 @@ ARG JFROG_AUTH_TOKEN
 
 WORKDIR /usr/src/app
 
-
-EXPOSE 8080
-
 # Copy application dependency manifests to the container image.
 # Copying this first prevents re-running yarn install on every code change.
 COPY --chown=node:node package.json yarn.lock .npmrc ./
@@ -39,6 +36,7 @@ RUN rm -f .npmrc
 # Use the node user from the image (instead of the root user)
 USER node
 
+# CMD [ "yarn", "start:dev"] 
 
 ########################
 # BUILD FOR PRODUCTION #

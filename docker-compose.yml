@@ -1,18 +1,19 @@
 version: '3.9'
 services:
-  nginx:
-    restart: always
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
-    ports:
-      - 3000:80
-    networks:
-      - app-network
-    depends_on:
-      - platform-api
+  # nginx:
+  #   restart: always
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #     context: ./nginx
+  #   ports:
+  #     - 3000:80
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - platform-api
 
   platform-api:
+    container_name: platform-api
     build:
       dockerfile: Dockerfile
       context: .
@@ -26,12 +27,13 @@ services:
       POSTGRES_HOST: postgres
       JFROG_AUTH_TOKEN: ${JFROG_AUTH_TOKEN}
     ports:
-      - 8080:8080
+      - ${APP_PORT}:${APP_PORT}
+      - 9229:9229
     networks:
       - app-network
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - node_modules:/usr/src/app/node_modules
     restart: unless-stopped
     links:
       - postgres
@@ -41,17 +43,19 @@ services:
       sh -c "yarn start:dev"
 
   postgres:
+    container_name: postgres
     image: postgres:14.2
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - dbdata:/var/lib/postgresql/data
     networks:
       - app-network
     env_file:
       - .env
     ports:
       - ${POSTGRES_PORT}:5432
-    volumes:
-      - dbdata:/var/lib/postgresql/data
     restart: unless-stopped
 
 networks:
@@ -60,3 +64,4 @@ networks:
     driver: bridge
 volumes:
   dbdata:
+  node_modules:

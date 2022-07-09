@@ -1,17 +1,18 @@
 
 # Build dependencies
-node_modules/
-nginx/
-coverage/
-e2e-coverage/
-integration-coverage/
-dist/
-.husky/
-.github/
-prod/
+node_modules
+nginx
+coverage
+e2e-coverage
+integration-coverage
+dist
+.husky
+.github
+README.md
 
 # Logs
-logs/
+logs
+*.log
 
 # Environment (contains sensitive data)
 .env*
