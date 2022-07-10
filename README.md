@@ -36,7 +36,7 @@ Made with following (WIP)
   To obtain it, one must ask for a token from the Architects/Team-leads.
 
   ```bash
-   JF_ENV='export JFROG_AUTH_TOKEN=replace-value-here'
+   JF_ENV='export JFROG_AUTH_TOKEN=<replace-value-here>'
    echo $JF_ENV >> ~/.zshrc
    source ~/.zshrc
   ```
@@ -109,12 +109,6 @@ Version of the main packages and main tools.
 
   ```bash
   docker compose --profile dev up
-  ```
-
-- (split terminal) Run the migrations (root):
-
-  ```bash
-  yarn migrations:run
   ```
 
 - (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
