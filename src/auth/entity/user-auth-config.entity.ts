@@ -1,14 +1,6 @@
-import {
-  Entity,
-  Column,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
+import { Entity, Column } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entities/base.entity';
-import { User } from '@/user/entity/user.entity';
 //
 
 @Entity()

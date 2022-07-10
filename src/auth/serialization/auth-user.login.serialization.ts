@@ -1,10 +1,14 @@
+import { Exclude, plainToInstance, Transform } from 'class-transformer';
+// Entities
 import { Organization } from '@/organization/entity/organization.entity';
+import { UserAuthConfig } from '../entity/user-auth-config.entity';
+import { AclRole } from '@acl/role/entity/acl-role.entity';
+//
 import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
 import { AclRoleLoginSerialization } from '@acl/role';
-import { AclRole } from '@acl/role/entity/acl-role.entity';
-import { Exclude, plainToInstance, Transform } from 'class-transformer';
+import { AuthConfigLoginSerialization } from './auth-config.login.serialization';
 
-export class AuthLoginSerialization {
+export class AuthUserLoginSerialization {
   readonly id: string;
 
   readonly email: string;
@@ -23,26 +27,19 @@ export class AuthLoginSerialization {
   )
   readonly role: AclRole;
 
+  @Transform(({ value: authConfig }) =>
+    plainToInstance(AuthConfigLoginSerialization, authConfig),
+  )
+  readonly authConfig: UserAuthConfig;
+
   @Exclude()
   readonly mobileNumber: string;
-
-  @Exclude()
-  readonly emailVerified: boolean;
-
-  @Exclude()
-  readonly emailVerificationToken: string;
 
   @Exclude()
   readonly firstName: string;
 
   @Exclude()
   readonly lastName: string;
-
-  @Exclude()
-  readonly password: string;
-
-  @Exclude()
-  readonly salt: string;
 
   @Exclude()
   readonly createdAt: Date;

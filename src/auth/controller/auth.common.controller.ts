@@ -23,7 +23,7 @@ import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumLoggerAction, IReqLogData } from '@/log';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
-import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 import { EnumRoleStatusCodeError } from '@acl/role';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { EnumAuthStatusCodeError } from '../auth.constant';
@@ -168,7 +168,7 @@ export class AuthCommonController {
       });
     }
 
-    const safeData: AuthLoginSerialization =
+    const safeData: AuthUserLoginSerialization =
       await this.authService.serializationLogin(user);
 
     // TODO: cache in redis safeData with user role and permission for next api calls
@@ -261,7 +261,7 @@ export class AuthCommonController {
       });
     }
 
-    const safeData: AuthLoginSerialization =
+    const safeData: AuthUserLoginSerialization =
       await this.authService.serializationLogin(reqUser);
 
     // TODO: cache in redis safeData with user role and permission for next api calls

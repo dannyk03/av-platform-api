@@ -54,9 +54,11 @@ export class User extends BaseEntity<User> {
   @JoinColumn()
   authConfig!: UserAuthConfig;
 
-  @ManyToOne(() => AclRole, (role) => role.users)
-  role!: AclRole;
+  @ManyToOne(() => AclRole, (role) => role.users, { nullable: true })
+  role?: AclRole;
 
-  @ManyToOne(() => Organization, (organization) => organization.users)
-  organization!: Organization;
+  @ManyToOne(() => Organization, (organization) => organization.users, {
+    nullable: true,
+  })
+  organization?: Organization;
 }

@@ -7,7 +7,7 @@ import { HelperEncryptionService } from '@/utils/helper/service/helper.encryptio
 import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
 import { AuthLoginDto } from '../dto/auth.login.dto';
-import { AuthLoginSerialization } from '../serialization/auth.login.serialization';
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 @Injectable()
 export class AuthService {
@@ -100,7 +100,7 @@ export class AuthService {
   }
 
   async createPayloadAccessToken(
-    data: AuthLoginDto,
+    data: Record<string, any>,
     rememberMe: boolean,
     options?: IAuthPayloadOptions,
   ): Promise<Record<string, any>> {
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   async createPayloadRefreshToken(
-    { id }: AuthLoginSerialization,
+    { id }: AuthUserLoginSerialization,
     rememberMe: boolean,
     options?: IAuthPayloadOptions,
   ): Promise<Record<string, any>> {
@@ -123,8 +123,10 @@ export class AuthService {
     };
   }
 
-  async serializationLogin(data: IUserEntity): Promise<AuthLoginSerialization> {
-    return plainToInstance(AuthLoginSerialization, data);
+  async serializationLogin(
+    data: IUserEntity,
+  ): Promise<AuthUserLoginSerialization> {
+    return plainToInstance(AuthUserLoginSerialization, data);
   }
 
   async createPassword(password: string): Promise<IAuthPassword> {
