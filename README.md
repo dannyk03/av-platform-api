@@ -13,7 +13,7 @@
 
 # AVO Platform API
 
-Platform-API is a [NestJs](http://nestjs.com) project with [PostgresQL](https://www.postgresql.org) and [TypeORM](https://typeorm.io) as Database.
+Platform-API is a [NestJS](http://nestjs.com) project with [PostgreSQL](https://www.postgresql.org) and [TypeORM](https://typeorm.io) as Database.
 
 Made with following (WIP)
 
