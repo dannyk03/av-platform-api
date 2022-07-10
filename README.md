@@ -99,6 +99,12 @@ Version of the main packages and main tools.
 
 ## Install and Run
 
+- Install packages
+
+  ```bash
+  yarn install
+  ```
+
 - Set up environment variables .env file (root):
 
   ```bash
