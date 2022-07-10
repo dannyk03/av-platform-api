@@ -18,27 +18,22 @@ export class ReqUserOrganizationActiveGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest();
     const { __user } = request;
 
-    if (!__user.organization) {
+    if (__user.organization && !__user.organization?.isActive) {
       this.debuggerService.error(
-        'Organization not found error',
-        'ReqUserOrganizationActiveGuard',
-        'canActivate',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
-        message: 'organization.error.notFound',
-      });
-    } else if (!__user.organization?.isActive) {
-      this.debuggerService.error(
-        'Organization inactive error',
+        __user.organization
+          ? 'Organization inactive error'
+          : 'Organization not found error',
         'ReqUserOrganizationActiveGuard',
         'canActivate',
       );
 
       throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
-        message: 'organization.error.inactive',
+        statusCode: __user.organization
+          ? EnumOrganizationStatusCodeError.OrganizationInactiveError
+          : EnumOrganizationStatusCodeError.OrganizationNotFoundError,
+        message: __user.organization
+          ? 'organization.error.inactive'
+          : 'organization.error.notFound',
       });
     }
 
