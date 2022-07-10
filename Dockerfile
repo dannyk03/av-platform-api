@@ -18,7 +18,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package.json yarn.lock .npmrc ./
 
 
-# bcrycp package requires rebuld (performance and security)
+# bcrycp package requires node-gyp rebuild (performance and security)
 # https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python3 && \
