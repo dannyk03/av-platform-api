@@ -9,6 +9,8 @@ FROM node:$NODE_IMAGE_TAG As development
 # Private packages token
 ARG JFROG_AUTH_TOKEN
 
+EXPOSE ${APP_PORT}
+
 WORKDIR /usr/src/app
 
 # Copy application dependency manifests to the container image.
@@ -52,7 +54,6 @@ ENV NODE_ENV=${NODE_ENV}
 ARG JFROG_AUTH_TOKEN
 
 WORKDIR /usr/src/app
-
 
 # Copy application dependency manifests to the container image.
 COPY --chown=node:node package.json yarn.lock .npmrc ./

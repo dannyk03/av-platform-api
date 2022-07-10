@@ -24,13 +24,13 @@ services:
       - node_modules:/usr/src/app/node_modules
     restart: unless-stopped
     profiles:
-      - full
+      - dev
     links:
       - postgres
     depends_on:
       - postgres
     command: >
-      sh -c "yarn start:dev"
+      sh -c "yarn start:debug"
 
   postgres:
     container_name: postgres
@@ -48,7 +48,7 @@ services:
       - ${POSTGRES_PORT}:5432
     restart: unless-stopped
     profiles:
-      - full
+      - dev
       - db
 
 networks:
