@@ -111,7 +111,7 @@ Version of the main packages and main tools.
   cp .env.example .env
   ```
 
-- Run with `docker-compose` (root):
+- Run with `docker compose` (root):
 
   ```bash
   docker compose --profile dev up
@@ -120,6 +120,7 @@ Version of the main packages and main tools.
 - (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
 
   ```bash
+  docker compose exec platform-api sh
   yarn seed
   ```
 
