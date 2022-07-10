@@ -111,10 +111,10 @@ Version of the main packages and main tools.
   yarn install
   ```
 
-- Run with `docker-compose` (root):
+- Run with `docker-compose` only Database (root):
 
   ```bash
-  docker-compose up
+  docker compose --profile db up
   ```
 
 <!-- BADGE LINKS -->
