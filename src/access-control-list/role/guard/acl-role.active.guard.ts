@@ -17,27 +17,18 @@ export class ReqUserAclRoleActiveGuard implements CanActivate {
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { __user } = ctx.switchToHttp().getRequest();
 
-    if (!__user.role) {
+    if (__user.role && !__user.role.isActive) {
       this.debuggerService.error(
-        'Role not found error',
-        'ReqUserAclRoleActiveGuard',
-        'canActivate',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
-        message: 'role.error.notFound',
-      });
-    } else if (!__user.role.isActive) {
-      this.debuggerService.error(
-        'Role inactive error',
+        __user.role ? 'Role inactive error' : 'Role not found error',
         'ReqUserAclRoleActiveGuard',
         'canActivate',
       );
 
       throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
-        message: 'role.error.inactive',
+        statusCode: __user.role
+          ? EnumRoleStatusCodeError.RoleInactiveError
+          : EnumRoleStatusCodeError.RoleNotFoundError,
+        message: __user.role ? 'role.error.inactive' : 'role.error.notFound',
       });
     }
 
