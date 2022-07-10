@@ -105,7 +105,7 @@ Version of the main packages and main tools.
   cp .env.example .env
   ```
 
-- Run with `docker-compose` only Database (root):
+- Run with `docker-compose` (root):
 
   ```bash
   docker compose --profile dev up
