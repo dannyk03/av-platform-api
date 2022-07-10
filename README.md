@@ -105,16 +105,22 @@ Version of the main packages and main tools.
   cp .env.example .env
   ```
 
-- Installing packages (root):
-
-  ```bash
-  yarn install
-  ```
-
 - Run with `docker-compose` only Database (root):
 
   ```bash
-  docker compose --profile db up
+  docker compose --profile dev up
+  ```
+
+- (split terminal) Run the migrations (root):
+
+  ```bash
+  yarn migrations:run
+  ```
+
+- (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
+
+  ```bash
+  yarn seed
   ```
 
 <!-- BADGE LINKS -->
