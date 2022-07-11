@@ -22,7 +22,7 @@ COPY --chown=node:node package.json yarn.lock .npmrc ./
 # https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python3 && \
-  yarn install --quiet node-gyp -g &&\
+  yarn install --silent node-gyp -g && \
   yarn install --immutable && \
   apk del native-deps
 
@@ -37,8 +37,6 @@ RUN rm -f .npmrc
 
 # Use the node user from the image (instead of the root user)
 USER node
-
-# CMD [ "yarn", "start:dev"] 
 
 ########################
 # BUILD FOR PRODUCTION #
