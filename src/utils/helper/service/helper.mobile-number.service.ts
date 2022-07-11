@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js';
+import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js/mobile';
 
 @Injectable()
 export class HelperMobileNumberService {
