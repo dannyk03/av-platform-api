@@ -304,6 +304,15 @@ export class AuthCommonController {
               userAgent,
             });
 
+          await this.logService.info({
+            ...logData,
+            action: EnumLoggerAction.Login,
+            description: `${signUpUser.email} do signup`,
+            user: signUpUser,
+            tags: ['signup', 'withEmail'],
+            transactionalEntityManager,
+          });
+
           await transactionalEntityManager.save(signUpEmailVerificationLink);
 
           this.emailService.sendSignUpEmailVerification({
