@@ -10,12 +10,15 @@ import {
   InternalServerErrorException,
   Patch,
   Res,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Response as ExpressResponse } from 'express';
 import { v4 as uuidV4 } from 'uuid';
+import { IResult } from 'ua-parser-js';
 // Services
 import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service';
@@ -44,7 +47,7 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
 import { User } from '@/user/entity/user.entity';
 import { ConnectionNames } from '@/database';
-import { IResult } from 'ua-parser-js';
+import { UserSignUpValidateDto } from '../dto/auth.signup-validate.dto';
 
 @Controller({
   version: '1',
@@ -242,7 +245,7 @@ export class AuthCommonController {
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
-  async signup(
+  async signUp(
     @Body()
     { email, password, firstName, lastName, mobileNumber }: AuthSignUpDto,
     @UserAgent() userAgent: IResult,
@@ -326,12 +329,65 @@ export class AuthCommonController {
           };
         },
       );
-    } catch (err) {
+    } catch (error) {
       throw new InternalServerErrorException({
         statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
+        error,
       });
     }
+  }
+
+  @Response('user.signUpSuccess')
+  @Get('/signup')
+  async signUpValidate(
+    @Query()
+    { signUpCode }: UserSignUpValidateDto,
+  ) {
+    const existingSignUp = await this.authSignUpVerificationService.findOne({
+      where: { signUpCode },
+      relations: ['user', 'user.authConfig'],
+      select: {
+        user: {
+          id: true,
+          isActive: true,
+          authConfig: {
+            id: true,
+            emailVerifiedAt: true,
+          },
+        },
+      },
+    });
+
+    if (!existingSignUp) {
+      throw new NotFoundException({
+        statusCode: EnumUserStatusCodeError.UserSignUpLinkNotFound,
+        message: 'user.error.signUpCode',
+      });
+    }
+
+    const now = this.helperDateService.create();
+    const expiresAt = this.helperDateService.create(existingSignUp.expiresAt);
+
+    if (now > expiresAt || existingSignUp.usedAt) {
+      throw new ForbiddenException({
+        statusCode: EnumUserStatusCodeError.UserSignUpLinkExpired,
+        message: 'user.error.signUpLink',
+      });
+    }
+
+    await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        existingSignUp.usedAt = this.helperDateService.create();
+        existingSignUp.user.isActive = true;
+        existingSignUp.user.authConfig.emailVerifiedAt = existingSignUp.usedAt;
+
+        await transactionalEntityManager.save(existingSignUp);
+      },
+    );
+
+    return;
   }
 
   @Response('auth.refresh')

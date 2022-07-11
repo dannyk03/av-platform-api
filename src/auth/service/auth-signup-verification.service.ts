@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 // Entities
 import { SignUpEmailVerificationLink } from '../entity/signup-email-verification-link.entity';
 // Services
@@ -34,5 +39,17 @@ export class AuthSignUpVerificationService {
     return this.signUpEmailVerificationLinkRepository.save<SignUpEmailVerificationLink>(
       data,
     );
+  }
+
+  async findOneBy(
+    find: FindOptionsWhere<SignUpEmailVerificationLink>,
+  ): Promise<SignUpEmailVerificationLink> {
+    return this.signUpEmailVerificationLinkRepository.findOneBy(find);
+  }
+
+  async findOne(
+    find: FindOneOptions<SignUpEmailVerificationLink>,
+  ): Promise<SignUpEmailVerificationLink> {
+    return this.signUpEmailVerificationLinkRepository.findOne(find);
   }
 }
