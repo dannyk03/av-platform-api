@@ -21,12 +21,12 @@
   "arrayNotEmpty": "{property} array is not empty",
   "minDate": "{property} has less date than the minimum allowed.",
   "maxDate": "{property} has  more elements than the maximum allowed.",
-  "isDate": "{property} should be a date",
-  "minDateGreaterThan": "{property} has less date than the {value}",
-  "IsPasswordStrong": "{property} must have strong pattern",
-  "isPasswordMedium": "{property} must have medium pattern",
-  "isPasswordWeak": "{property} must have weak pattern",
   "isLength": "{property} length not allowed",
+  "isDate": "{property} should be a date",
+  "minDateGreaterThanConstraint": "{property} has less date than the {value}",
+  "IsPasswordStrongConstraint": "{property} must have strong pattern",
+  "isPasswordMediumConstraint": "{property} must have medium pattern",
+  "isPasswordWeakConstraint": "{property} must have weak pattern",
   "IsMobileNumberConstraint": "{property} in not valid phone number",
   "error": {
     "tooManyRequests": "Too many requests"

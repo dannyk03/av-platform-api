@@ -6,9 +6,11 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { CountryCode } from 'libphonenumber-js/types';
+import get from 'lodash/get';
+import set from 'lodash/set';
 // Services
 import { HelperMobileNumberService } from '@/utils/helper/service/helper.mobile-number.service';
-import { CountryCode } from 'libphonenumber-js/types';
 //
 
 @ValidatorConstraint({ async: true })
@@ -36,9 +38,13 @@ export class IsMobileNumberConstraint implements ValidatorConstraintInterface {
 
 export function IsMobileNumber(
   property?,
-  validationOptions?: ValidationOptions,
+  validationOptions: ValidationOptions = {},
 ) {
   return function (object: Record<string, any>, propertyName: string): any {
+    if (!get(validationOptions, 'message')) {
+      const defaultValidationFailedMessage = `$property must be valid phone number '$value'.`;
+      set(validationOptions, 'message', defaultValidationFailedMessage);
+    }
     registerDecorator({
       name: 'IsMobileNumber',
       target: object.constructor,
