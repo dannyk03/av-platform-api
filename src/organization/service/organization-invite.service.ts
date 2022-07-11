@@ -73,7 +73,7 @@ export class OrganizationInviteService {
     transactionalEntityManager?: EntityManager;
   }) {
     const expiresInDays = this.configService.get<number>(
-      'organization.inviteExpireInDays',
+      'organization.inviteCodeExpiresInDays',
     );
 
     if (!aclRole?.isActive) {
@@ -102,8 +102,14 @@ export class OrganizationInviteService {
       });
     }
 
-    const alreadyExistingOrganizationInvite = await this.findOneBy({
-      email,
+    const alreadyExistingOrganizationInvite = await this.findOne({
+      where: { email },
+      relations: ['organization'],
+      select: {
+        organization: {
+          name: true,
+        },
+      },
     });
 
     if (!alreadyExistingOrganizationInvite) {
@@ -123,6 +129,7 @@ export class OrganizationInviteService {
         email,
         expiresInDays,
         inviteCode: organizationInvite.inviteCode,
+        organizationName: organizationInvite.organization.name,
       });
 
       if (emailSent) {
@@ -164,6 +171,7 @@ export class OrganizationInviteService {
           email,
           expiresInDays,
           inviteCode: alreadyExistingOrganizationInvite.inviteCode,
+          organizationName: alreadyExistingOrganizationInvite.organization.name,
         });
         if (emailSent) {
           alreadyExistingOrganizationInvite.expiresAt =

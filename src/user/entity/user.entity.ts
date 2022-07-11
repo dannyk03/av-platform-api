@@ -5,6 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  BeforeInsert,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entities/base.entity';
@@ -61,4 +62,9 @@ export class User extends BaseEntity<User> {
     nullable: true,
   })
   organization?: Organization;
+
+  @BeforeInsert()
+  beforeInsert() {
+    this.email = this.email.toLowerCase();
+  }
 }

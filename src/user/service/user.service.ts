@@ -10,6 +10,7 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
+import { IUserCheckExist } from '../user.interface';
 
 @Injectable()
 export class UserService {
@@ -36,7 +37,9 @@ export class UserService {
     return this.userRepository.findOne(find);
   }
 
-  async findOneBy(find: FindOptionsWhere<User>): Promise<User> {
+  async findOneBy(
+    find: FindOptionsWhere<User> | FindOptionsWhere<User>[],
+  ): Promise<User> {
     return this.userRepository.findOneBy(find);
   }
 
@@ -66,5 +69,20 @@ export class UserService {
     });
 
     return Boolean(exists);
+  }
+
+  async checkExist(
+    email: string,
+    mobileNumber?: string,
+  ): Promise<IUserCheckExist> {
+    const existEmail = await this.findOneBy({ email });
+
+    const existMobileNumber =
+      mobileNumber && (await this.findOneBy({ mobileNumber }));
+
+    return {
+      email: existEmail ? true : false,
+      mobileNumber: existMobileNumber ? true : false,
+    };
   }
 }

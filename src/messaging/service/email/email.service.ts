@@ -15,13 +15,29 @@ export class EmailService {
     email,
     inviteCode,
     expiresInDays,
+    organizationName,
   }: {
     email: string;
     inviteCode: string;
+    organizationName: string;
     expiresInDays: number;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
-    console.log({ email, inviteCode, expiresInDays });
+    console.log({ email, inviteCode, expiresInDays, organizationName });
+    return Boolean('success');
+  }
+
+  async sendSignUpEmailVerification({
+    email,
+    signUpCode,
+    expiresInDays,
+  }: {
+    email: string;
+    signUpCode: string;
+    expiresInDays: number;
+  }): Promise<boolean> {
+    // TODO email send logic and return Boolean if succeeded
+    console.log({ email, signUpCode, expiresInDays });
     return Boolean('success');
   }
 }

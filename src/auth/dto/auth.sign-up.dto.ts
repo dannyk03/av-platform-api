@@ -16,31 +16,25 @@ export class AuthSignUpDto {
   @IsEmail()
   @IsNotEmpty()
   @MaxLength(100)
-  @Type(() => String)
-  readonly email: string;
+  readonly email!: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(30)
-  @Type(() => String)
-  readonly firstName: string;
+  readonly firstName!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(30)
+  readonly lastName!: string;
 
   @IsString()
   @IsOptional()
-  @ValidateIf((e) => e.lastName !== '')
-  @MinLength(1)
-  @MaxLength(30)
-  @Type(() => String)
-  readonly lastName?: string;
-
-  @IsString()
-  @IsNotEmpty()
   @MinLength(10)
   @MaxLength(14)
-  @Type(() => String)
-  @IsStartWith(['972'])
-  readonly mobileNumber: string;
+  readonly mobileNumber?: string;
 
   @IsNotEmpty()
   @IsPasswordStrong()

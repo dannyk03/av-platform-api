@@ -12,12 +12,18 @@ import {
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { Response as ExpressResponse } from 'express';
+import { v4 as uuidV4 } from 'uuid';
 // Services
 import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { EmailService } from '@/messaging/service/email/email.service';
 import { AuthService } from '../service/auth.service';
+import { AuthSignUpVerificationService } from '../service/auth-signup-verification.service';
 //
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumLoggerAction, IReqLogData } from '@/log';
@@ -34,10 +40,11 @@ import {
   Token,
   ReqJwtUser,
 } from '../auth.decorator';
-import { AuthChangePasswordDto } from '../dto';
-import { ReqLogData } from '@/utils/request';
-import { Response as ExpressResponse } from 'express';
+import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
+import { ReqLogData, UserAgent } from '@/utils/request';
 import { User } from '@/user/entity/user.entity';
+import { ConnectionNames } from '@/database';
+import { IResult } from 'ua-parser-js';
 
 @Controller({
   version: '1',
@@ -45,6 +52,8 @@ import { User } from '@/user/entity/user.entity';
 })
 export class AuthCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
@@ -52,6 +61,8 @@ export class AuthCommonController {
     private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
+    private readonly emailService: EmailService,
+    private readonly authSignUpVerificationService: AuthSignUpVerificationService,
   ) {}
 
   @Response('auth.login')
@@ -226,6 +237,94 @@ export class AuthCommonController {
       accessToken,
       refreshToken,
     };
+  }
+
+  @Response('auth.signUp')
+  @HttpCode(HttpStatus.OK)
+  @Post('/signup')
+  async signup(
+    @Body()
+    { email, password, firstName, lastName, mobileNumber }: AuthSignUpDto,
+    @UserAgent() userAgent: IResult,
+    @ReqLogData()
+    logData: IReqLogData,
+  ): Promise<IResponse> {
+    const expiresInDays = this.configService.get<number>(
+      'user.signUpCodeExpiresInDays',
+    );
+    const checkExist = await this.userService.checkExist(email, mobileNumber);
+
+    if (checkExist.email && checkExist.mobileNumber) {
+      throw new BadRequestException({
+        statusCode: EnumUserStatusCodeError.UserExistsError,
+        message: 'user.error.exist',
+      });
+    } else if (checkExist.email) {
+      throw new BadRequestException({
+        statusCode: EnumUserStatusCodeError.UserEmailExistError,
+        message: 'user.error.emailExist',
+      });
+    } else if (checkExist.mobileNumber) {
+      throw new BadRequestException({
+        statusCode: EnumUserStatusCodeError.UserMobileNumberExistError,
+        message: 'user.error.mobileNumberExist',
+      });
+    }
+
+    try {
+      const { salt, passwordHash, passwordExpiredAt } =
+        await this.authService.createPassword(password);
+
+      return await this.defaultDataSource.transaction(
+        'SERIALIZABLE',
+        async (transactionalEntityManager) => {
+          const signUpUser = await this.userService.create({
+            isActive: false,
+            email,
+            mobileNumber,
+            firstName,
+            lastName,
+            authConfig: {
+              password: passwordHash,
+              salt,
+              passwordExpiredAt,
+            },
+          });
+
+          await transactionalEntityManager.save(signUpUser);
+
+          const signUpCode = uuidV4().replaceAll('-', '');
+
+          const signUpEmailVerificationLink =
+            await this.authSignUpVerificationService.create({
+              email,
+              user: signUpUser,
+              expiresAt: this.helperDateService.forwardInDays(expiresInDays),
+              signUpCode,
+              userAgent,
+            });
+
+          await transactionalEntityManager.save(signUpEmailVerificationLink);
+
+          this.emailService.sendSignUpEmailVerification({
+            email,
+            signUpCode,
+            expiresInDays,
+          });
+
+          return {
+            signUpCode,
+          };
+        },
+      );
+    } catch (err) {
+      throw new InternalServerErrorException({
+        statusCode: EnumStatusCodeError.UnknownError,
+        message: 'http.serverError.internalServerError',
+      });
+    }
+
+    return;
   }
 
   @Response('auth.refresh')
