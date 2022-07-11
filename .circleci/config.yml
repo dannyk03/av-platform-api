@@ -55,6 +55,7 @@ workflows:
               only:
                 - development
                 - master
+                - manual-deploy
           repo: ${CIRCLE_PROJECT_REPONAME}
           tag: 'development,${CIRCLE_BRANCH}-${CIRCLE_SHA1}'
           extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}'

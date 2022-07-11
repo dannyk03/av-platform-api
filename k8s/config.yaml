@@ -1,0 +1,180 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: platform
+  name: platform
+  namespace: platform
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app.kubernetes.io/name: platform
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: platform
+  name: platform
+  namespace: platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: platform
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: platform
+    spec:
+      containers:
+        - name: app
+          image: 077970707816.dkr.ecr.eu-west-1.amazonaws.com/platform-api:master-95a2383af3e1bfabdf9ae46e91ef738ad42b685f
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http-port
+              protocol: TCP
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            # DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: host
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: port
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: user
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db
+            # AUTH
+            - name: AUTH_SPUPER_ADMIN_INITIAL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: super-admin-initial-password
+            - name: AUTH_JWT_ACCESS_TOKEN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-access-token-secret-key
+            - name: AUTH_JWT_ACCESS_TOKEN_EXPIRED
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-access-token-expired
+            - name: AUTH_JWT_REFRESH_TOKEN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-refresh-token-secret-key
+            - name: AUTH_JWT_REFRESH_TOKEN_EXPIRED
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-refresh-token-expired
+            - name: AUTH_BASIC_TOKEN_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: basic-token-client-id
+            - name: AUTH_BASIC_TOKEN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: basic-token-client-secret
+
+            # APP
+            - name: APP_NAME
+              value: 'platform'
+            - name: APP_ENV
+              value: 'development'
+            - name: APP_MODE
+              value: 'simple'
+            - name: APP_LANGUAGE
+              value: 'en'
+            - name: APP_TZ
+              value: 'Asia/Jerusalem'
+            - name: APP_HOST
+              value: '0.0.0.0'
+            - name: APP_PORT
+              value: '3000'
+            - name: APP_VERSIONING
+              value: 'true'
+            - name: APP_DEBUG
+              value: 'true'
+            - name: APP_HTTP_ON
+              value: 'true'
+            - name: APP_TASK_ON
+              value: 'false'
+            - name: MIDDLEWARE_TOLERANCE_TIMESTAMP
+              value: '5'
+            - name: 'DD_ENV'
+              value: staging
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http-port
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http-port
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: 1G
+            requests:
+              cpu: 100m
+              memory: 200M
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: platform.us.stg.avoc.io
+    kubernetes.io/ingress.class: nginx-public
+  name: platform
+  namespace: platform
+spec:
+  rules:
+    - host: platform.us.stg.avoc.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: platform
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - platform.us.stg.avoc.io
