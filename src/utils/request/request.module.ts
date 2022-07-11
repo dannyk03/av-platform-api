@@ -22,6 +22,7 @@ import { IsOnlyDigitsConstraint } from './validation/request.only-digits.validat
 import { SafeStringConstraint } from './validation/request.safe-string.validation';
 import { SkipConstraint } from './validation/request.skip.validation';
 import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
+import { IsMobileNumberConstraint } from './validation/request.is-mobile-number.validation';
 
 @Module({
   controllers: [],
@@ -65,6 +66,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
     StringOrNumberOrBooleanConstraint,
     SafeStringConstraint,
     IsOnlyDigitsConstraint,
+    IsMobileNumberConstraint,
   ],
   imports: [],
 })

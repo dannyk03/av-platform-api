@@ -323,8 +323,6 @@ export class AuthCommonController {
         message: 'http.serverError.internalServerError',
       });
     }
-
-    return;
   }
 
   @Response('auth.refresh')

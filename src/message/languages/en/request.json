@@ -27,6 +27,7 @@
   "isPasswordMedium": "{property} must have medium pattern",
   "isPasswordWeak": "{property} must have weak pattern",
   "isLength": "{property} length not allowed",
+  "IsMobileNumberConstraint": "{property} in not valid phone number",
   "error": {
     "tooManyRequests": "Too many requests"
   }

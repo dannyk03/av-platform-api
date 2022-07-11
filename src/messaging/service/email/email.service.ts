@@ -23,6 +23,7 @@ export class EmailService {
     expiresInDays: number;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
+
     console.log({ email, inviteCode, expiresInDays, organizationName });
     return Boolean('success');
   }
@@ -37,6 +38,7 @@ export class EmailService {
     expiresInDays: number;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
+
     console.log({ email, signUpCode, expiresInDays });
     return Boolean('success');
   }
