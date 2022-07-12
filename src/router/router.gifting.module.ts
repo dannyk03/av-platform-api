@@ -8,24 +8,25 @@ import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { UserModule } from '@/user/user.module';
 import { MessagingModule } from '@/messaging/messaging.module';
+import { GiftModule } from '@/gifting/gift/gift.module';
 // Controllers
-import { UserController } from '@/user/controller';
-import { AclRoleController } from '@acl/role/controller';
+import { GiftController } from '@/gifting/gift/controller/gift-common.controller';
 //
 
 @Module({
-  controllers: [],
+  controllers: [GiftController],
   providers: [],
   exports: [],
   imports: [
-    AuthModule,
-    AclRoleModule,
-    AclPolicyModule,
-    AclSubjectModule,
-    AclAbilityModule,
-    UserModule,
-    OrganizationModule,
+    GiftModule,
     MessagingModule,
+    // AuthModule,
+    AclRoleModule,
+    // AclPolicyModule,
+    // AclSubjectModule,
+    // AclAbilityModule,
+    UserModule,
+    // OrganizationModule,
   ],
 })
-export class RouterGiftModule {}
+export class RouterGiftingModule {}

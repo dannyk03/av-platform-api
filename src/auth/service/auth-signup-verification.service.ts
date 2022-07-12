@@ -14,7 +14,7 @@ import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 //
 import { ConnectionNames } from '@/database';
 import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/service';
+import { EmailService } from '@/messaging/service/email/email.service';
 
 @Injectable()
 export class AuthSignUpVerificationService {

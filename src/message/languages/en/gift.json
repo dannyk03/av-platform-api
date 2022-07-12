@@ -1,0 +1,6 @@
+{
+  "send": "Gift send success",
+  "error": {
+    "send": "Gift send failed"
+  }
+}

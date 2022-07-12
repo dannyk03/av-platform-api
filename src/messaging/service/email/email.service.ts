@@ -42,4 +42,20 @@ export class EmailService {
     console.log({ email, signUpCode, expiresInDays });
     return Boolean('success');
   }
+
+  async sendGiftSurvey({
+    email,
+    senderEmail,
+  }: {
+    email: string;
+    senderEmail: string;
+  }): Promise<boolean> {
+    // TODO email send logic and return Boolean if succeeded
+
+    console.log({
+      email,
+      senderEmail,
+    });
+    return Boolean('success');
+  }
 }

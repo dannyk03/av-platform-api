@@ -8,10 +8,8 @@ import {
   IsOptional,
   ValidateIf,
 } from 'class-validator';
-import { IsStartWith, IsPasswordStrong } from '@/utils/request/validation';
+import { IsPasswordStrong } from '@/utils/request/validation';
 import { IsMobileNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
-
-IsPasswordStrong;
 
 export class AuthSignUpDto {
   @IsEmail()
