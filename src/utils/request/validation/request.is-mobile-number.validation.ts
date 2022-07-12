@@ -22,17 +22,15 @@ export class IsMobileNumberConstraint implements ValidatorConstraintInterface {
 
   validate(value: string, args: ValidationArguments) {
     const [relatedPropertyName] = args.constraints;
-    const relatedValue = (args.object as Record<string, unknown>)[
-      relatedPropertyName
-    ];
+    const relatedValue = args.object[relatedPropertyName];
 
-    return typeof value === 'string' && relatedPropertyName
-      ? typeof relatedValue === 'string'
-      : true &&
-          this.helperMobileNumberService.isValidPhoneNumber(
-            value,
-            relatedValue as CountryCode,
-          );
+    return (
+      typeof value === 'string' &&
+      this.helperMobileNumberService.isValidPhoneNumber(
+        value,
+        relatedValue as CountryCode,
+      )
+    );
   }
 }
 
