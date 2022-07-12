@@ -1,7 +1,7 @@
 import { RouterTestModule } from '@/router/router.test.module';
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { RouterAdminModule } from '@/router/router.admin.module';
+import { RouterGiftModule } from '@/router/router.gift.module';
 import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterPublicModule } from '@/router/router.public.module';
@@ -18,7 +18,7 @@ export class AppRouterModule {
         imports: [
           RouterCommonModule,
           RouterPublicModule,
-          RouterAdminModule,
+          RouterGiftModule,
           RouterCallbackModule,
           RouterTestModule,
           RouterModule.register([
@@ -27,8 +27,8 @@ export class AppRouterModule {
               module: RouterCommonModule,
             },
             {
-              path: '/admin',
-              module: RouterAdminModule,
+              path: '/gift',
+              module: RouterGiftModule,
             },
             {
               path: '/public',

@@ -26,17 +26,19 @@ export class AclAbilityGuard implements CanActivate {
     const requiredAbilities = this.reflector.getAllAndOverride<
       IReqAclAbility[]
     >(ABILITY_META_KEY, [ctx.getHandler(), ctx.getClass()]);
-    if (!requiredAbilities) {
-      return true;
-    }
-
     const { __user, originalUrl, method } = ctx.switchToHttp().getRequest();
     const { role } = __user;
-    const {
-      policy: { subjects },
-    } = role;
 
-    const abilities = defineAbilities(subjects)(__user);
+    if (!requiredAbilities.length) {
+      return true;
+    } else if (!role) {
+      throw new ForbiddenException({
+        statusCode: PermissionsStatusCodeError.GuardInvalidError,
+        message: 'permission.error.forbidden',
+      });
+    }
+
+    const abilities = defineAbilities(role.policy.subjects)(__user);
 
     const hasPermission = requiredAbilities.every((ability) =>
       abilities.can(ability.action, ability.subject),

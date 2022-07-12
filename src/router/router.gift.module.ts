@@ -14,7 +14,7 @@ import { AclRoleController } from '@acl/role/controller';
 //
 
 @Module({
-  controllers: [UserController, AclRoleController],
+  controllers: [],
   providers: [],
   exports: [],
   imports: [
@@ -28,4 +28,4 @@ import { AclRoleController } from '@acl/role/controller';
     MessagingModule,
   ],
 })
-export class RouterAdminModule {}
+export class RouterGiftModule {}

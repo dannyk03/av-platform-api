@@ -42,6 +42,9 @@ export class AclController {
     @ReqUser()
     reqUser: User,
   ): Promise<IResponse> {
-    return this.aclPolicyService.serializationUserAcl(reqUser.role.policy);
+    return (
+      reqUser.role &&
+      this.aclPolicyService.serializationUserAcl(reqUser.role.policy)
+    );
   }
 }

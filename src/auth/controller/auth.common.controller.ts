@@ -17,7 +17,6 @@ import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Response as ExpressResponse } from 'express';
-import { v4 as uuidV4 } from 'uuid';
 import { IResult } from 'ua-parser-js';
 // Services
 import { UserService } from '@/user/service/user.service';
@@ -42,6 +41,7 @@ import {
   AuthRefreshJwtGuard,
   Token,
   ReqJwtUser,
+  AclGuard,
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
@@ -118,30 +118,6 @@ export class AuthCommonController {
       });
     }
 
-    if (!user.organization) {
-      this.debuggerService.error(
-        'Authorized error organization not found',
-        'AuthController',
-        'login',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
-        message: 'organization.error.notFound',
-      });
-    } else if (!user.organization.isActive) {
-      this.debuggerService.error(
-        'Authorized error organization is not active',
-        'AuthController',
-        'login',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
-        message: 'organization.error.inactive',
-      });
-    }
-
     const validate: boolean = await this.authService.validateUserPassword(
       body.password,
       user.authConfig.password,
@@ -158,7 +134,9 @@ export class AuthCommonController {
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.notMatch',
       });
-    } else if (!user.isActive) {
+    }
+
+    if (!user.isActive) {
       this.debuggerService.error(
         'Auth Block Not Active',
         'AuthController',
@@ -169,11 +147,28 @@ export class AuthCommonController {
         statusCode: EnumUserStatusCodeError.UserInactiveError,
         message: 'user.error.inactive',
       });
-    } else if (!user.role.isActive) {
+    }
+
+    if (user.organization && !user.organization?.isActive) {
       this.debuggerService.error(
-        'Role Block Not Active',
-        'AuthController',
-        'login',
+        user.organization
+          ? 'Organization inactive error'
+          : 'Organization not found error',
+        'ReqUserOrganizationActiveGuard',
+        'canActivate',
+      );
+
+      throw new ForbiddenException({
+        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
+        message: 'organization.error.inactive',
+      });
+    }
+
+    if (user.role && !user.role.isActive) {
+      this.debuggerService.error(
+        'Role inactive error',
+        'ReqUserAclRoleActiveGuard',
+        'canActivate',
       );
 
       throw new ForbiddenException({
@@ -246,15 +241,19 @@ export class AuthCommonController {
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
   async signUp(
+    @Res({ passthrough: true })
+    response: ExpressResponse,
     @Body()
     { email, password, firstName, lastName, mobileNumber }: AuthSignUpDto,
     @UserAgent() userAgent: IResult,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
-    const expiresInDays = this.configService.get<number>(
-      'user.signUpCodeExpiresInDays',
-    );
+    // const expiresInDays = this.configService.get<number>(
+    //   'user.signUpCodeExpiresInDays',
+    // );
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
     const checkExist = await this.userService.checkExist(email, mobileNumber);
 
     if (checkExist.email && checkExist.mobileNumber) {
@@ -275,14 +274,14 @@ export class AuthCommonController {
     }
 
     try {
-      const { salt, passwordHash, passwordExpiredAt } =
-        await this.authService.createPassword(password);
-
-      await this.defaultDataSource.transaction(
+      return await this.defaultDataSource.transaction(
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
+          const { salt, passwordHash, passwordExpiredAt } =
+            await this.authService.createPassword(password);
+
           const signUpUser = await this.userService.create({
-            isActive: false,
+            isActive: true,
             email,
             mobileNumber,
             firstName,
@@ -308,6 +307,28 @@ export class AuthCommonController {
           //   });
           // await transactionalEntityManager.save(signUpEmailVerificationLink);
 
+          const safeData: AuthUserLoginSerialization =
+            await this.authService.serializationLogin(signUpUser);
+
+          // TODO: cache in redis safeData with user role and permission for next api calls
+
+          const payloadAccessToken: Record<string, any> =
+            await this.authService.createPayloadAccessToken(safeData, false);
+          const payloadRefreshToken: Record<string, any> =
+            await this.authService.createPayloadRefreshToken(safeData, false, {
+              loginDate: payloadAccessToken.loginDate,
+            });
+
+          const accessToken: string = await this.authService.createAccessToken(
+            payloadAccessToken,
+          );
+
+          const refreshToken: string =
+            await this.authService.createRefreshToken(
+              payloadRefreshToken,
+              false,
+            );
+
           await this.logService.info({
             ...logData,
             action: EnumLoggerAction.SignUp,
@@ -316,6 +337,18 @@ export class AuthCommonController {
             tags: ['signup', 'withEmail'],
             transactionalEntityManager,
           });
+
+          response.cookie('accessToken', accessToken, {
+            secure: isSecureMode,
+            expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+            sameSite: 'strict',
+            httpOnly: true,
+          });
+
+          return {
+            accessToken,
+            refreshToken,
+          };
 
           // this.emailService.sendSignUpEmailVerification({
           //   email,

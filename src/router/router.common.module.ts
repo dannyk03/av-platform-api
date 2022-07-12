@@ -12,6 +12,7 @@ import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 // Controllers
 import { AuthCommonController } from '@/auth/controller';
 import { HealthController } from '@/health/controller';
+import { AclRoleController } from '@acl/role/controller';
 import {
   OrganizationController,
   OrganizationInviteController,
@@ -25,6 +26,7 @@ import { AclController } from '@acl/controller';
     OrganizationController,
     OrganizationInviteController,
     AclController,
+    AclRoleController,
   ],
   providers: [],
   exports: [],

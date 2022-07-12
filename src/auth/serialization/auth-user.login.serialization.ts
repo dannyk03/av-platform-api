@@ -42,6 +42,9 @@ export class AuthUserLoginSerialization {
   readonly lastName: string;
 
   @Exclude()
+  readonly title: string;
+
+  @Exclude()
   readonly createdAt: Date;
 
   @Exclude()
