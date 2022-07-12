@@ -278,7 +278,7 @@ export class AuthCommonController {
       const { salt, passwordHash, passwordExpiredAt } =
         await this.authService.createPassword(password);
 
-      return await this.defaultDataSource.transaction(
+      await this.defaultDataSource.transaction(
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
           const signUpUser = await this.userService.create({
@@ -296,37 +296,32 @@ export class AuthCommonController {
 
           await transactionalEntityManager.save(signUpUser);
 
-          const signUpCode = uuidV4().replaceAll('-', '');
-
-          const signUpEmailVerificationLink =
-            await this.authSignUpVerificationService.create({
-              email,
-              user: signUpUser,
-              expiresAt: this.helperDateService.forwardInDays(expiresInDays),
-              signUpCode,
-              userAgent,
-            });
+          // TODO enable when email verification needed
+          // const signUpCode = uuidV4().replaceAll('-', '');
+          // const signUpEmailVerificationLink =
+          //   await this.authSignUpVerificationService.create({
+          //     email,
+          //     user: signUpUser,
+          //     expiresAt: this.helperDateService.forwardInDays(expiresInDays),
+          //     signUpCode,
+          //     userAgent,
+          //   });
+          // await transactionalEntityManager.save(signUpEmailVerificationLink);
 
           await this.logService.info({
             ...logData,
-            action: EnumLoggerAction.Login,
+            action: EnumLoggerAction.SignUp,
             description: `${signUpUser.email} do signup`,
             user: signUpUser,
             tags: ['signup', 'withEmail'],
             transactionalEntityManager,
           });
 
-          await transactionalEntityManager.save(signUpEmailVerificationLink);
-
-          this.emailService.sendSignUpEmailVerification({
-            email,
-            signUpCode,
-            expiresInDays,
-          });
-
-          return {
-            signUpCode,
-          };
+          // this.emailService.sendSignUpEmailVerification({
+          //   email,
+          //   signUpCode,
+          //   expiresInDays,
+          // });
         },
       );
     } catch (error) {
@@ -336,6 +331,8 @@ export class AuthCommonController {
         error,
       });
     }
+
+    return;
   }
 
   @Response('user.signUpSuccess')

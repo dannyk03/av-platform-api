@@ -7,5 +7,6 @@ export enum EnumLoggerLevel {
 
 export enum EnumLoggerAction {
   Login = 'LOGIN',
+  SignUp = 'SIGNUP',
   CreateOrganization = 'CREATE_ORGANIZATION',
 }
