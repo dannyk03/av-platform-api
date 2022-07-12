@@ -16,14 +16,24 @@ import { UserAuthConfig } from '@/auth/entity/user-auth-config.entity';
 
 @Entity()
 export class User extends BaseEntity<User> {
-  @Column({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   firstName?: string;
 
-  @Column({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   lastName?: string;
 
   @Index()
   @Column({
+    type: 'varchar',
+    length: 50,
     unique: true,
     nullable: true,
   })

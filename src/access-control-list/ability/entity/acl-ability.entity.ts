@@ -22,7 +22,7 @@ export class AclAbility extends BaseEntity<AclAbility> {
 
   @Column({
     type: 'varchar',
-    length: 20,
+    length: 30,
     array: true,
     nullable: true,
   })
