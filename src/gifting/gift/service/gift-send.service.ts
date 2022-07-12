@@ -1,18 +1,12 @@
 import { ConfigService } from '@nestjs/config';
-import {
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,
   FindOptionsWhere,
   Repository,
-  EntityManager,
   FindOneOptions,
 } from 'typeorm';
-import { v4 as uuidV4 } from 'uuid';
 // Services
 import { EmailService } from '@/messaging/service/email/email.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
@@ -28,9 +22,7 @@ export class GiftSendService {
     @InjectRepository(GiftSend, ConnectionNames.Default)
     private GifSendRepository: Repository<GiftSend>,
     private readonly configService: ConfigService,
-    private readonly emailService: EmailService,
     private readonly debuggerService: DebuggerService,
-    private readonly helperDateService: HelperDateService,
   ) {}
 
   async create(props: DeepPartial<GiftSend>): Promise<GiftSend> {
