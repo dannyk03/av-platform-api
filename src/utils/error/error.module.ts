@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { MessageService } from '@/message/service/message.service';
+import { ResponseMessageService } from '@/response-message/service/response-message.service';
 import { ErrorHttpFilter } from './error.filter';
 
 @Module({
@@ -8,9 +8,9 @@ import { ErrorHttpFilter } from './error.filter';
   providers: [
     {
       provide: APP_FILTER,
-      inject: [MessageService],
-      useFactory: (messageService: MessageService) => {
-        return new ErrorHttpFilter(messageService);
+      inject: [ResponseMessageService],
+      useFactory: (responseMessageService: ResponseMessageService) => {
+        return new ErrorHttpFilter(responseMessageService);
       },
     },
   ],

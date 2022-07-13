@@ -2,13 +2,13 @@ import { Module, Global } from '@nestjs/common';
 import * as path from 'path';
 import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n';
 import { ConfigService } from '@nestjs/config';
-import { EnumMessageLanguage } from './message.constant';
-import { MessageService } from './service/message.service';
+import { EnumMessageLanguage } from './response-message.constant';
+import { ResponseMessageService } from './service/response-message.service';
 
 @Global()
 @Module({
-  providers: [MessageService],
-  exports: [MessageService],
+  providers: [ResponseMessageService],
+  exports: [ResponseMessageService],
   imports: [
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
@@ -29,4 +29,4 @@ import { MessageService } from './service/message.service';
   ],
   controllers: [],
 })
-export class MessageModule {}
+export class ResponseMessageModule {}

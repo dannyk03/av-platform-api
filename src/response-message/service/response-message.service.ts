@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EnumMessageLanguage } from '@/message/message.constant';
+import { EnumMessageLanguage } from '@/response-message/response-message.constant';
 import {
   IMessage,
   IMessageOptions,
   IMessageSetOptions,
-} from '../message.interface';
+} from '../response-message.interface';
 import { isArray, ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 import { IErrors } from '@/utils/error/error.interface';
 
 @Injectable()
-export class MessageService {
+export class ResponseMessageService {
   private readonly defaultLanguage: string;
 
   constructor(

@@ -3,15 +3,16 @@ import { Module } from '@nestjs/common';
 import { ConnectionNames } from '@/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
-// import { UserService } from './service/user.service';
+import { CatalogService } from './service/catalog.service';
 // Entities
+import { Product } from './entity/product.entity';
 
 //
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product], ConnectionNames.Default)],
-  exports: [UserService],
-  providers: [UserService],
+  exports: [CatalogService],
+  providers: [CatalogService],
   controllers: [],
 })
 export class CatalogModule {}

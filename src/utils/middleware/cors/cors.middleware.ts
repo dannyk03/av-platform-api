@@ -21,11 +21,10 @@ export class CorsMiddleware implements NestMiddleware {
       'middleware.cors.allowHeader',
     );
 
-    const whitelist = ['http://localhost:3000']; //white list local dev
+    const whitelist = ['http://localhost:3000']; // whitelist local dev origin
     const corsOptions: CorsOptions = {
       origin: (origin, callback) => {
-        // when using Postman for api calls origin in undefined
-        if ((!isSecureMode && whitelist.includes(origin)) || !origin) {
+        if (!isSecureMode && whitelist.includes(origin)) {
           callback(null, true);
         } else {
           callback(null, allowOrigin);

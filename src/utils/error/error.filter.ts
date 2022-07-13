@@ -8,13 +8,15 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { IErrorException } from './error.interface';
-import { IMessage } from '@/message/message.interface';
-import { MessageService } from '@/message/service/message.service';
+import { IMessage } from '@/response-message/response-message.interface';
+import { ResponseMessageService } from '@/response-message/service/response-message.service';
 import { ThrottlerException } from '@nestjs/throttler';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly responseMessageService: ResponseMessageService,
+  ) {}
 
   async catch(exception: HttpException, host: ArgumentsHost): Promise<void> {
     const ctx: HttpArgumentsHost = host.switchToHttp();
@@ -24,7 +26,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const appLanguages: string[] = ctx.getRequest().i18nLang?.split(',');
 
     if (exception instanceof ThrottlerException) {
-      const rMessage: string | IMessage = await this.messageService.get(
+      const rMessage: string | IMessage = await this.responseMessageService.get(
         'request.error.tooManyRequests',
         { appLanguages },
       );
@@ -37,7 +39,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
       const response = exception.getResponse() as {
         error: Record<string, any>;
       };
-      const rMessage: string | IMessage = await this.messageService.get(
+      const rMessage: string | IMessage = await this.responseMessageService.get(
         'health.error.check',
         { appLanguages },
       );
@@ -52,18 +54,21 @@ export class ErrorHttpFilter implements ExceptionFilter {
     if (typeof response === 'object') {
       const { statusCode, message, errors, data, properties } = response;
       const rErrors = errors
-        ? await this.messageService.getRequestErrorsMessage(
+        ? await this.responseMessageService.getRequestErrorsMessage(
             errors,
             appLanguages,
           )
         : undefined;
 
-      let rMessage: string | IMessage = await this.messageService.get(message, {
-        appLanguages,
-      });
+      let rMessage: string | IMessage = await this.responseMessageService.get(
+        message,
+        {
+          appLanguages,
+        },
+      );
 
       if (properties) {
-        rMessage = await this.messageService.get(message, {
+        rMessage = await this.responseMessageService.get(message, {
           appLanguages,
           properties,
         });
@@ -76,7 +81,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         data,
       });
     } else {
-      const rMessage: string | IMessage = await this.messageService.get(
+      const rMessage: string | IMessage = await this.responseMessageService.get(
         'response.error.structure',
         { appLanguages },
       );

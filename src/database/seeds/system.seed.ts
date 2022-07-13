@@ -9,6 +9,7 @@ import { OrganizationService } from '@/organization/service';
 import { UserService } from '@/user/service/user.service';
 import { AclRoleService } from '@acl/role/service';
 import { HelperDateService } from '@/utils/helper/service';
+import { DisplayLanguageService } from '@/language/display-language/service/display-language.service';
 //
 import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
@@ -23,6 +24,7 @@ export class SystemSeed {
     private readonly userService: UserService,
     private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
+    private readonly displayLanguageService: DisplayLanguageService,
     private readonly helperDateService: HelperDateService,
     private readonly debuggerService: DebuggerService,
   ) {}
@@ -73,6 +75,14 @@ export class SystemSeed {
             });
 
             await transactionalEntityManager.save(systemAdmin);
+
+            // Default Display Language
+            const displayLanguageEn = await this.displayLanguageService.create({
+              isoCode: 'en',
+              isoName: 'english',
+            });
+
+            await transactionalEntityManager.save(displayLanguageEn);
 
             this.debuggerService.debug(
               'Insert System Succeed',

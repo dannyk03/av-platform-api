@@ -9,8 +9,8 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { IMessage } from '@/message/message.interface';
-import { MessageService } from '@/message/service/message.service';
+import { IMessage } from '@/response-message/response-message.interface';
+import { ResponseMessageService } from '@/response-message/service/response-message.service';
 
 export function ResponseDefaultInterceptor(
   messagePath: string,
@@ -20,7 +20,9 @@ export function ResponseDefaultInterceptor(
   class MixinResponseDefaultInterceptor
     implements NestInterceptor<Promise<any>>
   {
-    constructor(private readonly messageService: MessageService) {}
+    constructor(
+      private readonly responseMessageService: ResponseMessageService,
+    ) {}
 
     async intercept(
       ctx: ExecutionContext,
@@ -42,9 +44,9 @@ export function ResponseDefaultInterceptor(
             customStatusCode || responseExpress.statusCode;
           const data: Record<string, any> = await response;
           const message: string | IMessage =
-            (await this.messageService.get(messagePath, {
+            (await this.responseMessageService.get(messagePath, {
               appLanguages,
-            })) || (await this.messageService.get('response.default'));
+            })) || (await this.responseMessageService.get('response.default'));
 
           return {
             statusCode,

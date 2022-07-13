@@ -9,8 +9,8 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { IMessage } from '@/message/message.interface';
-import { MessageService } from '@/message/service/message.service';
+import { IMessage } from '@/response-message/response-message.interface';
+import { ResponseMessageService } from '@/response-message/service/response-message.service';
 import { PAGINATION_DEFAULT_MAX_PAGE } from '@/utils/pagination/pagination.constant';
 
 // This interceptor for restructure response success
@@ -20,7 +20,9 @@ export function ResponsePagingInterceptor(
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinResponseInterceptor implements NestInterceptor<Promise<any>> {
-    constructor(private readonly messageService: MessageService) {}
+    constructor(
+      private readonly responseMessageService: ResponseMessageService,
+    ) {}
 
     async intercept(
       ctx: ExecutionContext,
@@ -52,9 +54,9 @@ export function ResponsePagingInterceptor(
           let { totalPage } = responseData;
 
           const message: string | IMessage =
-            (await this.messageService.get(messagePath, {
+            (await this.responseMessageService.get(messagePath, {
               appLanguages,
-            })) || (await this.messageService.get('response.default'));
+            })) || (await this.responseMessageService.get('response.default'));
 
           totalPage =
             totalPage > PAGINATION_DEFAULT_MAX_PAGE

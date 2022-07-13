@@ -4,7 +4,7 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "message/languages/**/*",
+        "include": "response-message/languages/**/*",
         "watchAssets": true
       }
     ]

@@ -1,4 +1,4 @@
-import { IMessageOptionsProperties } from '@/message/message.interface';
+import { IMessageOptionsProperties } from '@/response-message/response-message.interface';
 
 export interface IErrors {
   readonly message: string;

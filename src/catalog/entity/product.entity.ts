@@ -1,30 +1,37 @@
-import {
-  Entity,
-  Column,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-  BeforeInsert,
-} from 'typeorm';
+import { Entity, Column, Index, OneToMany } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entities/base.entity';
-import { Organization } from '@/organization/entity/organization.entity';
-import { AclRole } from '@acl/role/entity/acl-role.entity';
-import { UserAuthConfig } from '@/auth/entity/user-auth-config.entity';
+import { ProductDisplayOption } from './product-display-options.entity';
 //
 
 @Entity()
 export class Product extends BaseEntity<Product> {
   @Index()
-  @Column({ unique: true })
-  name!: string;
-
-  @Column({ nullable: true })
-  description?: string;
+  @Column({
+    type: 'varchar',
+    length: 30,
+    unique: true,
+  })
+  sku!: string;
 
   @Column({
-    default: false,
+    nullable: true,
+    type: 'varchar',
+    length: 30,
+  })
+  brand?: string;
+
+  @Column({
+    default: true,
   })
   isActive!: boolean;
+
+  @OneToMany(
+    () => ProductDisplayOption,
+    (productDisplayOption) => productDisplayOption.product,
+    {
+      cascade: true,
+    },
+  )
+  displayOptions!: ProductDisplayOption;
 }

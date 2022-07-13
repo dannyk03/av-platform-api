@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Modules
 import { ConfigDynamicModule } from '@/config';
 import { AuthModule } from '@/auth/auth.module';
-import { MessageModule } from '@/message/message.module';
+import { ResponseMessageModule } from '@/response-message/response-message.module';
 import { DebuggerModule } from '@/debugger/debugger.module';
 import { DatabaseModule } from '@/database/database.module';
 import { MiddlewareModule } from '@/utils/middleware/middleware.module';
@@ -58,7 +58,7 @@ import { APP_GUARD } from '@nestjs/core';
     DatabaseModule,
     HelperModule,
     DebuggerModule,
-    MessageModule,
+    ResponseMessageModule,
     ErrorModule,
     PaginationModule,
     RequestModule,
