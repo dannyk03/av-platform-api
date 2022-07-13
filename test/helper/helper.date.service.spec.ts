@@ -127,7 +127,7 @@ describe('HelperDateService', () => {
       const test = jest.spyOn(helperDateService, 'create');
 
       helperDateService.create({ date: date1 });
-      expect(test).toHaveBeenCalledWith(date1);
+      expect(test).toHaveBeenCalledWith({ date: date1 });
     });
 
     it('should be success', async () => {
@@ -143,7 +143,7 @@ describe('HelperDateService', () => {
       const test = jest.spyOn(helperDateService, 'timestamp');
 
       helperDateService.timestamp({ date: date1 });
-      expect(test).toHaveBeenCalledWith(date1);
+      expect(test).toHaveBeenCalledWith({ date: date1 });
     });
 
     it('should be success', async () => {
