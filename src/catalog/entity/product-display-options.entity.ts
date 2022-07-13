@@ -13,7 +13,7 @@ import { DisplayLanguage } from '@/language/display-language/entity';
 //
 
 @Entity()
-@Unique('uq_product_display_option_language', ['language', 'product'])
+@Unique(['language', 'product'])
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @OneToOne(() => DisplayLanguage)
   @JoinColumn()
