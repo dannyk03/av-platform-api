@@ -17,17 +17,14 @@ WORKDIR /usr/src/app
 # Copying this first prevents re-running yarn install on every code change.
 COPY --chown=node:node package.json yarn.lock .npmrc ./
 
-
+# Install app dependencies using yarn
 # bcrycp package requires node-gyp rebuild (performance and security)
 # https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python3 && \
-  yarn install --silent node-gyp -g && \
+  # yarn global add node-gyp && \
   yarn install --immutable && \
   apk del native-deps
-
-# Install app dependencies using yarn
-# RUN yarn install --immutable
 
 # Bundle app source
 COPY --chown=node:node . .
