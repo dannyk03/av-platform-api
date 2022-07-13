@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { isValidPhoneNumber, CountryCode } from 'libphonenumber-js/mobile';
 
 @Injectable()
-export class HelperMobileNumberService {
+export class HelperPhoneNumberService {
   public isValidPhoneNumber(
-    mobileNumber: string,
+    phoneNumber: string,
     countryCode?: CountryCode,
   ): boolean {
     return (
-      typeof mobileNumber === 'string' &&
-      isValidPhoneNumber(mobileNumber, countryCode)
+      typeof phoneNumber === 'string' &&
+      isValidPhoneNumber(phoneNumber, countryCode)
     );
   }
 }

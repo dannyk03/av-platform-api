@@ -37,7 +37,7 @@ export class User extends BaseEntity<User> {
     unique: true,
     nullable: true,
   })
-  mobileNumber?: string;
+  phoneNumber?: string;
 
   @Index()
   @Column({

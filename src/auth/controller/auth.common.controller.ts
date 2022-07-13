@@ -244,7 +244,7 @@ export class AuthCommonController {
     @Res({ passthrough: true })
     response: ExpressResponse,
     @Body()
-    { email, password, firstName, lastName, mobileNumber }: AuthSignUpDto,
+    { email, password, firstName, lastName, phoneNumber }: AuthSignUpDto,
     @UserAgent() userAgent: IResult,
     @ReqLogData()
     logData: IReqLogData,
@@ -254,22 +254,22 @@ export class AuthCommonController {
     // );
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
-    const checkExist = await this.userService.checkExist(email, mobileNumber);
+    const checkExist = await this.userService.checkExist(email, phoneNumber);
 
-    if (checkExist.email && checkExist.mobileNumber) {
+    if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserExistsError,
         message: 'user.error.exist',
       });
     } else if (checkExist.email) {
       throw new BadRequestException({
-        statusCode: EnumUserStatusCodeError.UserEmailExistError,
+        statusCode: EnumUserStatusCodeError.UserEmailExistsError,
         message: 'user.error.emailExist',
       });
-    } else if (checkExist.mobileNumber) {
+    } else if (checkExist.phoneNumber) {
       throw new BadRequestException({
-        statusCode: EnumUserStatusCodeError.UserMobileNumberExistError,
-        message: 'user.error.mobileNumberExist',
+        statusCode: EnumUserStatusCodeError.UserPhoneNumberExistsError,
+        message: 'user.error.phoneNumberExist',
       });
     }
 
@@ -283,7 +283,7 @@ export class AuthCommonController {
           const signUpUser = await this.userService.create({
             isActive: true,
             email,
-            mobileNumber,
+            phoneNumber,
             firstName,
             lastName,
             authConfig: {

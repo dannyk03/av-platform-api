@@ -5,9 +5,8 @@ export default registerAs(
   (): Record<string, any> => ({
     cors: {
       allowMethod: ['GET', 'DELETE', 'PUT', 'PATCH', 'POST'],
-      allowOrigin: '*',
-      // allowOrigin: [/example\.com(\:\d{1,4})?$/], // allow all subdomain, and all port
-      // allowOrigin: [/example\.com$/], // allow only subdomain
+      allowOrigin: [/avonow\.com$/], // allow only subdomain
+      // allowOrigin: [/avonow\.com(\:\d{1,4})?$/], // allow all subdomain, and all port
       allowHeader: [
         'Accept',
         'Accept-Language',

@@ -19,7 +19,7 @@ export class UserGetSerialization {
   )
   // readonly role: IRoleEntity;
   readonly email: string;
-  readonly mobileNumber: string;
+  readonly phoneNumber: string;
   readonly isActive: boolean;
   readonly firstName: string;
   readonly lastName: string;

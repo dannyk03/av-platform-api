@@ -6,9 +6,9 @@ import {
   MinLength,
   IsOptional,
   ValidateIf,
+  IsPhoneNumber,
 } from 'class-validator';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
-import { IsStartWith } from '@/utils/request/validation/request.is-start-with.validation';
 
 export class UserCreateDto {
   @IsString()
@@ -34,8 +34,8 @@ export class UserCreateDto {
   @IsNotEmpty()
   @MinLength(10)
   @MaxLength(14)
-  @IsStartWith(['972'])
-  readonly mobileNumber: string;
+  @IsPhoneNumber()
+  readonly phoneNumber: string;
 
   @IsNotEmpty()
   readonly role: string;

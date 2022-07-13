@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -6,10 +5,9 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
-  ValidateIf,
 } from 'class-validator';
 import { IsPasswordStrong } from '@/utils/request/validation';
-import { IsMobileNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
+import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
 
 export class AuthSignUpDto {
   @IsEmail()
@@ -33,8 +31,8 @@ export class AuthSignUpDto {
   @IsOptional()
   @MinLength(10)
   @MaxLength(20)
-  @IsMobileNumber()
-  readonly mobileNumber!: string;
+  @IsPhoneNumber()
+  readonly phoneNumber!: string;
 
   @IsNotEmpty()
   @IsPasswordStrong()

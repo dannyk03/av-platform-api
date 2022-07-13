@@ -21,7 +21,7 @@ export class UserProfileSerialization {
   readonly firstName: string;
   readonly lastName: string;
   readonly email: string;
-  readonly mobileNumber: string;
+  readonly phoneNumber: string;
   readonly photo?: IAwsS3Response;
 
   @Exclude()

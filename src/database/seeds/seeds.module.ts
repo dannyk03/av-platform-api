@@ -12,6 +12,7 @@ import { OrganizationModule } from '@/organization/organization.module';
 //
 import { SystemSeed } from './system.seed';
 import { RolePresetsSeed } from './role-presets.seed';
+import { CreateDbSeed } from './create-db.seed';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { RolePresetsSeed } from './role-presets.seed';
     AclSubjectModule,
     AclAbilityModule,
   ],
-  providers: [SystemSeed, RolePresetsSeed],
+  providers: [CreateDbSeed, SystemSeed, RolePresetsSeed],
   exports: [],
 })
 export class SeedsModule {}

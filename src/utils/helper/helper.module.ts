@@ -11,7 +11,7 @@ import { HelperStringService } from './service/helper.string.service';
 import { HelperFileService } from './service/helper.file.service';
 import { HelperGeoService } from './service/helper.geo.service';
 import { HelperSlugService } from './service/helper.slug.service';
-import { HelperMobileNumberService } from './service/helper.mobile-number.service';
+import { HelperPhoneNumberService } from './service/helper.mobile-number.service';
 import { HelperJwtService } from './service/helper.jwt.service';
 
 @Global()
@@ -28,7 +28,7 @@ import { HelperJwtService } from './service/helper.jwt.service';
     HelperFileService,
     HelperGeoService,
     HelperJwtService,
-    HelperMobileNumberService,
+    HelperPhoneNumberService,
   ],
   exports: [
     HelperService,
@@ -42,7 +42,7 @@ import { HelperJwtService } from './service/helper.jwt.service';
     HelperFileService,
     HelperGeoService,
     HelperJwtService,
-    HelperMobileNumberService,
+    HelperPhoneNumberService,
   ],
   controllers: [],
   imports: [
