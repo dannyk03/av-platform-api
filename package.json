@@ -8,9 +8,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start": "yarn migration:run && nest start",
-    "start:dev": "yarn migration:run && nest start --watch",
-    "start:debug": "yarn migration:run && nest start --debug --watch",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
     "start:prod": "yarn migration:run && node dist/main",
     "format": "yarn prettier:check --write",
     "prettier:check": "prettier --list-different --ignore-path .gitignore .",
