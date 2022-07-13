@@ -15,7 +15,6 @@ import { GiftSendDto } from '../dto/gift.send.dto';
 import { Response } from '@/utils/response';
 import { ConnectionNames } from '@/database';
 import { ReqUser } from '@/user';
-import { EnumGiftSendStatus } from '../gift.constant';
 
 @Controller({
   version: '1',
@@ -63,7 +62,6 @@ export class GiftController {
 
       if (emailSent) {
         giftSend.sentAt = this.helperDateService.create();
-        giftSend.status = EnumGiftSendStatus.PendingRecipientSubmit;
       }
 
       this.giftSendService.save(giftSend);

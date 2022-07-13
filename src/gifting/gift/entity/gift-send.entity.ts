@@ -3,14 +3,13 @@ import { Entity, Column, Index, ManyToOne } from 'typeorm';
 import { BaseEntity } from '@/database/entities/base.entity';
 import { User } from '@/user/entity/user.entity';
 //
-import { EnumGiftSendStatus } from '../gift.constant';
 
 @Entity()
 export class GiftSend extends BaseEntity<GiftSend> {
   @Index()
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 30,
   })
   recipientEmail: string;
 
@@ -23,9 +22,22 @@ export class GiftSend extends BaseEntity<GiftSend> {
   sentAt?: Date;
 
   @Column({
-    type: 'enum',
-    enum: EnumGiftSendStatus,
-    default: EnumGiftSendStatus.New,
+    nullable: true,
   })
-  status: EnumGiftSendStatus;
+  acceptedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  approvedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  shippedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  deliveredAt?: Date;
 }
