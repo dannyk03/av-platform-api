@@ -124,7 +124,9 @@ export class OrganizationInviteController {
     }
 
     const now = this.helperDateService.create();
-    const expiresAt = this.helperDateService.create(existingInvite.expiresAt);
+    const expiresAt = this.helperDateService.create({
+      date: existingInvite.expiresAt,
+    });
 
     if (now > expiresAt || existingInvite.usedAt) {
       throw new ForbiddenException({
@@ -151,7 +153,7 @@ export class OrganizationInviteController {
       relations: ['role', 'organization'],
     });
 
-    if (existingInvite.usedAt) {
+    if (!existingInvite || existingInvite.usedAt) {
       throw new ForbiddenException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationInviteUsedError,
         message: 'organization.error.inviteInvalid',

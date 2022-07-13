@@ -158,9 +158,9 @@ export class OrganizationInviteService {
       const now = this.helperDateService.create();
       const inviteExpires =
         alreadyExistingOrganizationInvite.expiresAt &&
-        this.helperDateService.create(
-          alreadyExistingOrganizationInvite.expiresAt,
-        );
+        this.helperDateService.create({
+          date: alreadyExistingOrganizationInvite.expiresAt,
+        });
 
       // Resend invite if expired
       const isResend =

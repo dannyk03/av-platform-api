@@ -41,7 +41,6 @@ import {
   AuthRefreshJwtGuard,
   Token,
   ReqJwtUser,
-  AclGuard,
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
@@ -118,7 +117,7 @@ export class AuthCommonController {
       });
     }
 
-    const validate: boolean = await this.authService.validateUserPassword(
+    const validate: boolean = await this.authService.validateUser(
       body.password,
       user.authConfig.password,
     );
@@ -199,9 +198,9 @@ export class AuthCommonController {
     );
 
     const now = this.helperDateService.create();
-    const passwordExpiredAt = this.helperDateService.create(
-      user.authConfig.passwordExpiredAt,
-    );
+    const passwordExpiredAt = this.helperDateService.create({
+      date: user.authConfig.passwordExpiredAt,
+    });
 
     if (now > passwordExpiredAt) {
       this.debuggerService.error('Password expired', 'AuthController', 'login');
@@ -397,7 +396,9 @@ export class AuthCommonController {
     }
 
     const now = this.helperDateService.create();
-    const expiresAt = this.helperDateService.create(existingSignUp.expiresAt);
+    const expiresAt = this.helperDateService.create({
+      date: existingSignUp.expiresAt,
+    });
 
     if (now > expiresAt || existingSignUp.usedAt) {
       throw new ForbiddenException({
@@ -436,9 +437,9 @@ export class AuthCommonController {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
     const now = this.helperDateService.create();
-    const userPasswordExpiredAt = this.helperDateService.create(
-      reqUser.authConfig.passwordExpiredAt,
-    );
+    const userPasswordExpiredAt = this.helperDateService.create({
+      date: reqUser.authConfig.passwordExpiredAt,
+    });
 
     if (now > userPasswordExpiredAt) {
       this.debuggerService.error(
@@ -509,7 +510,7 @@ export class AuthCommonController {
       });
     }
 
-    const matchPassword: boolean = await this.authService.validateUserPassword(
+    const matchPassword: boolean = await this.authService.validateUser(
       body.oldPassword,
       user.authConfig.password,
     );
@@ -526,11 +527,10 @@ export class AuthCommonController {
       });
     }
 
-    const newMatchPassword: boolean =
-      await this.authService.validateUserPassword(
-        body.newPassword,
-        user.authConfig.password,
-      );
+    const newMatchPassword: boolean = await this.authService.validateUser(
+      body.newPassword,
+      user.authConfig.password,
+    );
     if (newMatchPassword) {
       this.debuggerService.error(
         "New password cant't be the same as old password",

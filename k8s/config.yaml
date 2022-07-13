@@ -72,11 +72,16 @@ spec:
                   name: db-secret
                   key: db
             # AUTH
-            - name: AUTH_SPUPER_ADMIN_INITIAL_PASS
+            - name: AUTH_SYSTEM_ADMIN_INITIAL_PASS
               valueFrom:
                 secretKeyRef:
                   name: auth-secret
                   key: super-admin-initial-password
+            # - name: AUTH_SYSTEM_ADMIN_EMAIL
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: auth-secret
+            #       key: super-admin-initial-email
             - name: AUTH_JWT_ACCESS_TOKEN_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -132,7 +137,9 @@ spec:
             - name: APP_TASK_ON
               value: 'false'
             - name: MIDDLEWARE_TOLERANCE_TIMESTAMP
-              value: '5'
+              value: '5m'
+            - name: MIDDLEWARE_TIMEOUT
+              value: '30s'
             - name: 'DD_ENV'
               value: staging
 

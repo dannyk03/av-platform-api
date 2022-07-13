@@ -6,7 +6,6 @@ import { HelperDateService } from 'src/utils/helper/service/helper.date.service'
 import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
 import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
 import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
-import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 @Injectable()
@@ -102,7 +101,7 @@ export class AuthService {
   }
 
   async createPayloadAccessToken(
-    data: AuthLoginDto,
+    data: Record<string, any>,
     rememberMe: boolean,
     options?: IAuthPayloadOptions,
   ): Promise<Record<string, any>> {
