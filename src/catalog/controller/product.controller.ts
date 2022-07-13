@@ -29,10 +29,10 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @AclGuard(
     [
-      {
-        action: Action.Create,
-        subject: Subject.Product,
-      },
+      // {
+      //   action: Action.Create,
+      //   subject: Subject.Product,
+      // },
     ],
     { systemOnly: true },
   )
