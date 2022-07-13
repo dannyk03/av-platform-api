@@ -57,7 +57,7 @@ export class SystemSeed {
             const systemAdmin = await this.userService.create({
               ...systemSeedData.systemAdmin,
               email: process.env.AUTH_SYSTEM_ADMIN_EMAIL,
-              mobileNumber: '+00000000000',
+              phoneNumber: '+00000000000',
               authConfig: {
                 password: passwordHash,
                 salt,

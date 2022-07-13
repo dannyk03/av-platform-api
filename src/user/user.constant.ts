@@ -2,8 +2,8 @@ export enum EnumUserStatusCodeError {
   UserNotFoundError = 5400,
   UserExistsError = 5401,
   UserInactiveError = 5402,
-  UserEmailExistError = 5403,
-  UserMobileNumberExistError = 5404,
+  UserEmailExistsError = 5403,
+  UserPhoneNumberExistsError = 5404,
   UserSignUpLinkNotFound = 5405,
   UserSignUpLinkExpired = 5406,
 }

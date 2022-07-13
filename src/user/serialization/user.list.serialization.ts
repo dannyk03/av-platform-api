@@ -8,7 +8,7 @@ export class UserListSerialization {
   @Exclude()
   // readonly role: Role;
   readonly email: string;
-  readonly mobileNumber: string;
+  readonly phoneNumber: string;
   readonly isActive: boolean;
   readonly firstName: string;
   readonly lastName: string;

@@ -33,7 +33,7 @@ export class AuthUserLoginSerialization {
   readonly authConfig: UserAuthConfig;
 
   @Exclude()
-  readonly mobileNumber: string;
+  readonly phoneNumber: string;
 
   @Exclude()
   readonly firstName: string;

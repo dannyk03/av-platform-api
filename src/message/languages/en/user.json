@@ -13,7 +13,7 @@
     "notFound": "User not found",
     "inactive": "User not active",
     "emailExist": "Email user used",
-    "mobileNumberExist": "User mobile number already used",
+    "phoneNumberExist": "User mobile number already used",
     "active": "User status active invalid",
     "exist": "User exist",
     "signUpCode": "Invalid sign up code",

@@ -10,14 +10,14 @@ import { CountryCode } from 'libphonenumber-js/types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 // Services
-import { HelperMobileNumberService } from '@/utils/helper/service/helper.mobile-number.service';
+import { HelperPhoneNumberService } from '@/utils/helper/service/helper.mobile-number.service';
 //
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsMobileNumberConstraint implements ValidatorConstraintInterface {
+export class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
   constructor(
-    protected readonly helperMobileNumberService: HelperMobileNumberService,
+    protected readonly helperPhoneNumberService: HelperPhoneNumberService,
   ) {}
 
   validate(value: string, args: ValidationArguments) {
@@ -26,7 +26,7 @@ export class IsMobileNumberConstraint implements ValidatorConstraintInterface {
 
     return (
       typeof value === 'string' &&
-      this.helperMobileNumberService.isValidPhoneNumber(
+      this.helperPhoneNumberService.isValidPhoneNumber(
         value,
         relatedValue as CountryCode,
       )
@@ -34,7 +34,7 @@ export class IsMobileNumberConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function IsMobileNumber(
+export function IsPhoneNumber(
   property?,
   validationOptions: ValidationOptions = {},
 ) {
@@ -44,12 +44,12 @@ export function IsMobileNumber(
       set(validationOptions, 'message', defaultValidationFailedMessage);
     }
     registerDecorator({
-      name: 'IsMobileNumber',
+      name: 'IsPhoneNumber',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [property],
-      validator: IsMobileNumberConstraint,
+      validator: IsPhoneNumberConstraint,
     });
   };
 }
