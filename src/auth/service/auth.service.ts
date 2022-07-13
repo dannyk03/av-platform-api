@@ -1,10 +1,10 @@
+import { User } from '@/user/entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
-import { IUserEntity } from '@/user/user.interface';
-import { HelperDateService } from '@/utils/helper/service/helper.date.service';
-import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
-import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
+import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
+import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
 import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
@@ -61,6 +61,7 @@ export class AuthService {
   async validateAccessToken(token: string): Promise<boolean> {
     return this.helperEncryptionService.jwtVerify(token, {
       secretKey: this.accessTokenSecretToken,
+      expiredIn: this.accessTokenExpirationTime,
     });
   }
 
@@ -71,20 +72,21 @@ export class AuthService {
   async createRefreshToken(
     payload: Record<string, any>,
     rememberMe: boolean,
-    isTest?: boolean,
+    test?: boolean,
   ): Promise<string> {
     return this.helperEncryptionService.jwtEncrypt(payload, {
       secretKey: this.refreshTokenSecretToken,
       expiredIn: rememberMe
         ? this.refreshTokenExpirationTimeRememberMe
         : this.refreshTokenExpirationTime,
-      notBefore: isTest ? '0' : this.refreshTokenNotBeforeExpirationTime,
+      notBefore: test ? '0' : this.refreshTokenNotBeforeExpirationTime,
     });
   }
 
   async validateRefreshToken(token: string): Promise<boolean> {
     return this.helperEncryptionService.jwtVerify(token, {
       secretKey: this.refreshTokenSecretToken,
+      expiredIn: this.accessTokenExpirationTime,
     });
   }
 
@@ -92,7 +94,7 @@ export class AuthService {
     return this.helperEncryptionService.jwtDecrypt(token);
   }
 
-  async validateUserPassword(
+  async validateUser(
     passwordString: string,
     passwordHash: string,
   ): Promise<boolean> {
@@ -100,14 +102,17 @@ export class AuthService {
   }
 
   async createPayloadAccessToken(
-    data: Record<string, any>,
+    data: AuthLoginDto,
     rememberMe: boolean,
     options?: IAuthPayloadOptions,
   ): Promise<Record<string, any>> {
     return {
       ...data,
       rememberMe,
-      loginDate: options?.loginDate || this.helperDateService.create(),
+      loginDate:
+        options && options.loginDate
+          ? options.loginDate
+          : this.helperDateService.create(),
     };
   }
 
@@ -119,13 +124,11 @@ export class AuthService {
     return {
       id,
       rememberMe,
-      loginDate: options?.loginDate,
+      loginDate: options && options.loginDate ? options.loginDate : undefined,
     };
   }
 
-  async serializationLogin(
-    data: IUserEntity,
-  ): Promise<AuthUserLoginSerialization> {
+  async serializationLogin(data: User): Promise<AuthUserLoginSerialization> {
     return plainToInstance(AuthUserLoginSerialization, data);
   }
 
@@ -136,17 +139,29 @@ export class AuthService {
 
     const salt: string = this.helperHashService.randomSalt(saltLength);
 
-    const passwordExpiredInDays: number = this.configService.get<number>(
-      'auth.password.expiredInDay',
+    const passwordExpiredInMs: number = this.configService.get<number>(
+      'auth.password.expiredInMs',
     );
-    const passwordExpiredAt: Date = this.helperDateService.forwardInDays(
-      passwordExpiredInDays,
-    );
+    const passwordExpiredAt: Date =
+      this.helperDateService.forwardInMilliseconds(passwordExpiredInMs);
     const passwordHash = this.helperHashService.bcrypt(password, salt);
     return {
       passwordHash,
       passwordExpiredAt,
       salt,
     };
+  }
+
+  async checkPasswordExpired(passwordExpired: Date): Promise<boolean> {
+    const today: Date = this.helperDateService.create();
+    const passwordExpiredConvert: Date = this.helperDateService.create({
+      date: passwordExpired,
+    });
+
+    if (today > passwordExpiredConvert) {
+      return true;
+    }
+
+    return false;
   }
 }

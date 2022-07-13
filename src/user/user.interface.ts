@@ -1,8 +1,3 @@
-import { User } from './entity';
-
-// Todo check role
-export type IUserEntity = Omit<User, 'role'>;
-
 export interface IUserCreate {
   firstName: string;
   lastName?: string;

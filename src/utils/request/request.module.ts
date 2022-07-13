@@ -5,7 +5,7 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 //
@@ -23,6 +23,7 @@ import { SafeStringConstraint } from './validation/request.safe-string.validatio
 import { SkipConstraint } from './validation/request.skip.validation';
 import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
+import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 
 @Module({
   controllers: [],
@@ -53,6 +54,10 @@ import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.v
           },
         });
       },
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestTimestampInterceptor,
     },
     IsPasswordStrongConstraint,
     IsPasswordMediumConstraint,

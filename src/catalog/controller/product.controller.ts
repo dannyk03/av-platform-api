@@ -25,17 +25,13 @@ export class ProductController {
     private readonly helperDateService: HelperDateService,
   ) {}
 
-  @Response('organization.create')
+  @Response('product.create')
   @HttpCode(HttpStatus.OK)
   @AclGuard(
     [
       {
         action: Action.Create,
-        subject: Subject.Organization,
-      },
-      {
-        action: Action.Create,
-        subject: Subject.User,
+        subject: Subject.Product,
       },
     ],
     { systemOnly: true },
@@ -48,10 +44,6 @@ export class ProductController {
       email: organizationOwnerEmail,
       password: initialOwnerPassword,
     }: OrganizationCreateDto,
-    @ReqUser()
-    reqUser: User,
-    @ReqLogData()
-    logData: IReqLogData,
   ): Promise<IResponse> {
     return;
   }

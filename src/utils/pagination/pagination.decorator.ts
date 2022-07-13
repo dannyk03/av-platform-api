@@ -1,4 +1,4 @@
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, UsePipes } from '@nestjs/common';
 import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
@@ -7,7 +7,9 @@ import {
   IsEnum,
   IsNotEmpty,
   IsDate,
+  IsString,
 } from 'class-validator';
+import { RequestAddDatePipe } from 'src/utils/request/pipe/request.add-date.pipe';
 import { MinGreaterThan } from '../request/validation/request.min-greater-than.validation';
 import { Skip } from '../request/validation/request.skip.validation';
 import {
@@ -28,36 +30,29 @@ import {
 export function PaginationSearch(): any {
   return applyDecorators(
     Expose(),
-    Transform(({ value }) => (value ? value : undefined), {
-      toClassOnly: true,
-    }),
+    IsOptional(),
+    IsString(),
+    Transform(({ value }) => (value ? value : undefined)),
   );
 }
 
 export function PaginationAvailableSearch(availableSearch: string[]): any {
   return applyDecorators(
     Expose(),
-    Transform(() => availableSearch, {
-      toClassOnly: true,
-    }),
+    Transform(() => availableSearch),
   );
 }
 
 export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
   return applyDecorators(
     Expose(),
-    Transform(
-      ({ value }) =>
-        !value
-          ? page
-          : value && Number.isNaN(value)
-          ? page
-          : Number.parseInt(value) > PAGINATION_DEFAULT_MAX_PAGE
-          ? PAGINATION_DEFAULT_MAX_PAGE
-          : Number.parseInt(value),
-      {
-        toClassOnly: true,
-      },
+    Type(() => Number),
+    Transform(({ value }) =>
+      !value
+        ? page
+        : value > PAGINATION_DEFAULT_MAX_PAGE
+        ? PAGINATION_DEFAULT_MAX_PAGE
+        : value,
     ),
   );
 }
@@ -65,18 +60,13 @@ export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
 export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
   return applyDecorators(
     Expose(),
-    Transform(
-      ({ value }) =>
-        !value
-          ? perPage
-          : value && Number.isNaN(value)
-          ? perPage
-          : Number.parseInt(value) > PAGINATION_DEFAULT_MAX_PER_PAGE
-          ? PAGINATION_DEFAULT_MAX_PER_PAGE
-          : Number.parseInt(value),
-      {
-        toClassOnly: true,
-      },
+    Type(() => Number),
+    Transform(({ value }) =>
+      !value
+        ? perPage
+        : value > PAGINATION_DEFAULT_MAX_PER_PAGE
+        ? PAGINATION_DEFAULT_MAX_PER_PAGE
+        : value,
     ),
   );
 }
@@ -87,28 +77,23 @@ export function PaginationSort(
 ): any {
   return applyDecorators(
     Expose(),
-    Transform(
-      ({ value, obj }) => {
-        const bSort = PAGINATION_DEFAULT_SORT.split('@')[0];
+    Transform(({ value, obj }) => {
+      const bSort = PAGINATION_DEFAULT_SORT.split('@')[0];
 
-        const rSort = value || sort;
-        const rAvailableSort = obj._availableSort || availableSort;
-        const field: string = rSort.split('@')[0];
-        const type: string = rSort.split('@')[1];
-        const convertField: string = rAvailableSort.includes(field)
-          ? field
-          : bSort;
-        const convertType: number =
-          type === 'desc' || type === '-1'
-            ? EnumPaginationAvailableSortType.Desc
-            : EnumPaginationAvailableSortType.Asc;
+      const rSort = value || sort;
+      const rAvailableSort = obj._availableSort || availableSort;
+      const field: string = rSort.split('@')[0];
+      const type: string = rSort.split('@')[1];
+      const convertField: string = rAvailableSort.includes(field)
+        ? field
+        : bSort;
+      const convertType: number =
+        type === 'desc' || type === '-1'
+          ? EnumPaginationAvailableSortType.Desc
+          : EnumPaginationAvailableSortType.Asc;
 
-        return { [convertField]: convertType };
-      },
-      {
-        toClassOnly: true,
-      },
-    ),
+      return { [convertField]: convertType };
+    }),
   );
 }
 
@@ -117,9 +102,7 @@ export function PaginationAvailableSort(
 ): any {
   return applyDecorators(
     Expose(),
-    Transform(({ value }) => (!value ? availableSort : value), {
-      toClassOnly: true,
-    }),
+    Transform(({ value }) => (!value ? availableSort : value)),
   );
 }
 
@@ -127,14 +110,10 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
   return applyDecorators(
     Expose(),
     IsBoolean({ each: true }),
-    Transform(
-      ({ value }) =>
-        value
-          ? value
-              .split(',')
-              .map((val: string) => (val === 'true' ? true : false))
-          : defaultValue,
-      { toClassOnly: true },
+    Transform(({ value }) =>
+      value
+        ? value.split(',').map((val: string) => (val === 'true' ? true : false))
+        : defaultValue,
     ),
   );
 }
@@ -147,12 +126,10 @@ export function PaginationFilterEnum<T>(
   return applyDecorators(
     Expose(),
     IsEnum(cEnum as object, { each: true }),
-    Transform(
-      ({ value }) =>
-        value
-          ? value.split(',').map((val: string) => defaultEnum[val])
-          : defaultValue,
-      { toClassOnly: true },
+    Transform(({ value }) =>
+      value
+        ? value.split(',').map((val: string) => defaultEnum[val])
+        : defaultValue,
     ),
   );
 }
@@ -191,18 +168,7 @@ export function PaginationFilterDate(
     options?.asEndDate
       ? MinGreaterThan(options.asEndDate.moreThanField)
       : Skip(),
-    options?.asEndDate
-      ? Transform(
-          ({ value }) => {
-            const result = new Date(value);
-            result.setDate(result.getDate() + 1);
-            return result;
-          },
-          {
-            toClassOnly: true,
-          },
-        )
-      : Skip(),
+    options?.asEndDate ? UsePipes(RequestAddDatePipe(1)) : Skip(),
   );
 }
 
@@ -212,15 +178,12 @@ export function PaginationFilterString(
 ) {
   return applyDecorators(
     Expose(),
-    options && options.lowercase
-      ? Transform(
-          ({ value }) =>
-            value
-              ? value.split(',').map((val: string) => val.toLowerCase())
-              : undefined,
-          {
-            toClassOnly: true,
-          },
+    IsString(),
+    options?.lowercase
+      ? Transform(({ value }) =>
+          value
+            ? value.split(',').map((val: string) => val.toLowerCase())
+            : undefined,
         )
       : Skip(),
     options?.required ? IsNotEmpty() : IsOptional(),
