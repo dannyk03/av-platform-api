@@ -54,54 +54,54 @@ describe('HelperDateService', () => {
     });
 
     it('hours should be success', async () => {
-      const result = helperDateService.diff(
-        date1,
-        date2,
-        EnumHelperDateDiff.Hours,
-      );
+      const result = helperDateService.diff(date1, date2, {
+        format: EnumHelperDateDiff.Hours,
+      });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
-        helperDateService.diff(date1, date2, EnumHelperDateDiff.Hours),
+        helperDateService.diff(date1, date2, {
+          format: EnumHelperDateDiff.Hours,
+        }),
       ).toBe(result);
     });
 
     it('days should be success', async () => {
-      const result = helperDateService.diff(
-        date1,
-        date2,
-        EnumHelperDateDiff.Days,
-      );
+      const result = helperDateService.diff(date1, date2, {
+        format: EnumHelperDateDiff.Days,
+      });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
-        helperDateService.diff(date1, date2, EnumHelperDateDiff.Days),
+        helperDateService.diff(date1, date2, {
+          format: EnumHelperDateDiff.Days,
+        }),
       ).toBe(result);
     });
 
     it('seconds should be success', async () => {
-      const result = helperDateService.diff(
-        date1,
-        date2,
-        EnumHelperDateDiff.Seconds,
-      );
+      const result = helperDateService.diff(date1, date2, {
+        format: EnumHelperDateDiff.Seconds,
+      });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
-        helperDateService.diff(date1, date2, EnumHelperDateDiff.Seconds),
+        helperDateService.diff(date1, date2, {
+          format: EnumHelperDateDiff.Seconds,
+        }),
       ).toBe(result);
     });
 
     it('milis should be success', async () => {
-      const result = helperDateService.diff(
-        date1,
-        date2,
-        EnumHelperDateDiff.Milis,
-      );
+      const result = helperDateService.diff(date1, date2, {
+        format: EnumHelperDateDiff.Milis,
+      });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
-        helperDateService.diff(date1, date2, EnumHelperDateDiff.Milis),
+        helperDateService.diff(date1, date2, {
+          format: EnumHelperDateDiff.Milis,
+        }),
       ).toBe(result);
     });
   });
@@ -126,15 +126,15 @@ describe('HelperDateService', () => {
     it('should be called', async () => {
       const test = jest.spyOn(helperDateService, 'create');
 
-      helperDateService.create(date1);
+      helperDateService.create({ date: date1 });
       expect(test).toHaveBeenCalledWith(date1);
     });
 
     it('should be success', async () => {
-      const result = helperDateService.create(date1);
+      const result = helperDateService.create({ date: date1 });
       jest.spyOn(helperDateService, 'create').mockImplementation(() => result);
 
-      expect(helperDateService.create(date1)).toBe(result);
+      expect(helperDateService.create({ date: date1 })).toBe(result);
     });
   });
 
@@ -142,17 +142,17 @@ describe('HelperDateService', () => {
     it('should be called', async () => {
       const test = jest.spyOn(helperDateService, 'timestamp');
 
-      helperDateService.timestamp(date1);
+      helperDateService.timestamp({ date: date1 });
       expect(test).toHaveBeenCalledWith(date1);
     });
 
     it('should be success', async () => {
-      const result = helperDateService.timestamp(date1);
+      const result = helperDateService.timestamp({ date: date1 });
       jest
         .spyOn(helperDateService, 'timestamp')
         .mockImplementation(() => result);
 
-      expect(helperDateService.timestamp(date1)).toBe(result);
+      expect(helperDateService.timestamp({ date: date1 })).toBe(result);
     });
   });
 
@@ -223,41 +223,41 @@ describe('HelperDateService', () => {
     });
   });
 
-  describe('forwardInHours', () => {
-    it('should be called', async () => {
-      const test = jest.spyOn(helperDateService, 'forwardInHours');
+  // describe('forwardInHours', () => {
+  //   it('should be called', async () => {
+  //     const test = jest.spyOn(helperDateService, 'forwardInHours');
 
-      helperDateService.forwardInHours(2);
-      expect(test).toHaveBeenCalledWith(2);
-    });
+  //     helperDateService.forwardInHours(2);
+  //     expect(test).toHaveBeenCalledWith(2);
+  //   });
 
-    it('should be success', async () => {
-      const result = helperDateService.forwardInHours(2);
-      jest
-        .spyOn(helperDateService, 'forwardInHours')
-        .mockImplementation(() => result);
+  //   it('should be success', async () => {
+  //     const result = helperDateService.forwardInHours(2);
+  //     jest
+  //       .spyOn(helperDateService, 'forwardInHours')
+  //       .mockImplementation(() => result);
 
-      expect(helperDateService.forwardInHours(2)).toBe(result);
-    });
-  });
+  //     expect(helperDateService.forwardInHours(2)).toBe(result);
+  //   });
+  // });
 
-  describe('backwardInHours', () => {
-    it('should be called', async () => {
-      const test = jest.spyOn(helperDateService, 'backwardInHours');
+  // describe('backwardInHours', () => {
+  //   it('should be called', async () => {
+  //     const test = jest.spyOn(helperDateService, 'backwardInHours');
 
-      helperDateService.backwardInHours(2);
-      expect(test).toHaveBeenCalledWith(2);
-    });
+  //     helperDateService.backwardInHours(2);
+  //     expect(test).toHaveBeenCalledWith(2);
+  //   });
 
-    it('should be success', async () => {
-      const result = helperDateService.backwardInHours(2);
-      jest
-        .spyOn(helperDateService, 'backwardInHours')
-        .mockImplementation(() => result);
+  //   it('should be success', async () => {
+  //     const result = helperDateService.backwardInHours(2);
+  //     jest
+  //       .spyOn(helperDateService, 'backwardInHours')
+  //       .mockImplementation(() => result);
 
-      expect(helperDateService.backwardInHours(2)).toBe(result);
-    });
-  });
+  //     expect(helperDateService.backwardInHours(2)).toBe(result);
+  //   });
+  // });
 
   describe('forwardInDays', () => {
     it('should be called', async () => {
