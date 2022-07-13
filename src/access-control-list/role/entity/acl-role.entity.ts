@@ -19,7 +19,7 @@ import { OrganizationInvite } from '@/organization/entity';
 import { slugify } from '@/utils/helper';
 
 @Entity()
-@Unique('uq_role_organization', ['slug', 'name', 'organization'])
+@Unique(['slug', 'name', 'organization'])
 export class AclRole extends BaseEntity<AclRole> {
   @Index()
   @Column({
