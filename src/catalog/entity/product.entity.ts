@@ -1,6 +1,6 @@
 import { Entity, Column, Index, OneToMany } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
+import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from './product-display-options.entity';
 //
 

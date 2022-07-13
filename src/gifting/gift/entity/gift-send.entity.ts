@@ -1,7 +1,7 @@
 import { Entity, Column, Index, ManyToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { User } from '@/user/entity/user.entity';
+import { BaseEntity } from '@/database/entity';
+import { User } from '@/user/entity';
 //
 
 @Entity()

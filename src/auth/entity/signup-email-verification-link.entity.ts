@@ -1,13 +1,6 @@
-import {
-  Entity,
-  Column,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
+import { Entity, Column, Index, JoinColumn, OneToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
+import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 //
 import { IResult } from 'ua-parser-js';

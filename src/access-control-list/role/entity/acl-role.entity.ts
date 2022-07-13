@@ -10,11 +10,11 @@ import {
   OneToMany,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { Organization } from '@/organization/entity/organization.entity';
-import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
-import { User } from '@/user/entity/user.entity';
-import { OrganizationInvite } from '@/organization/entity/organization-invite.entity';
+import { BaseEntity } from '@/database/entity';
+import { Organization } from '@/organization/entity';
+import { AclPolicy } from '@acl/policy/entity';
+import { User } from '@/user/entity';
+import { OrganizationInvite } from '@/organization/entity';
 //
 import { slugify } from '@/utils/helper';
 

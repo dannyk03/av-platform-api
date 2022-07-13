@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 // Entities
-import { SignUpEmailVerificationLink } from '../entity/signup-email-verification-link.entity';
+import { SignUpEmailVerificationLink } from '../entity';
 // Services
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 //

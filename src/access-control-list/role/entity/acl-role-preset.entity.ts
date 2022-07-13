@@ -7,8 +7,8 @@ import {
   OneToOne,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
+import { BaseEntity } from '@/database/entity';
+import { AclPolicy } from '@acl/policy/entity';
 //
 import { slugify } from '@/utils/helper';
 

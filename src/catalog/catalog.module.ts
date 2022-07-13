@@ -5,8 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
 import { CatalogService } from './service/catalog.service';
 // Entities
-import { Product } from './entity/product.entity';
-
+import { Product } from './entity';
 //
 
 @Module({

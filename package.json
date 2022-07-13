@@ -14,7 +14,7 @@
     "start:prod": "yarn prestart && yarn migration:run && node dist/main",
     "format": "yarn prettier:check --write",
     "prettier:check": "prettier --list-different --ignore-path .gitignore .",
-    "eslint:check": "eslint --cache --ignore-path .gitignore .",
+    "eslint:check": "eslint --ignore-path .gitignore .",
     "lint:fix": "yarn eslint:check --fix && yarn format",
     "lint": "yarn eslint:check && yarn prettier:check",
     "test": "yarn test:unit && yarn test:integration",

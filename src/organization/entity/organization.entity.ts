@@ -1,9 +1,9 @@
 import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { AclRole } from '@acl/role/entity/acl-role.entity';
-import { User } from '@/user/entity/user.entity';
-import { OrganizationInvite } from '@/organization/entity/organization-invite.entity';
+import { BaseEntity } from '@/database/entity';
+import { AclRole } from '@acl/role/entity';
+import { User } from '@/user/entity';
+import { OrganizationInvite } from '@/organization/entity';
 //
 import { slugify } from '@/utils/helper';
 

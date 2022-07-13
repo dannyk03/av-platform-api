@@ -19,7 +19,7 @@ import { DebuggerService } from '@/debugger/service/debugger.service';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 // Entities
 import { OrganizationInvite } from '../entity/organization-invite.entity';
-import { AclRole } from '@acl/role/entity/acl-role.entity';
+import { AclRole } from '@acl/role/entity';
 import { EnumRoleStatusCodeError } from '@/access-control-list/role';
 import { EnumMessagingStatusCodeError } from '@/messaging/messaging.constant';
 import { SuccessException } from '@/utils/error';

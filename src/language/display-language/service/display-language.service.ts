@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 // Entities
-import { DisplayLanguage } from '../entity/display-language.entity';
+import { DisplayLanguage } from '../entity';
 // Services
 import { DebuggerService } from '@/debugger/service';
 //

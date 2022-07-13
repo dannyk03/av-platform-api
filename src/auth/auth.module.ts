@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
-import { UserAuthConfig } from './entity/user-auth-config.entity';
-import { SignUpEmailVerificationLink } from './entity/signup-email-verification-link.entity';
+import { UserAuthConfig } from './entity';
+import { SignUpEmailVerificationLink } from './entity';
 // Services
 import { AuthSignUpVerificationService } from './service/auth-signup-verification.service';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';

@@ -7,9 +7,9 @@ import {
   OneToOne,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
+import { BaseEntity } from '@/database/entity';
 import { Product } from './product.entity';
-import { DisplayLanguage } from '@/language/display-language/entity/display-language.entity';
+import { DisplayLanguage } from '@/language/display-language/entity';
 //
 
 @Entity()

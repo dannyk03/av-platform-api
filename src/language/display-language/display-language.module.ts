@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
 import { DisplayLanguageService } from './service/display-language.service';
 // Entities
-import { DisplayLanguage } from './entity/display-language.entity';
+import { DisplayLanguage } from './entity';
 //
 
 @Module({

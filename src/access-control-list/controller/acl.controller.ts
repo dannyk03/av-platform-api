@@ -12,7 +12,7 @@ import {
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { LogService } from '@/log/service/log.service';
 // Entities
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 // Services
 import { AclPolicyService } from '../policy/service/acl-policy.service';
 //

@@ -28,7 +28,7 @@ import { ConnectionNames } from '@/database';
 import { AclGuard } from '@/auth';
 import { EnumLoggerAction, IReqLogData } from '@/log';
 import { ReqUser } from '@/user/user.decorator';
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 import { ReqLogData } from '@/utils/request';
 
 @Controller({

@@ -1,4 +1,4 @@
-import { AclPolicy } from '@acl/policy/entity/acl-policy.entity';
+import { AclPolicy } from '@acl/policy/entity';
 import { Exclude } from 'class-transformer';
 
 export class AclRoleLoginSerialization {

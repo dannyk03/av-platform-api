@@ -45,7 +45,7 @@ import {
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 import { ConnectionNames } from '@/database';
 import { UserSignUpValidateDto } from '../dto/auth.signup-validate.dto';
 

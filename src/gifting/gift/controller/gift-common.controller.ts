@@ -6,7 +6,7 @@ import { EmailService } from '@/messaging/service/email/email.service';
 import { GiftSendService } from '../service/gift-send.service';
 import { HelperDateService } from '@/utils/helper/service';
 // Entities
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 //
 import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';

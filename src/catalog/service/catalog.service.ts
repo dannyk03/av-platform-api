@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 // Entities
-import { Product } from '../entity/product.entity';
+import { Product } from '../entity';
 // Services
 import { DebuggerService } from '@/debugger/service';
 //

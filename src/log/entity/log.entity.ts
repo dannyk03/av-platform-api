@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 // Entities
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 //
 
 @Entity()

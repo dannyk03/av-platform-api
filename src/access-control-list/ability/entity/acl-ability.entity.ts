@@ -1,8 +1,8 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
 import { Action, AbilityVerb } from '@avo/casl';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { AclSubject } from '@acl/subject/entity/acl-subject.entity';
+import { BaseEntity } from '@/database/entity';
+import { AclSubject } from '@acl/subject/entity';
 //
 import { AbilityCondition } from '../acl-ability.interface';
 

@@ -1,4 +1,4 @@
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 import { EnumLoggerAction } from './log.constant';
 import { IResult } from 'ua-parser-js';
 import { EntityManager } from 'typeorm';

@@ -1,7 +1,7 @@
 import { DeepPartial } from 'typeorm';
 import { Action, AbilityVerb, Subject } from '@avo/casl';
 // Entities
-import { User } from '@/user/entity/user.entity';
+import { User } from '@/user/entity';
 import { Organization } from '@/organization/entity';
 import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
 //

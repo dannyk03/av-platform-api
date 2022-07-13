@@ -8,10 +8,10 @@ import {
   BeforeInsert,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entities/base.entity';
-import { Organization } from '@/organization/entity/organization.entity';
-import { AclRole } from '@acl/role/entity/acl-role.entity';
-import { UserAuthConfig } from '@/auth/entity/user-auth-config.entity';
+import { BaseEntity } from '@/database/entity';
+import { Organization } from '@/organization/entity';
+import { AclRole } from '@acl/role/entity';
+import { UserAuthConfig } from '@/auth/entity';
 //
 
 @Entity()

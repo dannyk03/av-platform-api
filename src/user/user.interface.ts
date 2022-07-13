@@ -1,4 +1,4 @@
-import { User } from './entity/user.entity';
+import { User } from './entity';
 
 // Todo check role
 export type IUserEntity = Omit<User, 'role'>;
