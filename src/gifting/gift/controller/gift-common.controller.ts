@@ -1,7 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { EmailService } from '@/messaging/service/email/email.service';
@@ -13,7 +11,6 @@ import { User } from '@/user/entity/user.entity';
 import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { Response } from '@/utils/response';
-import { ConnectionNames } from '@/database';
 import { ReqUser } from '@/user';
 
 @Controller({
@@ -21,8 +18,6 @@ import { ReqUser } from '@/user';
 })
 export class GiftController {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,

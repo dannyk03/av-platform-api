@@ -13,6 +13,9 @@ export class GiftSend extends BaseEntity<GiftSend> {
   })
   recipientEmail: string;
 
+  // TODO budget
+  // TODO notes
+
   @ManyToOne(() => User)
   sender!: User;
 
