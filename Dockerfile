@@ -22,7 +22,6 @@ COPY --chown=node:node package.json yarn.lock .npmrc ./
 # https://github.com/nodejs/docker-node/issues/384#issuecomment-305208112
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python3 && \
-  # yarn global add node-gyp && \
   yarn install --immutable && \
   apk del native-deps
 
