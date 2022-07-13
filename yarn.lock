@@ -44,10 +44,10 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-"@avo/casl@^0.0.10":
-  version "0.0.10"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.10.tgz#e70be0ca5ffad5db7a0e650e217fa4665a82db16"
-  integrity sha512-QvV7KYtNT4XkQRr463LSxbWujHGvZQ86WEt90Lfq9iHvziDvmAYSQ0QyLeboFqbe1vM3Is72gYn0omwk6yYxaQ==
+"@avo/casl@^0.0.11":
+  version "0.0.11"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.11.tgz#065b4ab6ea8e6e9c6440960b49c91af6f93bd118"
+  integrity sha512-zXVVmJA0fjhEozVDxv1qLFCpUvDPoV954Vftr12mONRZt8RLjvtDMK1uLa5wT0FMQY7cjxdld4WtOH6h1/xvgA==
   dependencies:
     "@casl/ability" "^5.4.4"
 

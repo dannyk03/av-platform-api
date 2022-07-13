@@ -38,7 +38,7 @@
     "prestart": "nestjs-command create:db && yarn migration:run"
   },
   "dependencies": {
-    "@avo/casl": "^0.0.10",
+    "@avo/casl": "^0.0.11",
     "@aws-sdk/client-s3": "^3.121.0",
     "@casl/ability": "^5.4.4",
     "@faker-js/faker": "^7.3.0",
