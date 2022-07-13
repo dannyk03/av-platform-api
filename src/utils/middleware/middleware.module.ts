@@ -15,6 +15,7 @@ import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
+import { ResponseTimeMiddleware } from './response-time/response-time.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
@@ -29,6 +30,7 @@ export class MiddlewareModule implements NestModule {
         UserAgentMiddleware,
         CorrelationIdMiddleware,
         CookieParserMiddleware,
+        ResponseTimeMiddleware,
       )
       .forRoutes('*');
 
