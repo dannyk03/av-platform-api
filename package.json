@@ -8,10 +8,10 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start": "yarn prestart && nest start",
-    "start:dev": "yarn prestart && nest start --watch",
-    "start:debug": "yarn prestart && nest start --debug --watch",
-    "start:prod": "yarn prestart && yarn migration:run && node dist/main",
+    "start": "yarn migration:run && nest start",
+    "start:dev": "yarn migration:run && nest start --watch",
+    "start:debug": "yarn migration:run && nest start --debug --watch",
+    "start:prod": "yarn migration:run && yarn migration:run && node dist/main",
     "format": "yarn prettier:check --write",
     "prettier:check": "prettier --list-different --ignore-path .gitignore .",
     "eslint:check": "eslint --ignore-path .gitignore .",
@@ -34,8 +34,7 @@
     "migration:run": "yarn typeorm migration:run -d src/database/typeorm-cli/default.datasource.ts",
     "migration:revert": "yarn typeorm migration:revert -d src/database/typeorm-cli/default.datasource.ts",
     "schema:drop": "yarn typeorm schema:drop -d src/database/typeorm-cli/default.datasource.ts",
-    "schema:sync": "yarn typeorm schema:sync -d src/database/typeorm-cli/default.datasource.ts",
-    "prestart": "nestjs-command create:db && yarn migration:run"
+    "schema:sync": "yarn typeorm schema:sync -d src/database/typeorm-cli/default.datasource.ts"
   },
   "dependencies": {
     "@avo/casl": "^0.0.11",
