@@ -13,6 +13,7 @@ import { DisplayLanguageModule } from '@/language/display-language/display-langu
 //
 import { SystemSeed } from './system.seed';
 import { RolePresetsSeed } from './role-presets.seed';
+import { CreateDbSeed } from './create-db.seed';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { RolePresetsSeed } from './role-presets.seed';
     AclAbilityModule,
     DisplayLanguageModule,
   ],
-  providers: [SystemSeed, RolePresetsSeed],
+  providers: [CreateDbSeed, SystemSeed, RolePresetsSeed],
   exports: [],
 })
 export class SeedsModule {}
