@@ -5,7 +5,11 @@ import { plainToInstance } from 'class-transformer';
 import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
 import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
 import { HelperHashService } from 'src/utils/helper/service/helper.hash.service';
-import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
+import {
+  IAuthMagicLoginOptions,
+  IAuthPassword,
+  IAuthPayloadOptions,
+} from '../auth.interface';
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 @Injectable()
@@ -13,6 +17,8 @@ export class AuthService {
   private readonly accessTokenSecretToken: string;
   private readonly accessTokenExpirationTime: string;
   private readonly accessTokenNotBeforeExpirationTime: string;
+
+  private readonly guestAccessTokenExpirationTime: string;
 
   private readonly refreshTokenSecretToken: string;
   private readonly refreshTokenExpirationTime: string;
@@ -35,6 +41,10 @@ export class AuthService {
       'auth.jwt.accessToken.notBeforeExpirationTime',
     );
 
+    this.guestAccessTokenExpirationTime = this.configService.get<string>(
+      'auth.jwt.guestAccessToken.expirationTime',
+    );
+
     this.refreshTokenSecretToken = this.configService.get<string>(
       'auth.jwt.refreshToken.secretKey',
     );
@@ -49,10 +59,15 @@ export class AuthService {
     );
   }
 
-  async createAccessToken(payload: Record<string, any>): Promise<string> {
+  async createAccessToken(
+    payload: Record<string, any>,
+    options?: IAuthMagicLoginOptions,
+  ): Promise<string> {
     return this.helperEncryptionService.jwtEncrypt(payload, {
       secretKey: this.accessTokenSecretToken,
-      expiredIn: this.accessTokenExpirationTime,
+      expiredIn: options?.guest
+        ? this.guestAccessTokenExpirationTime
+        : this.accessTokenExpirationTime,
       notBefore: this.accessTokenNotBeforeExpirationTime,
     });
   }

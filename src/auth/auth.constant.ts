@@ -11,4 +11,5 @@ export enum EnumAuthStatusCodeError {
   AuthPasswordNewMustDifferenceError = 5109,
   AuthPasswordExpiredError = 5110,
   AuthSignupUserExists = 5111,
+  AuthLoginGuestError = 5112,
 }

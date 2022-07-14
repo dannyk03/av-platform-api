@@ -12,11 +12,11 @@ import {
   EntityManager,
   FindOneOptions,
 } from 'typeorm';
-import { v4 as uuidV4 } from 'uuid';
 // Services
 import { EmailService } from '@/messaging/service/email/email.service';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
 // Entities
 import { OrganizationInvite } from '../entity/organization-invite.entity';
 import { AclRole } from '@acl/role/entity';
@@ -36,6 +36,7 @@ export class OrganizationInviteService {
     private readonly emailService: EmailService,
     private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
@@ -43,7 +44,7 @@ export class OrganizationInviteService {
   ): Promise<OrganizationInvite> {
     return this.organizationInviteRepository.create({
       ...props,
-      inviteCode: uuidV4().replaceAll('-', ''),
+      inviteCode: this.helperHashService.code32char(),
     });
   }
 

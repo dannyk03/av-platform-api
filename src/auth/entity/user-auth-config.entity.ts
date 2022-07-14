@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, Index } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 //
@@ -8,20 +8,33 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   @Column({
     type: 'varchar',
     length: 100,
+    nullable: true,
   })
-  password!: string;
+  password?: string;
 
   @Column({
     type: 'varchar',
     length: 100,
+    nullable: true,
   })
-  salt!: string;
+  salt?: string;
 
-  @Column()
-  passwordExpiredAt!: Date;
+  @Column({ nullable: true })
+  passwordExpiredAt?: Date;
 
   @Column({
     nullable: true,
   })
   emailVerifiedAt?: Date;
+
+  @Index()
+  @Column({
+    unique: true,
+    length: 32,
+    nullable: true,
+  })
+  loginCode?: string;
+
+  @Column({ nullable: true })
+  loginCodeExpiredAt?: Date;
 }

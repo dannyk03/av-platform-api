@@ -16,6 +16,7 @@ export class AuthUserLoginSerialization {
   readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
+  readonly loginCodeExpiredAt: Date;
 
   @Transform(({ value: organization }) =>
     plainToInstance(OrganizationLoginSerialization, organization),
@@ -31,6 +32,9 @@ export class AuthUserLoginSerialization {
     plainToInstance(AuthConfigLoginSerialization, authConfig),
   )
   readonly authConfig: UserAuthConfig;
+
+  @Exclude()
+  readonly loginCode: string;
 
   @Exclude()
   readonly phoneNumber: string;

@@ -19,6 +19,10 @@ export default registerAs(
         notBeforeExpirationTime:
           process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED || '30m', // recommendation for production is 30m
       },
+
+      guestAccessToken: {
+        expirationTime: '2h',
+      },
     },
 
     password: {

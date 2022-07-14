@@ -18,7 +18,6 @@ export const systemSeedData: {
   },
   systemAdmin: {
     firstName: 'SystemAdmin',
-    isActive: true,
   },
   roles: [
     {

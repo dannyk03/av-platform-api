@@ -18,11 +18,16 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Response as ExpressResponse } from 'express';
 import { IResult } from 'ua-parser-js';
+import ms from 'ms';
 // Services
 import { UserService } from '@/user/service/user.service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import {
+  HelperDateService,
+  HelperHashService,
+  HelperJwtService,
+} from '@/utils/helper/service';
 import { EmailService } from '@/messaging/service/email/email.service';
 import { AuthService } from '../service/auth.service';
 import { AuthSignUpVerificationService } from '../service/auth-signup-verification.service';
@@ -32,15 +37,15 @@ import { EnumLoggerAction, IReqLogData } from '@/log';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
-import { EnumRoleStatusCodeError } from '@acl/role';
-import { AuthLoginDto } from '../dto/auth.login.dto';
+import { AuthLoginDto, AuthMagicLoginDto } from '../dto/auth.login.dto';
 import { EnumAuthStatusCodeError } from '../auth.constant';
-import { EnumOrganizationStatusCodeError } from '@/organization';
 import {
   AuthChangePasswordGuard,
   AuthRefreshJwtGuard,
   Token,
   ReqJwtUser,
+  LoginGuard,
+  LoginGuestGuard,
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
@@ -65,57 +70,27 @@ export class AuthCommonController {
     private readonly helperJwtService: HelperJwtService,
     private readonly emailService: EmailService,
     private readonly authSignUpVerificationService: AuthSignUpVerificationService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
+  @LoginGuard()
   @Post('/login')
   async login(
     @Res({ passthrough: true })
     response: ExpressResponse,
     @Body()
     body: AuthLoginDto,
+    @ReqUser()
+    user: User,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
+
     const rememberMe: boolean = body.rememberMe ? true : false;
-
-    const user = await this.userService.findOne({
-      where: { email: body.email },
-      relations: [
-        'organization',
-        'authConfig',
-        'role',
-        'role.policy',
-        'role.policy.subjects',
-        'role.policy.subjects.abilities',
-      ],
-      select: {
-        organization: {
-          isActive: true,
-          name: true,
-        },
-        authConfig: {
-          password: true,
-          passwordExpiredAt: true,
-        },
-      },
-    });
-
-    if (!user) {
-      this.debuggerService.error(
-        'Authorized error user not found',
-        'AuthController',
-        'login',
-      );
-
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserNotFoundError,
-        message: 'user.error.notFound',
-      });
-    }
 
     const validate: boolean = await this.authService.validateUser(
       body.password,
@@ -132,47 +107,6 @@ export class AuthCommonController {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.notMatch',
-      });
-    }
-
-    if (!user.isActive) {
-      this.debuggerService.error(
-        'Auth Block Not Active',
-        'AuthController',
-        'login',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserInactiveError,
-        message: 'user.error.inactive',
-      });
-    }
-
-    if (user.organization && !user.organization?.isActive) {
-      this.debuggerService.error(
-        user.organization
-          ? 'Organization inactive error'
-          : 'Organization not found error',
-        'ReqUserOrganizationActiveGuard',
-        'canActivate',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
-        message: 'organization.error.inactive',
-      });
-    }
-
-    if (user.role && !user.role.isActive) {
-      this.debuggerService.error(
-        'Role inactive error',
-        'ReqUserAclRoleActiveGuard',
-        'canActivate',
-      );
-
-      throw new ForbiddenException({
-        statusCode: EnumRoleStatusCodeError.RoleInactiveError,
-        message: 'role.error.inactive',
       });
     }
 
@@ -236,6 +170,82 @@ export class AuthCommonController {
     };
   }
 
+  @Response('auth.login')
+  @HttpCode(HttpStatus.OK)
+  @LoginGuestGuard()
+  @Post('/login/guest')
+  async loginMagic(
+    @Res({ passthrough: true })
+    response: ExpressResponse,
+    @Body()
+    body: AuthMagicLoginDto,
+    @ReqUser()
+    reqUser: User | null,
+    @ReqLogData()
+    logData: IReqLogData,
+  ): Promise<IResponse> {
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
+
+    if (reqUser?.authConfig?.password) {
+      throw new ForbiddenException({
+        statusCode: EnumAuthStatusCodeError.AuthLoginGuestError,
+        message: 'auth.error.guestLogin',
+      });
+    }
+
+    if (!reqUser) {
+      const newUser = await this.userService.create({
+        ...body,
+        // authConfig: {
+        //   loginCode: this.helperHashService.code32char(),
+        //   loginCodeExpiredAt: this.helperDateService.forwardInMilliseconds(
+        //     ms(
+        //       this.configService.get<string>(
+        //         'auth.jwt.magicAccessToken.expirationTime',
+        //       ),
+        //     ),
+        //   ),
+        // },
+      });
+
+      reqUser = await this.userService.save(newUser);
+    }
+
+    const safeData: AuthUserLoginSerialization =
+      await this.authService.serializationLogin(reqUser);
+
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
+    const rememberMe = false;
+    const payloadAccessToken: Record<string, any> =
+      await this.authService.createPayloadAccessToken(safeData, rememberMe);
+
+    const accessToken: string = await this.authService.createAccessToken(
+      payloadAccessToken,
+      { guest: true },
+    );
+
+    await this.logService.info({
+      ...logData,
+      action: EnumLoggerAction.Login,
+      description: `${reqUser.email} do login`,
+      user: reqUser,
+      tags: ['login', 'magic'],
+    });
+
+    response.cookie('accessToken', accessToken, {
+      secure: isSecureMode,
+      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
+
+    return {
+      accessToken,
+    };
+  }
+
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
@@ -280,7 +290,7 @@ export class AuthCommonController {
             await this.authService.createPassword(password);
 
           const signUpUser = await this.userService.create({
-            isActive: true,
+            isActive: false,
             email,
             phoneNumber,
             firstName,
@@ -295,7 +305,7 @@ export class AuthCommonController {
           await transactionalEntityManager.save(signUpUser);
 
           // TODO enable when email verification needed
-          // const signUpCode = uuidV4().replaceAll('-', '');
+          // const signUpCode = this.helperHashService.code32char();
           // const signUpEmailVerificationLink =
           //   await this.authSignUpVerificationService.create({
           //     email,

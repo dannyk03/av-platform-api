@@ -1,0 +1,45 @@
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+// Services
+import { UserService } from '@/user/service/user.service';
+//
+
+@Injectable()
+export class UserLoginPutToRequestGuard implements CanActivate {
+  constructor(private readonly userService: UserService) {}
+
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const request = ctx.switchToHttp().getRequest();
+    const { body } = request;
+
+    const requestUser = body.email
+      ? await this.userService.findOne({
+          where: { email: body.email },
+
+          relations: [
+            'organization',
+            'authConfig',
+            'role',
+            'role.policy',
+            'role.policy.subjects',
+            'role.policy.subjects.abilities',
+          ],
+          select: {
+            organization: {
+              isActive: true,
+              id: true,
+              name: true,
+              slug: true,
+            },
+            authConfig: {
+              password: true,
+              passwordExpiredAt: true,
+            },
+          },
+        })
+      : null;
+
+    request.__user = requestUser;
+
+    return true;
+  }
+}

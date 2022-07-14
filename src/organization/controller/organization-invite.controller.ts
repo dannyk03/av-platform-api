@@ -206,7 +206,6 @@ export class OrganizationInviteController {
           });
         } else {
           const joinUser = await this.userService.create({
-            isActive: true,
             email: existingInvite.email,
             authConfig: {
               password: passwordHash,

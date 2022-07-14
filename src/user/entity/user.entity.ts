@@ -55,15 +55,16 @@ export class User extends BaseEntity<User> {
   title?: string;
 
   @Column({
-    default: false,
+    default: true,
   })
   isActive!: boolean;
 
   @OneToOne(() => UserAuthConfig, {
     cascade: true,
+    nullable: true,
   })
   @JoinColumn()
-  authConfig!: UserAuthConfig;
+  authConfig?: UserAuthConfig;
 
   @ManyToOne(() => AclRole, (role) => role.users, { nullable: true })
   role?: AclRole;

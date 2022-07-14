@@ -139,7 +139,6 @@ export class OrganizationController {
           organizationOwnerRole.organization = organization;
 
           const organizationOwner = await this.userService.create({
-            isActive: true,
             email: organizationOwnerEmail,
             authConfig: {
               password: passwordHash,

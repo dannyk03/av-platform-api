@@ -24,20 +24,27 @@ import { SkipConstraint } from './validation/request.skip.validation';
 import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
+import { ConfigService } from '@nestjs/config';
+import { boolean } from 'yargs';
 
 @Module({
   controllers: [],
   providers: [
     {
       provide: APP_PIPE,
-      inject: [DebuggerService],
-      useFactory: (debuggerService: DebuggerService) => {
+      inject: [DebuggerService, ConfigService],
+      useFactory: (
+        debuggerService: DebuggerService,
+        configService: ConfigService,
+      ) => {
         return new ValidationPipe({
           transform: true,
+          whitelist: true,
           skipNullProperties: false,
           skipUndefinedProperties: false,
           skipMissingProperties: false,
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          enableDebugMessages: configService.get<boolean>('app.debug'),
           exceptionFactory: async (errors: ValidationError[]) => {
             debuggerService.error(
               'Request validation error',

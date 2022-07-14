@@ -20,6 +20,8 @@ import { ReqUserAclRoleActiveGuard } from '@acl/role/guard';
 import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
+import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';
+import { ReqGuestActiveGuard } from '@/user/guard/user-guest.active.guard';
 
 //
 
@@ -86,6 +88,23 @@ export const ReqJwtUser = createParamDecorator(
     return key ? user[key] : user;
   },
 );
+
+export function LoginGuard(): any {
+  return applyDecorators(
+    UseGuards(
+      UserLoginPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
+    ),
+  );
+}
+
+export function LoginGuestGuard(): any {
+  return applyDecorators(
+    UseGuards(UserLoginPutToRequestGuard, ReqGuestActiveGuard),
+  );
+}
 
 export const Token = createParamDecorator(
   (data: string, ctx: ExecutionContext): string => {
