@@ -22,7 +22,7 @@ export class CreateDbSeed {
   async create(): Promise<void> {
     try {
       if (this.configService.get<boolean>('database.autoCreateDB')) {
-        const xxx = await createDB(
+        await createDB(
           this.configService.get<DataSourceOptions>(
             `database.${ConnectionNames.Default}`,
           ),
