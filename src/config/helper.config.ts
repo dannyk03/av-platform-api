@@ -9,7 +9,7 @@ export default registerAs(
     },
     jwt: {
       secretKey: '123456',
-      expirationTime: ms('1h'),
+      expirationTime: '1h',
       notBeforeExpirationTime: ms(0),
     },
   }),
