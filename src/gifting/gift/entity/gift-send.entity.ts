@@ -8,7 +8,6 @@ import { User } from '@/user/entity';
 export class GiftSend extends BaseEntity<GiftSend> {
   @Index()
   @Column({
-    type: 'varchar',
     length: 30,
   })
   recipientEmail: string;

@@ -5,11 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
 import { CatalogService } from './service/catalog.service';
 // Entities
-import { Product } from './entity';
+import { Product, ProductDisplayOption, ProductImage } from './entity';
 //
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product], ConnectionNames.Default)],
+  imports: [
+    TypeOrmModule.forFeature(
+      [Product, ProductDisplayOption, ProductImage],
+      ConnectionNames.Default,
+    ),
+  ],
   exports: [CatalogService],
   providers: [CatalogService],
   controllers: [],

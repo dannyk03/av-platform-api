@@ -20,7 +20,6 @@ export class AclAbility extends BaseEntity<AclAbility> {
   action!: Action;
 
   // @Column({
-  //   type: 'varchar',
   //   length: 30,
   //   array: true,
   //   nullable: true,

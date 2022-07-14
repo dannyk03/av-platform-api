@@ -53,14 +53,12 @@ export class Log {
   userAgent: IResult;
 
   @Column({
-    type: 'varchar',
     length: 20,
     update: false,
   })
   method: string;
 
   @Column({
-    type: 'varchar',
     length: 50,
     update: false,
   })

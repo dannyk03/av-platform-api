@@ -8,7 +8,6 @@ import { ProductDisplayOption } from './product-display-options.entity';
 export class Product extends BaseEntity<Product> {
   @Index()
   @Column({
-    type: 'varchar',
     length: 30,
     unique: true,
   })
@@ -16,7 +15,6 @@ export class Product extends BaseEntity<Product> {
 
   @Column({
     nullable: true,
-    type: 'varchar',
     length: 30,
   })
   brand?: string;
