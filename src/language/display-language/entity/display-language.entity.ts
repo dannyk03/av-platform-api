@@ -12,14 +12,12 @@ import {
 @Entity()
 export class DisplayLanguage {
   @PrimaryColumn({
-    type: 'varchar',
     length: 2,
   })
   isoCode!: string;
 
   @Index()
   @Column({
-    type: 'varchar',
     length: 20,
     unique: true,
   })

@@ -9,7 +9,6 @@ import { IResult } from 'ua-parser-js';
 export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificationLink> {
   @Index()
   @Column({
-    type: 'varchar',
     unique: true,
     length: 50,
     update: false,
@@ -18,7 +17,6 @@ export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificat
 
   @Index()
   @Column({
-    type: 'varchar',
     unique: true,
     length: 32,
     update: false,

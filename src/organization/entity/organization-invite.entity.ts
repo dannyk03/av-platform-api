@@ -9,7 +9,6 @@ import { AclRole } from '@acl/role/entity';
 export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
   @Index()
   @Column({
-    type: 'varchar',
     unique: true,
     length: 50,
   })
@@ -17,7 +16,6 @@ export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
 
   @Index()
   @Column({
-    type: 'varchar',
     unique: true,
     length: 32,
   })

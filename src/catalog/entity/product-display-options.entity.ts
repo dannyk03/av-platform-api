@@ -5,38 +5,37 @@ import {
   Unique,
   JoinColumn,
   OneToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { Product } from './product.entity';
 import { DisplayLanguage } from '@/language/display-language/entity';
+import { ProductImage } from './product-image.entity';
 //
 
 @Entity()
-@Unique(['language', 'product'])
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @OneToOne(() => DisplayLanguage)
   @JoinColumn()
   language!: DisplayLanguage;
 
   @Column({
-    type: 'varchar',
-    length: 100,
-  })
-  imageUrl: string;
-
-  @Column({
-    type: 'varchar',
     length: 50,
   })
   name: string;
 
   @Column({
-    type: 'varchar',
+    nullable: true,
     length: 200,
   })
-  description: string;
+  description?: string;
 
   @ManyToOne(() => Product, (product) => product.displayOptions)
   product: Product;
+
+  @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions)
+  @JoinTable({ name: 'product_display_options_product_images' })
+  images: ProductImage[];
 }
