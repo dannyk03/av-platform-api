@@ -4,22 +4,29 @@ import {
   IsEmail,
   MaxLength,
   MinLength,
+  Length,
 } from 'class-validator';
+import { Escape, Trim } from 'class-sanitizer';
+import { Transform, Type } from 'class-transformer';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 
 export class OrganizationCreateDto {
   @IsEmail()
-  @IsNotEmpty()
-  @MaxLength(30)
-  readonly email: string;
+  @MaxLength(50)
+  @Transform(({ value }) => value.toLowerCase())
+  @Trim()
+  @Escape()
+  readonly email!: string;
 
-  @IsNotEmpty()
+  @MaxLength(30)
   @IsPasswordStrong()
-  readonly password: string;
+  @Trim()
+  @Type(() => String)
+  readonly password!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(30)
-  readonly name: string;
+  @Length(2, 30)
+  @Escape()
+  @Trim()
+  @Type(() => String)
+  readonly name!: string;
 }

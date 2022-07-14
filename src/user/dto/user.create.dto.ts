@@ -5,29 +5,35 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
-  ValidateIf,
   IsPhoneNumber,
+  ValidateIf,
 } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { Escape, Trim } from 'class-sanitizer';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 
 export class UserCreateDto {
-  @IsString()
   @IsEmail()
-  @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(50)
+  @Transform(({ value }) => value.toLowerCase())
+  @Trim()
+  @Escape()
   readonly email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
   @MaxLength(30)
-  readonly firstName: string;
-
-  @IsString()
   @IsOptional()
   @ValidateIf((e) => e.lastName !== '')
-  @MinLength(1)
+  @Trim()
+  @Escape()
+  @Type(() => String)
+  readonly firstName?: string;
+
   @MaxLength(30)
+  @IsOptional()
+  @ValidateIf((e) => e.lastName !== '')
+  @Trim()
+  @Escape()
+  @Type(() => String)
   readonly lastName?: string;
 
   @IsString()
@@ -35,12 +41,18 @@ export class UserCreateDto {
   @MinLength(10)
   @MaxLength(14)
   @IsPhoneNumber()
+  @Trim()
+  @Escape()
   readonly phoneNumber: string;
 
   @IsNotEmpty()
+  @Trim()
+  @Escape()
   readonly role: string;
 
   @IsNotEmpty()
   @IsPasswordStrong()
+  @Trim()
+  @Type(() => String)
   readonly password: string;
 }

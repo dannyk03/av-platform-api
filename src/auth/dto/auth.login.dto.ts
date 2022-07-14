@@ -1,18 +1,18 @@
-import { Type } from 'class-transformer';
 import { Escape, Trim } from 'class-sanitizer';
+import { Type, Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsEmail,
   MaxLength,
   IsBoolean,
   IsOptional,
-  IsString,
+  ValidateIf,
 } from 'class-validator';
 
 export class AuthLoginDto {
   @IsEmail()
-  @IsNotEmpty()
   @MaxLength(50)
+  @Transform(({ value }) => value.toLowerCase())
   @Trim()
   @Escape()
   readonly email: string;
@@ -22,27 +22,32 @@ export class AuthLoginDto {
   readonly rememberMe?: boolean;
 
   @IsNotEmpty()
-  @IsString()
+  @MaxLength(30)
+  @Trim()
   @Type(() => String)
   readonly password: string;
 }
 export class AuthMagicLoginDto {
   @IsEmail()
-  @IsNotEmpty()
   @MaxLength(50)
+  @Transform(({ value }) => value.toLowerCase())
   @Trim()
   @Escape()
   readonly email: string;
 
-  @MaxLength(50)
+  @MaxLength(30)
   @IsOptional()
+  @ValidateIf((e) => e.lastName !== '')
   @Trim()
   @Escape()
+  @Type(() => String)
   readonly firstName?: string;
 
-  @MaxLength(50)
+  @MaxLength(30)
   @IsOptional()
+  @ValidateIf((e) => e.lastName !== '')
   @Trim()
   @Escape()
+  @Type(() => String)
   readonly lastName?: string;
 }

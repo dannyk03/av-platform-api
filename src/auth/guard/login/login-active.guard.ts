@@ -2,6 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 // Services
 import { UserService } from '@/user/service/user.service';
 //
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UserLoginPutToRequestGuard implements CanActivate {
@@ -11,9 +12,10 @@ export class UserLoginPutToRequestGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest();
     const { body } = request;
 
-    const requestUser = body.email
+    const email = isEmail(body.email) ? body.email.toLowerCase() : null;
+    const requestUser = email
       ? await this.userService.findOne({
-          where: { email: body.email },
+          where: { email },
 
           relations: [
             'organization',

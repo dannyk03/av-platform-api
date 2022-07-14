@@ -17,7 +17,6 @@ export class UserGetSerialization {
     }),
     { toClassOnly: true },
   )
-  // readonly role: IRoleEntity;
   readonly email: string;
   readonly phoneNumber: string;
   readonly isActive: boolean;
@@ -25,14 +24,15 @@ export class UserGetSerialization {
   readonly lastName: string;
   readonly photo?: IAwsS3Response;
 
+  // readonly passwordExpired: Date;
+
   @Exclude()
   readonly password: string;
-
-  readonly passwordExpired: Date;
 
   @Exclude()
   readonly salt: string;
 
+  @Exclude()
   readonly createdAt: Date;
 
   @Exclude()

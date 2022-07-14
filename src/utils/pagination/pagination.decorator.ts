@@ -32,7 +32,9 @@ export function PaginationSearch(): any {
     Expose(),
     IsOptional(),
     IsString(),
-    Transform(({ value }) => (value ? value : undefined)),
+    Transform(({ value }) => {
+      return value ? value : undefined;
+    }),
   );
 }
 

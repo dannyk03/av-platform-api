@@ -1,4 +1,5 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { Escape, Trim } from 'class-sanitizer';
 import {
   IsNotEmpty,
   IsEmail,
@@ -14,6 +15,8 @@ export class GiftSendDto {
   @IsNotEmpty()
   @ArrayMinSize(1)
   @ArrayMaxSize(20)
-  @IsEmail({ require_tld: true }, { each: true })
+  @IsEmail(undefined, { each: true })
+  // @Transform(({ value }) => value.toLowerCase())
+  @Escape({ each: true })
   email: string[];
 }

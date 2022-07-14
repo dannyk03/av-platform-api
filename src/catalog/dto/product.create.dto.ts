@@ -1,3 +1,5 @@
+import { Type } from 'class-transformer';
+import { Escape, Trim } from 'class-sanitizer';
 import {
   IsString,
   IsNotEmpty,
@@ -8,14 +10,18 @@ import {
 } from 'class-validator';
 
 export class ProductCreateDto {
-  @IsString()
   @IsNotEmpty()
   @Length(3, 30)
+  @Trim()
+  @Escape()
+  @Type(() => String)
   readonly sku!: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
+  @Trim()
+  @Escape()
   readonly brand?: string;
 
   @IsBoolean()
