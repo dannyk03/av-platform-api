@@ -14,6 +14,7 @@ import { DisplayLanguageService } from '@/language/display-language/service/disp
 import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
+import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 
 @Injectable()
 export class SystemSeed {
@@ -78,8 +79,7 @@ export class SystemSeed {
 
             // Default Display Language
             const displayLanguageEn = await this.displayLanguageService.create({
-              isoCode: 'en',
-              isoName: 'english',
+              isoCode: EnumDisplayLanguage.En,
             });
 
             await transactionalEntityManager.save(displayLanguageEn);

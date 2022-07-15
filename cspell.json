@@ -4,6 +4,9 @@
   "words": [
     "nestjs",
     "cloudinary",
+    "streamifier",
+    "libphonenumber",
+    "datasource",
     "metatype",
     "virtuals",
     "prebuild",
@@ -14,7 +17,8 @@
     "milis",
     "dbdata",
     "deadcode",
-    "superadmin"
+    "superadmin",
+    "prestart"
   ],
   "ignorePaths": [
     "node_modules/**",

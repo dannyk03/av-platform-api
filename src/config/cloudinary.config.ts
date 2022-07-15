@@ -6,8 +6,6 @@ export default registerAs(
     credential: {
       key: process.env.CLOUDINARY_API_KEY,
       secret: process.env.CLOUDINARY_API_SECRET,
-    },
-    general: {
       cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     },
   }),

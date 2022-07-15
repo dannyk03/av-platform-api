@@ -23,7 +23,9 @@ export class DisplayLanguageService {
     private readonly debuggerService: DebuggerService,
   ) {}
 
-  async create(props: DeepPartial<DisplayLanguage>): Promise<DisplayLanguage> {
+  async create(
+    props: DeepPartial<Omit<DisplayLanguage, 'isoName'>>,
+  ): Promise<DisplayLanguage> {
     return this.displayLanguageRepository.create(props);
   }
 
