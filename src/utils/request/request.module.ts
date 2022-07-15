@@ -25,7 +25,6 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { ConfigService } from '@nestjs/config';
-import { boolean } from 'yargs';
 
 @Module({
   controllers: [],
@@ -39,7 +38,6 @@ import { boolean } from 'yargs';
       ) => {
         return new ValidationPipe({
           transform: true,
-          whitelist: true,
           skipNullProperties: false,
           skipUndefinedProperties: false,
           skipMissingProperties: false,

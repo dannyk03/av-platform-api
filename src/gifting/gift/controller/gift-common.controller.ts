@@ -12,6 +12,7 @@ import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { Response } from '@/utils/response';
 import { ReqUser } from '@/user';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller({
   version: '1',
@@ -28,6 +29,7 @@ export class GiftController {
   @Response('gift.send')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
+  @Throttle(1, 5)
   @Post('/send')
   async sendGiftSurvey(
     @Body()

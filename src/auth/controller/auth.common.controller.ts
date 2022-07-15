@@ -178,7 +178,7 @@ export class AuthCommonController {
     @Res({ passthrough: true })
     response: ExpressResponse,
     @Body()
-    body: AuthMagicLoginDto,
+    { email, firstName, lastName }: AuthMagicLoginDto,
     @ReqUser()
     reqUser: User | null,
     @ReqLogData()
@@ -196,7 +196,9 @@ export class AuthCommonController {
 
     if (!reqUser) {
       const newUser = await this.userService.create({
-        ...body,
+        email,
+        firstName,
+        lastName,
         // authConfig: {
         //   loginCode: this.helperHashService.code32char(),
         //   loginCodeExpiredAt: this.helperDateService.forwardInMilliseconds(
