@@ -14,6 +14,7 @@ import { PaginationModule } from '@/utils/pagination/pagination.module';
 import { HelperModule } from '@/utils/helper/helper.module';
 import { RequestModule } from '@/utils/request/request.module';
 import { VersionModule } from '@/utils/version/version.module';
+import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 // Services
 import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
 import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
@@ -33,6 +34,7 @@ import { APP_GUARD } from '@nestjs/core';
   ],
   imports: [
     ConfigDynamicModule,
+    CloudinaryModule,
     WinstonModule.forRootAsync({
       imports: [DebuggerModule],
       inject: [DebuggerOptionService],

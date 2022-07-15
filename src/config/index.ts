@@ -8,6 +8,7 @@ import UserConfig from './user.config';
 import FileConfig from './file.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
+import CloudinaryConfig from './cloudinary.config';
 
 const Configs = [
   AppConfig,
@@ -19,6 +20,7 @@ const Configs = [
   MiddlewareConfig,
   FileConfig,
   OrganizationConfig,
+  CloudinaryConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
