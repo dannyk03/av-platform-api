@@ -1,0 +1,29 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "nestjs",
+    "cloudinary",
+    "metatype",
+    "virtuals",
+    "prebuild",
+    "transfomer",
+    "microservices",
+    "dockerhub",
+    "exceljs",
+    "milis",
+    "dbdata",
+    "deadcode",
+    "superadmin"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "endpoints/**",
+    "*coverage/**",
+    ".husky/**",
+    ".github/**",
+    "dist/**",
+    "logs/**",
+    "src/database/json/**"
+  ]
+}
