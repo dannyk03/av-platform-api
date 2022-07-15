@@ -10,13 +10,13 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import { EnumRequestStatusCodeError } from '../request.constant';
 
-export function ParamGuard(
+export function RequestParamRawGuard(
   classValidation: ClassConstructor<any>[],
 ): Type<CanActivate> {
   @Injectable()
-  class MixinParamGuard implements CanActivate {
-    async canActivate(ctx: ExecutionContext): Promise<boolean> {
-      const { params } = ctx.switchToHttp().getRequest();
+  class MixinRequestParamRawGuard implements CanActivate {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+      const { params } = context.switchToHttp().getRequest();
       for (const cv of classValidation) {
         const request = plainToInstance(cv, params);
 
@@ -35,5 +35,5 @@ export function ParamGuard(
     }
   }
 
-  return mixin(MixinParamGuard);
+  return mixin(MixinRequestParamRawGuard);
 }
