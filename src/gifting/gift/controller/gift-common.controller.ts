@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  Post,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 // Services
@@ -13,6 +20,7 @@ import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { Response } from '@/utils/response';
 import { ReqUser } from '@/user';
+import { EnumStatusCodeError } from '@/utils/error';
 
 @Controller({
   version: '1',
@@ -59,6 +67,11 @@ export class GiftController {
 
       if (emailSent) {
         giftSend.sentAt = this.helperDateService.create();
+      } else {
+        throw new InternalServerErrorException({
+          statusCode: EnumStatusCodeError.UnknownError,
+          message: 'http.serverError.internalServerError',
+        });
       }
 
       this.giftSendService.save(giftSend);

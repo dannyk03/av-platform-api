@@ -106,40 +106,6 @@ export class OrganizationInviteController {
     });
   }
 
-  @Response('organization.inviteValid')
-  @Get('/join')
-  async joinValidate(
-    @Query()
-    { inviteCode }: OrganizationInviteValidateDto,
-  ) {
-    const existingInvite = await this.organizationInviteService.findOneBy({
-      inviteCode,
-    });
-
-    if (!existingInvite) {
-      throw new NotFoundException({
-        statusCode:
-          EnumOrganizationStatusCodeError.OrganizationInviteNotFoundError,
-        message: 'organization.error.inviteInvalid',
-      });
-    }
-
-    const now = this.helperDateService.create();
-    const expiresAt = this.helperDateService.create({
-      date: existingInvite.expiresAt,
-    });
-
-    if (now > expiresAt || existingInvite.usedAt) {
-      throw new ForbiddenException({
-        statusCode:
-          EnumOrganizationStatusCodeError.OrganizationInviteExpiredError,
-        message: 'organization.error.inviteInvalid',
-      });
-    }
-
-    return;
-  }
-
   @Response('organization.join')
   @HttpCode(HttpStatus.OK)
   @Post('/join')

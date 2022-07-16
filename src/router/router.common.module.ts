@@ -18,7 +18,8 @@ import {
   OrganizationInviteController,
 } from '@/organization/controller';
 import { AclController } from '@acl/controller';
-
+import { MagicLinkController } from '@/magic-link/controller';
+//
 @Module({
   controllers: [
     HealthController,
@@ -27,6 +28,7 @@ import { AclController } from '@acl/controller';
     OrganizationInviteController,
     AclController,
     AclRoleController,
+    MagicLinkController,
   ],
   providers: [],
   exports: [],

@@ -67,7 +67,6 @@ export class AuthCommonController {
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
     private readonly emailService: EmailService,
-    private readonly authSignUpVerificationService: AuthSignUpVerificationService,
     private readonly helperHashService: HelperHashService,
   ) {}
 
@@ -373,60 +372,6 @@ export class AuthCommonController {
         error,
       });
     }
-
-    return;
-  }
-
-  @Response('user.signUpSuccess')
-  @Get('/signup')
-  async signUpValidate(
-    @Query()
-    { signUpCode }: UserSignUpValidateDto,
-  ) {
-    const existingSignUp = await this.authSignUpVerificationService.findOne({
-      where: { signUpCode },
-      relations: ['user', 'user.authConfig'],
-      select: {
-        user: {
-          id: true,
-          isActive: true,
-          authConfig: {
-            id: true,
-            emailVerifiedAt: true,
-          },
-        },
-      },
-    });
-
-    if (!existingSignUp) {
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserSignUpLinkNotFound,
-        message: 'user.error.signUpCode',
-      });
-    }
-
-    const now = this.helperDateService.create();
-    const expiresAt = this.helperDateService.create({
-      date: existingSignUp.expiresAt,
-    });
-
-    if (now > expiresAt || existingSignUp.usedAt) {
-      throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserSignUpLinkExpired,
-        message: 'user.error.signUpLink',
-      });
-    }
-
-    await this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        existingSignUp.usedAt = this.helperDateService.create();
-        existingSignUp.user.isActive = true;
-        existingSignUp.user.authConfig.emailVerifiedAt = existingSignUp.usedAt;
-
-        await transactionalEntityManager.save(existingSignUp);
-      },
-    );
 
     return;
   }
