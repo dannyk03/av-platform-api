@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
-import { AclSubject } from '../entity/acl-subject.entity';
+import { AclSubject } from '../entity';
 
 @Injectable()
 export class AclSubjectService {

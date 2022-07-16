@@ -8,6 +8,8 @@ import {
   Repository,
 } from 'typeorm';
 import { isUUID } from 'class-validator';
+// Entities
+import { AclRole } from '../entity';
 // Services
 import { AclPolicyService } from '@acl/policy/service';
 import { AclAbilityService } from '@acl/ability/service';
@@ -15,7 +17,6 @@ import { AclSubjectService } from '@acl/subject/service';
 import { HelperSlugService } from '@/utils/helper/service';
 //
 import { ConnectionNames } from '@/database';
-import { AclRole } from '../entity/acl-role.entity';
 import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
 import { IPaginationOptions } from '@/utils/pagination';
 

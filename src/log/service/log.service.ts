@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ILog } from '../log.interface';
-import { EnumLoggerLevel } from '../log.constant';
-import { Log } from '../entity/log.entity';
-import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+// Entities
+import { Log } from '../entity';
+//
+import { ILog } from '../log.interface';
+import { EnumLoggerLevel } from '../log.constant';
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class LogService {

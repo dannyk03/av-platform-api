@@ -2,6 +2,10 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+// Entities
+import { AclAbility } from '@/access-control-list/ability/entity';
+import { AclRole } from '@/access-control-list/role/entity';
+import { AclSubject } from '@/access-control-list/subject/entity';
 // Services
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { AclPolicyService } from '@acl/policy/service/acl-policy.service';
@@ -11,9 +15,6 @@ import { AclRolePresetService } from '@acl/role/service/acl-role-preset.service'
 //
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';
-import { AclAbility } from '@/access-control-list/ability/entity/acl-ability.entity';
-import { AclRole } from '@/access-control-list/role/entity/acl-role.entity';
-import { AclSubject } from '@/access-control-list/subject/entity/acl-subject.entity';
 
 @Injectable()
 export class RolePresetsSeed {

@@ -1,7 +1,7 @@
 import { Entity, Column, Index, OneToMany, BeforeInsert } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
-import { ProductDisplayOption } from './product-display-options.entity';
+import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 //
 
 @Entity()

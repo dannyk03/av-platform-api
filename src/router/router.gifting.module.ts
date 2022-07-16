@@ -5,7 +5,7 @@ import { UserModule } from '@/user/user.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { GiftModule } from '@/gifting/gift/gift.module';
 // Controllers
-import { GiftController } from '@/gifting/gift/controller/gift-common.controller';
+import { GiftController } from '@/gifting/gift/controller';
 //
 
 @Module({

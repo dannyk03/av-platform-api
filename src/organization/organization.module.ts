@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
-import { Organization } from './entity/organization.entity';
-import { OrganizationInvite } from './entity/organization-invite.entity';
+import { Organization, OrganizationInvite } from './entity';
 // Services
 import { OrganizationService } from './service/organization.service';
 import { OrganizationInviteService } from './service/organization-invite.service';

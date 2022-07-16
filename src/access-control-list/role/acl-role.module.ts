@@ -9,8 +9,8 @@ import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 //
 import { ConnectionNames } from '@/database';
-import { AclRole } from './entity/acl-role.entity';
-import { AclRolePreset } from './entity/acl-role-preset.entity';
+import { AclRole, AclRolePreset } from './entity';
+//
 
 @Module({
   imports: [

@@ -1,4 +1,3 @@
-// import { Role } from '@/role/entity/role.entity';
 import { Exclude, Type } from 'class-transformer';
 
 export class UserListSerialization {
@@ -6,7 +5,6 @@ export class UserListSerialization {
   readonly id: string;
 
   @Exclude()
-  // readonly role: Role;
   readonly email: string;
   readonly phoneNumber: string;
   readonly isActive: boolean;

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../entity/user.entity';
+import { User } from '../entity';
 import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
 import {

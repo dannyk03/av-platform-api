@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
+// Entities
+import { AclRolePreset } from '../entity';
+//
 import { ConnectionNames } from '@/database';
-import { AclRolePreset } from '../entity/acl-role-preset.entity';
-
 @Injectable()
 export class AclRolePresetService {
   constructor(

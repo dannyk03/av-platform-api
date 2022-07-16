@@ -7,24 +7,30 @@ import { UploadCloudinaryImage } from '../cloudinary.interface';
 import util from 'util';
 @Injectable()
 export class CloudinaryService {
+  isUploadApiResponse(data: any): data is UploadApiResponse {
+    return 'asset_id' in data;
+  }
+
   async uploadImage({
-    file,
+    image,
     subject,
-    language = EnumDisplayLanguage.En,
+    languageIsoCode,
   }: UploadCloudinaryImage): Promise<
     UploadApiResponse | UploadApiErrorResponse
   > {
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {
-          folder: CloudinaryFolder[language][subject],
+          folder: CloudinaryFolder[languageIsoCode][subject],
+          filename_override: image.originalname,
+          use_filename: true,
         },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);
         },
       );
-      createReadStream(file.buffer).pipe(upload);
+      createReadStream(image.buffer).pipe(upload);
     });
   }
 

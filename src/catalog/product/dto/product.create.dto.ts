@@ -8,8 +8,11 @@ import {
   MaxLength,
   IsBoolean,
   IsArray,
+  IsEnum,
 } from 'class-validator';
 import { isString } from 'lodash';
+import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { ProductDisplayLanguage } from '../../catalog.decorator';
 
 export class ProductCreateDto {
   @IsNotEmpty()
@@ -18,6 +21,13 @@ export class ProductCreateDto {
   @Escape()
   @Type(() => String)
   readonly sku!: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(30)
+  @Trim()
+  @Escape()
+  readonly brand?: string;
 
   @IsString()
   @MaxLength(30)
@@ -31,12 +41,8 @@ export class ProductCreateDto {
   @Escape()
   readonly description!: string;
 
-  @IsString()
-  @IsOptional()
-  @MaxLength(30)
-  @Trim()
-  @Escape()
-  readonly brand?: string;
+  @ProductDisplayLanguage()
+  languageIsoCode: EnumDisplayLanguage;
 
   @IsArray()
   @IsOptional()

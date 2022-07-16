@@ -3,15 +3,16 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  OneToOne,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
-import { Product } from './product.entity';
+
 import { DisplayLanguage } from '@/language/display-language/entity';
-import { ProductImage } from './product-image.entity';
+import { ProductImage } from '@/catalog/product-image/entity';
+import { Product } from '@/catalog/product/entity';
+
 //
 
 @Entity()
@@ -42,7 +43,9 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @ManyToOne(() => Product, (product) => product.displayOptions)
   product: Product;
 
-  @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions)
+  @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions, {
+    cascade: ['insert'],
+  })
   @JoinTable({ name: 'product_display_options_product_images' })
   images: ProductImage[];
 }

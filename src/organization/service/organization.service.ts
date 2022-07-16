@@ -7,7 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 // Entities
-import { Organization } from '../entity/organization.entity';
+import { Organization } from '../entity';
 // Services
 import { HelperSlugService } from '@/utils/helper/service';
 //
