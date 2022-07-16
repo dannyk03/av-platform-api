@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UploadedFiles,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Action, Subject } from '@avo/casl';
 // Services
@@ -13,6 +20,8 @@ import { User } from '@/user/entity';
 //
 import { ReqLogData } from '@/utils/request';
 import { Response, IResponse } from '@/utils/response';
+import { UploadFileMultiple } from '@/utils/file/file.decorator';
+import { EnumFileType } from '@/utils/file/file.constant';
 
 @Controller({
   version: '1',
@@ -29,21 +38,19 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @AclGuard(
     [
-      // {
-      //   action: Action.Create,
-      //   subject: Subject.Product,
-      // },
+      {
+        action: Action.Create,
+        subject: Subject.Product,
+      },
     ],
     { systemOnly: true },
   )
+  @UploadFileMultiple('images', EnumFileType.Image)
   @Post('/create')
   async create(
+    @UploadedFiles() images: Express.Multer.File[],
     @Body()
-    {
-      name: organizationName,
-      email: organizationOwnerEmail,
-      password: initialOwnerPassword,
-    }: OrganizationCreateDto,
+    body,
   ): Promise<IResponse> {
     return;
   }

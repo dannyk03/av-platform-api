@@ -1,4 +1,4 @@
-import { Entity, Column, Index, OneToMany } from 'typeorm';
+import { Entity, Column, Index, OneToMany, BeforeInsert } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from './product-display-options.entity';
@@ -31,5 +31,10 @@ export class Product extends BaseEntity<Product> {
       cascade: true,
     },
   )
-  displayOptions!: ProductDisplayOption;
+  displayOptions!: ProductDisplayOption[];
+
+  @BeforeInsert()
+  beforeInsert() {
+    this.sku = this.sku.toUpperCase();
+  }
 }

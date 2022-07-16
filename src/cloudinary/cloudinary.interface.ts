@@ -1,6 +1,8 @@
 import { DisplayLanguageCodeType } from '@/language/display-language/display-language.constant';
+import { CloudinarySubject } from './cloudinary.constants';
 
-export interface UploadProductImage {
+export interface UploadCloudinaryImage {
   file: Express.Multer.File;
-  language: DisplayLanguageCodeType;
+  subject: CloudinarySubject;
+  language?: DisplayLanguageCodeType;
 }

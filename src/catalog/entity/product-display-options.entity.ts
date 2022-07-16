@@ -16,20 +16,28 @@ import { ProductImage } from './product-image.entity';
 
 @Entity()
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
-  @OneToOne(() => DisplayLanguage)
+  @ManyToOne(() => DisplayLanguage)
   @JoinColumn()
   language!: DisplayLanguage;
 
   @Column({
     length: 50,
   })
-  name: string;
+  name!: string;
 
   @Column({
     nullable: true,
     length: 200,
   })
   description?: string;
+
+  @Column({
+    type: 'varchar',
+    length: 20,
+    array: true,
+    default: [],
+  })
+  keywords!: string[];
 
   @ManyToOne(() => Product, (product) => product.displayOptions)
   product: Product;

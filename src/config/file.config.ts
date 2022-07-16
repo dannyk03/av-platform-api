@@ -5,7 +5,7 @@ export default registerAs(
   (): Record<string, any> => ({
     fieldNameSize: 100, // in bytes
     fieldSize: 524288, // 500 KB
-    maxFileSize: 104858, // 100 KB
-    maxFiles: 2, // 2 files
+    maxFileSize: 5242880, // 5 MB
+    maxFiles: 3,
   }),
 );
