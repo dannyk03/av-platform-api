@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
-import { HelperStringService } from '@/utils/helper/service/helper.string.service';
+import { CoreModule } from 'src/core/core.module';
+import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
 
 describe('HelperStringService', () => {
   let helperStringService: HelperStringService;

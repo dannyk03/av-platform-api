@@ -2,8 +2,8 @@ import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { CoreModule } from 'src/core/core.module';
 import {
-  ENUM_HELPER_DATE_DIFF,
-  ENUM_HELPER_DATE_FORMAT,
+  EnumHelperDateDiff,
+  EnumHelperDateFormat,
 } from 'src/utils/helper/helper.constant';
 import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
 
@@ -86,65 +86,65 @@ describe('HelperDateService', () => {
 
     it('should be success with options format minutes', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: ENUM_HELPER_DATE_DIFF.MINUTES,
+        format: EnumHelperDateDiff.Minutes,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: ENUM_HELPER_DATE_DIFF.MINUTES,
+          format: EnumHelperDateDiff.Minutes,
         }),
       ).toBe(result);
     });
 
     it('should be success with options format hours', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: ENUM_HELPER_DATE_DIFF.HOURS,
+        format: EnumHelperDateDiff.Hours,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: ENUM_HELPER_DATE_DIFF.HOURS,
+          format: EnumHelperDateDiff.Hours,
         }),
       ).toBe(result);
     });
 
     it('should be success with options format days', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: ENUM_HELPER_DATE_DIFF.DAYS,
+        format: EnumHelperDateDiff.Days,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: ENUM_HELPER_DATE_DIFF.DAYS,
+          format: EnumHelperDateDiff.Days,
         }),
       ).toBe(result);
     });
 
     it('should be success  with options format seconds', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: ENUM_HELPER_DATE_DIFF.SECONDS,
+        format: EnumHelperDateDiff.Seconds,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: ENUM_HELPER_DATE_DIFF.SECONDS,
+          format: EnumHelperDateDiff.Seconds,
         }),
       ).toBe(result);
     });
 
     it('should be success with options format milis', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: ENUM_HELPER_DATE_DIFF.MILIS,
+        format: EnumHelperDateDiff.Milis,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: ENUM_HELPER_DATE_DIFF.MILIS,
+          format: EnumHelperDateDiff.Milis,
         }),
       ).toBe(result);
     });
@@ -328,14 +328,14 @@ describe('HelperDateService', () => {
     it('should be success with options timezone and format', async () => {
       const result = helperDateService.format(date1, {
         timezone: 'ASIA/JAKARTA',
-        format: ENUM_HELPER_DATE_FORMAT.DATE,
+        format: EnumHelperDateFormat.Date,
       });
       jest.spyOn(helperDateService, 'format').mockImplementation(() => result);
 
       expect(
         helperDateService.format(date1, {
           timezone: 'ASIA/JAKARTA',
-          format: ENUM_HELPER_DATE_FORMAT.DATE,
+          format: EnumHelperDateFormat.Date,
         }),
       ).toBe(result);
     });

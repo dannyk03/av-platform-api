@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
-import { HelperArrayService } from '@/utils/helper/service/helper.array.service';
+import { CoreModule } from 'src/core/core.module';
+import { HelperArrayService } from 'src/utils/helper/service/helper.array.service';
 
 describe('HelperArrayService', () => {
   let helperArrayService: HelperArrayService;
