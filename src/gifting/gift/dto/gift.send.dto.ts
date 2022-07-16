@@ -9,14 +9,14 @@ import {
 import { isArray } from 'lodash';
 
 export class GiftSendDto {
-  @Transform(({ value }) => {
-    return isArray(value) ? value : [value];
-  })
   @IsNotEmpty()
   @ArrayMinSize(1)
   @ArrayMaxSize(20)
+  @Transform(({ value }) => {
+    return isArray(value) ? value : [value];
+  })
   @IsEmail(undefined, { each: true })
-  // @Transform(({ value }) => value.toLowerCase())
+  @Trim(undefined, { each: true })
   @Escape({ each: true })
   email: string[];
 }
