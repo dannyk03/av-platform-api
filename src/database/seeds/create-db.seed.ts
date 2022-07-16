@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { ConnectionNames } from '../database.constant';
 import { createDB } from '../utils';

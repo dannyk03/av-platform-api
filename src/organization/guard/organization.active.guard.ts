@@ -3,10 +3,9 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-  NotFoundException,
 } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 

@@ -1,12 +1,18 @@
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
-import { EnumHelperDateDiff, EnumHelperDateFormat } from '@/utils/helper';
-import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { CoreModule } from 'src/core/core.module';
+import {
+  ENUM_HELPER_DATE_DIFF,
+  ENUM_HELPER_DATE_FORMAT,
+} from 'src/utils/helper/helper.constant';
+import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
 
 describe('HelperDateService', () => {
   let helperDateService: HelperDateService;
+  let configService: ConfigService;
   const date1 = new Date();
   const date2 = new Date();
+  let timezone: string;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -14,6 +20,9 @@ describe('HelperDateService', () => {
     }).compile();
 
     helperDateService = moduleRef.get<HelperDateService>(HelperDateService);
+    configService = moduleRef.get<ConfigService>(ConfigService);
+
+    timezone = configService.get<string>('app.timezone');
   });
 
   it('should be defined', () => {
@@ -36,6 +45,15 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.calculateAge(date1)).toBe(result);
     });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.calculateAge(date1, { timezone });
+      jest
+        .spyOn(helperDateService, 'calculateAge')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.calculateAge(date1, { timezone })).toBe(result);
+    });
   });
 
   describe('diff', () => {
@@ -46,61 +64,87 @@ describe('HelperDateService', () => {
       expect(test).toHaveBeenCalledWith(date1, date2);
     });
 
-    it('minutes should be success', async () => {
+    it('should be success', async () => {
       const result = helperDateService.diff(date1, date2);
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(helperDateService.diff(date1, date2)).toBe(result);
     });
 
-    it('hours should be success', async () => {
+    it('should be success with options timezone', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: EnumHelperDateDiff.Hours,
+        timezone,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: EnumHelperDateDiff.Hours,
+          timezone,
         }),
       ).toBe(result);
     });
 
-    it('days should be success', async () => {
+    it('should be success with options format minutes', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: EnumHelperDateDiff.Days,
+        format: ENUM_HELPER_DATE_DIFF.MINUTES,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: EnumHelperDateDiff.Days,
+          format: ENUM_HELPER_DATE_DIFF.MINUTES,
         }),
       ).toBe(result);
     });
 
-    it('seconds should be success', async () => {
+    it('should be success with options format hours', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: EnumHelperDateDiff.Seconds,
+        format: ENUM_HELPER_DATE_DIFF.HOURS,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: EnumHelperDateDiff.Seconds,
+          format: ENUM_HELPER_DATE_DIFF.HOURS,
         }),
       ).toBe(result);
     });
 
-    it('milis should be success', async () => {
+    it('should be success with options format days', async () => {
       const result = helperDateService.diff(date1, date2, {
-        format: EnumHelperDateDiff.Milis,
+        format: ENUM_HELPER_DATE_DIFF.DAYS,
       });
       jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
 
       expect(
         helperDateService.diff(date1, date2, {
-          format: EnumHelperDateDiff.Milis,
+          format: ENUM_HELPER_DATE_DIFF.DAYS,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success  with options format seconds', async () => {
+      const result = helperDateService.diff(date1, date2, {
+        format: ENUM_HELPER_DATE_DIFF.SECONDS,
+      });
+      jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
+
+      expect(
+        helperDateService.diff(date1, date2, {
+          format: ENUM_HELPER_DATE_DIFF.SECONDS,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options format milis', async () => {
+      const result = helperDateService.diff(date1, date2, {
+        format: ENUM_HELPER_DATE_DIFF.MILIS,
+      });
+      jest.spyOn(helperDateService, 'diff').mockImplementation(() => result);
+
+      expect(
+        helperDateService.diff(date1, date2, {
+          format: ENUM_HELPER_DATE_DIFF.MILIS,
         }),
       ).toBe(result);
     });
@@ -120,6 +164,66 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.check(date1.toISOString())).toBe(result);
     });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.check(date1.toISOString(), {
+        timezone,
+      });
+      jest.spyOn(helperDateService, 'check').mockImplementation(() => result);
+
+      expect(helperDateService.check(date1.toISOString(), { timezone })).toBe(
+        result,
+      );
+    });
+  });
+
+  describe('checkTimestamp', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'checkTimestamp');
+
+      helperDateService.checkTimestamp(date1.valueOf());
+      expect(test).toHaveBeenCalledWith(date1.valueOf());
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.checkTimestamp(date1.valueOf());
+      jest
+        .spyOn(helperDateService, 'checkTimestamp')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.checkTimestamp(date1.valueOf())).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.checkTimestamp(date1.valueOf(), {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'checkTimestamp')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.checkTimestamp(date1.valueOf(), { timezone }),
+      ).toBe(result);
+    });
+  });
+
+  describe('checkTimezone', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'checkTimezone');
+
+      helperDateService.checkTimezone(timezone);
+      expect(test).toHaveBeenCalledWith(timezone);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.checkTimezone(timezone);
+      jest
+        .spyOn(helperDateService, 'checkTimezone')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.checkTimezone(timezone)).toBe(result);
+    });
   });
 
   describe('create', () => {
@@ -131,10 +235,24 @@ describe('HelperDateService', () => {
     });
 
     it('should be success', async () => {
+      const result = helperDateService.create();
+      jest.spyOn(helperDateService, 'create').mockImplementation(() => result);
+
+      expect(helperDateService.create()).toBe(result);
+    });
+
+    it('should be success with options date', async () => {
       const result = helperDateService.create({ date: date1 });
       jest.spyOn(helperDateService, 'create').mockImplementation(() => result);
 
       expect(helperDateService.create({ date: date1 })).toBe(result);
+    });
+
+    it('should be success with options date and timezone', async () => {
+      const result = helperDateService.create({ date: date1, timezone });
+      jest.spyOn(helperDateService, 'create').mockImplementation(() => result);
+
+      expect(helperDateService.create({ date: date1, timezone })).toBe(result);
     });
   });
 
@@ -147,12 +265,35 @@ describe('HelperDateService', () => {
     });
 
     it('should be success', async () => {
+      const result = helperDateService.timestamp();
+      jest
+        .spyOn(helperDateService, 'timestamp')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.timestamp()).toBe(result);
+    });
+
+    it('should be success with options date', async () => {
       const result = helperDateService.timestamp({ date: date1 });
       jest
         .spyOn(helperDateService, 'timestamp')
         .mockImplementation(() => result);
 
       expect(helperDateService.timestamp({ date: date1 })).toBe(result);
+    });
+
+    it('should be success with date and timezone', async () => {
+      const result = helperDateService.timestamp({
+        date: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'timestamp')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.timestamp({ date: date1, timezone })).toBe(
+        result,
+      );
     });
   });
 
@@ -171,17 +312,222 @@ describe('HelperDateService', () => {
       expect(helperDateService.format(date1)).toBe(result);
     });
 
-    it('with options should be success', async () => {
+    it('should be success with options format', async () => {
       const result = helperDateService.format(date1, {
         timezone: 'ASIA/JAKARTA',
-        format: EnumHelperDateFormat.Date,
       });
       jest.spyOn(helperDateService, 'format').mockImplementation(() => result);
 
       expect(
         helperDateService.format(date1, {
           timezone: 'ASIA/JAKARTA',
-          format: EnumHelperDateFormat.Date,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options timezone and format', async () => {
+      const result = helperDateService.format(date1, {
+        timezone: 'ASIA/JAKARTA',
+        format: ENUM_HELPER_DATE_FORMAT.DATE,
+      });
+      jest.spyOn(helperDateService, 'format').mockImplementation(() => result);
+
+      expect(
+        helperDateService.format(date1, {
+          timezone: 'ASIA/JAKARTA',
+          format: ENUM_HELPER_DATE_FORMAT.DATE,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('forwardInMilliseconds', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'forwardInMilliseconds');
+
+      helperDateService.forwardInMilliseconds(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.forwardInMilliseconds(2);
+      jest
+        .spyOn(helperDateService, 'forwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInMilliseconds(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.forwardInMilliseconds(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInMilliseconds(2, { fromDate: date1 }),
+      ).toBe(result);
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.forwardInMilliseconds(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInMilliseconds(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('backwardInMilliseconds', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'backwardInMilliseconds');
+
+      helperDateService.backwardInMilliseconds(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.backwardInMilliseconds(2);
+      jest
+        .spyOn(helperDateService, 'backwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInMilliseconds(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.backwardInMilliseconds(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInMilliseconds(2, { fromDate: date1 }),
+      ).toBe(result);
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.backwardInMilliseconds(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMilliseconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInMilliseconds(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('forwardInSeconds', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'forwardInSeconds');
+
+      helperDateService.forwardInSeconds(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.forwardInSeconds(2);
+      jest
+        .spyOn(helperDateService, 'forwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInSeconds(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.forwardInSeconds(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInSeconds(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.forwardInSeconds(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInSeconds(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('backwardInSeconds', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'backwardInSeconds');
+
+      helperDateService.backwardInSeconds(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.backwardInSeconds(2);
+      jest
+        .spyOn(helperDateService, 'backwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInSeconds(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.backwardInSeconds(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInSeconds(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.backwardInSeconds(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInSeconds')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInSeconds(2, {
+          fromDate: date1,
+          timezone,
         }),
       ).toBe(result);
     });
@@ -203,6 +549,36 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.forwardInMinutes(2)).toBe(result);
     });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.forwardInMinutes(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMinutes')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInMinutes(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.forwardInMinutes(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMinutes')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInMinutes(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
   });
 
   describe('backwardInMinutes', () => {
@@ -221,43 +597,37 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.backwardInMinutes(2)).toBe(result);
     });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.backwardInMinutes(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMinutes')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInMinutes(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.backwardInMinutes(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMinutes')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInMinutes(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
   });
-
-  // describe('forwardInHours', () => {
-  //   it('should be called', async () => {
-  //     const test = jest.spyOn(helperDateService, 'forwardInHours');
-
-  //     helperDateService.forwardInHours(2);
-  //     expect(test).toHaveBeenCalledWith(2);
-  //   });
-
-  //   it('should be success', async () => {
-  //     const result = helperDateService.forwardInHours(2);
-  //     jest
-  //       .spyOn(helperDateService, 'forwardInHours')
-  //       .mockImplementation(() => result);
-
-  //     expect(helperDateService.forwardInHours(2)).toBe(result);
-  //   });
-  // });
-
-  // describe('backwardInHours', () => {
-  //   it('should be called', async () => {
-  //     const test = jest.spyOn(helperDateService, 'backwardInHours');
-
-  //     helperDateService.backwardInHours(2);
-  //     expect(test).toHaveBeenCalledWith(2);
-  //   });
-
-  //   it('should be success', async () => {
-  //     const result = helperDateService.backwardInHours(2);
-  //     jest
-  //       .spyOn(helperDateService, 'backwardInHours')
-  //       .mockImplementation(() => result);
-
-  //     expect(helperDateService.backwardInHours(2)).toBe(result);
-  //   });
-  // });
 
   describe('forwardInDays', () => {
     it('should be called', async () => {
@@ -274,6 +644,36 @@ describe('HelperDateService', () => {
         .mockImplementation(() => result);
 
       expect(helperDateService.forwardInDays(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.forwardInDays(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInDays')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInDays(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.forwardInDays(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInDays')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInDays(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
     });
   });
 
@@ -293,6 +693,36 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.backwardInDays(2)).toBe(result);
     });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.backwardInDays(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInDays')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInDays(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.backwardInDays(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInDays')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInDays(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
   });
 
   describe('forwardInMonths', () => {
@@ -311,6 +741,36 @@ describe('HelperDateService', () => {
 
       expect(helperDateService.forwardInMonths(2)).toBe(result);
     });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.forwardInMonths(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMonths')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.forwardInMonths(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.forwardInMonths(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'forwardInMonths')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.forwardInMonths(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
   });
 
   describe('backwardInMonths', () => {
@@ -328,6 +788,316 @@ describe('HelperDateService', () => {
         .mockImplementation(() => result);
 
       expect(helperDateService.backwardInMonths(2)).toBe(result);
+    });
+
+    it('should be success with options fromDate', async () => {
+      const result = helperDateService.backwardInMonths(2, {
+        fromDate: date1,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMonths')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.backwardInMonths(2, { fromDate: date1 })).toBe(
+        result,
+      );
+    });
+
+    it('should be success with options fromDate and timezone', async () => {
+      const result = helperDateService.backwardInMonths(2, {
+        fromDate: date1,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'backwardInMonths')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.backwardInMonths(2, {
+          fromDate: date1,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('endOfMonth', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'endOfMonth');
+
+      helperDateService.endOfMonth(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.endOfMonth(2);
+      jest
+        .spyOn(helperDateService, 'endOfMonth')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.endOfMonth(2)).toBe(result);
+    });
+
+    it('should be success with options year', async () => {
+      const result = helperDateService.endOfMonth(2, {
+        year: 1999,
+      });
+      jest
+        .spyOn(helperDateService, 'endOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.endOfMonth(2, {
+          year: 1999,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.endOfMonth(2, {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'endOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.endOfMonth(2, {
+          timezone,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options year and timezone', async () => {
+      const result = helperDateService.endOfMonth(2, {
+        year: 1999,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'endOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.endOfMonth(2, {
+          year: 1999,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('startOfMonth', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'startOfMonth');
+
+      helperDateService.startOfMonth(2);
+      expect(test).toHaveBeenCalledWith(2);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.startOfMonth(2);
+      jest
+        .spyOn(helperDateService, 'startOfMonth')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.startOfMonth(2)).toBe(result);
+    });
+
+    it('should be success with options year', async () => {
+      const result = helperDateService.startOfMonth(2, {
+        year: 1999,
+      });
+      jest
+        .spyOn(helperDateService, 'startOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.startOfMonth(2, {
+          year: 1999,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.startOfMonth(2, {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'startOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.startOfMonth(2, {
+          timezone,
+        }),
+      ).toBe(result);
+    });
+
+    it('should be success with options year and timezone', async () => {
+      const result = helperDateService.startOfMonth(2, {
+        year: 1999,
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'startOfMonth')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.startOfMonth(2, {
+          year: 1999,
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('endOfYear', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'endOfYear');
+
+      helperDateService.endOfYear(1999);
+      expect(test).toHaveBeenCalledWith(1999);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.endOfYear(1999);
+      jest
+        .spyOn(helperDateService, 'endOfYear')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.endOfYear(1999)).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.endOfYear(1999, {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'endOfYear')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.endOfYear(1999, {
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('startOfYear', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'startOfYear');
+
+      helperDateService.startOfYear(1999);
+      expect(test).toHaveBeenCalledWith(1999);
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.startOfYear(1999);
+      jest
+        .spyOn(helperDateService, 'startOfYear')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.startOfYear(1999)).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.startOfYear(1999, {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'startOfYear')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.startOfYear(1999, {
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('endOfDay', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'endOfDay');
+
+      helperDateService.endOfDay();
+      expect(test).toHaveBeenCalledWith();
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.endOfDay();
+      jest
+        .spyOn(helperDateService, 'endOfDay')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.endOfDay()).toBe(result);
+    });
+
+    it('should be success with date', async () => {
+      const result = helperDateService.endOfDay(new Date());
+      jest
+        .spyOn(helperDateService, 'endOfDay')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.endOfDay(new Date())).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.endOfDay(new Date(), {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'endOfDay')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.endOfDay(new Date(), {
+          timezone,
+        }),
+      ).toBe(result);
+    });
+  });
+
+  describe('startOfDay', () => {
+    it('should be called', async () => {
+      const test = jest.spyOn(helperDateService, 'startOfDay');
+
+      helperDateService.startOfDay();
+      expect(test).toHaveBeenCalledWith();
+    });
+
+    it('should be success', async () => {
+      const result = helperDateService.startOfDay();
+      jest
+        .spyOn(helperDateService, 'startOfDay')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.startOfDay()).toBe(result);
+    });
+
+    it('should be success with date', async () => {
+      const result = helperDateService.startOfDay(new Date());
+      jest
+        .spyOn(helperDateService, 'startOfDay')
+        .mockImplementation(() => result);
+
+      expect(helperDateService.startOfDay(new Date())).toBe(result);
+    });
+
+    it('should be success with options timezone', async () => {
+      const result = helperDateService.startOfDay(new Date(), {
+        timezone,
+      });
+      jest
+        .spyOn(helperDateService, 'startOfDay')
+        .mockImplementation(() => result);
+
+      expect(
+        helperDateService.startOfDay(new Date(), {
+          timezone,
+        }),
+      ).toBe(result);
     });
   });
 });

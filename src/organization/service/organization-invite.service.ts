@@ -13,10 +13,9 @@ import {
   FindOneOptions,
 } from 'typeorm';
 // Services
-import { EmailService } from '@/messaging/service/email/email.service';
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { HelperDateService } from '@/utils/helper/service/helper.date.service';
-import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
+import { EmailService } from '@/messaging/service/email';
+import { DebuggerService } from '@/debugger/service';
+import { HelperHashService, HelperDateService } from '@/utils/helper/service';
 // Entities
 import { OrganizationInvite } from '../entity';
 import { AclRole } from '@acl/role/entity';

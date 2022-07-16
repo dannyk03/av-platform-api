@@ -5,11 +5,11 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { EnumUserStatusCodeError } from '../user.constant';
-import { Reflector } from '@nestjs/core';
 import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
 import { EnumOrganizationStatusCodeError } from '@/organization';
 

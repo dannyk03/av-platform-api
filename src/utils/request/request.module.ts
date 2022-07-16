@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { EnumRequestStatusCodeError } from './request.constant';
 import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';

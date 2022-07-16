@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';

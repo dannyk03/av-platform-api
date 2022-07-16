@@ -10,14 +10,15 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Subject, Action } from '@avo/casl';
+// Entities
+import { User } from '@/user/entity';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { UserService } from '@/user/service/user.service';
+import { DebuggerService } from '@/debugger/service';
+import { UserService } from '@/user/service';
 import { AclRoleService, AclRolePresetService } from '@acl/role/service';
-import { AuthService } from '@/auth/service/auth.service';
-import { OrganizationService } from '../service/organization.service';
-import { OrganizationInviteService } from '../service/organization-invite.service';
-import { LogService } from '@/log/service/log.service';
+import { AuthService } from '@/auth/service';
+import { LogService } from '@/log/service';
+import { OrganizationService, OrganizationInviteService } from '../service';
 //
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
@@ -28,7 +29,6 @@ import { ConnectionNames } from '@/database';
 import { AclGuard } from '@/auth';
 import { EnumLoggerAction, IReqLogData } from '@/log';
 import { ReqUser } from '@/user/user.decorator';
-import { User } from '@/user/entity';
 import { ReqLogData } from '@/utils/request';
 
 @Controller({

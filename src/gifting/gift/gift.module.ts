@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
 import { GiftSend } from './entity';
 // Services
-import { GiftSendService } from './service/gift-send.service';
-import { EmailService } from '@/messaging/service/email/email.service';
+import { EmailService } from '@/messaging/service/email';
+import { GiftSendService } from './service';
 //
 import { ConnectionNames } from '@/database';
 

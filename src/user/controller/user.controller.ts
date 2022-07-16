@@ -2,8 +2,8 @@ import { Controller } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // Services
 import { AclRoleService } from '@acl/role/service';
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { UserService } from '../service/user.service';
+import { DebuggerService } from '@/debugger/service';
+import { UserService } from '../service';
 import { HelperDateService } from '@/utils/helper/service';
 //
 

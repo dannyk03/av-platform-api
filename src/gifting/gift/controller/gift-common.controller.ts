@@ -1,10 +1,11 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { EmailService } from '@/messaging/service/email/email.service';
-import { GiftSendService } from '../service/gift-send.service';
+import { DebuggerService } from '@/debugger/service';
+import { EmailService } from '@/messaging/service/email';
 import { HelperDateService } from '@/utils/helper/service';
+import { GiftSendService } from '../service';
 // Entities
 import { User } from '@/user/entity';
 //
@@ -12,7 +13,6 @@ import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { Response } from '@/utils/response';
 import { ReqUser } from '@/user';
-import { Throttle } from '@nestjs/throttler';
 
 @Controller({
   version: '1',

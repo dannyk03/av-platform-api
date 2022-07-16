@@ -4,11 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAuthConfig } from './entity';
 import { SignUpEmailVerificationLink } from './entity';
 // Services
-import { AuthSignUpVerificationService } from './service/auth-signup-verification.service';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
-import { AuthService } from './service/auth.service';
-import { EmailService } from '@/messaging/service/email/email.service';
+import { EmailService } from '@/messaging/service/email';
+import { AuthService, AuthSignUpVerificationService } from './service';
 //
 import { ConnectionNames } from '@/database';
 

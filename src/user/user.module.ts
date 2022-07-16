@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-
-import { ConnectionNames } from '@/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
-import { UserService } from './service/user.service';
+import { UserService } from './service';
 // Entities
 import { User } from './entity';
 //
+import { ConnectionNames } from '@/database';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User], ConnectionNames.Default)],

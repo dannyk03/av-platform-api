@@ -5,8 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 // Services
-import { UserService } from '../service/user.service';
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { UserService } from '../service';
+import { DebuggerService } from '@/debugger/service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';
 

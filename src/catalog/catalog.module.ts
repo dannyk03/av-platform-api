@@ -3,13 +3,15 @@ import { Module } from '@nestjs/common';
 import { ConnectionNames } from '@/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
-import { CatalogService } from './service/catalog.service';
-import { ProductImageService, ProductService } from './service';
+import { ProductImageService } from './product-image/service';
+import { ProductService } from './product/service';
 import { CloudinaryService } from '@/cloudinary/service';
+import { CatalogService } from './service';
 // Entities
 import { ProductDisplayOption } from './product-display-option/entity';
 import { ProductImage } from './product-image/entity';
 import { Product } from './product/entity';
+
 //
 
 @Module({

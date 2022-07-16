@@ -5,7 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { HelperNumberService } from '@/utils/helper/service/helper.number.service';
+import { HelperNumberService } from '@/utils/helper/service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()

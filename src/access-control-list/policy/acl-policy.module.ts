@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
 import { AclPolicy } from './entity';
 // Services
-import { AclPolicyService } from './service/acl-policy.service';
+import { AclPolicyService } from './service';
 //
 import { ConnectionNames } from '@/database';
 

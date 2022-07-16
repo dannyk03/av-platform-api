@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Modules
@@ -16,13 +19,10 @@ import { RequestModule } from '@/utils/request/request.module';
 import { VersionModule } from '@/utils/version/version.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 // Services
-import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
-import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
+import { DebuggerOptionService } from '@/debugger/service';
+import { TypeOrmConfigService } from '@/database/service';
 //
 import { ConnectionNames } from '@/database/';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   controllers: [],

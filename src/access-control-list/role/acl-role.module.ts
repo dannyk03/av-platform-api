@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Services
-import { AclRoleService } from './service/acl-role.service';
-import { AclRolePresetService } from './service/acl-role-preset.service';
 // Modules
 import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 import { AclAbilityModule } from '@acl/ability/acl-ability.module';
+// Entities
+import { AclRole, AclRolePreset } from './entity';
+// Services
+import { AclRoleService, AclRolePresetService } from './service';
 //
 import { ConnectionNames } from '@/database';
-import { AclRole, AclRolePreset } from './entity';
-//
 
 @Module({
   imports: [

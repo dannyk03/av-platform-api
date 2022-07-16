@@ -8,9 +8,9 @@ import {
   FindOneOptions,
 } from 'typeorm';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
-// import { EmailService } from '@/messaging/service/email/email.service';
-// import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { DebuggerService } from '@/debugger/service';
+// import { EmailService } from '@/messaging/service/email';
+// import { HelperDateService } from '@/utils/helper/service';
 
 // Entities
 import { GiftSend } from '../entity';

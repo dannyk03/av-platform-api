@@ -10,12 +10,11 @@ import {
 // Entities
 import { SignUpEmailVerificationLink } from '../entity';
 // Services
-import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { HelperDateService } from '@/utils/helper/service';
+import { DebuggerService } from '@/debugger/service';
+import { EmailService } from '@/messaging/service/email';
 //
 import { ConnectionNames } from '@/database';
-import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/service/email/email.service';
-
 @Injectable()
 export class AuthSignUpVerificationService {
   constructor(

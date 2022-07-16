@@ -9,12 +9,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Action, Subject } from '@avo/casl';
 // Entities
-import { ProductImage } from '../../product-image/entity';
+import { ProductImage } from '@/catalog/product-image/entity';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
+import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { CloudinaryService } from '@/cloudinary/service';
-import { ProductImageService, ProductService } from '../../service';
+import { ProductImageService } from '@/catalog/product-image/service';
+import { ProductService } from '../service';
 //
 import { Response, IResponse } from '@/utils/response';
 import { UploadFileMultiple } from '@/utils/file/file.decorator';
@@ -25,7 +26,6 @@ import { CloudinarySubject } from '@/cloudinary/cloudinary.constants';
 import { ReqLogData } from '@/utils/request';
 import { IReqLogData } from '@/log';
 import { ReqUser } from '@/user';
-import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 
 @Controller({
   version: '1',

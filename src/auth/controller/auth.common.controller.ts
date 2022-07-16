@@ -19,7 +19,7 @@ import { DataSource } from 'typeorm';
 import { Response as ExpressResponse } from 'express';
 import { IResult } from 'ua-parser-js';
 // Services
-import { UserService } from '@/user/service/user.service';
+import { UserService } from '@/user/service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
 import {
@@ -27,9 +27,8 @@ import {
   HelperHashService,
   HelperJwtService,
 } from '@/utils/helper/service';
-import { EmailService } from '@/messaging/service/email/email.service';
-import { AuthService } from '../service/auth.service';
-import { AuthSignUpVerificationService } from '../service/auth-signup-verification.service';
+import { EmailService } from '@/messaging/service/email';
+import { AuthService, AuthSignUpVerificationService } from '../service';
 //
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumLoggerAction, IReqLogData } from '@/log';

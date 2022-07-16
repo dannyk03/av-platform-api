@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 // Services
-import { DebuggerService } from '@/debugger/service/debugger.service';
-import { AuthService } from '@/auth/service/auth.service';
+import { DebuggerService } from '@/debugger/service';
+import { AuthService } from '@/auth/service';
 import { OrganizationService } from '@/organization/service';
-import { UserService } from '@/user/service/user.service';
+import { UserService } from '@/user/service';
 import { AclRoleService } from '@acl/role/service';
 import { HelperDateService } from '@/utils/helper/service';
-import { DisplayLanguageService } from '@/language/display-language/service/display-language.service';
+import { DisplayLanguageService } from '@/language/display-language/service';
 //
 import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';

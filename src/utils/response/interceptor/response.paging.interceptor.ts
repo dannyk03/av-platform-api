@@ -9,8 +9,10 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+// Services
+import { ResponseMessageService } from '@/response-message/service';
+//
 import { IMessage } from '@/response-message/response-message.interface';
-import { ResponseMessageService } from '@/response-message/service/response-message.service';
 import { PAGINATION_DEFAULT_MAX_PAGE } from '@/utils/pagination/pagination.constant';
 
 // This interceptor for restructure response success
