@@ -22,6 +22,7 @@ import { ReqLogData } from '@/utils/request';
 import { Response, IResponse } from '@/utils/response';
 import { UploadFileMultiple } from '@/utils/file/file.decorator';
 import { EnumFileType } from '@/utils/file/file.constant';
+import { ProductCreateDto } from '../dto/product.create.dto';
 
 @Controller({
   version: '1',
@@ -50,7 +51,7 @@ export class ProductController {
   async create(
     @UploadedFiles() images: Express.Multer.File[],
     @Body()
-    body,
+    { sku, name, description, brand, isActive, keywords }: ProductCreateDto,
   ): Promise<IResponse> {
     return;
   }

@@ -34,7 +34,7 @@ export class TestingCommonController {
   @HttpCode(HttpStatus.OK)
   @Get('/list')
   async list(@UserAgent() userAgent: IResult): Promise<IResponse> {
-    const xxx = await this.cloudinaryService.list();
+    // const xxx = await this.cloudinaryService.list();
     return;
   }
 }
