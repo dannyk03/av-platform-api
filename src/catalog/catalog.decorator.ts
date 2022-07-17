@@ -1,7 +1,7 @@
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 import { applyDecorators } from '@nestjs/common';
 import { Expose, Transform } from 'class-transformer';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export function ProductDisplayLanguage(): any {
   return applyDecorators(
@@ -10,6 +10,16 @@ export function ProductDisplayLanguage(): any {
     IsOptional(),
     Transform(({ value }) => {
       return value ? value : EnumDisplayLanguage.En;
+    }),
+  );
+}
+
+export function ProductSKU(): any {
+  return applyDecorators(
+    Expose(),
+    IsString(),
+    Transform(({ value }) => {
+      return value ? value.toUpperCase() : undefined;
     }),
   );
 }

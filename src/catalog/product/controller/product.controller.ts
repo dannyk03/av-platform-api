@@ -66,7 +66,7 @@ export class ProductController {
       languageIsoCode,
     }: ProductCreateDto,
   ): Promise<IResponse> {
-    const productExists = this.productService.findOneBy({ sku });
+    const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
       throw new BadRequestException({

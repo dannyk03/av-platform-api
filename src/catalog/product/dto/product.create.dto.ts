@@ -11,11 +11,12 @@ import {
 } from 'class-validator';
 import { isString } from 'lodash';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
-import { ProductDisplayLanguage } from '@/catalog';
+import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
 
 export class ProductCreateDto {
   @IsNotEmpty()
   @Length(3, 30)
+  @ProductSKU()
   @Trim()
   @Escape()
   @Type(() => String)
