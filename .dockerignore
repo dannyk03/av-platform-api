@@ -1,15 +1,15 @@
 
 # Build dependencies
-node_modules
-coverage
-e2e-coverage
-integration-coverage
-dist
-.husky
-.github
+node_modules/
+coverage/
+e2e-coverage/
+integration-coverage/
+dist/
+.husky/
+.github/
 
 # Logs
-logs
+logs/
 *.log
 
 # Environment (contains sensitive data)
