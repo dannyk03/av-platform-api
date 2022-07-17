@@ -37,8 +37,8 @@ async function bootstrap() {
       { path: 'health/memory-heap', method: RequestMethod.GET },
       { path: 'health/memory-rss', method: RequestMethod.GET },
       { path: 'health/storage', method: RequestMethod.GET },
+      { path: 'verify', method: RequestMethod.GET },
       { path: 'signup', method: RequestMethod.GET },
-      { path: 'login', method: RequestMethod.GET },
       { path: 'join', method: RequestMethod.GET },
     ],
   });

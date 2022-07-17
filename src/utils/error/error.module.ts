@@ -3,7 +3,7 @@ import { APP_FILTER } from '@nestjs/core';
 // Services
 import { ResponseMessageService } from '@/response-message/service';
 //
-import { ErrorHttpFilter } from './error.filter';
+import { ErrorHttpFilter } from './error-http.filter';
 
 @Module({
   controllers: [],

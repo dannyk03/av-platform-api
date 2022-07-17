@@ -1,34 +1,17 @@
+import { Transform, Type } from 'class-transformer';
 import { Escape, Trim } from 'class-sanitizer';
-import { Type, Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsEmail,
-  MaxLength,
-  IsBoolean,
+  ArrayMaxSize,
+  ArrayMinSize,
   IsOptional,
+  MaxLength,
   ValidateIf,
 } from 'class-validator';
+import { isArray } from 'lodash';
 
-export class AuthLoginDto {
-  @IsEmail()
-  @MaxLength(50)
-  @Transform(({ value }) => value.toLowerCase())
-  @Trim()
-  @Escape()
-  readonly email: string;
-
-  @IsOptional()
-  @IsBoolean()
-  readonly rememberMe?: boolean;
-
-  @IsNotEmpty()
-  @MaxLength(30)
-  @Trim()
-  @Type(() => String)
-  readonly password: string;
-}
-
-export class AuthMagicLoginDto {
+export class GiftSendGuestDto {
   @IsEmail()
   @MaxLength(50)
   @Transform(({ value }) => value.toLowerCase())
@@ -51,4 +34,15 @@ export class AuthMagicLoginDto {
   @Escape()
   @Type(() => String)
   readonly lastName?: string;
+
+  @IsNotEmpty()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(20)
+  @Transform(({ value }) => {
+    return isArray(value) ? value : [value];
+  })
+  @IsEmail(undefined, { each: true })
+  @Trim(undefined, { each: true })
+  @Escape({ each: true })
+  recipients: string[];
 }

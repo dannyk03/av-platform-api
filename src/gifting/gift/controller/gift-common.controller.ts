@@ -11,16 +11,17 @@ import { Throttle } from '@nestjs/throttler';
 // Services
 import { DebuggerService } from '@/debugger/service';
 import { EmailService } from '@/messaging/service/email';
-import { HelperDateService } from '@/utils/helper/service';
-import { GiftSendService } from '../service';
+import { HelperDateService, HelperHashService } from '@/utils/helper/service';
+import { GiftSendGuestService, GiftSendService } from '../service';
 // Entities
 import { User } from '@/user/entity';
 //
 import { AclGuard } from '@/auth';
 import { GiftSendDto } from '../dto/gift.send.dto';
-import { Response } from '@/utils/response';
+import { IResponse, Response } from '@/utils/response';
 import { ReqUser } from '@/user';
 import { EnumStatusCodeError } from '@/utils/error';
+import { GiftSendGuestDto } from '../dto';
 
 @Controller({
   version: '1',
@@ -32,6 +33,8 @@ export class GiftController {
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
     private readonly giftSendService: GiftSendService,
+    private readonly giftSendGuestService: GiftSendGuestService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @Response('gift.send')
@@ -41,14 +44,14 @@ export class GiftController {
   @Post('/send')
   async sendGiftSurvey(
     @Body()
-    { email }: GiftSendDto,
+    { recipients }: GiftSendDto,
     @ReqUser()
     reqUser: User,
-  ) {
-    const emails = [...new Set(email)];
+  ): Promise<IResponse> {
+    const uniqueRecipients = [...new Set(recipients)];
 
     const giftSends = await Promise.all(
-      emails.map(
+      uniqueRecipients.map(
         async (email) =>
           await this.giftSendService.create({
             sender: reqUser,
@@ -76,5 +79,48 @@ export class GiftController {
 
       this.giftSendService.save(giftSend);
     });
+
+    return;
+  }
+
+  @Response('gift.send')
+  @HttpCode(HttpStatus.OK)
+  @Throttle(1, 5)
+  @Post('/guest/send')
+  async sendGuestGiftVerify(
+    @Body()
+    { email, recipients, firstName, lastName }: GiftSendGuestDto,
+  ): Promise<IResponse> {
+    const uniqueRecipients = [...new Set(recipients)];
+    const verifyCode = this.helperHashService.code32char();
+
+    const giftSends = await Promise.all(
+      uniqueRecipients.map(
+        async (recipientEmail) =>
+          await this.giftSendGuestService.create({
+            senderEmail: email,
+            senderFirstName: firstName,
+            senderLastName: lastName,
+            verifyCode,
+            recipientEmail,
+          }),
+      ),
+    );
+
+    await this.giftSendGuestService.saveBulk(giftSends);
+
+    const emailSent = await this.emailService.sendGiftSendEmailVerify({
+      email: email,
+      verifyCode,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumStatusCodeError.UnknownError,
+        message: 'http.serverError.internalServerError',
+      });
+    }
+
+    return;
   }
 }

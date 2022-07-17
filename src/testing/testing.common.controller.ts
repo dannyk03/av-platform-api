@@ -5,6 +5,7 @@ import {
   HttpStatus,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 // Services
 import { CloudinaryService } from '@/cloudinary/service';
 //
@@ -13,6 +14,7 @@ import { Response, IResponse } from '@/utils/response';
 import { IResult } from 'ua-parser-js';
 import { AclGuard } from '@/auth';
 
+@Throttle(1, 5)
 @Controller({
   version: VERSION_NEUTRAL,
 })
@@ -34,7 +36,7 @@ export class TestingCommonController {
   }
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
-  @Get('/list')
+  @Get('/cld')
   async list(@UserAgent() userAgent: IResult): Promise<IResponse> {
     // const xxx = await this.cloudinaryService.list();
     return;

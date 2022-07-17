@@ -6,6 +6,7 @@ import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterTestModule } from '@/router/router.test.module';
+import { RouterGuestModule } from '@/router/router.guest.module';
 
 @Module({})
 export class AppRouterModule {
@@ -21,6 +22,7 @@ export class AppRouterModule {
           RouterPublicModule,
           RouterGiftingModule,
           RouterCatalogModule,
+          RouterGuestModule,
           RouterCallbackModule,
           RouterTestModule,
           RouterModule.register([
@@ -35,6 +37,10 @@ export class AppRouterModule {
             {
               path: '/catalog',
               module: RouterCatalogModule,
+            },
+            {
+              path: '/guest',
+              module: RouterGuestModule,
             },
             {
               path: '/public',

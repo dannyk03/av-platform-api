@@ -58,4 +58,20 @@ export class EmailService {
     });
     return Boolean('success');
   }
+
+  async sendGiftSendEmailVerify({
+    email,
+    verifyCode,
+  }: {
+    email: string;
+    verifyCode: string;
+  }): Promise<boolean> {
+    // TODO email send logic and return Boolean if succeeded
+
+    console.log({
+      email,
+      verifyCode,
+    });
+    return Boolean('success');
+  }
 }

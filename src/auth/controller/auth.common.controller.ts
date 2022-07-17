@@ -167,83 +167,83 @@ export class AuthCommonController {
     };
   }
 
-  @Response('auth.login')
-  @HttpCode(HttpStatus.OK)
-  @LoginGuestGuard()
-  @Post('/login/guest')
-  async loginMagic(
-    @Res({ passthrough: true })
-    response: ExpressResponse,
-    @Body()
-    { email, firstName, lastName }: AuthMagicLoginDto,
-    @ReqUser()
-    reqUser: User | null,
-    @ReqLogData()
-    logData: IReqLogData,
-  ): Promise<IResponse> {
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
+  // @Response('auth.login')
+  // @HttpCode(HttpStatus.OK)
+  // @LoginGuestGuard()
+  // @Post('/login/guest')
+  // async loginMagic(
+  //   @Res({ passthrough: true })
+  //   response: ExpressResponse,
+  //   @Body()
+  //   { email, firstName, lastName }: AuthMagicLoginDto,
+  //   @ReqUser()
+  //   reqUser: User | null,
+  //   @ReqLogData()
+  //   logData: IReqLogData,
+  // ): Promise<IResponse> {
+  //   const isSecureMode: boolean =
+  //     this.configService.get<boolean>('app.isSecureMode');
 
-    if (reqUser?.authConfig?.password) {
-      throw new ForbiddenException({
-        statusCode: EnumAuthStatusCodeError.AuthLoginGuestError,
-        message: 'auth.error.guestLogin',
-      });
-    }
+  //   if (reqUser?.authConfig?.password) {
+  //     throw new ForbiddenException({
+  //       statusCode: EnumAuthStatusCodeError.AuthLoginGuestError,
+  //       message: 'auth.error.guestLogin',
+  //     });
+  //   }
 
-    if (!reqUser) {
-      const newUser = await this.userService.create({
-        email,
-        firstName,
-        lastName,
-        // authConfig: {
-        //   loginCode: this.helperHashService.code32char(),
-        //   loginCodeExpiredAt: this.helperDateService.forwardInMilliseconds(
-        //     ms(
-        //       this.configService.get<string>(
-        //         'auth.jwt.magicAccessToken.expirationTime',
-        //       ),
-        //     ),
-        //   ),
-        // },
-      });
+  //   if (!reqUser) {
+  //     const newUser = await this.userService.create({
+  //       email,
+  //       firstName,
+  //       lastName,
+  //       // authConfig: {
+  //       //   loginCode: this.helperHashService.code32char(),
+  //       //   loginCodeExpiredAt: this.helperDateService.forwardInMilliseconds(
+  //       //     ms(
+  //       //       this.configService.get<string>(
+  //       //         'auth.jwt.magicAccessToken.expirationTime',
+  //       //       ),
+  //       //     ),
+  //       //   ),
+  //       // },
+  //     });
 
-      reqUser = await this.userService.save(newUser);
-    }
+  //     reqUser = await this.userService.save(newUser);
+  //   }
 
-    const safeData: AuthUserLoginSerialization =
-      await this.authService.serializationLogin(reqUser);
+  //   const safeData: AuthUserLoginSerialization =
+  //     await this.authService.serializationLogin(reqUser);
 
-    // TODO: cache in redis safeData with user role and permission for next api calls
+  //   // TODO: cache in redis safeData with user role and permission for next api calls
 
-    const rememberMe = false;
-    const payloadAccessToken: Record<string, any> =
-      await this.authService.createPayloadAccessToken(safeData, rememberMe);
+  //   const rememberMe = false;
+  //   const payloadAccessToken: Record<string, any> =
+  //     await this.authService.createPayloadAccessToken(safeData, rememberMe);
 
-    const accessToken: string = await this.authService.createAccessToken(
-      payloadAccessToken,
-      { guest: true },
-    );
+  //   const accessToken: string = await this.authService.createAccessToken(
+  //     payloadAccessToken,
+  //     { guest: true },
+  //   );
 
-    await this.logService.info({
-      ...logData,
-      action: EnumLoggerAction.Login,
-      description: `${reqUser.email} do login`,
-      user: reqUser,
-      tags: ['login', 'magic'],
-    });
+  //   await this.logService.info({
+  //     ...logData,
+  //     action: EnumLoggerAction.Login,
+  //     description: `${reqUser.email} do login`,
+  //     user: reqUser,
+  //     tags: ['login', 'magic'],
+  //   });
 
-    response.cookie('accessToken', accessToken, {
-      secure: isSecureMode,
-      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
+  //   response.cookie('accessToken', accessToken, {
+  //     secure: isSecureMode,
+  //     expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+  //     sameSite: 'strict',
+  //     httpOnly: true,
+  //   });
 
-    return {
-      accessToken,
-    };
-  }
+  //   return {
+  //     accessToken,
+  //   };
+  // }
 
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)

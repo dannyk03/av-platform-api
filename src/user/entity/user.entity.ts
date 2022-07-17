@@ -17,20 +17,20 @@ import { UserAuthConfig } from '@/auth/entity';
 @Entity()
 export class User extends BaseEntity<User> {
   @Column({
-    length: 50,
+    length: 30,
     nullable: true,
   })
   firstName?: string;
 
   @Column({
-    length: 50,
+    length: 30,
     nullable: true,
   })
   lastName?: string;
 
   @Index()
   @Column({
-    length: 50,
+    length: 30,
     unique: true,
     nullable: true,
   })
@@ -39,7 +39,7 @@ export class User extends BaseEntity<User> {
   @Index()
   @Column({
     unique: true,
-    length: 100,
+    length: 50,
   })
   email!: string;
 
