@@ -267,17 +267,17 @@ export class AuthCommonController {
     if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserExistsError,
-        message: 'user.error.exist',
+        message: 'user.error.exists',
       });
     } else if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
-        message: 'user.error.emailExist',
+        message: 'user.error.emailExists',
       });
     } else if (checkExist.phoneNumber) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserPhoneNumberExistsError,
-        message: 'user.error.phoneNumberExist',
+        message: 'user.error.phoneNumberExists',
       });
     }
 

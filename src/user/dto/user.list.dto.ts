@@ -6,7 +6,7 @@ import {
   PaginationPerPage,
   PaginationSearch,
   PaginationSort,
-} from '@/utils/pagination/pagination.decorator';
+} from '@/utils/pagination';
 import { IPaginationSort } from '@/utils/pagination/pagination.interface';
 import {
   USER_DEFAULT_AVAILABLE_SEARCH,

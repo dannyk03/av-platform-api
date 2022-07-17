@@ -12,8 +12,8 @@
   "error": {
     "notFound": "Organization not found.",
     "inactive": "Organization not active",
-    "exist": "Organization already exist",
-    "ownerExist": "Organization owner exist",
+    "exists": "Organization already exists",
+    "ownerExists": "Organization owner exists",
     "systemOnly": "System only",
     "alreadyInvited": "User already invited",
     "inviteInvalid": "Invite invalid"

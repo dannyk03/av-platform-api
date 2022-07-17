@@ -9,6 +9,6 @@
   "error": {
     "notFound": "Product not found.",
     "inactive": "Product not active",
-    "exist": "Product already exist"
+    "exists": "Product exists"
   }
 }

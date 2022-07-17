@@ -12,10 +12,10 @@
   "error": {
     "notFound": "User not found",
     "inactive": "User not active",
-    "emailExist": "Email user used",
+    "emailExists": "Email user used",
     "phoneNumberExist": "User mobile number already used",
     "active": "User status active invalid",
-    "exist": "User exist",
+    "exists": "User exists",
     "signUpCode": "Invalid sign up code",
     "signUpLink": "Invalid sign up link"
   }

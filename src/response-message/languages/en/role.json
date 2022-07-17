@@ -9,7 +9,7 @@
   "error": {
     "notFound": "Role not found",
     "inactive": "Role not active",
-    "exist": "Role exist",
+    "exists": "Role exists",
     "used": "Role is used"
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
@@ -18,14 +19,12 @@ import { ProductImageService } from '@/catalog/product-image/service';
 import { ProductService } from '../service';
 //
 import { Response, IResponse } from '@/utils/response';
-import { UploadFileMultiple } from '@/utils/file/file.decorator';
+import { UploadFileMultiple } from '@/utils/file';
 import { EnumFileType } from '@/utils/file/file.constant';
 import { ProductCreateDto } from '../dto/product.create.dto';
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary/cloudinary.constants';
-import { ReqLogData } from '@/utils/request';
-import { IReqLogData } from '@/log';
-import { ReqUser } from '@/user';
+import { EnumCatalogCodeError } from '@/catalog/catalog.constant';
 
 @Controller({
   version: '1',
@@ -70,10 +69,10 @@ export class ProductController {
     const productExists = this.productService.findOneBy({ sku });
 
     if (productExists) {
-      // throw new BadRequestException({
-      //   statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
-      //   message: 'auth.error.notMatch',
-      // });
+      throw new BadRequestException({
+        statusCode: EnumCatalogCodeError.CatalogProductExistsError,
+        message: 'product.error.exists',
+      });
     }
 
     const uploadImages = await Promise.all(

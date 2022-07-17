@@ -28,7 +28,7 @@ import { EnumOrganizationRole } from '@acl/role';
 import { ConnectionNames } from '@/database';
 import { AclGuard } from '@/auth';
 import { EnumLoggerAction, IReqLogData } from '@/log';
-import { ReqUser } from '@/user/user.decorator';
+import { ReqUser } from '@/user';
 import { ReqLogData } from '@/utils/request';
 
 @Controller({
@@ -85,7 +85,7 @@ export class OrganizationController {
 
     if (checkOrganizationExist) {
       this.debuggerService.error(
-        'create organization exist',
+        'create organization exists',
         'OrganizationController',
         'create',
         organizationName,
@@ -93,11 +93,11 @@ export class OrganizationController {
 
       throw new BadRequestException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationExistsError,
-        message: 'organization.error.exist',
+        message: 'organization.error.exists',
       });
     } else if (checkOrganizationOwnerExist) {
       this.debuggerService.error(
-        'create organization user exist',
+        'create organization user exists',
         'OrganizationController',
         'create',
         organizationOwnerEmail,
@@ -106,7 +106,7 @@ export class OrganizationController {
       throw new BadRequestException({
         statusCode:
           EnumOrganizationStatusCodeError.OrganizationOwnerExistsError,
-        message: 'organization.error.ownerExist',
+        message: 'organization.error.ownerExists',
       });
     }
 
