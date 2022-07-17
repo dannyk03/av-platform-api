@@ -4,9 +4,9 @@ import ms from 'ms';
 export default registerAs(
   'app',
   (): Record<string, any> => ({
-    isProduction: process.env.APP_NAME === 'production',
+    isProduction: process.env.APP_ENV === 'production',
     isSecureMode: process.env.APP_MODE === 'secure',
-    name: process.env.APP_NAME || 'ack',
+    name: process.env.APP_NAME || 'avo',
     env: process.env.APP_ENV || 'development',
     mode: process.env.APP_MODE || 'simple',
     language: process.env.APP_LANGUAGE || 'en',

@@ -10,6 +10,7 @@ export default registerAs(
     autoCreateDB: process.env.AUTO_CREATE_DB === 'true',
     [ConnectionNames.Default]: {
       type: 'postgres',
+      applicationName: process.env.APP_NAME || 'avo',
       host: process.env.POSTGRES_HOST,
       port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
       database: process.env.POSTGRES_DB || 'avo',
