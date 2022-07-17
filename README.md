@@ -117,6 +117,12 @@ Version of the main packages and main tools.
   docker compose --profile dev up
   ```
 
+  In case of errors, like some packages are missing...rebuild the image
+
+  ```bash
+  docker compose --profile dev up --build --force-recreate
+  ```
+
 - (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
 
   ```bash
