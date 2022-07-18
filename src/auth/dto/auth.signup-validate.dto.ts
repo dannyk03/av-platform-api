@@ -8,5 +8,5 @@ export class UserSignUpValidateDto {
   @Trim()
   @Escape()
   @Type(() => String)
-  readonly signUpCode: string;
+  readonly code: string;
 }

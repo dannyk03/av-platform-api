@@ -17,7 +17,7 @@ import { EmailService } from '@/messaging/service/email';
 import { DebuggerService } from '@/debugger/service';
 import { HelperHashService, HelperDateService } from '@/utils/helper/service';
 // Entities
-import { OrganizationInvite } from '../entity';
+import { OrganizationInviteLink } from '../entity';
 import { AclRole } from '@acl/role/entity';
 //
 import { ConnectionNames } from '@/database';
@@ -29,8 +29,8 @@ import { EnumRoleStatusCodeError } from '@/access-control-list/role';
 @Injectable()
 export class OrganizationInviteService {
   constructor(
-    @InjectRepository(OrganizationInvite, ConnectionNames.Default)
-    private organizationInviteRepository: Repository<OrganizationInvite>,
+    @InjectRepository(OrganizationInviteLink, ConnectionNames.Default)
+    private organizationInviteRepository: Repository<OrganizationInviteLink>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly debuggerService: DebuggerService,
@@ -39,27 +39,27 @@ export class OrganizationInviteService {
   ) {}
 
   async create(
-    props: DeepPartial<Omit<OrganizationInvite, 'inviteCode'>>,
-  ): Promise<OrganizationInvite> {
+    props: DeepPartial<Omit<OrganizationInviteLink, 'code'>>,
+  ): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.create({
       ...props,
-      inviteCode: this.helperHashService.code32char(),
+      code: this.helperHashService.code32char(),
     });
   }
 
-  async save(props: OrganizationInvite): Promise<OrganizationInvite> {
+  async save(props: OrganizationInviteLink): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.save(props);
   }
 
   async findOne(
-    find: FindOneOptions<OrganizationInvite>,
-  ): Promise<OrganizationInvite> {
+    find: FindOneOptions<OrganizationInviteLink>,
+  ): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.findOne(find);
   }
 
   async findOneBy(
-    find: FindOptionsWhere<OrganizationInvite>,
-  ): Promise<OrganizationInvite> {
+    find: FindOptionsWhere<OrganizationInviteLink>,
+  ): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.findOneBy(find);
   }
 
@@ -128,7 +128,7 @@ export class OrganizationInviteService {
       const emailSent = await this.emailService.sendOrganizationInvite({
         email,
         expiresInDays,
-        inviteCode: organizationInvite.inviteCode,
+        code: organizationInvite.code,
         organizationName: organizationInvite.organization.name,
       });
 
@@ -141,7 +141,7 @@ export class OrganizationInviteService {
           ? await transactionalEntityManager.save(organizationInvite)
           : await this.save(organizationInvite);
 
-        return { inviteCode: organizationInvite.inviteCode };
+        return { code: organizationInvite.code };
       } else {
         this.debuggerService.error(
           'Messaging Email error',
@@ -170,7 +170,7 @@ export class OrganizationInviteService {
         const emailSent = await this.emailService.sendOrganizationInvite({
           email,
           expiresInDays,
-          inviteCode: alreadyExistingOrganizationInvite.inviteCode,
+          code: alreadyExistingOrganizationInvite.code,
           organizationName: alreadyExistingOrganizationInvite.organization.name,
         });
         if (emailSent) {
@@ -184,7 +184,7 @@ export class OrganizationInviteService {
               )
             : await this.save(alreadyExistingOrganizationInvite);
 
-          return { inviteCode: alreadyExistingOrganizationInvite.inviteCode };
+          return { code: alreadyExistingOrganizationInvite.code };
         } else {
           this.debuggerService.error(
             'Organization Invite Email error',
@@ -205,7 +205,7 @@ export class OrganizationInviteService {
 
           ...(!alreadyExistingOrganizationInvite.usedAt && {
             data: {
-              inviteCode: alreadyExistingOrganizationInvite.inviteCode,
+              code: alreadyExistingOrganizationInvite.code,
             },
           }),
         });

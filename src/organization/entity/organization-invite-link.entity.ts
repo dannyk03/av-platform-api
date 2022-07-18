@@ -6,7 +6,7 @@ import { AclRole } from '@acl/role/entity';
 //
 
 @Entity()
-export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
+export class OrganizationInviteLink extends BaseEntity<OrganizationInviteLink> {
   @Index()
   @Column({
     unique: true,
@@ -19,7 +19,7 @@ export class OrganizationInvite extends BaseEntity<OrganizationInvite> {
     unique: true,
     length: 32,
   })
-  inviteCode!: string;
+  code!: string;
 
   @Column({ nullable: true })
   usedAt?: Date;

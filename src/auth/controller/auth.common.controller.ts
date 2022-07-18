@@ -22,11 +22,7 @@ import { IResult } from 'ua-parser-js';
 import { UserService } from '@/user/service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
-import {
-  HelperDateService,
-  HelperHashService,
-  HelperJwtService,
-} from '@/utils/helper/service';
+import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
 import { EmailService } from '@/messaging/service/email';
 import { AuthService, AuthSignUpVerificationService } from '../service';
 //
@@ -35,7 +31,7 @@ import { EnumLoggerAction, IReqLogData } from '@/log';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { Response, IResponse } from '@/utils/response';
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
-import { AuthLoginDto, AuthMagicLoginDto } from '../dto/auth.login.dto';
+import { AuthLoginDto } from '../dto/auth.login.dto';
 import { EnumAuthStatusCodeError } from '../auth.constant';
 import {
   AuthChangePasswordGuard,
@@ -48,7 +44,6 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, UserAgent } from '@/utils/request';
 import { User } from '@/user/entity';
 import { ConnectionNames } from '@/database';
-import { UserSignUpValidateDto } from '../dto/auth.signup-validate.dto';
 
 @Controller({
   version: '1',
@@ -65,7 +60,6 @@ export class AuthCommonController {
     private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
-    private readonly helperHashService: HelperHashService,
     private readonly authSignUpVerificationService: AuthSignUpVerificationService,
     private readonly emailService: EmailService,
   ) {}
@@ -303,12 +297,10 @@ export class AuthCommonController {
 
           await transactionalEntityManager.save(signUpUser);
 
-          const signUpCode = this.helperHashService.code32char();
           const signUpEmailVerificationLink =
             await this.authSignUpVerificationService.create({
               email,
               user: signUpUser,
-              signUpCode,
               userAgent,
               // expiresAt: this.helperDateService.forwardInDays(expiresInDays),
             });
@@ -367,7 +359,7 @@ export class AuthCommonController {
 
           // this.emailService.sendSignUpEmailVerification({
           //   email,
-          //   signUpCode,
+          //   code: signUpCode,
           //   expiresInDays,
           // });
         },

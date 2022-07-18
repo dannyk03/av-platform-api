@@ -107,12 +107,12 @@ export class OrganizationInviteController {
   @Post('/join')
   async join(
     @Query()
-    { inviteCode }: OrganizationInviteValidateDto,
+    { code }: OrganizationInviteValidateDto,
     @Body()
     { password, firstName, lastName }: OrganizationJoinDto,
   ) {
     const existingInvite = await this.organizationInviteService.findOne({
-      where: { inviteCode },
+      where: { code },
       relations: ['role', 'organization'],
     });
 

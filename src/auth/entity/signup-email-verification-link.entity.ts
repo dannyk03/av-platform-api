@@ -21,7 +21,7 @@ export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificat
     length: 32,
     update: false,
   })
-  signUpCode!: string;
+  code!: string;
 
   @Column({ nullable: true })
   usedAt?: Date;

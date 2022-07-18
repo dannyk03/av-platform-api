@@ -13,37 +13,37 @@ export class EmailService {
 
   async sendOrganizationInvite({
     email,
-    inviteCode,
+    code,
     expiresInDays,
     organizationName,
     path = '/join',
   }: {
     email: string;
-    inviteCode: string;
+    code: string;
     organizationName: string;
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
 
-    console.log({ email, inviteCode, expiresInDays, organizationName, path });
+    console.log({ email, code, expiresInDays, organizationName, path });
     return Boolean('success');
   }
 
   async sendSignUpEmailVerification({
     email,
-    signUpCode,
+    code,
     expiresInDays,
     path = '/signup',
   }: {
     email: string;
-    signUpCode: string;
+    code: string;
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
 
-    console.log({ email, signUpCode, expiresInDays, path });
+    console.log({ email, code, expiresInDays, path });
     return Boolean('success');
   }
 
@@ -65,11 +65,11 @@ export class EmailService {
 
   async sendGiftVerify({
     email,
-    verifyCode,
+    code,
     path = '/verify',
   }: {
     email: string;
-    verifyCode: string;
+    code: string;
     path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
@@ -77,7 +77,7 @@ export class EmailService {
     console.log({
       path,
       email,
-      verifyCode,
+      code,
     });
     return Boolean('success');
   }

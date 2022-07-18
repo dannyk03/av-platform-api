@@ -14,7 +14,6 @@ import { AuthSignUpVerificationService } from '@/auth/service';
 import { OrganizationInviteService } from '@/organization/service';
 //
 import { UserSignUpValidateDto } from '@/auth/dto/auth.signup-validate.dto';
-import { EnumUserStatusCodeError } from '@/user';
 import { ConnectionNames } from '@/database';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Response, IResponse } from '@/utils/response';
@@ -39,10 +38,10 @@ export class MagicLinkController {
   @Get('/signup')
   async signUpValidate(
     @Query()
-    { signUpCode }: UserSignUpValidateDto,
+    { code }: UserSignUpValidateDto,
   ): Promise<IResponse> {
-    const xxx = this.authSignUpVerificationService.verifyUserSignUp({
-      signUpCode,
+    this.authSignUpVerificationService.verifyUserSignUp({
+      code,
     });
 
     return;
@@ -52,10 +51,10 @@ export class MagicLinkController {
   @Get('/join')
   async joinValidate(
     @Query()
-    { inviteCode }: OrganizationInviteValidateDto,
+    { code }: OrganizationInviteValidateDto,
   ) {
     const existingInvite = await this.organizationInviteService.findOneBy({
-      inviteCode,
+      code,
     });
 
     if (!existingInvite) {

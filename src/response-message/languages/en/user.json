@@ -16,7 +16,7 @@
     "phoneNumberExists": "User phone number already used",
     "active": "User status active invalid",
     "exists": "User exists",
-    "signUpCode": "Invalid sign up code",
+    "code": "Invalid sign up code",
     "signUpLink": "Invalid sign up link",
     "verified": "User email not verified"
   }

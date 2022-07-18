@@ -147,7 +147,7 @@ export class GiftController {
   //           senderEmail: email,
   //           senderFirstName: firstName,
   //           senderLastName: lastName,
-  //           verifyCode,
+  //           code: verifyCode,
   //           recipientEmail,
   //         }),
   //     ),

@@ -15,7 +15,7 @@ import {
 // Entities
 import { SignUpEmailVerificationLink } from '../entity';
 // Services
-import { HelperDateService } from '@/utils/helper/service';
+import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 import { DebuggerService } from '@/debugger/service';
 import { EmailService } from '@/messaging/service/email';
 //
@@ -32,12 +32,16 @@ export class AuthSignUpVerificationService {
     private readonly emailService: EmailService,
     private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
-    props: DeepPartial<SignUpEmailVerificationLink>,
+    props: DeepPartial<Omit<SignUpEmailVerificationLink, 'code'>>,
   ): Promise<SignUpEmailVerificationLink> {
-    return this.signUpEmailVerificationLinkRepository.create(props);
+    return this.signUpEmailVerificationLinkRepository.create({
+      ...props,
+      code: this.helperHashService.code32char(),
+    });
   }
 
   async save(
@@ -61,12 +65,12 @@ export class AuthSignUpVerificationService {
   }
 
   async verifyUserSignUp({
-    signUpCode,
+    code,
   }: {
-    signUpCode: string;
+    code: string;
   }): Promise<SignUpEmailVerificationLink> {
     const existingSignUp = await this.findOne({
-      where: { signUpCode },
+      where: { code },
       relations: ['user', 'user.authConfig'],
       select: {
         user: {
@@ -83,7 +87,7 @@ export class AuthSignUpVerificationService {
     if (!existingSignUp) {
       throw new NotFoundException({
         statusCode: EnumUserStatusCodeError.UserSignUpLinkNotFound,
-        message: 'user.error.signUpCode',
+        message: 'user.error.code',
       });
     }
 
