@@ -6,7 +6,6 @@ import {
   MaxLength,
   IsBoolean,
   IsOptional,
-  ValidateIf,
 } from 'class-validator';
 
 export class AuthLoginDto {
@@ -38,7 +37,7 @@ export class AuthMagicLoginDto {
 
   @MaxLength(30)
   @IsOptional()
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)
@@ -46,7 +45,7 @@ export class AuthMagicLoginDto {
 
   @MaxLength(30)
   @IsOptional()
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)

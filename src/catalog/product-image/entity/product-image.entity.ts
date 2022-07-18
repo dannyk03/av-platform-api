@@ -35,7 +35,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
     type: 'jsonb',
     nullable: true,
   })
-  properties?: object;
+  additionalData?: object;
 
   @ManyToMany(() => ProductDisplayOption)
   productDisplayOptions!: ProductDisplayOption[];

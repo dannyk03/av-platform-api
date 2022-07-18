@@ -24,3 +24,5 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
   'email',
   'phoneNumber',
 ];
+
+export const USER_VERIFIED_ONLY_META_KEY = 'UserVerifiedOnlyOnlyMetaKey';

@@ -1,2 +1,3 @@
-export * from './gift-send.service';
-export * from './gift-send-guest.service';
+export * from './gift.service';
+export * from './gift-recipient.service';
+export * from './gift-sender.service';

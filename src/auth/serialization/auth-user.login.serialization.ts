@@ -9,14 +9,15 @@ import { AclRoleLoginSerialization } from '@acl/role';
 import { AuthConfigLoginSerialization } from './auth-config.login.serialization';
 
 export class AuthUserLoginSerialization {
-  readonly id: string;
-
   readonly email: string;
   readonly isActive: boolean;
   readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
   readonly loginCodeExpiredAt: Date;
+
+  @Exclude()
+  readonly id: string;
 
   @Transform(({ value: organization }) =>
     plainToInstance(OrganizationLoginSerialization, organization),

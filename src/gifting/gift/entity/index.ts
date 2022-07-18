@@ -1,2 +1,3 @@
-export * from './gift-send.entity';
-export * from './gift-send-guest.entity';
+export * from './gift.entity';
+export * from './gift-recipient.entity';
+export * from './gift-sender.entity';

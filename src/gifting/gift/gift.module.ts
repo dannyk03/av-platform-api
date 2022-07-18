@@ -1,23 +1,29 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
-import { GiftSend } from './entity';
-import { GuestGiftSend } from './entity/gift-send-guest.entity';
+import { Gift, GiftRecipient, GiftSender } from './entity';
+
 // Services
 import { EmailService } from '@/messaging/service/email';
-import { GiftSendGuestService, GiftSendService } from './service';
+import { GiftSenderService, GiftService } from './service';
 //
 import { ConnectionNames } from '@/database';
+import { GiftRecipientService } from './service/gift-recipient.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [GiftSend, GuestGiftSend],
+      [Gift, GiftRecipient, GiftSender],
       ConnectionNames.Default,
     ),
   ],
-  exports: [GiftSendService, GiftSendGuestService],
-  providers: [GiftSendService, GiftSendGuestService, EmailService],
+  exports: [GiftService, GiftRecipientService, GiftSenderService],
+  providers: [
+    GiftService,
+    GiftRecipientService,
+    GiftSenderService,
+    EmailService,
+  ],
   controllers: [],
 })
 export class GiftModule {}

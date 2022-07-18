@@ -27,7 +27,7 @@ export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificat
   usedAt?: Date;
 
   @Column({ nullable: true })
-  expiresAt!: Date;
+  expiresAt?: Date;
 
   @Column({
     type: 'json',

@@ -38,7 +38,7 @@ export class ResponseMessageService {
           for (const child of children) {
             property = `${property}.${child.property}`;
 
-            if (child.children.length > 0) {
+            if (child.children?.length > 0) {
               children = child.children;
               break;
             } else if (child.constraints) {

@@ -13,10 +13,11 @@
     "notFound": "User not found",
     "inactive": "User not active",
     "emailExists": "Email user used",
-    "phoneNumberExist": "User mobile number already used",
+    "phoneNumberExists": "User phone number already used",
     "active": "User status active invalid",
     "exists": "User exists",
     "signUpCode": "Invalid sign up code",
-    "signUpLink": "Invalid sign up link"
+    "signUpLink": "Invalid sign up link",
+    "verified": "User email not verified"
   }
 }

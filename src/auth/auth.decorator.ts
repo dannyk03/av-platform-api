@@ -12,6 +12,7 @@ import { SYSTEM_ONLY_META_KEY } from '@/system';
 import {
   ReqUserActiveGuard,
   ReqUserSystemOnlyGuard,
+  ReqUserVerifiedOnlyGuard,
   UserPutToRequestGuard,
 } from '@/user/guard';
 import { AclAbilityGuard } from '@acl/ability/guard';
@@ -21,7 +22,7 @@ import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
 import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';
-import { ReqGuestActiveGuard } from '@/user/guard/user-guest.active.guard';
+import { USER_VERIFIED_ONLY_META_KEY } from '@/user';
 
 //
 
@@ -52,7 +53,13 @@ export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
 
 export function AclGuard(
   abilities: IReqAclAbility[] = [],
-  { systemOnly }: { systemOnly: boolean } = { systemOnly: false },
+  {
+    systemOnly,
+    verifiedOnly,
+  }: { systemOnly?: boolean; verifiedOnly?: boolean } = {
+    systemOnly: false,
+    verifiedOnly: true,
+  },
 ) {
   return applyDecorators(
     UseGuards(
@@ -62,11 +69,13 @@ export function AclGuard(
       ReqUserAclRoleActiveGuard,
       ReqUserOrganizationActiveGuard,
       AuthPayloadPasswordExpiredGuard,
-      AclAbilityGuard,
       ReqUserSystemOnlyGuard,
+      ReqUserVerifiedOnlyGuard,
+      AclAbilityGuard,
     ),
     SetMetadata(ABILITY_META_KEY, abilities),
     SetMetadata(SYSTEM_ONLY_META_KEY, systemOnly),
+    SetMetadata(USER_VERIFIED_ONLY_META_KEY, verifiedOnly),
   );
 }
 
@@ -97,12 +106,6 @@ export function LoginGuard(): any {
       ReqUserAclRoleActiveGuard,
       ReqUserOrganizationActiveGuard,
     ),
-  );
-}
-
-export function LoginGuestGuard(): any {
-  return applyDecorators(
-    UseGuards(UserLoginPutToRequestGuard, ReqGuestActiveGuard),
   );
 }
 

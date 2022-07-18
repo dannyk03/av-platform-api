@@ -16,15 +16,17 @@ export class EmailService {
     inviteCode,
     expiresInDays,
     organizationName,
+    path = '/join',
   }: {
     email: string;
     inviteCode: string;
     organizationName: string;
     expiresInDays: number;
+    path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
 
-    console.log({ email, inviteCode, expiresInDays, organizationName });
+    console.log({ email, inviteCode, expiresInDays, organizationName, path });
     return Boolean('success');
   }
 
@@ -32,43 +34,48 @@ export class EmailService {
     email,
     signUpCode,
     expiresInDays,
+    path = '/signup',
   }: {
     email: string;
     signUpCode: string;
     expiresInDays: number;
+    path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
 
-    console.log({ email, signUpCode, expiresInDays });
+    console.log({ email, signUpCode, expiresInDays, path });
     return Boolean('success');
   }
 
-  async sendGiftSurvey({
-    email,
-    senderEmail,
-  }: {
-    email: string;
-    senderEmail: string;
-  }): Promise<boolean> {
-    // TODO email send logic and return Boolean if succeeded
+  // async sendGiftSurvey({
+  //   email,
+  //   senderEmail,
+  // }: {
+  //   email: string;
+  //   senderEmail: string;
+  // }): Promise<boolean> {
+  //   // TODO email send logic and return Boolean if succeeded
 
-    console.log({
-      email,
-      senderEmail,
-    });
-    return Boolean('success');
-  }
+  //   console.log({
+  //     email,
+  //     senderEmail,
+  //   });
+  //   return Boolean('success');
+  // }
 
-  async sendGiftSendEmailVerify({
+  async sendGiftVerify({
     email,
     verifyCode,
+    path = '/verify',
   }: {
     email: string;
     verifyCode: string;
+    path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
 
     console.log({
+      path,
       email,
       verifyCode,
     });

@@ -16,6 +16,7 @@ import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { CloudinaryService } from '@/cloudinary/service';
 import { ProductImageService } from '@/catalog/product-image/service';
+import { PaginationService } from '@/utils/pagination/service';
 import { ProductService } from '../service';
 //
 import { Response, IResponse } from '@/utils/response';
@@ -38,6 +39,7 @@ export class ProductController {
     private readonly cloudinaryService: CloudinaryService,
     private readonly productService: ProductService,
     private readonly productImageService: ProductImageService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @Response('product.create')
@@ -125,4 +127,50 @@ export class ProductController {
 
     return;
   }
+
+  // @ResponsePaging('product.list')
+  // @AclGuard([
+  //   {
+  //     action: Action.Read,
+  //     subject: Subject.Product,
+  //   },
+  // ])
+  // @Get('/list')
+  // async list(
+  //   @Query()
+  //   {
+  //     page,
+  //     perPage,
+  //     sort,
+  //     search,
+  //     availableSort,
+  //     availableSearch,
+  //   }: AclRoleListDto,
+  // ): Promise<IResponsePaging> {
+  //   const skip: number = await this.paginationService.skip(page, perPage);
+
+  //   const totalData: number =
+  //     roles &&
+  //     (await this.aclRoleService.getTotal({
+  //       ...organizationCtxFind,
+  //     }));
+
+  //   const totalPage: number = await this.paginationService.totalPage(
+  //     totalData,
+  //     perPage,
+  //   );
+
+  //   const data: RoleListSerialization[] =
+  //     await this.aclRoleService.serializationList(roles);
+
+  //   return {
+  //     totalData,
+  //     totalPage,
+  //     currentPage: page,
+  //     perPage,
+  //     availableSearch,
+  //     availableSort,
+  //     data,
+  //   };
+  // }
 }

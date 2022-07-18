@@ -5,7 +5,6 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
-  ValidateIf,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Escape, Trim } from 'class-sanitizer';
@@ -15,7 +14,7 @@ import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-numb
 export class AuthSignUpDto {
   @IsEmail()
   @MaxLength(50)
-  @Transform(({ value }) => value.toLowerCase())
+  @Transform(({ value }) => value?.toLowerCase())
   @Trim()
   @Escape()
   readonly email!: string;
@@ -24,7 +23,7 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(30)
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)
@@ -34,7 +33,7 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(30)
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)

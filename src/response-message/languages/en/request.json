@@ -28,6 +28,9 @@
   "isPasswordMediumConstraint": "{property} must have medium pattern",
   "isPasswordWeakConstraint": "{property} must have weak pattern",
   "IsPhoneNumberConstraint": "{property} in not valid phone number",
+  "nestedValidation": "{property} invalid recipients data",
+  "ValidateNested": "{property} invalid nested objects data",
+  "arrayMinSize": "{property} invalid length",
   "error": {
     "tooManyRequests": "Too many requests"
   }

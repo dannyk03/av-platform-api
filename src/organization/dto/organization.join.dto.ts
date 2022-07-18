@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  MaxLength,
-  IsOptional,
-  ValidateIf,
-} from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 import { Escape, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
@@ -12,7 +6,7 @@ export class OrganizationJoinDto {
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)
@@ -21,7 +15,7 @@ export class OrganizationJoinDto {
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  @ValidateIf((e) => e.lastName !== '')
+  @IsNotEmpty()
   @Trim()
   @Escape()
   @Type(() => String)

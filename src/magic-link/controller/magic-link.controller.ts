@@ -41,50 +41,9 @@ export class MagicLinkController {
     @Query()
     { signUpCode }: UserSignUpValidateDto,
   ): Promise<IResponse> {
-    const existingSignUp = await this.authSignUpVerificationService.findOne({
-      where: { signUpCode },
-      relations: ['user', 'user.authConfig'],
-      select: {
-        user: {
-          id: true,
-          isActive: true,
-          authConfig: {
-            id: true,
-            emailVerifiedAt: true,
-          },
-        },
-      },
+    const xxx = this.authSignUpVerificationService.verifyUserSignUp({
+      signUpCode,
     });
-
-    if (!existingSignUp) {
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserSignUpLinkNotFound,
-        message: 'user.error.signUpCode',
-      });
-    }
-
-    const now = this.helperDateService.create();
-    const expiresAt = this.helperDateService.create({
-      date: existingSignUp.expiresAt,
-    });
-
-    if (now > expiresAt || existingSignUp.usedAt) {
-      throw new ForbiddenException({
-        statusCode: EnumUserStatusCodeError.UserSignUpLinkExpired,
-        message: 'user.error.signUpLink',
-      });
-    }
-
-    await this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        existingSignUp.usedAt = this.helperDateService.create();
-        existingSignUp.user.isActive = true;
-        existingSignUp.user.authConfig.emailVerifiedAt = existingSignUp.usedAt;
-
-        await transactionalEntityManager.save(existingSignUp);
-      },
-    );
 
     return;
   }
