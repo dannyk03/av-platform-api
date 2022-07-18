@@ -13,8 +13,8 @@ import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service';
 import { EmailService } from '@/messaging/service/email';
-import { HelperDateService, HelperHashService } from '@/utils/helper/service';
-import { GiftService } from '../service';
+import { HelperDateService } from '@/utils/helper/service';
+import { GiftSendVerificationLinkService, GiftService } from '../service';
 import { UserService } from '@/user/service';
 // Entities
 import { User } from '@/user/entity';
@@ -23,7 +23,6 @@ import { GiftSendDto } from '../dto/gift.send.dto';
 import { IResponse, Response } from '@/utils/response';
 import { ReqUser } from '@/user';
 import { EnumStatusCodeError } from '@/utils/error';
-// import { GiftSendGuestDto } from '../dto';
 import { GifSendGuard } from '../gift.decorator';
 import { ConnectionNames } from '@/database';
 import { ReqJwtUser } from '@/auth';
@@ -41,7 +40,7 @@ export class GiftController {
     private readonly emailService: EmailService,
     private readonly giftService: GiftService,
     private readonly userService: UserService,
-    private readonly helperHashService: HelperHashService,
+    private readonly giftSendVerificationLinkService: GiftSendVerificationLinkService,
   ) {}
 
   @Response('gift.send')
@@ -92,24 +91,27 @@ export class GiftController {
             }),
           );
 
-          const res = await transactionalEntityManager.save(giftSends);
+          const verificationLink =
+            await this.giftSendVerificationLinkService.create({
+              gifts: giftSends,
+            });
 
-          console.log('aaa');
+          await transactionalEntityManager.save(verificationLink);
 
-          res.forEach(async (giftSend) => {
-            // const emailSent = await this.emailService.sendGiftEmailVerify({
-            //   senderEmail: giftSend.sender.email,
-            //   email: giftSend.recipientEmail,
-            // });
-            // if (emailSent) {
-            //   giftSend.sentAt = this.helperDateService.create();
-            // } else {
-            //   throw new InternalServerErrorException({
-            //     statusCode: EnumStatusCodeError.UnknownError,
-            //     message: 'http.serverError.internalServerError',
-            //   });
-            // }
-            //   this.giftService.save(giftSend);
+          giftSends.forEach(async (giftSend) => {
+            const emailSent = await this.emailService.sendGiftVerify({
+              email: giftSend.sender.user?.email,
+              code: verificationLink.code,
+            });
+            if (emailSent) {
+              giftSend.sentAt = this.helperDateService.create();
+            } else {
+              throw new InternalServerErrorException({
+                statusCode: EnumStatusCodeError.UnknownError,
+                message: 'http.serverError.internalServerError',
+              });
+            }
+            this.giftService.save(giftSend);
           });
         },
       );

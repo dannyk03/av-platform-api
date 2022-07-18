@@ -35,9 +35,6 @@ export class migration1657734957124 implements MigrationInterface {
             DROP INDEX "public"."idx_acl_role_presets_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_gift_sends_id"
-        `);
-    await queryRunner.query(`
             ALTER TABLE "acl_roles" DROP CONSTRAINT "unique_role_organization"
         `);
     await queryRunner.query(`
@@ -210,9 +207,6 @@ export class migration1657734957124 implements MigrationInterface {
     await queryRunner.query(`
             ALTER TABLE "acl_roles"
             ADD CONSTRAINT "unique_role_organization" UNIQUE ("slug", "name", "organization_id")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_gift_sends_id" ON "gift_sends" ("id")
         `);
     await queryRunner.query(`
             CREATE INDEX "idx_acl_role_presets_id" ON "acl_role_presets" ("id")

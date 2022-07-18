@@ -11,34 +11,6 @@ export class migration1658079563022 implements MigrationInterface {
             DROP INDEX "public"."idx_product_display_options_product_images_product_display_opti"
         `);
     await queryRunner.query(`
-            CREATE TABLE "guest_gift_sends" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "sender_email" character varying(50) NOT NULL,
-                "sender_first_name" character varying(30),
-                "sender_last_name" character varying(30),
-                "recipient_email" character varying(50) NOT NULL,
-                "verify_code" character varying(32) NOT NULL,
-                "sent_at" TIMESTAMP,
-                "accepted_at" TIMESTAMP,
-                "approved_at" TIMESTAMP,
-                "shipped_at" TIMESTAMP,
-                "delivered_at" TIMESTAMP,
-                CONSTRAINT "pk_guest_gift_sends_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_guest_gift_sends_sender_email" ON "guest_gift_sends" ("sender_email")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_guest_gift_sends_recipient_email" ON "guest_gift_sends" ("recipient_email")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_guest_gift_sends_verify_code" ON "guest_gift_sends" ("verify_code")
-        `);
-    await queryRunner.query(`
             ALTER TABLE "users" DROP COLUMN "first_name"
         `);
     await queryRunner.query(`
@@ -161,18 +133,6 @@ export class migration1658079563022 implements MigrationInterface {
     await queryRunner.query(`
             ALTER TABLE "users"
             ADD "first_name" character varying(50)
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_guest_gift_sends_verify_code"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_guest_gift_sends_recipient_email"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_guest_gift_sends_sender_email"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "guest_gift_sends"
         `);
     await queryRunner.query(`
             CREATE INDEX "idx_product_display_options_product_images_product_display_opti" ON "product_display_options_product_images" ("product_display_options_id")

@@ -1,6 +1,8 @@
 {
   "send": "Gift send success",
   "error": {
-    "send": "Gift send failed"
+    "send": "Gift send failed",
+    "code": "Invalid verification code",
+    "verificationLink": "Invalid verification link"
   }
 }

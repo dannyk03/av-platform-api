@@ -258,35 +258,6 @@ export class migration1657631732275 implements MigrationInterface {
             CREATE INDEX "idx_acl_role_presets_slug" ON "acl_role_presets" ("slug")
         `);
     await queryRunner.query(`
-            CREATE TYPE "public"."gift_sends_status_enum" AS ENUM(
-                'New',
-                'PendingRecipientSubmit',
-                'PendingSenderSubmit',
-                'Submitted',
-                'InDelivery',
-                'Delivered'
-            )
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "gift_sends" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "recipient_email" character varying(100) NOT NULL,
-                "sent_at" TIMESTAMP,
-                "status" "public"."gift_sends_status_enum" NOT NULL DEFAULT 'New',
-                "sender_id" uuid,
-                CONSTRAINT "pk_gift_sends_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_gift_sends_id" ON "gift_sends" ("id")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_gift_sends_recipient_email" ON "gift_sends" ("recipient_email")
-        `);
-    await queryRunner.query(`
             ALTER TABLE "acl_abilities"
             ADD CONSTRAINT "fk_acl_abilities_subject_id" FOREIGN KEY ("subject_id") REFERENCES "acl_subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -334,16 +305,9 @@ export class migration1657631732275 implements MigrationInterface {
             ALTER TABLE "acl_role_presets"
             ADD CONSTRAINT "fk_acl_role_presets_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
-    await queryRunner.query(`
-            ALTER TABLE "gift_sends"
-            ADD CONSTRAINT "fk_gift_sends_sender_id" FOREIGN KEY ("sender_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            ALTER TABLE "gift_sends" DROP CONSTRAINT "fk_gift_sends_sender_id"
-        `);
     await queryRunner.query(`
             ALTER TABLE "acl_role_presets" DROP CONSTRAINT "fk_acl_role_presets_policy_id"
         `);
@@ -379,18 +343,6 @@ export class migration1657631732275 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_abilities" DROP CONSTRAINT "fk_acl_abilities_subject_id"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_gift_sends_recipient_email"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_gift_sends_id"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gift_sends"
-        `);
-    await queryRunner.query(`
-            DROP TYPE "public"."gift_sends_status_enum"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_acl_role_presets_slug"

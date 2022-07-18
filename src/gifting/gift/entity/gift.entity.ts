@@ -5,11 +5,13 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSender } from './gift-sender.entity';
+import { GiftSendVerificationLink } from './gift-send-verification-link.entity';
 //
 
 @Entity()
@@ -50,4 +52,10 @@ export class Gift extends BaseEntity<Gift> {
     nullable: true,
   })
   deliveredAt?: Date;
+
+  @OneToMany(
+    () => GiftSendVerificationLink,
+    (verificationLink) => verificationLink.gifts,
+  )
+  verificationLink!: GiftSendVerificationLink;
 }
