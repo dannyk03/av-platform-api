@@ -30,7 +30,8 @@
   "IsPhoneNumberConstraint": "{property} in not valid phone number",
   "nestedValidation": "{property} invalid recipients data",
   "ValidateNested": "{property} invalid nested objects data",
-  "arrayMinSize": "{property} invalid length",
+  "arrayMinSize": "{property} invalid array size min length",
+  "arrayMaxSize": "{property} invalid array size max length",
   "error": {
     "tooManyRequests": "Too many requests"
   }

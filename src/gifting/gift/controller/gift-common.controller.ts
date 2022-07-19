@@ -99,7 +99,7 @@ export class GiftController {
 
           await transactionalEntityManager.save(confirmationLink);
 
-          const updatedGiftSends = await Promise.all(
+          await Promise.all(
             giftSends.map(async (giftSend) => {
               const emailSent = await this.emailService.sendGiftConfirm({
                 email: giftSend.sender.user?.email,
@@ -117,6 +117,7 @@ export class GiftController {
                   message: 'http.serverError.internalServerError',
                 });
               }
+              giftSend.confirmationLink = confirmationLink;
               return transactionalEntityManager.save(giftSend);
             }),
           );

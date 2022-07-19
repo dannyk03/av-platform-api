@@ -40,7 +40,7 @@ export class GiftSendRecipientDto {
 
 export class GiftSendDto {
   @ArrayMinSize(1)
-  @ArrayMaxSize(20)
+  @ArrayMaxSize(1)
   @IsNotEmpty({ each: true })
   @Trim(undefined, { each: true })
   @Escape({ each: true })

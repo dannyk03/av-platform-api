@@ -1,60 +1,198 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1658232573976 implements MigrationInterface {
-  name = 'migration1658232573976';
+export class migration1658233990364 implements MigrationInterface {
+  name = 'migration1658233990364';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            DROP INDEX "public"."idx_acl_abilities_id"
+            CREATE TYPE "public"."acl_abilities_type_enum" AS ENUM('can', 'cannot')
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_acl_subjects_id"
+            CREATE TYPE "public"."acl_abilities_action_enum" AS ENUM(
+                'manage',
+                'access',
+                'modify',
+                'create',
+                'update',
+                'read',
+                'delete'
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_acl_policies_id"
+            CREATE TABLE "acl_abilities" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "type" "public"."acl_abilities_type_enum" NOT NULL,
+                "action" "public"."acl_abilities_action_enum" NOT NULL,
+                "subject_id" uuid,
+                CONSTRAINT "pk_acl_abilities_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_acl_role_presets_id"
+            CREATE TYPE "public"."acl_subjects_type_enum" AS ENUM(
+                'System',
+                'Organization',
+                'OrganizationInvite',
+                'User',
+                'Policy',
+                'Role',
+                'Subject',
+                'Ability',
+                'CreditCard',
+                'Invoice',
+                'Payment',
+                'Order',
+                'Gift',
+                'Product',
+                'OrganizationNamespace',
+                'SecurityNamespace',
+                'FinanceNamespace',
+                'GiftingNamespace',
+                'CatalogNamespace'
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_acl_roles_id"
+            CREATE TABLE "acl_subjects" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "type" "public"."acl_subjects_type_enum" NOT NULL,
+                "policy_id" uuid,
+                CONSTRAINT "pk_acl_subjects_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_organizations_id"
+            CREATE TABLE "acl_policies" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                CONSTRAINT "pk_acl_policies_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_user_auth_configs_id"
+            CREATE TABLE "acl_role_presets" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "slug" character varying(30) NOT NULL,
+                "name" character varying(30) NOT NULL,
+                "policy_id" uuid,
+                CONSTRAINT "uq_acl_role_presets_slug" UNIQUE ("slug"),
+                CONSTRAINT "uq_acl_role_presets_name" UNIQUE ("name"),
+                CONSTRAINT "rel_acl_role_presets_policy_id" UNIQUE ("policy_id"),
+                CONSTRAINT "pk_acl_role_presets_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_id"
+            CREATE INDEX "idx_acl_role_presets_slug" ON "acl_role_presets" ("slug")
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_mobile_number"
+            CREATE TABLE "sign_up_email_verification_links" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "email" character varying(50) NOT NULL,
+                "code" character varying(32) NOT NULL,
+                "used_at" TIMESTAMP,
+                "expires_at" TIMESTAMP,
+                "user_agent" json NOT NULL,
+                "user_id" uuid,
+                CONSTRAINT "uq_sign_up_email_verification_links_email" UNIQUE ("email"),
+                CONSTRAINT "uq_sign_up_email_verification_links_code" UNIQUE ("code"),
+                CONSTRAINT "rel_sign_up_email_verification_links_user_id" UNIQUE ("user_id"),
+                CONSTRAINT "pk_sign_up_email_verification_links_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_sign_up_email_verification_links_id"
+            CREATE INDEX "idx_sign_up_email_verification_links_email" ON "sign_up_email_verification_links" ("email")
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_sign_up_email_verification_links_sign_up_code"
+            CREATE INDEX "idx_sign_up_email_verification_links_code" ON "sign_up_email_verification_links" ("code")
         `);
     await queryRunner.query(`
-            ALTER TABLE "acl_roles" DROP CONSTRAINT "unique_role_organization"
+            CREATE TABLE "user_auth_configs" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "password" character varying(100),
+                "salt" character varying(100),
+                "password_expired_at" TIMESTAMP,
+                "email_verified_at" TIMESTAMP,
+                "login_code" character varying(32),
+                "login_code_expired_at" TIMESTAMP,
+                CONSTRAINT "uq_user_auth_configs_login_code" UNIQUE ("login_code"),
+                CONSTRAINT "pk_user_auth_configs_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-                RENAME COLUMN "mobile_number" TO "phone_number"
+            CREATE INDEX "idx_user_auth_configs_login_code" ON "user_auth_configs" ("login_code")
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-                RENAME CONSTRAINT "uq_users_mobile_number" TO "uq_users_phone_number"
+            CREATE TABLE "users" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "first_name" character varying(30),
+                "last_name" character varying(30),
+                "phone_number" character varying(30),
+                "email" character varying(50) NOT NULL,
+                "title" character varying(100),
+                "is_active" boolean NOT NULL DEFAULT true,
+                "auth_config_id" uuid,
+                "role_id" uuid,
+                "organization_id" uuid,
+                CONSTRAINT "uq_users_phone_number" UNIQUE ("phone_number"),
+                CONSTRAINT "uq_users_email" UNIQUE ("email"),
+                CONSTRAINT "rel_users_auth_config_id" UNIQUE ("auth_config_id"),
+                CONSTRAINT "pk_users_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
-            ALTER TABLE "sign_up_email_verification_links"
-                RENAME COLUMN "sign_up_code" TO "code"
+            CREATE INDEX "idx_users_phone_number" ON "users" ("phone_number")
         `);
     await queryRunner.query(`
-            ALTER TABLE "sign_up_email_verification_links"
-                RENAME CONSTRAINT "uq_sign_up_email_verification_links_sign_up_code" TO "uq_sign_up_email_verification_links_code"
+            CREATE INDEX "idx_users_email" ON "users" ("email")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "acl_roles" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "slug" character varying(30) NOT NULL,
+                "name" character varying(30) NOT NULL,
+                "is_active" boolean NOT NULL DEFAULT true,
+                "organization_id" uuid,
+                "policy_id" uuid,
+                CONSTRAINT "uq_acl_roles_name_organization_id_slug" UNIQUE ("slug", "name", "organization_id"),
+                CONSTRAINT "rel_acl_roles_policy_id" UNIQUE ("policy_id"),
+                CONSTRAINT "pk_acl_roles_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_acl_roles_slug" ON "acl_roles" ("slug")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "organizations" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "name" character varying(30) NOT NULL,
+                "slug" character varying(30) NOT NULL,
+                "is_active" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "uq_organizations_name" UNIQUE ("name"),
+                CONSTRAINT "uq_organizations_slug" UNIQUE ("slug"),
+                CONSTRAINT "pk_organizations_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
             CREATE TABLE "organization_invite_links" (
@@ -78,6 +216,22 @@ export class migration1658232573976 implements MigrationInterface {
         `);
     await queryRunner.query(`
             CREATE INDEX "idx_organization_invite_links_code" ON "organization_invite_links" ("code")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "logs" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" character varying(20) array,
+                "correlation_id" uuid NOT NULL,
+                "user_agent" json NOT NULL,
+                "method" character varying(20) NOT NULL,
+                "original_url" character varying(50) NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "user_id" uuid,
+                CONSTRAINT "pk_logs_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
             CREATE TABLE "display_languages" (
@@ -145,17 +299,6 @@ export class migration1658232573976 implements MigrationInterface {
             CREATE INDEX "idx_product_images_file_name" ON "product_images" ("file_name")
         `);
     await queryRunner.query(`
-            CREATE TABLE "gift_recipients" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "additional_data" jsonb,
-                "user_id" uuid,
-                CONSTRAINT "pk_gift_recipients_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
             CREATE TABLE "gift_senders" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -164,6 +307,17 @@ export class migration1658232573976 implements MigrationInterface {
                 "additional_data" jsonb,
                 "user_id" uuid,
                 CONSTRAINT "pk_gift_senders_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "gift_recipients" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "additional_data" jsonb,
+                "user_id" uuid,
+                CONSTRAINT "pk_gift_recipients_id" PRIMARY KEY ("id")
             )
         `);
     await queryRunner.query(`
@@ -219,134 +373,40 @@ export class migration1658232573976 implements MigrationInterface {
             CREATE INDEX "idx_product_display_options_images_product_images_product_images_id" ON "product_display_options_images_product_images" ("product_images_id")
         `);
     await queryRunner.query(`
-            ALTER TABLE "acl_abilities" DROP COLUMN "conditions"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "acl_abilities" DROP COLUMN "fields"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ADD "login_code" character varying(32)
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ADD CONSTRAINT "uq_user_auth_configs_login_code" UNIQUE ("login_code")
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ADD "login_code_expired_at" TIMESTAMP
-        `);
-    await queryRunner.query(`
-            ALTER TYPE "public"."acl_subjects_type_enum"
-            RENAME TO "acl_subjects_type_enum_old"
-        `);
-    await queryRunner.query(`
-            CREATE TYPE "public"."acl_subjects_type_enum" AS ENUM(
-                'System',
-                'Organization',
-                'OrganizationInvite',
-                'User',
-                'Policy',
-                'Role',
-                'Subject',
-                'Ability',
-                'CreditCard',
-                'Invoice',
-                'Payment',
-                'Order',
-                'Gift',
-                'Product',
-                'OrganizationNamespace',
-                'SecurityNamespace',
-                'FinanceNamespace',
-                'GiftingNamespace',
-                'CatalogNamespace'
-            )
+            ALTER TABLE "acl_abilities"
+            ADD CONSTRAINT "fk_acl_abilities_subject_id" FOREIGN KEY ("subject_id") REFERENCES "acl_subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_subjects"
-            ALTER COLUMN "type" TYPE "public"."acl_subjects_type_enum" USING "type"::"text"::"public"."acl_subjects_type_enum"
+            ADD CONSTRAINT "fk_acl_subjects_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            DROP TYPE "public"."acl_subjects_type_enum_old"
+            ALTER TABLE "acl_role_presets"
+            ADD CONSTRAINT "fk_acl_role_presets_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "password" DROP NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "salt" DROP NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "password_expired_at" DROP NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "first_name"
+            ALTER TABLE "sign_up_email_verification_links"
+            ADD CONSTRAINT "fk_sign_up_email_verification_links_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "users"
-            ADD "first_name" character varying(30)
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "last_name"
+            ADD CONSTRAINT "fk_users_auth_config_id" FOREIGN KEY ("auth_config_id") REFERENCES "user_auth_configs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "users"
-            ADD "last_name" character varying(30)
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "uq_users_phone_number"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "phone_number"
+            ADD CONSTRAINT "fk_users_role_id" FOREIGN KEY ("role_id") REFERENCES "acl_roles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "users"
-            ADD "phone_number" character varying(30)
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "uq_users_phone_number" UNIQUE ("phone_number")
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_users_email"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "uq_users_email"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "email"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD "email" character varying(50) NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "uq_users_email" UNIQUE ("email")
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ALTER COLUMN "is_active"
-            SET DEFAULT true
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_user_auth_configs_login_code" ON "user_auth_configs" ("login_code")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_users_phone_number" ON "users" ("phone_number")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_users_email" ON "users" ("email")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_sign_up_email_verification_links_code" ON "sign_up_email_verification_links" ("code")
+            ADD CONSTRAINT "fk_users_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_roles"
-            ADD CONSTRAINT "uq_acl_roles_name_organization_id_slug" UNIQUE ("slug", "name", "organization_id")
+            ADD CONSTRAINT "fk_acl_roles_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "acl_roles"
+            ADD CONSTRAINT "fk_acl_roles_policy_id" FOREIGN KEY ("policy_id") REFERENCES "acl_policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "organization_invite_links"
@@ -357,6 +417,10 @@ export class migration1658232573976 implements MigrationInterface {
             ADD CONSTRAINT "fk_organization_invite_links_organization_id" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
+            ALTER TABLE "logs"
+            ADD CONSTRAINT "fk_logs_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
             ALTER TABLE "product_display_options"
             ADD CONSTRAINT "fk_product_display_options_language_iso_code" FOREIGN KEY ("language_iso_code") REFERENCES "display_languages"("iso_code") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -365,12 +429,12 @@ export class migration1658232573976 implements MigrationInterface {
             ADD CONSTRAINT "fk_product_display_options_product_id" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "gift_recipients"
-            ADD CONSTRAINT "fk_gift_recipients_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-    await queryRunner.query(`
             ALTER TABLE "gift_senders"
             ADD CONSTRAINT "fk_gift_senders_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "gift_recipients"
+            ADD CONSTRAINT "fk_gift_recipients_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "gifts"
@@ -411,10 +475,10 @@ export class migration1658232573976 implements MigrationInterface {
             ALTER TABLE "gifts" DROP CONSTRAINT "fk_gifts_recipient_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "gift_senders" DROP CONSTRAINT "fk_gift_senders_user_id"
+            ALTER TABLE "gift_recipients" DROP CONSTRAINT "fk_gift_recipients_user_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "gift_recipients" DROP CONSTRAINT "fk_gift_recipients_user_id"
+            ALTER TABLE "gift_senders" DROP CONSTRAINT "fk_gift_senders_user_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_product_id"
@@ -423,139 +487,40 @@ export class migration1658232573976 implements MigrationInterface {
             ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_language_iso_code"
         `);
     await queryRunner.query(`
+            ALTER TABLE "logs" DROP CONSTRAINT "fk_logs_user_id"
+        `);
+    await queryRunner.query(`
             ALTER TABLE "organization_invite_links" DROP CONSTRAINT "fk_organization_invite_links_organization_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "organization_invite_links" DROP CONSTRAINT "fk_organization_invite_links_role_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "acl_roles" DROP CONSTRAINT "uq_acl_roles_name_organization_id_slug"
+            ALTER TABLE "acl_roles" DROP CONSTRAINT "fk_acl_roles_policy_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_sign_up_email_verification_links_code"
+            ALTER TABLE "acl_roles" DROP CONSTRAINT "fk_acl_roles_organization_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_email"
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_organization_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_users_phone_number"
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_role_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_user_auth_configs_login_code"
+            ALTER TABLE "users" DROP CONSTRAINT "fk_users_auth_config_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-            ALTER COLUMN "is_active"
-            SET DEFAULT false
+            ALTER TABLE "sign_up_email_verification_links" DROP CONSTRAINT "fk_sign_up_email_verification_links_user_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "uq_users_email"
+            ALTER TABLE "acl_role_presets" DROP CONSTRAINT "fk_acl_role_presets_policy_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "email"
+            ALTER TABLE "acl_subjects" DROP CONSTRAINT "fk_acl_subjects_policy_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD "email" character varying(100) NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "uq_users_email" UNIQUE ("email")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_users_email" ON "users" ("email")
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP CONSTRAINT "uq_users_phone_number"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "phone_number"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD "phone_number" character varying
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD CONSTRAINT "uq_users_phone_number" UNIQUE ("phone_number")
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "last_name"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD "last_name" character varying
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users" DROP COLUMN "first_name"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "users"
-            ADD "first_name" character varying
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "password_expired_at"
-            SET NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "salt"
-            SET NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs"
-            ALTER COLUMN "password"
-            SET NOT NULL
-        `);
-    await queryRunner.query(`
-            CREATE TYPE "public"."acl_subjects_type_enum_old" AS ENUM(
-                'System',
-                'Organization',
-                'OrganizationInvite',
-                'User',
-                'Policy',
-                'Role',
-                'Subject',
-                'Ability',
-                'CreditCard',
-                'Invoice',
-                'Payment',
-                'Order',
-                'Gift',
-                'OrganizationNamespace',
-                'SecurityNamespace',
-                'FinanceNamespace',
-                'GiftingNamespace'
-            )
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "acl_subjects"
-            ALTER COLUMN "type" TYPE "public"."acl_subjects_type_enum_old" USING "type"::"text"::"public"."acl_subjects_type_enum_old"
-        `);
-    await queryRunner.query(`
-            DROP TYPE "public"."acl_subjects_type_enum"
-        `);
-    await queryRunner.query(`
-            ALTER TYPE "public"."acl_subjects_type_enum_old"
-            RENAME TO "acl_subjects_type_enum"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs" DROP COLUMN "login_code_expired_at"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs" DROP CONSTRAINT "uq_user_auth_configs_login_code"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "user_auth_configs" DROP COLUMN "login_code"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "acl_abilities"
-            ADD "fields" character varying(20) array
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "acl_abilities"
-            ADD "conditions" jsonb
+            ALTER TABLE "acl_abilities" DROP CONSTRAINT "fk_acl_abilities_subject_id"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_product_display_options_images_product_images_product_images_id"
@@ -576,10 +541,10 @@ export class migration1658232573976 implements MigrationInterface {
             DROP TABLE "gifts"
         `);
     await queryRunner.query(`
-            DROP TABLE "gift_senders"
+            DROP TABLE "gift_recipients"
         `);
     await queryRunner.query(`
-            DROP TABLE "gift_recipients"
+            DROP TABLE "gift_senders"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_product_images_file_name"
@@ -603,6 +568,9 @@ export class migration1658232573976 implements MigrationInterface {
             DROP TABLE "display_languages"
         `);
     await queryRunner.query(`
+            DROP TABLE "logs"
+        `);
+    await queryRunner.query(`
             DROP INDEX "public"."idx_organization_invite_links_code"
         `);
     await queryRunner.query(`
@@ -612,57 +580,61 @@ export class migration1658232573976 implements MigrationInterface {
             DROP TABLE "organization_invite_links"
         `);
     await queryRunner.query(`
-            ALTER TABLE "sign_up_email_verification_links"
-                RENAME CONSTRAINT "uq_sign_up_email_verification_links_code" TO "uq_sign_up_email_verification_links_sign_up_code"
+            DROP TABLE "organizations"
         `);
     await queryRunner.query(`
-            ALTER TABLE "sign_up_email_verification_links"
-                RENAME COLUMN "code" TO "sign_up_code"
+            DROP INDEX "public"."idx_acl_roles_slug"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-                RENAME CONSTRAINT "uq_users_phone_number" TO "uq_users_mobile_number"
+            DROP TABLE "acl_roles"
         `);
     await queryRunner.query(`
-            ALTER TABLE "users"
-                RENAME COLUMN "phone_number" TO "mobile_number"
+            DROP INDEX "public"."idx_users_email"
         `);
     await queryRunner.query(`
-            ALTER TABLE "acl_roles"
-            ADD CONSTRAINT "unique_role_organization" UNIQUE ("slug", "name", "organization_id")
+            DROP INDEX "public"."idx_users_phone_number"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_sign_up_email_verification_links_sign_up_code" ON "sign_up_email_verification_links" ("sign_up_code")
+            DROP TABLE "users"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_sign_up_email_verification_links_id" ON "sign_up_email_verification_links" ("id")
+            DROP INDEX "public"."idx_user_auth_configs_login_code"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_mobile_number" ON "users" ("mobile_number")
+            DROP TABLE "user_auth_configs"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_users_id" ON "users" ("id")
+            DROP INDEX "public"."idx_sign_up_email_verification_links_code"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_user_auth_configs_id" ON "user_auth_configs" ("id")
+            DROP INDEX "public"."idx_sign_up_email_verification_links_email"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_organizations_id" ON "organizations" ("id")
+            DROP TABLE "sign_up_email_verification_links"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_acl_roles_id" ON "acl_roles" ("id")
+            DROP INDEX "public"."idx_acl_role_presets_slug"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_acl_role_presets_id" ON "acl_role_presets" ("id")
+            DROP TABLE "acl_role_presets"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_acl_policies_id" ON "acl_policies" ("id")
+            DROP TABLE "acl_policies"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_acl_subjects_id" ON "acl_subjects" ("id")
+            DROP TABLE "acl_subjects"
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_acl_abilities_id" ON "acl_abilities" ("id")
+            DROP TYPE "public"."acl_subjects_type_enum"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "acl_abilities"
+        `);
+    await queryRunner.query(`
+            DROP TYPE "public"."acl_abilities_action_enum"
+        `);
+    await queryRunner.query(`
+            DROP TYPE "public"."acl_abilities_type_enum"
         `);
   }
 }

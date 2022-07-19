@@ -31,11 +31,6 @@ export class Gift extends BaseEntity<Gift> {
   @Column({
     nullable: true,
   })
-  confirmedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
   sentAt?: Date;
 
   @Column({
@@ -62,5 +57,6 @@ export class Gift extends BaseEntity<Gift> {
     () => GiftSendConfirmationLink,
     (verificationLink) => verificationLink.gifts,
   )
+  @JoinColumn()
   confirmationLink!: GiftSendConfirmationLink;
 }
