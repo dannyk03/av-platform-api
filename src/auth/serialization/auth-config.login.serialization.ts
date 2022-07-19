@@ -1,26 +1,6 @@
-import { Exclude } from 'class-transformer';
-
+import { Exclude, Expose } from 'class-transformer';
+@Exclude()
 export class AuthConfigLoginSerialization {
-  @Exclude()
-  readonly id: string;
-
+  @Expose()
   readonly passwordExpiredAt: Date;
-
-  @Exclude()
-  readonly emailVerifiedAt: Date;
-
-  @Exclude()
-  readonly password: string;
-
-  @Exclude()
-  readonly salt: string;
-
-  @Exclude()
-  readonly createdAt: Date;
-
-  @Exclude()
-  readonly updatedAt: Date;
-
-  @Exclude()
-  readonly deletedAt: Date;
 }

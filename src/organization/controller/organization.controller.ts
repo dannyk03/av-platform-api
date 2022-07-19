@@ -33,7 +33,7 @@ import { ReqLogData } from '@/utils/request';
 
 @Controller({
   version: '1',
-  path: 'organization',
+  path: 'org',
 })
 export class OrganizationController {
   constructor(
