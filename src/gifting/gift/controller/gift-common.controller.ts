@@ -106,6 +106,11 @@ export class GiftController {
                 code: confirmationLink.code,
               });
               if (!emailSent) {
+                this.debuggerService.error(
+                  'Email Send Error',
+                  'GiftController',
+                  'sendGiftConfirm',
+                );
                 throw new InternalServerErrorException({
                   statusCode:
                     EnumMessagingStatusCodeError.MessagingEmailSendError,
@@ -115,8 +120,6 @@ export class GiftController {
               return transactionalEntityManager.save(giftSend);
             }),
           );
-
-          console.log(updatedGiftSends);
         },
       );
     } catch (error) {

@@ -47,21 +47,23 @@ export class EmailService {
     return Boolean('success');
   }
 
-  // async sendGiftSurvey({
-  //   email,
-  //   senderEmail,
-  // }: {
-  //   email: string;
-  //   senderEmail: string;
-  // }): Promise<boolean> {
-  //   // TODO email send logic and return Boolean if succeeded
-
-  //   console.log({
-  //     email,
-  //     senderEmail,
-  //   });
-  //   return Boolean('success');
-  // }
+  async sendGiftSurvey({
+    email,
+    senderEmail,
+    path = '/survey',
+  }: {
+    email: string;
+    senderEmail: string;
+    path: string;
+  }): Promise<boolean> {
+    // TODO email send logic and return Boolean if succeeded
+    console.log({
+      email,
+      senderEmail,
+      path,
+    });
+    return Boolean('success');
+  }
 
   async sendGiftConfirm({
     email,
