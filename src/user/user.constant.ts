@@ -6,6 +6,7 @@ export enum EnumUserStatusCodeError {
   UserPhoneNumberExistsError = 5404,
   UserSignUpLinkNotFound = 5405,
   UserSignUpLinkExpired = 5406,
+  UserVerifiedOnlyError = 5407,
 }
 
 export const USER_DEFAULT_PAGE = 1;

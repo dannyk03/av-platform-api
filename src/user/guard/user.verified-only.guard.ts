@@ -45,7 +45,7 @@ export class ReqUserVerifiedOnlyGuard implements CanActivate {
         statusCode: EnumUserStatusCodeError.UserNotFoundError,
         message: 'user.error.notFound',
       });
-    } else if (__user.authConfig?.emailVerifiedAt) {
+    } else if (!__user.authConfig?.emailVerifiedAt) {
       this.debuggerService.error(
         'Verified users only error',
         'ReqUserVerifiedOnlyGuard',
@@ -53,7 +53,7 @@ export class ReqUserVerifiedOnlyGuard implements CanActivate {
       );
 
       throw new ForbiddenException({
-        statusCode: EnumOrganizationStatusCodeError.OrganizationSystemOnlyError,
+        statusCode: EnumUserStatusCodeError.UserVerifiedOnlyError,
         message: 'user.error.verified',
       });
     }
