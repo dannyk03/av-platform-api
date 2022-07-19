@@ -9,13 +9,16 @@ import {
   DeleteDateColumn,
   BeforeInsert,
 } from 'typeorm';
-import { DisplayLanguageCodeType } from '../display-language.constant';
+import {
+  EnumDisplayLanguage,
+  DisplayLanguageCodeType,
+} from '../display-language.constant';
 
 // https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 @Entity()
 export class DisplayLanguage {
   @PrimaryColumn({
-    length: 2,
+    length: 4,
   })
   isoCode!: DisplayLanguageCodeType;
 
@@ -37,6 +40,6 @@ export class DisplayLanguage {
 
   @BeforeInsert()
   beforeInsert() {
-    this.isoName = ISO6391.getName(this.isoCode)?.toLowerCase();
+    this.isoName = ISO6391.getName(this.isoCode);
   }
 }

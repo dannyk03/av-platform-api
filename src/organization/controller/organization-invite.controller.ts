@@ -30,9 +30,9 @@ import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
 import { IReqOrganizationIdentifierCtx } from '../organization.interface';
-import { OrganizationInviteValidateDto } from '../dto';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
+import { MagicLinkDto } from '@/magic-link/dto';
 
 @Controller({
   version: '1',
@@ -107,7 +107,7 @@ export class OrganizationInviteController {
   @Post('/join')
   async join(
     @Query()
-    { code }: OrganizationInviteValidateDto,
+    { code }: MagicLinkDto,
     @Body()
     { password, firstName, lastName }: OrganizationJoinDto,
   ) {

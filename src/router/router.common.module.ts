@@ -9,6 +9,7 @@ import { OrganizationModule } from '@/organization/organization.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 import { AclPolicyModule } from '@acl/policy/acl-policy.module';
+import { GiftModule } from '@/gifting/gift/gift.module';
 // Controllers
 import { AuthCommonController } from '@/auth/controller';
 import { HealthController } from '@/health/controller';
@@ -44,6 +45,7 @@ import { MagicLinkController } from '@/magic-link/controller';
     AclPolicyModule,
     OrganizationModule,
     MessagingModule,
+    GiftModule,
   ],
 })
 export class RouterCommonModule {}

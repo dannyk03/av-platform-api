@@ -3,10 +3,9 @@ import { GiftSendRecipientDto } from '../dto';
 
 export class SenderAdditionalDataSerialization {
   @Exclude()
-  readonly email: string;
-
-  @Exclude()
   readonly recipients: GiftSendRecipientDto[];
+
+  readonly email: string;
 
   readonly firstName: string;
 
@@ -14,7 +13,6 @@ export class SenderAdditionalDataSerialization {
 }
 
 export class RecipientAdditionalDataSerialization {
-  @Exclude()
   readonly email: string;
 
   readonly firstName: string;

@@ -10,11 +10,13 @@ import { UserService } from '@/user/service';
 import { AclRoleService } from '@acl/role/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { DisplayLanguageService } from '@/language/display-language/service';
+import { CurrencyService } from '@/currency/service';
 //
 import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { EnumCurrency } from '@/currency';
 
 @Injectable()
 export class SystemSeed {
@@ -26,6 +28,7 @@ export class SystemSeed {
     private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
     private readonly displayLanguageService: DisplayLanguageService,
+    private readonly currencyService: CurrencyService,
     private readonly helperDateService: HelperDateService,
     private readonly debuggerService: DebuggerService,
   ) {}
@@ -81,8 +84,12 @@ export class SystemSeed {
             const displayLanguageEn = await this.displayLanguageService.create({
               isoCode: EnumDisplayLanguage.En,
             });
-
             await transactionalEntityManager.save(displayLanguageEn);
+
+            const currencyUSD = await this.currencyService.create({
+              code: EnumCurrency.USD,
+            });
+            await transactionalEntityManager.save(currencyUSD);
 
             this.debuggerService.debug(
               'Insert System Succeed',

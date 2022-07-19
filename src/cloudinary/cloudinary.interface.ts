@@ -1,8 +1,8 @@
-import { DisplayLanguageCodeType } from '@/language/display-language/display-language.constant';
+import { EnumDisplayLanguage } from '@/language/display-language';
 import { CloudinarySubject } from './cloudinary.constants';
 
 export interface UploadCloudinaryImage {
   image: Express.Multer.File;
   subject: CloudinarySubject;
-  languageIsoCode: DisplayLanguageCodeType;
+  languageIsoCode: EnumDisplayLanguage;
 }

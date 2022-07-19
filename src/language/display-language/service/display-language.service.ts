@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,
@@ -9,8 +8,6 @@ import {
 } from 'typeorm';
 // Entities
 import { DisplayLanguage } from '../entity';
-// Services
-import { DebuggerService } from '@/debugger/service';
 //
 import { ConnectionNames } from '@/database';
 
@@ -19,8 +16,6 @@ export class DisplayLanguageService {
   constructor(
     @InjectRepository(DisplayLanguage, ConnectionNames.Default)
     private displayLanguageRepository: Repository<DisplayLanguage>,
-    private readonly configService: ConfigService,
-    private readonly debuggerService: DebuggerService,
   ) {}
 
   async create(

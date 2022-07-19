@@ -1,17 +1,10 @@
-import {
-  Entity,
-  Column,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSender } from './gift-sender.entity';
 import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
+import { GiftAdditionalData } from './gift-additional-data.entity';
 //
 
 @Entity()
@@ -27,6 +20,13 @@ export class Gift extends BaseEntity<Gift> {
   })
   @JoinColumn()
   sender!: GiftSender;
+
+  @OneToOne(() => GiftAdditionalData, {
+    nullable: true,
+    cascade: ['insert'],
+  })
+  @JoinColumn()
+  additionalData?: GiftAdditionalData;
 
   @Column({
     nullable: true,

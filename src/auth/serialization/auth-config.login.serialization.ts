@@ -2,5 +2,6 @@ import { Exclude, Expose } from 'class-transformer';
 @Exclude()
 export class AuthConfigLoginSerialization {
   @Expose()
-  readonly passwordExpiredAt: Date;
+  readonly passwordExpiredAt!: Date;
+  readonly emailVerifiedAt!: Date;
 }

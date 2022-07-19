@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,
@@ -10,7 +9,6 @@ import {
 // Entities
 import { Product } from '../entity';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { CloudinaryService } from '@/cloudinary/service';
 //
 import { ConnectionNames } from '@/database';
@@ -20,8 +18,6 @@ export class ProductService {
   constructor(
     @InjectRepository(Product, ConnectionNames.Default)
     private productRepository: Repository<Product>,
-    private readonly configService: ConfigService,
-    private readonly debuggerService: DebuggerService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 

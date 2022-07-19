@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -7,8 +6,6 @@ import {
   Repository,
   FindOneOptions,
 } from 'typeorm';
-// Services
-import { DebuggerService } from '@/debugger/service';
 // Entities
 import { Gift } from '../entity';
 //
@@ -24,8 +21,6 @@ export class GiftService {
   constructor(
     @InjectRepository(Gift, ConnectionNames.Default)
     private GifSendRepository: Repository<Gift>,
-    private readonly configService: ConfigService,
-    private readonly debuggerService: DebuggerService,
   ) {}
 
   async create(props: DeepPartial<Gift>): Promise<Gift> {

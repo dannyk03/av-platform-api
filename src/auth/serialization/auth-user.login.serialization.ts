@@ -14,7 +14,6 @@ export class AuthUserLoginSerialization {
   readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
-  readonly loginCodeExpiredAt: Date;
 
   @Exclude()
   readonly id: string;

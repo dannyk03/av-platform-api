@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty, Length } from 'class-validator';
 import { Escape, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
-export class UserSignUpValidateDto {
+export class MagicLinkDto {
   @IsString()
   @IsNotEmpty()
   @Length(32, 32)
