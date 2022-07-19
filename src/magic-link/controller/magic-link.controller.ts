@@ -4,10 +4,12 @@ import {
   Get,
   NotFoundException,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
+import uniqBy from 'lodash/uniqBy';
 // Services
 import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
@@ -145,19 +147,13 @@ export class MagicLinkController {
           'gifts.recipient',
           'gifts.recipient.user',
           'gifts.sender.user',
+          'gifts.sender.user.authConfig',
         ],
-        select: {
-          gifts: {
-            sender: {
-              id: true,
-            },
-          },
-        },
       });
 
     if (!existingGiftSendVerificationLink) {
       throw new NotFoundException({
-        statusCode: EnumGiftStatusCodeError.GiftVerificationNotFound,
+        statusCode: EnumGiftStatusCodeError.GiftVerificationNotFoundError,
         message: 'gift.error.code',
       });
     }
@@ -174,26 +170,44 @@ export class MagicLinkController {
       existingGiftSendVerificationLink.usedAt
     ) {
       throw new ForbiddenException({
-        statusCode: EnumGiftStatusCodeError.GiftVerificationLinkExpired,
+        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpired,
         message: 'gift.error.verificationLink',
       });
     }
 
-    // const senderUser = this.userService.findOneBy({id:})
+    const uniqueSenders = uniqBy(
+      existingGiftSendVerificationLink.gifts.map((gift) => gift.sender),
+      'id',
+    );
 
-    return this.defaultDataSource.transaction(
+    if (uniqueSenders.length > 1) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftStatusCodeError.GiftSendersLimitError,
+        message: 'gift.error.senders',
+      });
+    }
+
+    this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         existingGiftSendVerificationLink.usedAt =
           this.helperDateService.create();
-        // existingGiftSendVerificationLink.user.isActive = true;
-        // existingGiftSendVerificationLink.user.authConfig.emailVerifiedAt =
-        //   existingSignUp.usedAt;
 
-        return transactionalEntityManager.save(
-          existingGiftSendVerificationLink,
-        );
+        return Promise.all([
+          transactionalEntityManager.save(existingGiftSendVerificationLink),
+          ...uniqueSenders.map(async (sender) => {
+            const senderAuthConfig = sender.user.authConfig;
+            if (!senderAuthConfig.emailVerifiedAt) {
+              senderAuthConfig.emailVerifiedAt =
+                this.helperDateService.create();
+              return transactionalEntityManager.save(senderAuthConfig);
+            }
+            return Promise.resolve();
+          }),
+        ]);
       },
     );
+
+    return;
   }
 }

@@ -4,6 +4,7 @@
   "error": {
     "send": "Gift send failed",
     "code": "Invalid confirmation code",
-    "verificationLink": "Invalid confirmation link"
+    "verificationLink": "Invalid confirmation link",
+    "senders": "Senders limit invalid"
   }
 }
