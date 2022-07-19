@@ -139,7 +139,13 @@ export class MagicLinkController {
     const existingGiftSendVerificationLink =
       await this.giftSendConfirmationLinkService.findOne({
         where: { code },
-        relations: ['gifts', 'gifts.sender', 'gifts.recipient', 'gifts.sender'],
+        relations: [
+          'gifts',
+          'gifts.sender',
+          'gifts.recipient',
+          'gifts.recipient.user',
+          'gifts.sender.user',
+        ],
         select: {
           gifts: {
             sender: {

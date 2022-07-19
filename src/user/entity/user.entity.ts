@@ -55,6 +55,7 @@ export class User extends BaseEntity<User> {
   isActive!: boolean;
 
   @OneToOne(() => UserAuthConfig, {
+    lazy: true,
     cascade: true,
     nullable: true,
   })
