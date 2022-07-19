@@ -26,4 +26,4 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
   'phoneNumber',
 ];
 
-export const USER_VERIFIED_ONLY_META_KEY = 'UserVerifiedOnlyOnlyMetaKey';
+export const USER_VERIFIED_ONLY_META_KEY = 'UserVerifiedOnlyMetaKey';
