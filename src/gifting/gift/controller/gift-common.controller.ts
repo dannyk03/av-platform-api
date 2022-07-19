@@ -12,9 +12,9 @@ import { Throttle } from '@nestjs/throttler';
 import { DataSource } from 'typeorm';
 // Services
 import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import { HelperDateService } from '@/utils/helper/service';
-import { GiftSendVerificationLinkService, GiftService } from '../service';
+import { GiftSendConfirmationLinkService, GiftService } from '../service';
 import { UserService } from '@/user/service';
 // Entities
 import { User } from '@/user/entity';
@@ -26,6 +26,7 @@ import { EnumStatusCodeError } from '@/utils/error';
 import { GifSendGuard } from '../gift.decorator';
 import { ConnectionNames } from '@/database';
 import { ReqJwtUser } from '@/auth';
+import { EnumMessagingStatusCodeError } from '@/messaging';
 
 @Controller({
   version: '1',
@@ -40,7 +41,7 @@ export class GiftController {
     private readonly emailService: EmailService,
     private readonly giftService: GiftService,
     private readonly userService: UserService,
-    private readonly giftSendVerificationLinkService: GiftSendVerificationLinkService,
+    private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
   ) {}
 
   @Response('gift.send')
@@ -91,28 +92,31 @@ export class GiftController {
             }),
           );
 
-          const verificationLink =
-            await this.giftSendVerificationLinkService.create({
+          const confirmationLink =
+            await this.giftSendConfirmationLinkService.create({
               gifts: giftSends,
             });
 
-          await transactionalEntityManager.save(verificationLink);
+          await transactionalEntityManager.save(confirmationLink);
 
-          giftSends.forEach(async (giftSend) => {
-            const emailSent = await this.emailService.sendGiftVerify({
-              email: giftSend.sender.user?.email,
-              code: verificationLink.code,
-            });
-            if (emailSent) {
-              giftSend.sentAt = this.helperDateService.create();
-            } else {
-              throw new InternalServerErrorException({
-                statusCode: EnumStatusCodeError.UnknownError,
-                message: 'http.serverError.internalServerError',
+          const updatedGiftSends = await Promise.all(
+            giftSends.map(async (giftSend) => {
+              const emailSent = await this.emailService.sendGiftConfirm({
+                email: giftSend.sender.user?.email,
+                code: confirmationLink.code,
               });
-            }
-            this.giftService.save(giftSend);
-          });
+              if (!emailSent) {
+                throw new InternalServerErrorException({
+                  statusCode:
+                    EnumMessagingStatusCodeError.MessagingEmailSendError,
+                  message: 'http.serverError.internalServerError',
+                });
+              }
+              return transactionalEntityManager.save(giftSend);
+            }),
+          );
+
+          console.log(updatedGiftSends);
         },
       );
     } catch (error) {
@@ -130,45 +134,4 @@ export class GiftController {
 
     return;
   }
-
-  // @Response('gift.send')
-  // @HttpCode(HttpStatus.OK)
-  // @Throttle(1, 5)
-  // @Post('/guest/send')
-  // async sendGuestGiftVerify(
-  //   @Body()
-  //   { email, recipients, firstName, lastName }: GiftSendGuestDto,
-  // ): Promise<IResponse> {
-  //   const uniqueRecipients = [...new Set(recipients)];
-  //   const verifyCode = this.helperHashService.code32char();
-
-  //   const giftSends = await Promise.all(
-  //     uniqueRecipients.map(
-  //       async (recipientEmail) =>
-  //         await this.giftSendGuestService.create({
-  //           senderEmail: email,
-  //           senderFirstName: firstName,
-  //           senderLastName: lastName,
-  //           code: verifyCode,
-  //           recipientEmail,
-  //         }),
-  //     ),
-  //   );
-
-  //   await this.giftSendGuestService.saveBulk(giftSends);
-
-  //   const emailSent = await this.emailService.sendGiftSendEmailVerify({
-  //     email: email,
-  //     verifyCode,
-  //   });
-
-  //   if (!emailSent) {
-  //     throw new InternalServerErrorException({
-  //       statusCode: EnumStatusCodeError.UnknownError,
-  //       message: 'http.serverError.internalServerError',
-  //     });
-  //   }
-
-  //   return;
-  // }
 }

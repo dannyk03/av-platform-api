@@ -63,10 +63,10 @@ export class EmailService {
   //   return Boolean('success');
   // }
 
-  async sendGiftVerify({
+  async sendGiftConfirm({
     email,
     code,
-    path = '/verify',
+    path = '/confirm',
   }: {
     email: string;
     code: string;

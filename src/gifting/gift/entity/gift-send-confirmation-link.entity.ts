@@ -5,7 +5,7 @@ import { Gift } from './gift.entity';
 //
 
 @Entity()
-export class GiftSendVerificationLink extends BaseEntity<GiftSendVerificationLink> {
+export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLink> {
   @Index()
   @Column({
     unique: true,

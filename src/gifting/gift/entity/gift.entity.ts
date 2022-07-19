@@ -11,7 +11,7 @@ import {
 import { BaseEntity } from '@/database/entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSender } from './gift-sender.entity';
-import { GiftSendVerificationLink } from './gift-send-verification-link.entity';
+import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
 //
 
 @Entity()
@@ -27,6 +27,11 @@ export class Gift extends BaseEntity<Gift> {
   })
   @JoinColumn()
   sender!: GiftSender;
+
+  @Column({
+    nullable: true,
+  })
+  confirmedAt?: Date;
 
   @Column({
     nullable: true,
@@ -54,8 +59,8 @@ export class Gift extends BaseEntity<Gift> {
   deliveredAt?: Date;
 
   @OneToMany(
-    () => GiftSendVerificationLink,
+    () => GiftSendConfirmationLink,
     (verificationLink) => verificationLink.gifts,
   )
-  verificationLink!: GiftSendVerificationLink;
+  verificationLink!: GiftSendConfirmationLink;
 }

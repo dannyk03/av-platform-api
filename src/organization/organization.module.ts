@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
 import { Organization, OrganizationInviteLink } from './entity';
 // Services
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import { OrganizationService, OrganizationInviteService } from './service';
 //
 import { ConnectionNames } from '@/database';

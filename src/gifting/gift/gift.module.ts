@@ -5,14 +5,14 @@ import {
   Gift,
   GiftRecipient,
   GiftSender,
-  GiftSendVerificationLink,
+  GiftSendConfirmationLink,
 } from './entity';
 
 // Services
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import {
   GiftSenderService,
-  GiftSendVerificationLinkService,
+  GiftSendConfirmationLinkService,
   GiftService,
 } from './service';
 //
@@ -22,7 +22,7 @@ import { GiftRecipientService } from './service/gift-recipient.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Gift, GiftRecipient, GiftSender, GiftSendVerificationLink],
+      [Gift, GiftRecipient, GiftSender, GiftSendConfirmationLink],
       ConnectionNames.Default,
     ),
   ],
@@ -30,13 +30,13 @@ import { GiftRecipientService } from './service/gift-recipient.service';
     GiftService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendVerificationLinkService,
+    GiftSendConfirmationLinkService,
   ],
   providers: [
     GiftService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendVerificationLinkService,
+    GiftSendConfirmationLinkService,
     EmailService,
   ],
   controllers: [],

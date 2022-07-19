@@ -6,7 +6,7 @@ import { SignUpEmailVerificationLink } from './entity';
 // Services
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import { AuthService, AuthSignUpVerificationService } from './service';
 //
 import { ConnectionNames } from '@/database';

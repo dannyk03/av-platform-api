@@ -17,7 +17,7 @@ import { SignUpEmailVerificationLink } from '../entity';
 // Services
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 //
 import { ConnectionNames } from '@/database';
 import { EnumUserStatusCodeError } from '@/user';

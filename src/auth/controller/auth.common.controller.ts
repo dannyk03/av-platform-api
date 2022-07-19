@@ -23,7 +23,7 @@ import { UserService } from '@/user/service';
 import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import { AuthService, AuthSignUpVerificationService } from '../service';
 //
 import { EnumUserStatusCodeError, ReqUser } from '@/user';

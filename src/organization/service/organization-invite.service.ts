@@ -13,7 +13,7 @@ import {
   FindOneOptions,
 } from 'typeorm';
 // Services
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 import { DebuggerService } from '@/debugger/service';
 import { HelperHashService, HelperDateService } from '@/utils/helper/service';
 // Entities

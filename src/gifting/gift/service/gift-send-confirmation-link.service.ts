@@ -13,22 +13,22 @@ import {
   Repository,
 } from 'typeorm';
 // Entities
-import { GiftSendVerificationLink } from '../entity';
+import { GiftSendConfirmationLink } from '../entity';
 // Services
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/service/email';
+import { EmailService } from '@/messaging/email';
 //
 import { ConnectionNames } from '@/database';
 import { EnumGiftStatusCodeError } from '../gift.constants';
 
 @Injectable()
-export class GiftSendVerificationLinkService {
+export class GiftSendConfirmationLinkService {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    @InjectRepository(GiftSendVerificationLink, ConnectionNames.Default)
-    private giftSendVerificationLink: Repository<GiftSendVerificationLink>,
+    @InjectRepository(GiftSendConfirmationLink, ConnectionNames.Default)
+    private giftSendVerificationLink: Repository<GiftSendConfirmationLink>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly debuggerService: DebuggerService,
@@ -37,8 +37,8 @@ export class GiftSendVerificationLinkService {
   ) {}
 
   async create(
-    props: DeepPartial<Omit<GiftSendVerificationLink, 'code'>>,
-  ): Promise<GiftSendVerificationLink> {
+    props: DeepPartial<Omit<GiftSendConfirmationLink, 'code'>>,
+  ): Promise<GiftSendConfirmationLink> {
     return this.giftSendVerificationLink.create({
       ...props,
       code: this.helperHashService.code32char(),
@@ -46,20 +46,20 @@ export class GiftSendVerificationLinkService {
   }
 
   async save(
-    data: GiftSendVerificationLink,
-  ): Promise<GiftSendVerificationLink> {
-    return this.giftSendVerificationLink.save<GiftSendVerificationLink>(data);
+    data: GiftSendConfirmationLink,
+  ): Promise<GiftSendConfirmationLink> {
+    return this.giftSendVerificationLink.save<GiftSendConfirmationLink>(data);
   }
 
   async findOneBy(
-    find: FindOptionsWhere<GiftSendVerificationLink>,
-  ): Promise<GiftSendVerificationLink> {
+    find: FindOptionsWhere<GiftSendConfirmationLink>,
+  ): Promise<GiftSendConfirmationLink> {
     return this.giftSendVerificationLink.findOneBy(find);
   }
 
   async findOne(
-    find: FindOneOptions<GiftSendVerificationLink>,
-  ): Promise<GiftSendVerificationLink> {
+    find: FindOneOptions<GiftSendConfirmationLink>,
+  ): Promise<GiftSendConfirmationLink> {
     return this.giftSendVerificationLink.findOne(find);
   }
 
@@ -67,7 +67,7 @@ export class GiftSendVerificationLinkService {
     code,
   }: {
     code: string;
-  }): Promise<GiftSendVerificationLink> {
+  }): Promise<GiftSendConfirmationLink> {
     const existingGiftSendVerificationLink = await this.findOne({
       where: { code },
       relations: ['sender', 'recipient'],
