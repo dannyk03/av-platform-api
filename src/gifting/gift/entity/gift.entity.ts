@@ -58,9 +58,9 @@ export class Gift extends BaseEntity<Gift> {
   })
   deliveredAt?: Date;
 
-  @OneToMany(
+  @ManyToOne(
     () => GiftSendConfirmationLink,
     (verificationLink) => verificationLink.gifts,
   )
-  verificationLink!: GiftSendConfirmationLink;
+  confirmationLink!: GiftSendConfirmationLink;
 }

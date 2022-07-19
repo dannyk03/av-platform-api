@@ -20,6 +20,6 @@ export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLin
   @Column({ nullable: true })
   expiresAt?: Date;
 
-  @OneToMany(() => Gift, (gift) => gift.verificationLink)
+  @OneToMany(() => Gift, (gift) => gift.confirmationLink)
   gifts!: Gift[];
 }
