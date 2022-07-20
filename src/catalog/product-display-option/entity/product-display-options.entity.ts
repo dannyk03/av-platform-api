@@ -17,10 +17,6 @@ import { Product } from '@/catalog/product/entity';
 
 @Entity()
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
-  @ManyToOne(() => DisplayLanguage)
-  @JoinColumn()
-  language!: DisplayLanguage;
-
   @Column({
     length: 50,
   })
@@ -42,6 +38,10 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
 
   @ManyToOne(() => Product, (product) => product.displayOptions)
   product: Product;
+
+  @ManyToOne(() => DisplayLanguage)
+  @JoinColumn()
+  language!: DisplayLanguage;
 
   @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions, {
     cascade: ['insert'],

@@ -1,8 +1,16 @@
-import { Entity, Column, ManyToMany, Index, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToMany,
+  Index,
+  BeforeInsert,
+  JoinTable,
+} from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 //
+import { slugify } from '@/utils/helper';
 
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
@@ -42,6 +50,6 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @BeforeInsert()
   beforeInsert() {
-    this.fileName = this.fileName?.toLowerCase();
+    this.fileName = slugify(this.fileName);
   }
 }
