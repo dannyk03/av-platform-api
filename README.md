@@ -67,7 +67,7 @@ Version of the main packages and main tools.
 
 - NestJs v9.x 🥳
 - Typescript 🚀
-- Authentication and Authorization (JWT, CASL Role/Ability Management) 💪
+- Authentication and Authorization (JWT, RBAC/ABAC hybrid solution for permission management with @avo/casl package) 💪
 - PostgreSQL Integration with Typeorm Package 🎉
 - Database Seed (NestJs-Command)
 - Storage Management with AWS (S3)

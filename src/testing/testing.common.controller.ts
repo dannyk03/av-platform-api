@@ -46,15 +46,14 @@ export class TestingCommonController {
   @Get('/timeout')
   async timeout(): Promise<IResponse> {
     await this.helperService.delay(5000);
-
     return;
   }
 
-  @Response('test.auth')
-  @HttpCode(HttpStatus.OK)
-  @Get('/cld')
-  async list(@UserAgent() userAgent: IResult): Promise<IResponse> {
-    const xxx = await this.cloudinaryService.list();
-    return;
-  }
+  // @Response('test.cld')
+  // @HttpCode(HttpStatus.OK)
+  // @Get('/cld')
+  // async cld(): Promise<IResponse> {
+  //   await this.cloudinaryService.list();
+  //   return;
+  // }
 }
