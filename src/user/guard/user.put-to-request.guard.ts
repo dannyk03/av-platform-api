@@ -6,16 +6,12 @@ import {
 } from '@nestjs/common';
 // Services
 import { UserService } from '../service';
-import { DebuggerService } from '@/debugger/service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {
-  constructor(
-    private readonly userService: UserService,
-    private readonly debuggerService: DebuggerService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest();
@@ -48,12 +44,6 @@ export class UserPutToRequestGuard implements CanActivate {
     });
 
     if (!requestUser) {
-      this.debuggerService.error(
-        'User not found',
-        'UserPutToRequestGuard',
-        'canActivate',
-      );
-
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtAccessTokenError,
         message: 'http.clientError.unauthorized',

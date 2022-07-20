@@ -12,7 +12,6 @@ import { Action, Subject } from '@avo/casl';
 // Entities
 import { ProductImage } from '@/catalog/product-image/entity';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { CloudinaryService } from '@/cloudinary/service';
 import { ProductImageService } from '@/catalog/product-image/service';
@@ -33,7 +32,6 @@ import { EnumCatalogCodeError } from '@/catalog/catalog.constant';
 })
 export class ProductController {
   constructor(
-    private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,
     private readonly cloudinaryService: CloudinaryService,

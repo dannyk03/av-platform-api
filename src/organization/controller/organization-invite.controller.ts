@@ -2,23 +2,18 @@ import {
   Body,
   Controller,
   ForbiddenException,
-  Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Post,
   Query,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { isUUID } from 'class-validator';
 import { Action, Subject } from '@avo/casl';
 // Services
 import { UserService } from '@/user/service';
-import { DebuggerService } from '@/debugger/service';
 import { AclRoleService } from '@acl/role/service';
-import { LogService } from '@/log/service';
 import { AuthService } from '@/auth/service';
 import { HelperSlugService, HelperDateService } from '@/utils/helper/service';
 import { OrganizationInviteService } from '../service';
@@ -42,9 +37,6 @@ export class OrganizationInviteController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly configService: ConfigService,
-    private readonly logService: LogService,
-    private readonly debuggerService: DebuggerService,
     private readonly aclRoleService: AclRoleService,
     private readonly userService: UserService,
     private readonly organizationInviteService: OrganizationInviteService,

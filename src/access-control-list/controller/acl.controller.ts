@@ -1,7 +1,5 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service';
-import { LogService } from '@/log/service';
 import { AclPolicyService } from '../policy/service';
 // Entities
 import { User } from '@/user/entity';
@@ -15,11 +13,7 @@ import { Response, IResponse } from '@/utils/response';
   path: 'acl',
 })
 export class AclController {
-  constructor(
-    private readonly aclPolicyService: AclPolicyService,
-    private readonly debuggerService: DebuggerService,
-    private readonly logService: LogService,
-  ) {}
+  constructor(private readonly aclPolicyService: AclPolicyService) {}
 
   @Response('acl.abilities')
   @HttpCode(HttpStatus.OK)

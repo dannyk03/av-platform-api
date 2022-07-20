@@ -10,8 +10,6 @@ import {
   InternalServerErrorException,
   Patch,
   Res,
-  Get,
-  Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -20,7 +18,6 @@ import { Response as ExpressResponse } from 'express';
 import { IResult } from 'ua-parser-js';
 // Services
 import { UserService } from '@/user/service';
-import { DebuggerService } from '@/debugger/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
 import { EmailService } from '@/messaging/email';
@@ -53,7 +50,6 @@ export class AuthCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
@@ -89,12 +85,6 @@ export class AuthCommonController {
     );
 
     if (!validate) {
-      this.debuggerService.error(
-        'Authenticate error',
-        'AuthController',
-        'login',
-      );
-
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.notMatch',
@@ -128,8 +118,6 @@ export class AuthCommonController {
     });
 
     if (now > passwordExpiredAt) {
-      this.debuggerService.error('Password expired', 'AuthController', 'login');
-
       throw new SuccessException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
         message: 'auth.error.passwordExpired',
@@ -365,12 +353,6 @@ export class AuthCommonController {
         },
       );
     } catch (error) {
-      this.debuggerService.error(
-        'Internal Error',
-        'AuthCommonController',
-        'signup',
-        error,
-      );
       throw new InternalServerErrorException({
         statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
@@ -400,12 +382,6 @@ export class AuthCommonController {
     });
 
     if (now > userPasswordExpiredAt) {
-      this.debuggerService.error(
-        'Password expired',
-        'AuthController',
-        'refresh',
-      );
-
       throw new ForbiddenException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
         message: 'auth.error.passwordExpired',
@@ -456,12 +432,6 @@ export class AuthCommonController {
     });
 
     if (!user) {
-      this.debuggerService.error(
-        'User not found',
-        'AuthController',
-        'changePassword',
-      );
-
       throw new NotFoundException({
         statusCode: EnumUserStatusCodeError.UserNotFoundError,
         message: 'user.error.notFound',
@@ -473,12 +443,6 @@ export class AuthCommonController {
       user.authConfig.password,
     );
     if (!matchPassword) {
-      this.debuggerService.error(
-        "Old password doesn't match",
-        'AuthController',
-        'changePassword',
-      );
-
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.passwordNotMatch',
@@ -490,12 +454,6 @@ export class AuthCommonController {
       user.authConfig.password,
     );
     if (newMatchPassword) {
-      this.debuggerService.error(
-        "New password cant't be the same as old password",
-        'AuthController',
-        'changePassword',
-      );
-
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNewMustDifferenceError,
         message: 'auth.error.newPasswordMustDifference',
@@ -507,13 +465,6 @@ export class AuthCommonController {
 
       await this.userService.updatePassword(user.id, password);
     } catch (err) {
-      this.debuggerService.error(
-        'Change password error internal server error',
-        'AuthController',
-        'changePassword',
-        err,
-      );
-
       throw new InternalServerErrorException({
         statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',

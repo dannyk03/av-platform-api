@@ -1,7 +1,7 @@
-import { IMessageOptionsProperties } from '@/response-message/response-message.interface';
+import { IMessage, IMessageOptionsProperties } from '@/response-message';
 
 export interface IErrors {
-  readonly message: string;
+  readonly message: string | IMessage;
   readonly property: string;
 }
 

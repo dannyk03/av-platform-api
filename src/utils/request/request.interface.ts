@@ -9,4 +9,6 @@ export interface IRequestApp extends Request {
   user?: Record<string, any>;
   version?: string;
   correlationId: string;
+  __class: string;
+  __function: string;
 }

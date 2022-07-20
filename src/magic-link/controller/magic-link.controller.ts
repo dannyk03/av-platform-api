@@ -11,7 +11,6 @@ import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import uniqBy from 'lodash/uniqBy';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { AuthSignUpVerificationService } from '@/auth/service';
 import { OrganizationInviteService } from '@/organization/service';
@@ -30,7 +29,6 @@ export class MagicLinkController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
     private readonly authSignUpVerificationService: AuthSignUpVerificationService,
     private readonly helperDateService: HelperDateService,

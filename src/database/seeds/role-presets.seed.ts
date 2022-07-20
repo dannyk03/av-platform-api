@@ -25,7 +25,6 @@ export class RolePresetsSeed {
     private readonly aclPolicyService: AclPolicyService,
     private readonly aclSubjectService: AclSubjectService,
     private readonly aclAbilityService: AclAbilityService,
-    private readonly debuggerService: DebuggerService,
   ) {}
 
   @Command({
@@ -77,29 +76,13 @@ export class RolePresetsSeed {
             );
 
             await transactionalEntityManager.save(rolePresets);
-
-            this.debuggerService.debug(
-              'Insert Role Presets Succeed',
-              'RolePresetsSeed',
-              'insert',
-            );
           } catch (err) {
-            this.debuggerService.error(
-              err.message,
-              'RolePresetsSeed',
-              'insert seed transaction',
-            );
+            throw new Error(err.message);
           }
         },
       );
-
-      this.debuggerService.debug(
-        'Insert Role Presets Succeed',
-        'RolePresetsSeed',
-        'insert',
-      );
     } catch (err) {
-      this.debuggerService.error(err.message, 'SystemSeed', 'insert');
+      throw new Error(err.message);
     }
   }
 
@@ -108,15 +91,6 @@ export class RolePresetsSeed {
     describe: 'remove role presets data',
   })
   async remove(): Promise<void> {
-    try {
-      throw new Error('Not Implemented remove:role-presets');
-      this.debuggerService.debug(
-        'Remove Role Presets Succeed',
-        'RolePresetsSeed',
-        'remove',
-      );
-    } catch (e) {
-      this.debuggerService.error(e.message, 'RolePresetsSeed', 'remove');
-    }
+    throw new Error('Not Implemented remove:role-presets');
   }
 }
