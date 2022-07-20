@@ -4,6 +4,7 @@ import { Gift } from './gift.entity';
 import { Currency } from '@/currency/entity';
 //
 import { BaseEntity } from '@/database/entity';
+import { EnumOccasion } from '@avo/type';
 
 @Entity()
 export class GiftAdditionalData extends BaseEntity<GiftAdditionalData> {
@@ -11,12 +12,17 @@ export class GiftAdditionalData extends BaseEntity<GiftAdditionalData> {
   gift: Gift;
 
   @Column()
-  priceMax: number;
+  priceMax?: number;
 
   @Column()
-  priceMin: number;
+  priceMin?: number;
 
-  @ManyToOne(() => Currency)
+  @ManyToOne(() => Currency, { nullable: true })
   @JoinColumn()
-  currency: Currency;
+  currency?: Currency;
+
+  @Column({
+    length: 20,
+  })
+  occasion: string;
 }

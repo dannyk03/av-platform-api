@@ -2,6 +2,7 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { EnumCurrency } from '@avo/type';
 // Services
 import { AuthService } from '@/auth/service';
 import { OrganizationService } from '@/organization/service';
@@ -15,7 +16,6 @@ import { EnumSystemRole } from '@acl/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
-import { EnumCurrency } from '@/currency';
 
 @Injectable()
 export class SystemSeed {

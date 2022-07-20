@@ -1,3 +1,4 @@
+import { CurrencyCodeType } from '@avo/type';
 import cc from 'currency-codes';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import currencyToSymbolMap from 'currency-symbol-map/map';
@@ -10,7 +11,6 @@ import {
   DeleteDateColumn,
   BeforeInsert,
 } from 'typeorm';
-import { CurrencyCodeType } from '../currency.constant';
 
 @Entity({ name: 'currencies' })
 export class Currency {

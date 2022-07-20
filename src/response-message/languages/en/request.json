@@ -1,7 +1,7 @@
 {
   "default": "Validation errors",
-  "min": "{property} has less elements than the minimum allowed.",
-  "max": "{property} has more elements than the maximum allowed.",
+  "min": "{property} too small or has less elements than the minimum allowed.",
+  "max": "{property} too big or has more elements than the maximum allowed.",
   "maxLength": "{property} has more elements than the maximum allowed.",
   "minLength": "{property} has less elements than the minimum allowed.",
   "isString": "{property} should be a type of string.",
@@ -31,5 +31,6 @@
   "nestedValidation": "{property} invalid recipients data",
   "ValidateNested": "{property} invalid nested objects data",
   "arrayMaxSize": "{property} array has more elements than the maximum allowed.",
-  "arrayMinSize": "{property} array has less elements than the minimum allowed."
+  "arrayMinSize": "{property} array has less elements than the minimum allowed.",
+  "MinGreaterThanConstraint": "{property} invalid, should be bigger number"
 }

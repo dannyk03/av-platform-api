@@ -1,3 +1,5 @@
+export { EnumOccasion, OccasionType } from '@avo/type';
+
 export enum EnumGiftStatusCodeError {
   GiftFoundError = 5550,
   GiftVerificationNotFoundError = 5551,

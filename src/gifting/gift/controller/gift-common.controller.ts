@@ -49,7 +49,7 @@ export class GiftController {
   @Post('/send')
   async sendGiftSurvey(
     @Body()
-    { sender, recipients }: GiftSendDto,
+    { sender, recipients, additionalData }: GiftSendDto,
     @ReqJwtUser()
     reqJwtUser: User,
   ): Promise<IResponse> {
@@ -85,6 +85,12 @@ export class GiftController {
                       recipient,
                     )),
                   },
+                },
+                additionalData: {
+                  occasion: additionalData.occasion,
+                  priceMin: additionalData.minPrice,
+                  priceMax: additionalData.maxPrice,
+                  currency: { code: additionalData.currency },
                 },
               });
             }),
