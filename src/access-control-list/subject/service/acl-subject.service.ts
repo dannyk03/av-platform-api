@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { ConnectionNames } from '@/database';
@@ -10,7 +9,6 @@ export class AclSubjectService {
   constructor(
     @InjectRepository(AclSubject, ConnectionNames.Default)
     private aclSubjectRepository: Repository<AclSubject>,
-    private readonly configService: ConfigService,
   ) {}
 
   async create(props: DeepPartial<AclSubject>): Promise<AclSubject> {

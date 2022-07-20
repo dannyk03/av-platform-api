@@ -1,4 +1,5 @@
 {
   "ping": "This is test endpoint.",
-  "auth": "This is auth test endpoint."
+  "auth": "This is auth test endpoint.",
+  "timeout": "Timeout reached"
 }

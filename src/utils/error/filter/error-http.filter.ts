@@ -42,17 +42,6 @@ export class ErrorHttpFilter implements ExceptionFilter {
       exception,
     );
 
-    // // Throttler
-    // if (exception instanceof ThrottlerException) {
-    //   const rMessage: string | IMessage = await this.responseMessageService.get(
-    //     'request.error.tooManyRequests',
-    //     { appLanguages },
-    //   );
-    //   return responseHttp.status(statusHttp).json({
-    //     message: rMessage,
-    //   });
-    // }
-
     // Restructure
     if (
       typeof response === 'object' &&

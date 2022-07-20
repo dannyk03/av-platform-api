@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { createReadStream } from 'streamifier';
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { ConfigService } from '@nestjs/config';
+import util from 'util';
+// Services
+
 import { CloudinaryFolder } from '../cloudinary.constants';
 import { UploadCloudinaryImage } from '../cloudinary.interface';
-import util from 'util';
 @Injectable()
 export class CloudinaryService {
+  private readonly isProduction: boolean;
+
+  constructor(private readonly configService: ConfigService) {
+    this.isProduction = this.configService.get('app.isProduction');
+  }
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
   }
@@ -18,10 +25,12 @@ export class CloudinaryService {
   }: UploadCloudinaryImage): Promise<
     UploadApiResponse | UploadApiErrorResponse
   > {
+    const productionPath = CloudinaryFolder[languageIsoCode][subject];
+    const developmentPath = `development/${productionPath}`;
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {
-          folder: CloudinaryFolder[languageIsoCode][subject],
+          folder: this.isProduction ? productionPath : developmentPath,
           filename_override: image.originalname,
           use_filename: true,
         },
@@ -54,8 +63,13 @@ export class CloudinaryService {
               v2.api.delete_resources_by_prefix(folder.path, (err, res) => {
                 console.log(err, res);
                 // v2.api.delete_folder(folder.path, (err, res) => {
+                //   debugger;
                 //   console.log(err, res);
                 // });
+              });
+            } else {
+              v2.api.delete_folder(folder.path, (err, res) => {
+                console.log(err, res);
               });
             }
           },

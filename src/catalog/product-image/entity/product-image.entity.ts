@@ -21,7 +21,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @Column({
     unique: true,
-    length: 50,
+    length: 100,
   })
   publicId!: string;
 

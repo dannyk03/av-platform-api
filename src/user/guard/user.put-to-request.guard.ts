@@ -39,6 +39,7 @@ export class UserPutToRequestGuard implements CanActivate {
         authConfig: {
           password: true,
           passwordExpiredAt: true,
+          emailVerifiedAt: true,
         },
       },
     });

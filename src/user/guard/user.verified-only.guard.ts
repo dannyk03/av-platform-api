@@ -33,7 +33,9 @@ export class ReqUserVerifiedOnlyGuard implements CanActivate {
         statusCode: EnumUserStatusCodeError.UserNotFoundError,
         message: 'user.error.notFound',
       });
-    } else if (!__user.authConfig?.emailVerifiedAt) {
+    }
+
+    if (!__user.authConfig?.emailVerifiedAt) {
       throw new ForbiddenException({
         statusCode: EnumUserStatusCodeError.UserVerifiedOnlyError,
         message: 'user.error.verified',

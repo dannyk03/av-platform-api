@@ -23,7 +23,7 @@
     "uriToLarge": "Uri To Large",
     "unsupportedMediaType": "Unsupported Media Type",
     "unprocessableEntity": "Unprocessable Entity",
-    "tooManyRequest": "Too Many Request"
+    "requestTimeOut": "Timeout"
   },
   "serverError": {
     "internalServerError": "Internal Server Error",
