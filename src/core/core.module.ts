@@ -18,6 +18,7 @@ import { HelperModule } from '@/utils/helper/helper.module';
 import { RequestModule } from '@/utils/request/request.module';
 import { VersionModule } from '@/utils/version/version.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
+import { ResponseModule } from '@/utils/response/response.module';
 // Services
 import { DebuggerOptionService } from '@/debugger/service';
 import { TypeOrmConfigService } from '@/database/service';
@@ -68,6 +69,7 @@ import { ConnectionNames } from '@/database/';
     MiddlewareModule,
     LogModule,
     AuthModule,
+    ResponseModule,
   ],
 })
 export class CoreModule {}

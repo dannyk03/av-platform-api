@@ -13,8 +13,9 @@ import { HelperDateService, HelperService } from '@/utils/helper/service';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
 import { Response, IResponse, ResponseTimeout } from '@/utils/response';
 import { IResult } from 'ua-parser-js';
-import { AclGuard } from '@/auth';
+import { AclGuard, ReqJwtUser } from '@/auth';
 import { ErrorMeta } from '@/utils/error';
+import { EnumHelperDateFormat } from '@/utils/helper';
 
 @Throttle(1, 5)
 @Controller({
@@ -51,11 +52,12 @@ export class TestingCommonController {
 
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
-  @AclGuard()
+  @AclGuard(undefined, { systemOnly: true })
   @Get('/auth')
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
+    @ReqJwtUser() user,
   ): Promise<IResponse> {
     const newDate = this.helperDateService.create({
       timezone: timezone,
@@ -65,11 +67,30 @@ export class TestingCommonController {
       date: newDate,
       format: this.helperDateService.format(newDate, {
         timezone: timezone,
+        format: EnumHelperDateFormat.FriendlyDateTime,
       }),
       timestamp: this.helperDateService.timestamp({
         date: newDate,
         timezone: timezone,
       }),
+      loginDate: {
+        date: user.loginDate,
+        format: this.helperDateService.format(user.loginDate, {
+          timezone: timezone,
+          format: EnumHelperDateFormat.FriendlyDateTime,
+        }),
+      },
+      passwordExpiredAt: {
+        date: user.authConfig?.passwordExpiredAt,
+        format: this.helperDateService.format(
+          user.authConfig?.passwordExpiredAt,
+          {
+            timezone: timezone,
+            format: EnumHelperDateFormat.FriendlyDateTime,
+          },
+        ),
+      },
+      role: user.role?.name,
     };
   }
 

@@ -1,7 +1,7 @@
 export enum EnumHelperDateFormat {
   Date = 'YYYY-MM-DD',
   FriendlyDate = 'MMM, DD YYYY',
-  FriendlyDateTime = 'MMM, DD YYYY HH:MM:SS',
+  FriendlyDateTime = 'MMMM Do YYYY, h:mm:ss a',
   YearMonth = 'YYYY-MM',
   MonthDate = 'MM-DD',
   OnlyYear = 'YYYY',
