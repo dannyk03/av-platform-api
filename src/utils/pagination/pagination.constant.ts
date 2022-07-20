@@ -9,3 +9,9 @@ export enum EnumPaginationAvailableSortType {
   Asc = 1,
   Desc = -1,
 }
+
+export enum EnumPaginationType {
+  Full = 'Full',
+  Simple = 'Simple',
+  Mini = 'Mini',
+}

@@ -8,15 +8,17 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-// Services
 import { ResponseMessageService } from '@/response-message/service';
-//
-import { IMessage } from '@/response-message/response-message.interface';
+import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+
+import { IResponseOptions } from '../response.interface';
+import { Response } from 'express';
+import { IRequestApp } from 'src/utils/request/request.interface';
+import { IMessage } from '@/response-message';
 
 export function ResponseDefaultInterceptor(
   messagePath: string,
-  customStatusCode?: number,
+  options?: IResponseOptions,
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinResponseDefaultInterceptor
@@ -27,36 +29,39 @@ export function ResponseDefaultInterceptor(
     ) {}
 
     async intercept(
-      ctx: ExecutionContext,
+      context: ExecutionContext,
       next: CallHandler,
     ): Promise<Observable<Promise<any> | string>> {
-      const context: HttpArgumentsHost = ctx.switchToHttp();
-      const responseExpress: any = context.getResponse();
+      if (context.getType() === 'http') {
+        const statusCode: number =
+          options && options.statusCode ? options.statusCode : undefined;
 
-      const request: Request = context.getRequest<Request>();
-      const { headers } = request;
+        return next.handle().pipe(
+          map(async (response: Promise<Record<string, any>>) => {
+            const ctx: HttpArgumentsHost = context.switchToHttp();
+            const responseExpress: Response = ctx.getResponse();
+            const { customLang } = ctx.getRequest<IRequestApp>();
+            const customLanguages = customLang.split(',');
 
-      const appLanguages: string[] = headers['x-custom-lang']
-        ? context.getRequest().i18nLang.split(',')
-        : undefined;
+            const newStatusCode = statusCode
+              ? statusCode
+              : responseExpress.statusCode;
+            const data: Record<string, any> = await response;
+            const message: string | IMessage =
+              await this.responseMessageService.get(messagePath, {
+                customLanguages,
+              });
 
-      return next.handle().pipe(
-        map(async (response: Promise<Record<string, any>>) => {
-          const statusCode: number =
-            customStatusCode || responseExpress.statusCode;
-          const data: Record<string, any> = await response;
-          const message: string | IMessage =
-            (await this.responseMessageService.get(messagePath, {
-              appLanguages,
-            })) || (await this.responseMessageService.get('response.default'));
+            return {
+              statusCode: newStatusCode,
+              message,
+              data,
+            };
+          }),
+        );
+      }
 
-          return {
-            statusCode,
-            message,
-            data,
-          };
-        }),
-      );
+      return next.handle();
     }
   }
 

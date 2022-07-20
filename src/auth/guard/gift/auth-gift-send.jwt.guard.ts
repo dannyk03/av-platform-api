@@ -11,14 +11,8 @@ export class JwtGiftSendGuard extends AuthGuard('jwt') {
     super();
   }
 
-  handleRequest<TUser = any>(
-    err: Record<string, any>,
-    user: TUser,
-    info: string,
-  ): TUser {
+  handleRequest<TUser = any>(err: Record<string, any>, user: TUser): TUser {
     if (err) {
-      this.debuggerService.info(info, 'JwtGiftSendGuard', 'handleRequest', err);
-      debugger;
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtAccessTokenError,
         message: 'http.clientError.unauthorized',

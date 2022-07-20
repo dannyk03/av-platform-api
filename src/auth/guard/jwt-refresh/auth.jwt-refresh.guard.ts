@@ -11,14 +11,8 @@ export class JwtRefreshGuard extends AuthGuard('jwtRefresh') {
     super();
   }
 
-  handleRequest<TUser = any>(
-    err: Record<string, any>,
-    user: TUser,
-    info: string,
-  ): TUser {
+  handleRequest<TUser = any>(err: Record<string, any>, user: TUser): TUser {
     if (err || !user) {
-      this.debuggerService.error(info, 'JwtRefreshGuard', 'handleRequest', err);
-
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtRefreshTokenError,
         message: 'http.clientError.unauthorized',
