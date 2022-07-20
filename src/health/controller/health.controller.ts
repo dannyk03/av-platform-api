@@ -66,55 +66,27 @@ export class HealthController {
   @HealthCheck()
   @Get('/database')
   async healthCheckDatabase(): Promise<IResponse> {
-    try {
-      return this.healthService.check([this.checkDatabase]);
-    } catch (e) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-      });
-    }
+    return this.healthService.check([this.checkDatabase]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/memory-heap')
   async healthCheckMemoryHeap(): Promise<IResponse> {
-    try {
-      return this.healthService.check([this.checkMemoryHeap]);
-    } catch (e) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-      });
-    }
+    return this.healthService.check([this.checkMemoryHeap]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/memory-rss')
   async healthCheckMemoryRss(): Promise<IResponse> {
-    try {
-      return this.healthService.check([this.checkMemoryRss]);
-    } catch (e) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-      });
-    }
+    return this.healthService.check([this.checkMemoryRss]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/storage')
   async healthCheckStorage(): Promise<IResponse> {
-    try {
-      return this.healthService.check([this.checkStorage]);
-    } catch (e) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-      });
-    }
+    return this.healthService.check([this.checkStorage]);
   }
 }
