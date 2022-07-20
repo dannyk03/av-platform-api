@@ -17,37 +17,25 @@ import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middlew
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
 import { ResponseTimeMiddleware } from './response-time/response-time.middleware';
 import { CustomLanguageMiddleware } from './custom-language/custom-language.middleware';
+import { TimezoneMiddleware } from './timezone/timezone.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(
+        CorrelationIdMiddleware,
+        TimezoneMiddleware,
         CompressionMiddleware,
         CorsMiddleware,
         HttpDebuggerResponseMiddleware,
         HttpDebuggerMiddleware,
         HelmetMiddleware,
-        UserAgentMiddleware,
-        CorrelationIdMiddleware,
         CookieParserMiddleware,
-        ResponseTimeMiddleware,
         CustomLanguageMiddleware,
-      )
-      .forRoutes('*');
-
-    consumer
-      .apply(TimestampMiddleware)
-      .exclude(
-        {
-          path: 'api/v:version*/callback/(.*)',
-
-          method: RequestMethod.ALL,
-        },
-        {
-          path: 'api/callback/(.*)',
-          method: RequestMethod.ALL,
-        },
+        UserAgentMiddleware,
+        ResponseTimeMiddleware,
+        TimestampMiddleware,
       )
       .forRoutes('*');
   }

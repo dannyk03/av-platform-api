@@ -8,13 +8,13 @@ import {
 import { Throttle } from '@nestjs/throttler';
 // Services
 import { CloudinaryService } from '@/cloudinary/service';
+import { HelperDateService, HelperService } from '@/utils/helper/service';
 //
-import { UserAgent } from '@/utils/request';
+import { RequestTimezone, RequestUserAgent } from '@/utils/request';
 import { Response, IResponse, ResponseTimeout } from '@/utils/response';
 import { IResult } from 'ua-parser-js';
 import { AclGuard } from '@/auth';
 import { ErrorMeta } from '@/utils/error';
-import { HelperService } from '@/utils/helper/service';
 
 @Throttle(1, 5)
 @Controller({
@@ -24,20 +24,53 @@ export class TestingCommonController {
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly helperService: HelperService,
+    private readonly helperDateService: HelperDateService,
   ) {}
   @Response('test.ping')
   @HttpCode(HttpStatus.OK)
   @Get()
-  async hello(@UserAgent() userAgent: IResult): Promise<IResponse> {
-    return { userAgent };
+  async hello(
+    @RequestUserAgent() userAgent: IResult,
+    @RequestTimezone() timezone: string,
+  ): Promise<IResponse> {
+    const newDate = this.helperDateService.create({
+      timezone: timezone,
+    });
+    return {
+      userAgent,
+      date: newDate,
+      format: this.helperDateService.format(newDate, {
+        timezone: timezone,
+      }),
+      timestamp: this.helperDateService.timestamp({
+        date: newDate,
+        timezone: timezone,
+      }),
+    };
   }
 
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/auth')
-  async helloAuth(@UserAgent() userAgent: IResult): Promise<IResponse> {
-    return { userAgent };
+  async helloAuth(
+    @RequestUserAgent() userAgent: IResult,
+    @RequestTimezone() timezone: string,
+  ): Promise<IResponse> {
+    const newDate = this.helperDateService.create({
+      timezone: timezone,
+    });
+    return {
+      userAgent,
+      date: newDate,
+      format: this.helperDateService.format(newDate, {
+        timezone: timezone,
+      }),
+      timestamp: this.helperDateService.timestamp({
+        date: newDate,
+        timezone: timezone,
+      }),
+    };
   }
 
   @Response('test.timeout')

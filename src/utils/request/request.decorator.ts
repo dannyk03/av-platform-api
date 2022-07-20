@@ -10,7 +10,7 @@ import { IResult } from 'ua-parser-js';
 import { RequestParamRawGuard } from './guard/request.param.guard';
 import { IRequestApp } from './request.interface';
 
-export const UserAgent = createParamDecorator(
+export const RequestUserAgent = createParamDecorator(
   (data: string, ctx: ExecutionContext): IResult => {
     const { userAgent } = ctx.switchToHttp().getRequest() as IRequestApp;
     return userAgent;

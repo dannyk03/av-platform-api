@@ -38,7 +38,7 @@ import {
   LoginGuard,
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
-import { ReqLogData, UserAgent } from '@/utils/request';
+import { ReqLogData, RequestUserAgent } from '@/utils/request';
 import { User } from '@/user/entity';
 import { ConnectionNames } from '@/database';
 
@@ -235,7 +235,7 @@ export class AuthCommonController {
     response: ExpressResponse,
     @Body()
     { email, password, firstName, lastName, phoneNumber }: AuthSignUpDto,
-    @UserAgent() userAgent: IResult,
+    @RequestUserAgent() userAgent: IResult,
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
