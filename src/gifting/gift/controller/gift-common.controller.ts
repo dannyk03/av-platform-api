@@ -51,14 +51,14 @@ export class GiftController {
   @Post('/send')
   async sendGiftSurvey(
     @Body()
-    giftSend: GiftSendDto,
+    { sender, recipients }: GiftSendDto,
     @ReqJwtUser()
     reqJwtUser: User,
   ): Promise<IResponse> {
-    const uniqueRecipients = [...new Set(giftSend.recipients)];
+    const uniqueRecipients = [...new Set(recipients)];
 
     const maybeSenderUser = await this.userService.findOneBy({
-      email: reqJwtUser?.email || giftSend.email,
+      email: reqJwtUser?.email || sender.email,
     });
 
     try {
@@ -76,7 +76,7 @@ export class GiftController {
                   user: maybeSenderUser,
                   additionalData: {
                     ...(await this.giftService.serializationSenderGiftAdditionalData(
-                      giftSend,
+                      sender,
                     )),
                   },
                 },

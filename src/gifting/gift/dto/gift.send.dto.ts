@@ -1,7 +1,6 @@
 import { Transform, Type } from 'class-transformer';
 import { Escape, Trim } from 'class-sanitizer';
 import {
-  IsNotEmpty,
   IsEmail,
   ArrayMaxSize,
   ArrayMinSize,
@@ -9,13 +8,20 @@ import {
   IsOptional,
   IsObject,
   IsArray,
+  ValidateNested,
+  IsNotEmpty,
+  IsString,
 } from 'class-validator';
 import { isArray } from 'lodash';
-import { ValidateNested } from '@/utils/request';
+import {
+  EmptyStringToUndefinedTransform,
+  ToLowerCaseTransform,
+} from '@/utils/request/transform';
+// import { ValidateNested } from '@/utils/request';
 
 export class GiftSendRecipientDto {
   @MaxLength(50)
-  @Transform(({ value }) => value?.toLowerCase())
+  @ToLowerCaseTransform()
   @IsEmail()
   @Trim()
   @Escape()
@@ -23,19 +29,51 @@ export class GiftSendRecipientDto {
 
   @MaxLength(30)
   @IsOptional()
-  @IsNotEmpty()
   @Trim()
   @Escape()
-  @Type(() => String)
+  @EmptyStringToUndefinedTransform()
+  @IsString()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @IsNotEmpty()
   @Trim()
   @Escape()
-  @Type(() => String)
+  @EmptyStringToUndefinedTransform()
+  @IsString()
   readonly lastName?: string;
+}
+export class GiftSendSenderDto {
+  @MaxLength(50)
+  @ToLowerCaseTransform()
+  @IsEmail()
+  @Trim()
+  @Escape()
+  readonly email: string;
+
+  @MaxLength(30)
+  @IsOptional()
+  @Trim()
+  @Escape()
+  @EmptyStringToUndefinedTransform()
+  @IsString()
+  readonly firstName?: string;
+
+  @MaxLength(30)
+  @IsOptional()
+  @Trim()
+  @Escape()
+  @EmptyStringToUndefinedTransform()
+  @IsString()
+  readonly lastName?: string;
+
+  @MaxLength(30)
+  @IsOptional()
+  @Trim()
+  @Escape()
+  @EmptyStringToUndefinedTransform()
+  @IsString()
+  readonly organizationName?: string;
 }
 
 export class GiftSendDto {
@@ -46,37 +84,16 @@ export class GiftSendDto {
   @Escape({ each: true })
   @IsObject({ each: true })
   @IsArray()
-  // @ValidateNested({ each: true, message: 'Invalid recipients data' })
-  @ValidateNested(GiftSendRecipientDto)
+  @ValidateNested({ each: true })
+  // @ValidateNested(GiftSendRecipientDto)
   @Transform(({ value }) => {
     return isArray(value) ? value : [value];
   })
   @Type(() => GiftSendRecipientDto)
   readonly recipients: GiftSendRecipientDto[];
 
-  @IsEmail()
-  @MaxLength(100)
-  @IsNotEmpty()
-  @Transform(({ value }) => value?.toLowerCase())
-  @Trim()
-  @Escape()
-  readonly email: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @MaxLength(30)
-  @Type(() => String)
-  readonly firstName?: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @MaxLength(30)
-  @Type(() => String)
-  readonly lastName?: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @MaxLength(30)
-  @Type(() => String)
-  readonly organizationName?: string;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => GiftSendSenderDto)
+  readonly sender: GiftSendSenderDto;
 }
