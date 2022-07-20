@@ -46,6 +46,8 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions, {
     cascade: ['insert'],
   })
-  @JoinTable()
+  @JoinTable({
+    name: 'product_display_option_images',
+  })
   images: ProductImage[];
 }
