@@ -1,15 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 // Services
 import { UserService } from '../service';
-import { DebuggerService } from '@/debugger/service';
 //
 
 @Injectable()
 export class SenderPutToRequestGuard implements CanActivate {
-  constructor(
-    private readonly userService: UserService,
-    private readonly debuggerService: DebuggerService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest();

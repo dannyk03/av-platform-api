@@ -13,7 +13,6 @@ import { Subject, Action } from '@avo/casl';
 // Entities
 import { User } from '@/user/entity';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { UserService } from '@/user/service';
 import { AclRoleService, AclRolePresetService } from '@acl/role/service';
 import { AuthService } from '@/auth/service';
@@ -39,7 +38,6 @@ export class OrganizationController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly debuggerService: DebuggerService,
     private readonly organizationService: OrganizationService,
     private readonly organizationInviteService: OrganizationInviteService,
     private readonly userService: UserService,
@@ -84,25 +82,13 @@ export class OrganizationController {
       await this.userService.checkExistsByEmail(organizationOwnerEmail);
 
     if (checkOrganizationExist) {
-      this.debuggerService.error(
-        'create organization exists',
-        'OrganizationController',
-        'create',
-        organizationName,
-      );
-
       throw new BadRequestException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationExistsError,
         message: 'organization.error.exists',
       });
-    } else if (checkOrganizationOwnerExist) {
-      this.debuggerService.error(
-        'create organization user exists',
-        'OrganizationController',
-        'create',
-        organizationOwnerEmail,
-      );
+    }
 
+    if (checkOrganizationOwnerExist) {
       throw new BadRequestException({
         statusCode:
           EnumOrganizationStatusCodeError.OrganizationOwnerExistsError,
@@ -163,13 +149,6 @@ export class OrganizationController {
             invite: inviteRes,
           };
 
-          this.debuggerService.debug(
-            'Organization Create Succeed',
-            'OrganizationAdminController',
-            'create',
-            organizationCreateResult,
-          );
-
           await this.logService.info({
             ...logData,
             action: EnumLoggerAction.CreateOrganization,
@@ -181,13 +160,6 @@ export class OrganizationController {
 
           return organizationCreateResult;
         } catch (err) {
-          this.debuggerService.error(
-            err.message,
-            'OrganizationAdminController',
-            'create',
-            err,
-          );
-
           throw new InternalServerErrorException({
             statusCode: EnumStatusCodeError.UnknownError,
             message: 'http.serverError.internalServerError',

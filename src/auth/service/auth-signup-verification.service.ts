@@ -1,12 +1,6 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import {
-  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -15,23 +9,15 @@ import {
 // Entities
 import { SignUpEmailVerificationLink } from '../entity';
 // Services
-import { HelperDateService, HelperHashService } from '@/utils/helper/service';
-import { DebuggerService } from '@/debugger/service';
-import { EmailService } from '@/messaging/email';
+import { HelperHashService } from '@/utils/helper/service';
 //
 import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class AuthSignUpVerificationService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(SignUpEmailVerificationLink, ConnectionNames.Default)
     private signUpEmailVerificationLinkRepository: Repository<SignUpEmailVerificationLink>,
-    private readonly configService: ConfigService,
-    private readonly emailService: EmailService,
-    private readonly debuggerService: DebuggerService,
-    private readonly helperDateService: HelperDateService,
     private readonly helperHashService: HelperHashService,
   ) {}
 

@@ -14,7 +14,6 @@ import {
 } from 'typeorm';
 // Services
 import { EmailService } from '@/messaging/email';
-import { DebuggerService } from '@/debugger/service';
 import { HelperHashService, HelperDateService } from '@/utils/helper/service';
 // Entities
 import { OrganizationInviteLink } from '../entity';
@@ -33,7 +32,6 @@ export class OrganizationInviteService {
     private organizationInviteRepository: Repository<OrganizationInviteLink>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
-    private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
     private readonly helperHashService: HelperHashService,
   ) {}
@@ -77,12 +75,6 @@ export class OrganizationInviteService {
     );
 
     if (!aclRole?.isActive) {
-      this.debuggerService.error(
-        'Organization role inactive error',
-        'OrganizationInviteController',
-        'invite',
-      );
-
       throw new ForbiddenException({
         statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
         message: 'role.error.notFound',
@@ -90,12 +82,6 @@ export class OrganizationInviteService {
     }
 
     if (!aclRole.organization.isActive) {
-      this.debuggerService.error(
-        'Organization inactive error',
-        'OrganizationInviteController',
-        'invite',
-      );
-
       throw new ForbiddenException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
         message: 'organization.error.inactive',
@@ -143,12 +129,6 @@ export class OrganizationInviteService {
 
         return { code: organizationInvite.code };
       } else {
-        this.debuggerService.error(
-          'Messaging Email error',
-          'OrganizationInviteController',
-          'invite',
-        );
-
         throw new InternalServerErrorException({
           statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
           message: 'messaging.email.error.send',
@@ -186,12 +166,6 @@ export class OrganizationInviteService {
 
           return { code: alreadyExistingOrganizationInvite.code };
         } else {
-          this.debuggerService.error(
-            'Organization Invite Email error',
-            'OrganizationInviteController',
-            'invite',
-          );
-
           throw new InternalServerErrorException({
             statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
             message: 'messaging.email.error.resend',

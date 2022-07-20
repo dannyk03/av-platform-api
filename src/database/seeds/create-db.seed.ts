@@ -2,18 +2,12 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-// Services
-import { DebuggerService } from '@/debugger/service';
-//
 import { ConnectionNames } from '../database.constant';
 import { createDB } from '../utils';
 
 @Injectable()
 export class CreateDbSeed {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly debuggerService: DebuggerService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   @Command({
     command: 'create:db',
@@ -28,14 +22,8 @@ export class CreateDbSeed {
           ),
         );
       }
-
-      this.debuggerService.debug(
-        'Create default DB Succeed',
-        'CreateDbSeed',
-        'create',
-      );
     } catch (err) {
-      this.debuggerService.error(err.message, 'CreateDbSeed', 'create');
+      throw new Error(err.message);
     }
   }
 
@@ -46,13 +34,8 @@ export class CreateDbSeed {
   async remove(): Promise<void> {
     try {
       throw new Error('Not Implemented destroy:db');
-      this.debuggerService.debug(
-        'Destroy default DB Succeed',
-        'CreateDbSeed',
-        'remove',
-      );
-    } catch (e) {
-      this.debuggerService.error(e.message, 'CreateDbSeed', 'destroy');
+    } catch (err) {
+      throw new Error(err.message);
     }
   }
 }

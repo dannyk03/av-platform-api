@@ -5,7 +5,8 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 // Services
 import { DebuggerService } from '@/debugger/service';
 //
@@ -24,7 +25,7 @@ import { SkipConstraint } from './validation/request.skip.validation';
 import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
-import { ConfigService } from '@nestjs/config';
+import { RequestControllerGuard } from './guard/request.controller.guard';
 
 @Module({
   controllers: [],
@@ -44,13 +45,6 @@ import { ConfigService } from '@nestjs/config';
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           enableDebugMessages: configService.get<boolean>('app.debug'),
           exceptionFactory: async (errors: ValidationError[]) => {
-            debuggerService.error(
-              'Request validation error',
-              'RequestModule',
-              'exceptionFactory',
-              errors,
-            );
-
             return new UnprocessableEntityException({
               statusCode: EnumRequestStatusCodeError.RequestValidationError,
               message: 'http.clientError.unprocessableEntity',
@@ -63,6 +57,10 @@ import { ConfigService } from '@nestjs/config';
     {
       provide: APP_INTERCEPTOR,
       useClass: RequestTimestampInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RequestControllerGuard,
     },
     IsPasswordStrongConstraint,
     IsPasswordMediumConstraint,

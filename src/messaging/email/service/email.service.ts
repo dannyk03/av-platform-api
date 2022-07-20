@@ -1,15 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-// Services
-import { DebuggerService } from '@/debugger/service';
-//
 
 @Injectable()
 export class EmailService {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly debuggerService: DebuggerService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async sendOrganizationInvite({
     email,

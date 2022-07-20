@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { AuthService } from '@/auth/service';
 import { OrganizationService } from '@/organization/service';
 import { UserService } from '@/user/service';
@@ -30,7 +29,6 @@ export class SystemSeed {
     private readonly displayLanguageService: DisplayLanguageService,
     private readonly currencyService: CurrencyService,
     private readonly helperDateService: HelperDateService,
-    private readonly debuggerService: DebuggerService,
   ) {}
 
   @Command({
@@ -42,77 +40,54 @@ export class SystemSeed {
       await this.defaultDataSource.transaction(
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
-          try {
-            const systemRoles = await this.aclRoleService.cloneSaveRolesTree(
-              transactionalEntityManager,
-              systemSeedData.roles,
-            );
+          const systemRoles = await this.aclRoleService.cloneSaveRolesTree(
+            transactionalEntityManager,
+            systemSeedData.roles,
+          );
 
-            const systemOrganization = await this.organizationService.create({
-              ...systemSeedData.organization,
-              roles: systemRoles,
-            });
+          const systemOrganization = await this.organizationService.create({
+            ...systemSeedData.organization,
+            roles: systemRoles,
+          });
 
-            await transactionalEntityManager.save(systemOrganization);
+          await transactionalEntityManager.save(systemOrganization);
 
-            const { salt, passwordHash } =
-              await this.authService.createPassword(
-                process.env.AUTH_SYSTEM_ADMIN_INITIAL_PASS,
-              );
+          const { salt, passwordHash } = await this.authService.createPassword(
+            process.env.AUTH_SYSTEM_ADMIN_INITIAL_PASS,
+          );
 
-            const systemAdmin = await this.userService.create({
-              ...systemSeedData.systemAdmin,
-              email: process.env.AUTH_SYSTEM_ADMIN_EMAIL,
-              phoneNumber: '+00000000000',
-              authConfig: {
-                password: passwordHash,
-                salt,
-                passwordExpiredAt: this.helperDateService.forwardInDays(
-                  365 * 10,
-                ),
-                emailVerifiedAt: this.helperDateService.create(),
-              },
-              organization: systemOrganization,
-              role: systemRoles.find(
-                (role) => role.name === EnumSystemRole.SystemAdmin,
-              ),
-            });
+          const systemAdmin = await this.userService.create({
+            ...systemSeedData.systemAdmin,
+            email: process.env.AUTH_SYSTEM_ADMIN_EMAIL,
+            phoneNumber: '+00000000000',
+            authConfig: {
+              password: passwordHash,
+              salt,
+              passwordExpiredAt: this.helperDateService.forwardInDays(365 * 10),
+              emailVerifiedAt: this.helperDateService.create(),
+            },
+            organization: systemOrganization,
+            role: systemRoles.find(
+              (role) => role.name === EnumSystemRole.SystemAdmin,
+            ),
+          });
 
-            await transactionalEntityManager.save(systemAdmin);
+          await transactionalEntityManager.save(systemAdmin);
 
-            // Default Display Language
-            const displayLanguageEn = await this.displayLanguageService.create({
-              isoCode: EnumDisplayLanguage.En,
-            });
-            await transactionalEntityManager.save(displayLanguageEn);
+          // Default Display Language
+          const displayLanguageEn = await this.displayLanguageService.create({
+            isoCode: EnumDisplayLanguage.En,
+          });
+          await transactionalEntityManager.save(displayLanguageEn);
 
-            const currencyUSD = await this.currencyService.create({
-              code: EnumCurrency.USD,
-            });
-            await transactionalEntityManager.save(currencyUSD);
-
-            this.debuggerService.debug(
-              'Insert System Succeed',
-              'SystemSeed',
-              'insert',
-            );
-          } catch (err) {
-            this.debuggerService.error(
-              err.message,
-              'SystemSeed',
-              'insert seed transaction',
-            );
-          }
+          const currencyUSD = await this.currencyService.create({
+            code: EnumCurrency.USD,
+          });
+          await transactionalEntityManager.save(currencyUSD);
         },
       );
-
-      this.debuggerService.debug(
-        'Insert System Succeed',
-        'SystemSeed',
-        'insert',
-      );
     } catch (err) {
-      this.debuggerService.error(err.message, 'SystemSeed', 'insert');
+      throw new Error(err.message);
     }
   }
 
@@ -121,15 +96,6 @@ export class SystemSeed {
     describe: 'remove system data',
   })
   async remove(): Promise<void> {
-    try {
-      throw new Error('Not Implemented remove:system');
-      this.debuggerService.debug(
-        'Remove System Succeed',
-        'SystemSeed',
-        'remove',
-      );
-    } catch (e) {
-      this.debuggerService.error(e.message, 'SystemSeed', 'remove');
-    }
+    throw new Error('Not Implemented remove:system');
   }
 }

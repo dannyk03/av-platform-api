@@ -11,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { DataSource } from 'typeorm';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { EmailService } from '@/messaging/email';
 import { HelperDateService } from '@/utils/helper/service';
 import { GiftSendConfirmationLinkService, GiftService } from '../service';
@@ -35,7 +34,6 @@ export class GiftController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
@@ -106,11 +104,6 @@ export class GiftController {
                 code: confirmationLink.code,
               });
               if (!emailSent) {
-                this.debuggerService.error(
-                  'Email Send Error',
-                  'GiftController',
-                  'sendGiftConfirm',
-                );
                 throw new InternalServerErrorException({
                   statusCode:
                     EnumMessagingStatusCodeError.MessagingEmailSendError,
@@ -124,12 +117,6 @@ export class GiftController {
         },
       );
     } catch (error) {
-      this.debuggerService.error(
-        'Internal Error',
-        'GiftController',
-        'send',
-        error,
-      );
       throw new InternalServerErrorException({
         statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
