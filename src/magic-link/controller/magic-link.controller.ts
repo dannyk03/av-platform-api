@@ -15,7 +15,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { AuthSignUpVerificationService } from '@/auth/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
-import { UserService } from '@/user/service';
+import { EmailService } from '@/messaging/email';
 //
 import { ConnectionNames } from '@/database';
 import { Response, IResponse } from '@/utils/response';
@@ -29,12 +29,12 @@ export class MagicLinkController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly configService: ConfigService,
     private readonly authSignUpVerificationService: AuthSignUpVerificationService,
     private readonly helperDateService: HelperDateService,
     private readonly organizationInviteService: OrganizationInviteService,
     private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
-    private readonly userService: UserService,
+    private readonly emailService: EmailService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Response('user.signUpSuccess')
@@ -185,17 +185,17 @@ export class MagicLinkController {
       });
     }
 
-    this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         existingGiftSendVerificationLink.usedAt =
           this.helperDateService.create();
-        transactionalEntityManager.save(existingGiftSendVerificationLink);
+        await transactionalEntityManager.save(existingGiftSendVerificationLink);
 
-        return Promise.all([
+        await Promise.all([
           uniqueSenders.map(async (sender) => {
-            const senderAuthConfig = sender.user.authConfig;
-            if (!senderAuthConfig.emailVerifiedAt) {
+            const senderAuthConfig = sender.user?.authConfig;
+            if (senderAuthConfig && !senderAuthConfig.emailVerifiedAt) {
               senderAuthConfig.emailVerifiedAt =
                 this.helperDateService.create();
               return transactionalEntityManager.save(senderAuthConfig);
@@ -203,6 +203,18 @@ export class MagicLinkController {
             return Promise.resolve();
           }),
         ]);
+
+        await Promise.all(
+          existingGiftSendVerificationLink.gifts.map(async (gift) =>
+            this.emailService.sendGiftSurvey({
+              senderEmail:
+                gift.sender.user?.email || gift.sender.additionalData['email'],
+              recipientEmail:
+                gift.recipient.user?.email ||
+                gift.recipient.additionalData['email'],
+            }),
+          ),
+        );
       },
     );
 

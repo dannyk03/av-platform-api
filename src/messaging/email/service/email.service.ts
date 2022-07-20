@@ -42,17 +42,17 @@ export class EmailService {
   }
 
   async sendGiftSurvey({
-    email,
+    recipientEmail,
     senderEmail,
     path = '/survey',
   }: {
-    email: string;
+    recipientEmail: string;
     senderEmail: string;
-    path: string;
+    path?: string;
   }): Promise<boolean> {
     // TODO email send logic and return Boolean if succeeded
     console.log({
-      email,
+      recipientEmail,
       senderEmail,
       path,
     });
