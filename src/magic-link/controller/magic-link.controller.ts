@@ -192,10 +192,10 @@ export class MagicLinkController {
       async (transactionalEntityManager) => {
         existingGiftSendVerificationLink.usedAt =
           this.helperDateService.create();
+        transactionalEntityManager.save(existingGiftSendVerificationLink);
 
         return Promise.all([
-          transactionalEntityManager.save(existingGiftSendVerificationLink),
-          ...uniqueSenders.map(async (sender) => {
+          uniqueSenders.map(async (sender) => {
             const senderAuthConfig = sender.user.authConfig;
             if (!senderAuthConfig.emailVerifiedAt) {
               senderAuthConfig.emailVerifiedAt =
