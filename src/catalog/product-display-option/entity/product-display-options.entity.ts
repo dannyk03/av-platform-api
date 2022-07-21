@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
@@ -43,11 +44,8 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @JoinColumn()
   language!: DisplayLanguage;
 
-  @ManyToMany(() => ProductImage, (image) => image.productDisplayOptions, {
-    cascade: ['insert'],
-  })
-  @JoinTable({
-    name: 'product_display_option_images',
+  @OneToMany(() => ProductImage, (image) => image.productDisplayOptions, {
+    cascade: true,
   })
   images: ProductImage[];
 }

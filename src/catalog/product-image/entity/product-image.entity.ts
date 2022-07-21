@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToMany, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToMany,
+  Index,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
@@ -36,6 +43,10 @@ export class ProductImage extends BaseEntity<ProductImage> {
   })
   additionalData?: object;
 
-  @ManyToMany(() => ProductDisplayOption)
+  @ManyToOne(
+    () => ProductDisplayOption,
+    (displayOption) => displayOption.images,
+  )
+  @JoinColumn()
   productDisplayOptions!: ProductDisplayOption[];
 }

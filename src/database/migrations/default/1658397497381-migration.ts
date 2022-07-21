@@ -1,28 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1658351821430 implements MigrationInterface {
-  name = 'migration1658351821430';
+export class migration1658397497381 implements MigrationInterface {
+  name = 'migration1658397497381';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            CREATE TABLE "user_auth_configs" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "password" character varying(100),
-                "salt" character varying(100),
-                "password_expired_at" TIMESTAMP,
-                "email_verified_at" TIMESTAMP,
-                "login_code" character varying(32),
-                "login_code_expired_at" TIMESTAMP,
-                CONSTRAINT "uq_user_auth_configs_login_code" UNIQUE ("login_code"),
-                CONSTRAINT "pk_user_auth_configs_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_user_auth_configs_login_code" ON "user_auth_configs" ("login_code")
-        `);
     await queryRunner.query(`
             CREATE TYPE "public"."acl_abilities_type_enum" AS ENUM('can', 'cannot')
         `);
@@ -167,6 +148,25 @@ export class migration1658351821430 implements MigrationInterface {
             CREATE INDEX "idx_organization_invite_links_code" ON "organization_invite_links" ("code")
         `);
     await queryRunner.query(`
+            CREATE TABLE "user_auth_configs" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "password" character varying(100),
+                "salt" character varying(100),
+                "password_expired_at" TIMESTAMP,
+                "email_verified_at" TIMESTAMP,
+                "login_code" character varying(32),
+                "login_code_expired_at" TIMESTAMP,
+                CONSTRAINT "uq_user_auth_configs_login_code" UNIQUE ("login_code"),
+                CONSTRAINT "pk_user_auth_configs_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_user_auth_configs_login_code" ON "user_auth_configs" ("login_code")
+        `);
+    await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -216,6 +216,22 @@ export class migration1658351821430 implements MigrationInterface {
         `);
     await queryRunner.query(`
             CREATE INDEX "idx_sign_up_email_verification_links_code" ON "sign_up_email_verification_links" ("code")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "logs" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "level" character varying NOT NULL,
+                "action" character varying NOT NULL,
+                "description" character varying,
+                "tags" character varying(20) array,
+                "correlation_id" uuid NOT NULL,
+                "user_agent" json NOT NULL,
+                "method" character varying(20) NOT NULL,
+                "original_url" character varying(50) NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "user_id" uuid,
+                CONSTRAINT "pk_logs_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
             CREATE TYPE "public"."currencies_symbol_enum" AS ENUM(
@@ -545,87 +561,6 @@ export class migration1658351821430 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TABLE "logs" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "level" character varying NOT NULL,
-                "action" character varying NOT NULL,
-                "description" character varying,
-                "tags" character varying(20) array,
-                "correlation_id" uuid NOT NULL,
-                "user_agent" json NOT NULL,
-                "method" character varying(20) NOT NULL,
-                "original_url" character varying(50) NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "user_id" uuid,
-                CONSTRAINT "pk_logs_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "display_languages" (
-                "iso_code" character varying(4) NOT NULL,
-                "iso_name" character varying(20) NOT NULL,
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                CONSTRAINT "uq_display_languages_iso_name" UNIQUE ("iso_name"),
-                CONSTRAINT "pk_display_languages_iso_code" PRIMARY KEY ("iso_code")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_display_languages_iso_name" ON "display_languages" ("iso_name")
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "product_images" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "file_name" character varying(30) NOT NULL,
-                "asset_id" character varying(32) NOT NULL,
-                "public_id" character varying(100) NOT NULL,
-                "secure_url" character varying(200) NOT NULL,
-                "additional_data" jsonb,
-                CONSTRAINT "uq_product_images_file_name" UNIQUE ("file_name"),
-                CONSTRAINT "uq_product_images_asset_id" UNIQUE ("asset_id"),
-                CONSTRAINT "uq_product_images_public_id" UNIQUE ("public_id"),
-                CONSTRAINT "uq_product_images_secure_url" UNIQUE ("secure_url"),
-                CONSTRAINT "pk_product_images_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_product_images_file_name" ON "product_images" ("file_name")
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "products" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "sku" character varying(30) NOT NULL,
-                "brand" character varying(30),
-                "is_active" boolean NOT NULL DEFAULT true,
-                CONSTRAINT "uq_products_sku" UNIQUE ("sku"),
-                CONSTRAINT "pk_products_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_products_sku" ON "products" ("sku")
-        `);
-    await queryRunner.query(`
-            CREATE TABLE "product_display_options" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
-                "deleted_at" TIMESTAMP,
-                "name" character varying(50) NOT NULL,
-                "description" character varying(200),
-                "keywords" character varying(20) array NOT NULL DEFAULT '{}',
-                "product_id" uuid,
-                "language_iso_code" character varying(4),
-                CONSTRAINT "pk_product_display_options_id" PRIMARY KEY ("id")
-            )
-        `);
-    await queryRunner.query(`
             CREATE TABLE "gift_recipients" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -698,20 +633,69 @@ export class migration1658351821430 implements MigrationInterface {
             )
         `);
     await queryRunner.query(`
-            CREATE TABLE "product_display_option_images" (
-                "product_display_options_id" uuid NOT NULL,
-                "product_images_id" uuid NOT NULL,
-                CONSTRAINT "pk_product_display_option_images_product_display_options_id_product_images_id" PRIMARY KEY (
-                    "product_display_options_id",
-                    "product_images_id"
-                )
+            CREATE TABLE "display_languages" (
+                "iso_code" character varying(4) NOT NULL,
+                "iso_name" character varying(20) NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                CONSTRAINT "uq_display_languages_iso_name" UNIQUE ("iso_name"),
+                CONSTRAINT "pk_display_languages_iso_code" PRIMARY KEY ("iso_code")
             )
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_product_display_option_images_product_display_options_id" ON "product_display_option_images" ("product_display_options_id")
+            CREATE INDEX "idx_display_languages_iso_name" ON "display_languages" ("iso_name")
         `);
     await queryRunner.query(`
-            CREATE INDEX "idx_product_display_option_images_product_images_id" ON "product_display_option_images" ("product_images_id")
+            CREATE TABLE "product_images" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "file_name" character varying(30) NOT NULL,
+                "asset_id" character varying(32) NOT NULL,
+                "public_id" character varying(100) NOT NULL,
+                "secure_url" character varying(200) NOT NULL,
+                "additional_data" jsonb,
+                "product_display_options_id" uuid,
+                CONSTRAINT "uq_product_images_asset_id" UNIQUE ("asset_id"),
+                CONSTRAINT "uq_product_images_public_id" UNIQUE ("public_id"),
+                CONSTRAINT "uq_product_images_secure_url" UNIQUE ("secure_url"),
+                CONSTRAINT "pk_product_images_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_product_images_file_name" ON "product_images" ("file_name")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "products" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "sku" character varying(30) NOT NULL,
+                "brand" character varying(30),
+                "is_active" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "uq_products_sku" UNIQUE ("sku"),
+                CONSTRAINT "pk_products_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_products_sku" ON "products" ("sku")
+        `);
+    await queryRunner.query(`
+            CREATE TABLE "product_display_options" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "name" character varying(50) NOT NULL,
+                "description" character varying(200),
+                "keywords" character varying(20) array NOT NULL DEFAULT '{}',
+                "product_id" uuid,
+                "language_iso_code" character varying(4),
+                CONSTRAINT "pk_product_display_options_id" PRIMARY KEY ("id")
+            )
         `);
     await queryRunner.query(`
             ALTER TABLE "acl_abilities"
@@ -762,14 +746,6 @@ export class migration1658351821430 implements MigrationInterface {
             ADD CONSTRAINT "fk_logs_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "product_display_options"
-            ADD CONSTRAINT "fk_product_display_options_product_id" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "product_display_options"
-            ADD CONSTRAINT "fk_product_display_options_language_iso_code" FOREIGN KEY ("language_iso_code") REFERENCES "display_languages"("iso_code") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-    await queryRunner.query(`
             ALTER TABLE "gift_recipients"
             ADD CONSTRAINT "fk_gift_recipients_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -798,21 +774,28 @@ export class migration1658351821430 implements MigrationInterface {
             ADD CONSTRAINT "fk_gift_additional_datas_currency_code" FOREIGN KEY ("currency_code") REFERENCES "currencies"("code") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "product_display_option_images"
-            ADD CONSTRAINT "fk_product_display_option_images_product_display_options_id" FOREIGN KEY ("product_display_options_id") REFERENCES "product_display_options"("id") ON DELETE CASCADE ON UPDATE CASCADE
+            ALTER TABLE "product_images"
+            ADD CONSTRAINT "fk_product_images_product_display_options_id" FOREIGN KEY ("product_display_options_id") REFERENCES "product_display_options"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
-            ALTER TABLE "product_display_option_images"
-            ADD CONSTRAINT "fk_product_display_option_images_product_images_id" FOREIGN KEY ("product_images_id") REFERENCES "product_images"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "product_display_options"
+            ADD CONSTRAINT "fk_product_display_options_product_id" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product_display_options"
+            ADD CONSTRAINT "fk_product_display_options_language_iso_code" FOREIGN KEY ("language_iso_code") REFERENCES "display_languages"("iso_code") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-            ALTER TABLE "product_display_option_images" DROP CONSTRAINT "fk_product_display_option_images_product_images_id"
+            ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_language_iso_code"
         `);
     await queryRunner.query(`
-            ALTER TABLE "product_display_option_images" DROP CONSTRAINT "fk_product_display_option_images_product_display_options_id"
+            ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_product_id"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "product_images" DROP CONSTRAINT "fk_product_images_product_display_options_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "gift_additional_datas" DROP CONSTRAINT "fk_gift_additional_datas_currency_code"
@@ -834,12 +817,6 @@ export class migration1658351821430 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "gift_recipients" DROP CONSTRAINT "fk_gift_recipients_user_id"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_language_iso_code"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "product_display_options" DROP CONSTRAINT "fk_product_display_options_product_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "logs" DROP CONSTRAINT "fk_logs_user_id"
@@ -878,33 +855,6 @@ export class migration1658351821430 implements MigrationInterface {
             ALTER TABLE "acl_abilities" DROP CONSTRAINT "fk_acl_abilities_subject_id"
         `);
     await queryRunner.query(`
-            DROP INDEX "public"."idx_product_display_option_images_product_images_id"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_product_display_option_images_product_display_options_id"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "product_display_option_images"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gift_additional_datas"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gifts"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_gift_send_confirmation_links_code"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gift_send_confirmation_links"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gift_senders"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "gift_recipients"
-        `);
-    await queryRunner.query(`
             DROP TABLE "product_display_options"
         `);
     await queryRunner.query(`
@@ -926,7 +876,22 @@ export class migration1658351821430 implements MigrationInterface {
             DROP TABLE "display_languages"
         `);
     await queryRunner.query(`
-            DROP TABLE "logs"
+            DROP TABLE "gift_additional_datas"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "gifts"
+        `);
+    await queryRunner.query(`
+            DROP INDEX "public"."idx_gift_send_confirmation_links_code"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "gift_send_confirmation_links"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "gift_senders"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "gift_recipients"
         `);
     await queryRunner.query(`
             DROP TABLE "currencies"
@@ -936,6 +901,9 @@ export class migration1658351821430 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TYPE "public"."currencies_symbol_enum"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "logs"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_sign_up_email_verification_links_code"
@@ -954,6 +922,12 @@ export class migration1658351821430 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TABLE "users"
+        `);
+    await queryRunner.query(`
+            DROP INDEX "public"."idx_user_auth_configs_login_code"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "user_auth_configs"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_organization_invite_links_code"
@@ -996,12 +970,6 @@ export class migration1658351821430 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP TYPE "public"."acl_abilities_type_enum"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_user_auth_configs_login_code"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "user_auth_configs"
         `);
   }
 }
