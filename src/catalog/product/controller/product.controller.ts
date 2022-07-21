@@ -9,8 +9,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Action, Subject } from '@avo/casl';
-// Entities
-import { ProductImage } from '@/catalog/product-image/entity';
 // Services
 import { HelperDateService } from '@/utils/helper/service';
 import { CloudinaryService } from '@/cloudinary/service';
@@ -25,6 +23,7 @@ import { ProductCreateDto } from '../dto/product.create.dto';
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary/cloudinary.constants';
 import { EnumCatalogCodeError } from '@/catalog/catalog.constant';
+import compact from 'lodash/compact';
 
 @Controller({
   version: '1',
@@ -77,12 +76,12 @@ export class ProductController {
 
     const uploadImages = await Promise.all(
       images.map(async (image) => {
-        const existsImage = await this.productImageService.findOneByFileName(
-          image.originalname.split('.')[0],
-        );
+        // const existsImage = await this.productImageService.findOneByFileName(
+        //   image.originalname.split('.')[0],
+        // );
 
         return (
-          existsImage ||
+          // existsImage ||
           this.cloudinaryService.uploadImage({
             subject: CloudinarySubject.Product,
             image,
@@ -102,7 +101,8 @@ export class ProductController {
             secureUrl: image.secure_url,
           });
         }
-        return image as ProductImage;
+        // return image as ProductImage;
+        return Promise.resolve(null);
       }),
     );
 
@@ -116,7 +116,7 @@ export class ProductController {
           keywords,
           name,
           description,
-          images: saveImages,
+          images: compact(saveImages),
         },
       ],
     });

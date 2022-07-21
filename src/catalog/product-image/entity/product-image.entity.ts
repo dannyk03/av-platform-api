@@ -1,22 +1,13 @@
-import {
-  Entity,
-  Column,
-  ManyToMany,
-  Index,
-  BeforeInsert,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, ManyToMany, Index } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 //
-import { slugify } from '@/utils/helper';
 
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
   @Index()
   @Column({
-    unique: true,
     length: 30,
   })
   fileName!: string;
@@ -47,9 +38,4 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @ManyToMany(() => ProductDisplayOption)
   productDisplayOptions!: ProductDisplayOption[];
-
-  @BeforeInsert()
-  beforeInsert() {
-    this.fileName = slugify(this.fileName);
-  }
 }
