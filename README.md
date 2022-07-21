@@ -120,7 +120,7 @@ Version of the main packages and main tools.
   In case of errors, like some packages are missing...rebuild the image
 
   ```bash
-  docker compose --profile dev up --build --force-recreate
+  docker compose --profile dev up --build --force-recreate --renew-anon-volumes
   ```
 
 - (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
