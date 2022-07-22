@@ -1,3 +1,4 @@
+import { EnumDisplayLanguage } from '@/language/display-language';
 import { applyDecorators, UsePipes } from '@nestjs/common';
 import { Expose, Transform, Type } from 'class-transformer';
 import {
@@ -8,6 +9,7 @@ import {
   IsNotEmpty,
   IsDate,
   IsString,
+  IsArray,
 } from 'class-validator';
 import { RequestAddDatePipe } from 'src/utils/request/pipe/request.add-date.pipe';
 import { MinGreaterThan } from '../request/validation/request.min-greater-than.validation';
@@ -34,6 +36,31 @@ export function PaginationSearch(): any {
     IsString(),
     Transform(({ value }) => {
       return value ? value : undefined;
+    }),
+  );
+}
+
+export function PaginationMultiSearch(): any {
+  return applyDecorators(
+    Expose(),
+    IsOptional(),
+    IsArray(),
+    IsString({ each: true }),
+    Transform(({ value }) => {
+      return value ? Array.from(new Set(value.split(','))) : undefined;
+    }),
+  );
+}
+
+export function PaginationLanguage(): any {
+  return applyDecorators(
+    Expose(),
+    IsOptional(),
+    IsEnum(EnumDisplayLanguage),
+    Transform(({ value }) => {
+      return Object.values(EnumDisplayLanguage).includes(value)
+        ? value
+        : EnumDisplayLanguage.En;
     }),
   );
 }
@@ -76,6 +103,7 @@ export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
 export function PaginationSort(
   sort = PAGINATION_DEFAULT_SORT,
   availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT,
+  nestingAliasMap?,
 ): any {
   return applyDecorators(
     Expose(),
@@ -87,9 +115,9 @@ export function PaginationSort(
       const field: string = rSort.split('@')[0];
       const type: string = rSort.split('@')[1];
       const convertField: string = rAvailableSort.includes(field)
-        ? field
+        ? nestingAliasMap[field] || field
         : bSort;
-      const convertType: number =
+      const convertType =
         type === 'desc' || type === '-1'
           ? EnumPaginationAvailableSortType.Desc
           : EnumPaginationAvailableSortType.Asc;

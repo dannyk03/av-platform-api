@@ -51,10 +51,10 @@
   dependencies:
     "@casl/ability" "^5.4.4"
 
-"@avo/type@^0.0.2":
-  version "0.0.2"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.2.tgz#79dc9648a9a09b7729964d751649713d44b64627"
-  integrity sha512-Kk6kN6t+l9/rrOaZu1hdwlgBwcTpW9gj7P8HfRqZq9gcsEoHMppmphsToYP1f5eNNBg8+SB32ydoLPVTiH7npQ==
+"@avo/type@^0.0.3":
+  version "0.0.3"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.3.tgz#dd18a6def7ea14fda4d3aace64874ad40b4cd370"
+  integrity sha512-NK1nQhqGRcEuHE83JcsqxBWYcfx/xEf4zYSXTBH/NphDZv18yagyFqB5xnGoPHJ1FfHJEBlBSVlxzy5/y3x43g==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -164,10 +164,10 @@
   dependencies:
     tslib "^2.3.1"
 
-"@aws-sdk/client-s3@^3.131.0":
-  version "3.131.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.131.0.tgz#6a193cfef008877028de0018f7b218191997bf5e"
-  integrity sha512-ue6uzk04pRJCJIaU1xKAW7Fx4TJx5n5Dwtycm0H94msj5HpJOfDKPoO9+kbywZywWP7n+eNnzNl/6lMjCSfO4g==
+"@aws-sdk/client-s3@^3.135.0":
+  version "3.135.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.135.0.tgz#ef875302652f916a544e8e43fc36f9cc53cc9275"
+  integrity sha512-bLcq00AFHAK2scTWGc+PmXciZwSgSZh0iJ4w+Jef8lqs5F8PbXDQcu4tgE3BCKZZo6RuFXKOrwJwktZQwLaOJA==
   dependencies:
     "@aws-crypto/sha1-browser" "2.0.0"
     "@aws-crypto/sha256-browser" "2.0.0"
@@ -3144,14 +3144,14 @@ cloudinary-core@^2.10.2:
   resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.12.3.tgz#6482e472944214ff905c4852da0a4afce14dec2b"
   integrity sha512-Ll4eDzcrIVn4zCttMh3Mdi+KNz07p5EEjBT2PQSRx8Eok1lKPt3uBBenOk/w88RKK3B8SFIWcEe/mN4BHQ0p8A==
 
-cloudinary@^1.30.0:
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.30.0.tgz#7d0205a97b305ff2425c9e453ed5d698817542f5"
-  integrity sha512-4f1YmUS+QxhTdpPd+kYpjgTYDxJAxpyZ8TXOnCa2NE2Iew2JwKQwvo4o5YkCM9HbcH+NzymlMocxSDafhLaBmQ==
+cloudinary@^1.30.1:
+  version "1.30.1"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.30.1.tgz#eb63ae8460b93cdf8cd027573df11ea333fcb25a"
+  integrity sha512-Vri+R4VZXZUQWJ3vOoB5b0vjigxI/INRhzZF8E0A1O07bBNrwWAvodtDyumIk3RvEcgxzjvnqq83CPqoUyzEtA==
   dependencies:
     cloudinary-core "^2.10.2"
     core-js "3.6.5"
-    lodash "^4.17.11"
+    lodash "^4.17.21"
     q "^1.5.1"
   optionalDependencies:
     proxy-agent "^5.0.0"
@@ -5502,7 +5502,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@4.17.21, lodash@^4.17.11, lodash@^4.17.19, lodash@^4.17.21:
+lodash@4.17.21, lodash@^4.17.19, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

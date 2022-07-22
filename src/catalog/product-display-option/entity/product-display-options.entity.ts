@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  Index,
 } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
@@ -18,17 +19,20 @@ import { Product } from '@/catalog/product/entity';
 
 @Entity()
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
+  @Index()
   @Column({
     length: 50,
   })
   name!: string;
 
+  @Index()
   @Column({
     nullable: true,
     length: 200,
   })
   description?: string;
 
+  @Index()
   @Column({
     type: 'varchar',
     length: 20,

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import util from 'util';
 // Services
 
-import { CloudinaryFolder } from '../cloudinary.constants';
+import { CloudinaryFolder } from '../cloudinary.constant';
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 @Injectable()
 export class CloudinaryService {

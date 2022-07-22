@@ -13,6 +13,7 @@ export class Product extends BaseEntity<Product> {
   })
   sku!: string;
 
+  @Index()
   @Column({
     nullable: true,
     length: 30,

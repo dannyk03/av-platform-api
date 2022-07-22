@@ -38,6 +38,7 @@ import { RequestControllerGuard } from './guard/request.controller.guard';
         configService: ConfigService,
       ) => {
         return new ValidationPipe({
+          forbidUnknownValues: true,
           transform: true,
           skipNullProperties: false,
           skipUndefinedProperties: false,

@@ -10,4 +10,3 @@ export * from './request.skip.validation';
 export * from './request.string-or-number-or-boolean.validation';
 export * from './request.max-greater-than.validation';
 export * from './request.min-greater-than.validation';
-export * from './request.validate-nested.validation';

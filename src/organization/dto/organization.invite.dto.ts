@@ -1,10 +1,9 @@
 import { IsString, IsNotEmpty, IsEmail, MaxLength } from 'class-validator';
-import { Transform } from 'class-transformer';
-import { Escape, Trim } from 'class-sanitizer';
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 export class OrganizationInviteDto {
   @IsEmail()
   @MaxLength(50)
-  @Transform(({ value }) => value.toLowerCase())
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email: string;

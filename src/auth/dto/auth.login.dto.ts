@@ -1,4 +1,4 @@
-import { Escape, Trim } from 'class-sanitizer';
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type, Transform } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -11,7 +11,7 @@ import {
 export class AuthLoginDto {
   @IsEmail()
   @MaxLength(50)
-  @Transform(({ value }) => value.toLowerCase())
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email: string;
@@ -30,7 +30,7 @@ export class AuthLoginDto {
 export class AuthMagicLoginDto {
   @IsEmail()
   @MaxLength(50)
-  @Transform(({ value }) => value.toLowerCase())
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email: string;

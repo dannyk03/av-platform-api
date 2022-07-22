@@ -2,13 +2,16 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UploadedFiles,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Action, Subject } from '@avo/casl';
+import compact from 'lodash/compact';
 // Services
 import { HelperDateService } from '@/utils/helper/service';
 import { CloudinaryService } from '@/cloudinary/service';
@@ -16,14 +19,18 @@ import { ProductImageService } from '@/catalog/product-image/service';
 import { PaginationService } from '@/utils/pagination/service';
 import { ProductService } from '../service';
 //
-import { Response, IResponse } from '@/utils/response';
-import { UploadFileMultiple } from '@/utils/file';
-import { EnumFileType } from '@/utils/file/file.constant';
-import { ProductCreateDto } from '../dto/product.create.dto';
+import {
+  Response,
+  IResponse,
+  ResponsePaging,
+  IResponsePaging,
+} from '@/utils/response';
+import { UploadFileMultiple, EnumFileType } from '@/utils/file';
 import { AclGuard } from '@/auth';
-import { CloudinarySubject } from '@/cloudinary/cloudinary.constants';
-import { EnumCatalogCodeError } from '@/catalog/catalog.constant';
-import compact from 'lodash/compact';
+import { CloudinarySubject } from '@/cloudinary';
+import { RoleListSerialization } from '@acl/role/serialization';
+import { EnumProductCodeError } from '../product.constant';
+import { ProductCreateDto, ProductListDto } from '../dto';
 
 @Controller({
   version: '1',
@@ -69,7 +76,7 @@ export class ProductController {
 
     if (productExists) {
       throw new BadRequestException({
-        statusCode: EnumCatalogCodeError.CatalogProductExistsError,
+        statusCode: EnumProductCodeError.ProductExistsError,
         message: 'product.error.exists',
       });
     }
@@ -113,7 +120,7 @@ export class ProductController {
       displayOptions: [
         {
           language: { isoCode: languageIsoCode },
-          keywords,
+          keywords: [...new Set(keywords)],
           name,
           description,
           images: compact(saveImages),
@@ -126,49 +133,59 @@ export class ProductController {
     return;
   }
 
-  // @ResponsePaging('product.list')
-  // @AclGuard([
-  //   {
-  //     action: Action.Read,
-  //     subject: Subject.Product,
-  //   },
-  // ])
-  // @Get('/list')
-  // async list(
-  //   @Query()
-  //   {
-  //     page,
-  //     perPage,
-  //     sort,
-  //     search,
-  //     availableSort,
-  //     availableSearch,
-  //   }: AclRoleListDto,
-  // ): Promise<IResponsePaging> {
-  //   const skip: number = await this.paginationService.skip(page, perPage);
+  @ResponsePaging('product.list')
+  @AclGuard(
+    [
+      {
+        action: Action.Read,
+        subject: Subject.Product,
+      },
+    ],
+    { systemOnly: true },
+  )
+  @Get('/list')
+  async list(
+    @Query()
+    {
+      lang,
+      page,
+      perPage,
+      sort,
+      search,
+      keywords,
+      availableSort,
+      availableSearch,
+    }: ProductListDto, // : Promise<IResponsePaging>
+  ) {
+    const skip: number = await this.paginationService.skip(page, perPage);
 
-  //   const totalData: number =
-  //     roles &&
-  //     (await this.aclRoleService.getTotal({
-  //       ...organizationCtxFind,
-  //     }));
+    const products = await this.productService.searchBy({
+      language: lang,
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+      keywords,
+    });
 
-  //   const totalPage: number = await this.paginationService.totalPage(
-  //     totalData,
-  //     perPage,
-  //   );
+    // const totalPage: number = await this.paginationService.totalPage(
+    //   totalData,
+    //   perPage,
+    // );
 
-  //   const data: RoleListSerialization[] =
-  //     await this.aclRoleService.serializationList(roles);
+    // const data: RoleListSerialization[] =
+    //   await this.aclRoleService.serializationList(roles);
 
-  //   return {
-  //     totalData,
-  //     totalPage,
-  //     currentPage: page,
-  //     perPage,
-  //     availableSearch,
-  //     availableSort,
-  //     data,
-  //   };
-  // }
+    return {
+      // totalData,
+      // totalPage,
+      // currentPage: page,
+      // perPage,
+      // availableSearch,
+      // availableSort,
+      // data,
+    };
+  }
 }

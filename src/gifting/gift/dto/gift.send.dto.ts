@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { Escape, Trim } from 'class-sanitizer';
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import {
   IsEmail,
   ArrayMaxSize,
@@ -17,18 +17,14 @@ import {
   IsEnum,
 } from 'class-validator';
 import { isArray } from 'lodash';
-import {
-  EmptyStringToUndefinedTransform,
-  ToLowerCaseTransform,
-} from '@/utils/request/transform';
+import { EmptyStringToUndefinedTransform } from '@/utils/request/transform';
 import { MinGreaterThan } from '@/utils/request';
 import { EnumOccasion, EnumCurrency } from '@avo/type';
-// import { ValidateNested } from '@/utils/request';
 
 export class GiftSendRecipientDto {
   @MaxLength(50)
-  @ToLowerCaseTransform()
   @IsEmail()
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email: string;
@@ -51,8 +47,8 @@ export class GiftSendRecipientDto {
 }
 export class GiftSendSenderDto {
   @MaxLength(50)
-  @ToLowerCaseTransform()
   @IsEmail()
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email: string;
