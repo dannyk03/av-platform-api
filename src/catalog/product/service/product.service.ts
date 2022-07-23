@@ -82,9 +82,7 @@ export class ProductService {
     }
 
     if (keywords) {
-      builder.andWhere('display_options.keywords && :keywords', {
-        keywords,
-      });
+      builder.andWhere('display_options.keywords && :keywords');
     }
 
     if (options.order) {
