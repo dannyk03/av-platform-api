@@ -11,6 +11,7 @@ import {
   IsString,
   IsArray,
 } from 'class-validator';
+import snakeCase from 'lodash/snakeCase';
 import { RequestAddDatePipe } from 'src/utils/request/pipe/request.add-date.pipe';
 import { MinGreaterThan } from '../request/validation/request.min-greater-than.validation';
 import { Skip } from '../request/validation/request.skip.validation';
@@ -122,7 +123,11 @@ export function PaginationSort(
           ? EnumPaginationAvailableSortType.Desc
           : EnumPaginationAvailableSortType.Asc;
 
-      return { [convertField]: convertType };
+      const key = convertField
+        .split('.')
+        .map((field) => snakeCase(field))
+        .join('.');
+      return { [key]: convertType };
     }),
   );
 }

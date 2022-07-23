@@ -159,7 +159,7 @@ export class ProductController {
   ) {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const products = await this.productService.searchBy({
+    const data = await this.productService.searchBy({
       language: lang,
       options: {
         skip: skip,
@@ -181,11 +181,11 @@ export class ProductController {
     return {
       // totalData,
       // totalPage,
-      // currentPage: page,
-      // perPage,
-      // availableSearch,
-      // availableSort,
-      // data,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data,
     };
   }
 }

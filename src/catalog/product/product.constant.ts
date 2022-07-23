@@ -7,14 +7,14 @@ export enum EnumProductCodeError {
 
 export const PRODUCT_DEFAULT_PAGE = 1;
 export const PRODUCT_DEFAULT_PER_PAGE = 10;
-export const PRODUCT_DEFAULT_SORT = 'name@asc';
+export const PRODUCT_DEFAULT_SORT = 'createdAt@asc';
 export const PRODUCT_DEFAULT_AVAILABLE_SORT = [
   'sku',
   'brand',
   'name',
   'description',
   'keywords',
-  // 'createdAt',
+  'createdAt',
 ];
 export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
   'sku',
@@ -27,5 +27,6 @@ export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
 export const ProductNestingAliasMap = {
   name: 'displayOptions.name',
   description: 'displayOptions.description',
-  keywords: 'keywordsCardinality',
+  keywords: '_keywords',
+  createdAt: 'product.createdAt',
 };

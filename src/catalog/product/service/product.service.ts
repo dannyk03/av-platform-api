@@ -13,12 +13,8 @@ import { Product } from '../entity';
 import { CloudinaryService } from '@/cloudinary/service';
 //
 import { ConnectionNames } from '@/database';
-import {
-  EnumPaginationAvailableSortType,
-  IPaginationOptions,
-} from '@/utils/pagination';
+import { IPaginationOptions } from '@/utils/pagination';
 import { EnumDisplayLanguage } from '@/language/display-language';
-import { ProductNestingAliasMap } from '../product.constant';
 
 @Injectable()
 export class ProductService {
@@ -63,58 +59,52 @@ export class ProductService {
     options?: IPaginationOptions;
   }): Promise<Product[]> {
     const builder = await this.productRepository
-      .createQueryBuilder()
-      .leftJoinAndSelect('Product.displayOptions', 'displayOptions')
-      .leftJoinAndSelect('displayOptions.language', 'language')
-      .where('language.isoCode = :language', { language })
-      .andWhere(
+      .createQueryBuilder('product')
+      .setParameters({ keywords })
+      .setParameter('keywords', keywords)
+      .leftJoinAndSelect('product.displayOptions', 'display_options')
+      .leftJoinAndSelect('display_options.images', 'images')
+      .leftJoinAndSelect('display_options.language', 'language')
+      .where('language.isoCode = :language', { language });
+
+    if (search) {
+      builder.andWhere(
         new Brackets((qb) => {
           if (search) {
-            const likeSearch = `%${search}%`;
-            qb.where('sku ILIKE :likeSearch', { likeSearch })
-              .orWhere('brand ILIKE :likeSearch', {
-                likeSearch,
-              })
-              .orWhere('displayOptions.name ILIKE :likeSearch', {
-                likeSearch,
-              })
-              .orWhere('displayOptions.description ILIKE :likeSearch', {
-                likeSearch,
-              });
+            builder.setParameters({ search, likeSearch: `%${search}%` });
+            qb.where('sku ILIKE :likeSearch')
+              .orWhere('brand ILIKE :likeSearch')
+              .orWhere('display_options.name ILIKE :likeSearch')
+              .orWhere('display_options.description ILIKE :likeSearch');
           }
         }),
       );
+    }
 
     if (keywords) {
-      builder.andWhere('displayOptions.keywords && :keywords', {
+      builder.andWhere('display_options.keywords && :keywords', {
         keywords,
       });
+    }
+
+    if (options.order) {
+      if (options.order.keywords && keywords) {
+        builder.orderBy(
+          `CARDINALITY(ARRAY (
+          SELECT UNNEST(display_options.keywords)
+          INTERSECT
+          SELECT UNNEST(array[:...keywords])))`,
+          options.order.keywords,
+        );
+      } else {
+        builder.orderBy(options.order);
+      }
     }
 
     if (options.take && options.skip) {
       builder.take(options.take).skip(options.skip);
     }
 
-    if (options.order) {
-      builder.orderBy(options.order);
-
-      // if (options.order.keywordsCardinality && keywords) {
-      //   builder.orderBy(
-      //     `CARDINALITY(ARRAY[keywords] & ARRAY[${keywords}])`,
-      //     'DESC',
-      //   );
-      // builder
-      //   .from('')
-      //   .select(
-      //     `CARDINALITY(ARRAY[displayOptions.keywords] & ARRAY[${keywords}])`,
-      //     ProductNestingAliasMap.keywords,
-      //   );
-      // }
-    }
-
-    const aaa = builder.getQuery();
-    const bbb = await builder.getMany();
-
-    return bbb;
+    return builder.getMany();
   }
 }
