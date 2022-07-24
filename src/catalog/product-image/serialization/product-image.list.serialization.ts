@@ -15,7 +15,4 @@ export class ProductImageListSerialization {
 
   @Expose()
   readonly createdAt: Date;
-
-  @Expose()
-  readonly updatedAt: Date;
 }
