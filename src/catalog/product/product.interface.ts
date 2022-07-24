@@ -7,4 +7,5 @@ export interface IProductSearch {
   keywords?: string[];
   loadImages?: boolean;
   options?: IPaginationOptions;
+  isActive?: boolean[];
 }

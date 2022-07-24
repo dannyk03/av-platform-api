@@ -156,6 +156,7 @@ export class ProductController {
       keywords,
       availableSort,
       availableSearch,
+      isActive,
     }: ProductListDto, // : Promise<IResponsePaging>
   ) {
     const skip: number = await this.paginationService.skip(page, perPage);
@@ -169,12 +170,14 @@ export class ProductController {
       },
       search,
       keywords,
+      isActive,
     });
 
     const totalData = await this.productService.getTotal({
       language: lang,
       search,
       keywords,
+      isActive,
     });
 
     const totalPage: number = await this.paginationService.totalPage(

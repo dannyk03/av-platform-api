@@ -54,6 +54,7 @@ export class ProductService {
     search,
     keywords,
     language,
+    isActive,
     loadImages = true,
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = await this.productRepository
@@ -61,8 +62,8 @@ export class ProductService {
       .leftJoinAndSelect('product.displayOptions', 'displayOptions')
       .leftJoinAndSelect('displayOptions.language', 'language')
       .setParameters({ keywords, language })
-      .where('isActive = :isActive', { isActive: true })
-      .where('language.isoCode = :language');
+      .where('product.isActive = ANY(:isActive)', { isActive })
+      .andWhere('language.isoCode = :language');
 
     if (loadImages) {
       builder.leftJoinAndSelect('displayOptions.images', 'images');
@@ -93,12 +94,14 @@ export class ProductService {
     language,
     search,
     keywords,
+    isActive,
   }: IProductSearch): Promise<number> {
     const searchBuilder = await this.getSearchBuilder({
       loadImages: false,
       language,
       search,
       keywords,
+      isActive,
     });
 
     return searchBuilder.getCount();
@@ -109,11 +112,13 @@ export class ProductService {
     search,
     keywords,
     options,
+    isActive,
   }: IProductSearch): Promise<Product[]> {
     const searchBuilder = await this.getSearchBuilder({
       language,
       search,
       keywords,
+      isActive,
     });
 
     if (options.order) {
