@@ -12,21 +12,17 @@ import { BaseEntity } from '@/database/entity';
 import { Organization } from '@/organization/entity';
 import { AclRole } from '@acl/role/entity';
 import { UserAuthConfig } from '@/auth/entity';
+import { UserProfile } from './user-profile.entity';
 //
 
 @Entity()
 export class User extends BaseEntity<User> {
+  @Index()
   @Column({
-    length: 30,
-    nullable: true,
+    unique: true,
+    length: 50,
   })
-  firstName?: string;
-
-  @Column({
-    length: 30,
-    nullable: true,
-  })
-  lastName?: string;
+  email!: string;
 
   @Index()
   @Column({
@@ -35,19 +31,6 @@ export class User extends BaseEntity<User> {
     nullable: true,
   })
   phoneNumber?: string;
-
-  @Index()
-  @Column({
-    unique: true,
-    length: 50,
-  })
-  email!: string;
-
-  @Column({
-    length: 100,
-    nullable: true,
-  })
-  title?: string;
 
   @Column({
     default: true,
@@ -68,6 +51,10 @@ export class User extends BaseEntity<User> {
     nullable: true,
   })
   organization?: Organization;
+
+  @OneToOne(() => UserProfile, { cascade: true, nullable: true })
+  @JoinColumn()
+  profile?: UserProfile;
 
   @BeforeInsert()
   beforeInsert() {

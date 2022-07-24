@@ -17,7 +17,10 @@ export const systemSeedData: {
     name: SYSTEM_ORGANIZATION_NAME,
   },
   systemAdmin: {
-    firstName: 'SystemAdmin',
+    profile: {
+      firstName: 'SystemAdmin',
+      title: 'God',
+    },
   },
   roles: [
     {

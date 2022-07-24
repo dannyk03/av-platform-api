@@ -251,12 +251,16 @@ export class AuthCommonController {
         statusCode: EnumUserStatusCodeError.UserExistsError,
         message: 'user.error.exists',
       });
-    } else if (checkExist.email) {
+    }
+
+    if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
         message: 'user.error.emailExists',
       });
-    } else if (checkExist.phoneNumber) {
+    }
+
+    if (checkExist.phoneNumber) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserPhoneNumberExistsError,
         message: 'user.error.phoneNumberExists',
@@ -274,8 +278,7 @@ export class AuthCommonController {
             isActive: true,
             email,
             phoneNumber,
-            firstName,
-            lastName,
+            profile: { firstName, lastName },
             authConfig: {
               password: passwordHash,
               salt,

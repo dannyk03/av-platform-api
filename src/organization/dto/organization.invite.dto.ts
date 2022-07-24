@@ -1,8 +1,8 @@
 import { IsString, IsNotEmpty, IsEmail, MaxLength } from 'class-validator';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 export class OrganizationInviteDto {
-  @IsEmail()
   @MaxLength(50)
+  @IsEmail()
   @NormalizeEmail(true)
   @Trim()
   @Escape()

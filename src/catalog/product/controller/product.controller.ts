@@ -31,6 +31,7 @@ import { CloudinarySubject } from '@/cloudinary';
 import { RoleListSerialization } from '@acl/role/serialization';
 import { EnumProductCodeError } from '../product.constant';
 import { ProductCreateDto, ProductListDto } from '../dto';
+import { ProductListSerialization } from '../serialization';
 
 @Controller({
   version: '1',
@@ -48,15 +49,15 @@ export class ProductController {
 
   @Response('product.create')
   @HttpCode(HttpStatus.OK)
-  @AclGuard(
-    [
+  @AclGuard({
+    abilities: [
       {
         action: Action.Create,
         subject: Subject.Product,
       },
     ],
-    { systemOnly: true },
-  )
+    systemOnly: true,
+  })
   @UploadFileMultiple('images', EnumFileType.Image)
   @Post('/create')
   async create(
@@ -134,15 +135,15 @@ export class ProductController {
   }
 
   @ResponsePaging('product.list')
-  @AclGuard(
-    [
+  @AclGuard({
+    abilities: [
       {
         action: Action.Read,
         subject: Subject.Product,
       },
     ],
-    { systemOnly: true },
-  )
+    systemOnly: true,
+  })
   @Get('/list')
   async list(
     @Query()
@@ -159,7 +160,7 @@ export class ProductController {
   ) {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const data = await this.productService.searchBy({
+    const products = await this.productService.paginatedSearchBy({
       language: lang,
       options: {
         skip: skip,
@@ -170,17 +171,23 @@ export class ProductController {
       keywords,
     });
 
-    // const totalPage: number = await this.paginationService.totalPage(
-    //   totalData,
-    //   perPage,
-    // );
+    const totalData = await this.productService.getTotal({
+      language: lang,
+      search,
+      keywords,
+    });
 
-    // const data: RoleListSerialization[] =
-    //   await this.aclRoleService.serializationList(roles);
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    const data: ProductListSerialization[] =
+      await this.productService.serializationList(products);
 
     return {
-      // totalData,
-      // totalPage,
+      totalData,
+      totalPage,
       currentPage: page,
       perPage,
       availableSearch,

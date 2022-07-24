@@ -47,12 +47,14 @@ export class OrganizationInviteController {
 
   @Response('organization.invite')
   @HttpCode(HttpStatus.OK)
-  @AclGuard([
-    {
-      action: Action.Create,
-      subject: Subject.OrganizationInvite,
-    },
-  ])
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Create,
+        subject: Subject.OrganizationInvite,
+      },
+    ],
+  })
   @Post('/invite')
   async invite(
     @Body()

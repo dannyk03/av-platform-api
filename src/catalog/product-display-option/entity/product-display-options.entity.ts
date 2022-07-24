@@ -48,7 +48,7 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @JoinColumn()
   language!: DisplayLanguage;
 
-  @OneToMany(() => ProductImage, (image) => image.productDisplayOptions, {
+  @OneToMany(() => ProductImage, (image) => image.productDisplayOption, {
     cascade: true,
   })
   images: ProductImage[];

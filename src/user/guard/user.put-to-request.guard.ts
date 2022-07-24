@@ -8,27 +8,49 @@ import {
 import { UserService } from '../service';
 //
 import { EnumAuthStatusCodeError } from '@/auth';
+import { Reflector } from '@nestjs/core';
+import {
+  USER_LOAD_AUTH_SENSITIVE_DATA,
+  USER_RELATIONS_META_KEY,
+} from '../user.constant';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private reflector: Reflector,
+    private readonly userService: UserService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest();
     const { user } = request;
+    const loadAuthSensitiveData = this.reflector.getAllAndOverride<boolean>(
+      USER_LOAD_AUTH_SENSITIVE_DATA,
+      [ctx.getHandler(), ctx.getClass()],
+    );
+    const loadRelations = this.reflector.getAllAndOverride<string[]>(
+      USER_RELATIONS_META_KEY,
+      [ctx.getHandler(), ctx.getClass()],
+    );
+
+    const defaultRelations = [
+      'organization',
+      'role',
+      'role.policy',
+      'role.policy.subjects',
+      'role.policy.subjects.abilities',
+    ];
+
+    const relations = [
+      'authConfig',
+      ...(loadRelations.length ? loadRelations : defaultRelations),
+    ];
 
     const requestUser = await this.userService.findOne({
       where: {
         email: user.email,
       },
-      relations: [
-        'organization',
-        'authConfig',
-        'role',
-        'role.policy',
-        'role.policy.subjects',
-        'role.policy.subjects.abilities',
-      ],
+      relations,
       select: {
         organization: {
           isActive: true,
@@ -37,7 +59,7 @@ export class UserPutToRequestGuard implements CanActivate {
           slug: true,
         },
         authConfig: {
-          password: true,
+          password: loadAuthSensitiveData,
           passwordExpiredAt: true,
           emailVerifiedAt: true,
         },

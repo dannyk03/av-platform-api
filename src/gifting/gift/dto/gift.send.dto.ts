@@ -111,7 +111,6 @@ export class GiftSendDto {
   @IsObject({ each: true })
   @IsArray()
   @ValidateNested({ each: true })
-  // @ValidateNested(GiftSendRecipientDto)
   @Transform(({ value }) => {
     return isArray(value) ? value : [value];
   })
