@@ -6,6 +6,7 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  SelectQueryBuilder,
 } from 'typeorm';
 // Entities
 import { Product } from '../entity';
@@ -14,7 +15,9 @@ import { CloudinaryService } from '@/cloudinary/service';
 //
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
-import { EnumDisplayLanguage } from '@/language/display-language';
+import { IProductSearch } from '../product.interface';
+import { plainToInstance } from 'class-transformer';
+import { ProductListSerialization } from '../serialization';
 
 @Injectable()
 export class ProductService {
@@ -47,25 +50,23 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
-  async searchBy({
-    language,
+  async getSearchBuilder({
     search,
     keywords,
-    options,
-  }: {
-    language: EnumDisplayLanguage;
-    search?: string;
-    keywords?: string[];
-    options?: IPaginationOptions;
-  }): Promise<Product[]> {
+    language,
+    loadImages = true,
+  }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = await this.productRepository
       .createQueryBuilder('product')
-      .setParameters({ keywords })
-      .setParameter('keywords', keywords)
-      .leftJoinAndSelect('product.displayOptions', 'display_options')
-      .leftJoinAndSelect('display_options.images', 'images')
-      .leftJoinAndSelect('display_options.language', 'language')
-      .where('language.isoCode = :language', { language });
+      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
+      .leftJoinAndSelect('displayOptions.language', 'language')
+      .setParameters({ keywords, language })
+      .where('isActive = :isActive', { isActive: true })
+      .where('language.isoCode = :language');
+
+    if (loadImages) {
+      builder.leftJoinAndSelect('displayOptions.images', 'images');
+    }
 
     if (search) {
       builder.andWhere(
@@ -74,35 +75,71 @@ export class ProductService {
             builder.setParameters({ search, likeSearch: `%${search}%` });
             qb.where('sku ILIKE :likeSearch')
               .orWhere('brand ILIKE :likeSearch')
-              .orWhere('display_options.name ILIKE :likeSearch')
-              .orWhere('display_options.description ILIKE :likeSearch');
+              .orWhere('displayOptions.name ILIKE :likeSearch')
+              .orWhere('displayOptions.description ILIKE :likeSearch');
           }
         }),
       );
     }
 
     if (keywords) {
-      builder.andWhere('display_options.keywords && :keywords');
+      builder.andWhere('displayOptions.keywords && :keywords');
     }
+
+    return builder;
+  }
+
+  async getTotal({
+    language,
+    search,
+    keywords,
+  }: IProductSearch): Promise<number> {
+    const searchBuilder = await this.getSearchBuilder({
+      loadImages: false,
+      language,
+      search,
+      keywords,
+    });
+
+    return searchBuilder.getCount();
+  }
+
+  async paginatedSearchBy({
+    language,
+    search,
+    keywords,
+    options,
+  }: IProductSearch): Promise<Product[]> {
+    const searchBuilder = await this.getSearchBuilder({
+      language,
+      search,
+      keywords,
+    });
 
     if (options.order) {
       if (options.order.keywords && keywords) {
-        builder.orderBy(
+        searchBuilder.orderBy(
           `CARDINALITY(ARRAY (
-          SELECT UNNEST(display_options.keywords)
+          SELECT UNNEST(displayOptions.keywords)
           INTERSECT
           SELECT UNNEST(array[:...keywords])))`,
           options.order.keywords,
         );
       } else {
-        builder.orderBy(options.order);
+        searchBuilder.orderBy(options.order);
       }
     }
 
     if (options.take && options.skip) {
-      builder.take(options.take).skip(options.skip);
+      searchBuilder.take(options.take).skip(options.skip);
     }
 
-    return builder.getMany();
+    return searchBuilder.getMany();
+  }
+
+  async serializationList(
+    data: Product[],
+  ): Promise<ProductListSerialization[]> {
+    return plainToInstance(ProductListSerialization, data);
   }
 }

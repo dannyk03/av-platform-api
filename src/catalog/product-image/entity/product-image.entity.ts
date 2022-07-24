@@ -48,5 +48,5 @@ export class ProductImage extends BaseEntity<ProductImage> {
     (displayOption) => displayOption.images,
   )
   @JoinColumn()
-  productDisplayOptions!: ProductDisplayOption[];
+  productDisplayOption: ProductDisplayOption;
 }
