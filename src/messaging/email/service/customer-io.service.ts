@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { APIClient, SendEmailRequest } from 'customerio-node';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -15,10 +14,7 @@ import {
 export class CustomerIOService {
   private readonly client: APIClient;
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
-  ) {
+  constructor(private readonly httpService: HttpService) {
     this.client = new APIClient(process.env.CUSTOMER_IO_API_KEY);
   }
   async sendEmail(emailSendData: SendEmailDto): Promise<EmailInstance> {
