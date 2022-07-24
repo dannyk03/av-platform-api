@@ -9,8 +9,8 @@ import {
 } from 'class-validator';
 
 export class AuthLoginDto {
-  @IsEmail()
   @MaxLength(50)
+  @IsEmail()
   @NormalizeEmail(true)
   @Trim()
   @Escape()
@@ -28,8 +28,8 @@ export class AuthLoginDto {
 }
 
 export class AuthMagicLoginDto {
-  @IsEmail()
   @MaxLength(50)
+  @IsEmail()
   @NormalizeEmail(true)
   @Trim()
   @Escape()

@@ -52,7 +52,7 @@ export class TestingCommonController {
 
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
-  @AclGuard(undefined, { systemOnly: true })
+  @AclGuard({ systemOnly: true })
   @Get('/auth')
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,

@@ -33,12 +33,14 @@ export class AclRoleController {
   ) {}
 
   @ResponsePaging('role.list')
-  @AclGuard([
-    {
-      action: Action.Read,
-      subject: Subject.Role,
-    },
-  ])
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subject.Role,
+      },
+    ],
+  })
   @Get('/list')
   async list(
     @Query()

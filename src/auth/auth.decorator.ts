@@ -22,7 +22,12 @@ import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
 import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';
-import { USER_VERIFIED_ONLY_META_KEY } from '@/user';
+import {
+  USER_LOAD_AUTH_SENSITIVE_DATA,
+  USER_RELATIONS_META_KEY,
+  USER_VERIFIED_ONLY_META_KEY,
+} from '@/user';
+import { IAclGuard } from './auth.interface';
 
 //
 
@@ -52,13 +57,18 @@ export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
 }
 
 export function AclGuard(
-  abilities: IReqAclAbility[] = [],
   {
-    systemOnly,
-    verifiedOnly,
-  }: { systemOnly?: boolean; verifiedOnly?: boolean } = {
+    abilities = [],
+    systemOnly = false,
+    verifiedOnly = true,
+    relations = [],
+    loadSensitiveAuthData = false,
+  }: IAclGuard = {
     systemOnly: false,
     verifiedOnly: true,
+    relations: [],
+    abilities: [],
+    loadSensitiveAuthData: false,
   },
 ) {
   return applyDecorators(
@@ -76,6 +86,8 @@ export function AclGuard(
     SetMetadata(ABILITY_META_KEY, abilities),
     SetMetadata(SYSTEM_ONLY_META_KEY, systemOnly),
     SetMetadata(USER_VERIFIED_ONLY_META_KEY, verifiedOnly),
+    SetMetadata(USER_RELATIONS_META_KEY, relations),
+    SetMetadata(USER_LOAD_AUTH_SENSITIVE_DATA, loadSensitiveAuthData),
   );
 }
 

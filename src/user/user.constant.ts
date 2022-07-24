@@ -27,3 +27,5 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
 ];
 
 export const USER_VERIFIED_ONLY_META_KEY = 'UserVerifiedOnlyMetaKey';
+export const USER_RELATIONS_META_KEY = 'UserRelationsMetaKey';
+export const USER_LOAD_AUTH_SENSITIVE_DATA = 'UserLoadAuthSensitiveDataMetaKey';

@@ -11,6 +11,8 @@ import {
   Repository,
 } from 'typeorm';
 import { IUserCheckExist } from '../user.interface';
+import { plainToInstance } from 'class-transformer';
+import { UserProfileGetSerialization } from '../serialization';
 
 @Injectable()
 export class UserService {
@@ -84,5 +86,11 @@ export class UserService {
       email: existEmail ? true : false,
       phoneNumber: existsPhoneNumber ? true : false,
     };
+  }
+
+  async serializationUserProfile(
+    data: User,
+  ): Promise<UserProfileGetSerialization> {
+    return plainToInstance(UserProfileGetSerialization, data);
   }
 }

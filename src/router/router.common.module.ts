@@ -20,11 +20,13 @@ import {
 } from '@/organization/controller';
 import { AclController } from '@acl/controller';
 import { MagicLinkController } from '@/magic-link/controller';
+import { UserController } from '@/user/controller';
 //
 @Module({
   controllers: [
     HealthController,
     AuthCommonController,
+    UserController,
     OrganizationController,
     OrganizationInviteController,
     AclController,

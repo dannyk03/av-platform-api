@@ -49,15 +49,15 @@ export class ProductController {
 
   @Response('product.create')
   @HttpCode(HttpStatus.OK)
-  @AclGuard(
-    [
+  @AclGuard({
+    abilities: [
       {
         action: Action.Create,
         subject: Subject.Product,
       },
     ],
-    { systemOnly: true },
-  )
+    systemOnly: true,
+  })
   @UploadFileMultiple('images', EnumFileType.Image)
   @Post('/create')
   async create(
@@ -135,15 +135,15 @@ export class ProductController {
   }
 
   @ResponsePaging('product.list')
-  @AclGuard(
-    [
+  @AclGuard({
+    abilities: [
       {
         action: Action.Read,
         subject: Subject.Product,
       },
     ],
-    { systemOnly: true },
-  )
+    systemOnly: true,
+  })
   @Get('/list')
   async list(
     @Query()

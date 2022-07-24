@@ -6,15 +6,15 @@ import {
   MinLength,
   IsOptional,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
-import { Escape, Trim } from 'class-sanitizer';
+import { Type } from 'class-transformer';
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { IsPasswordStrong } from '@/utils/request/validation';
 import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
 
 export class AuthSignUpDto {
-  @IsEmail()
   @MaxLength(50)
-  @Transform(({ value }) => value?.toLowerCase())
+  @IsEmail()
+  @NormalizeEmail(true)
   @Trim()
   @Escape()
   readonly email!: string;
