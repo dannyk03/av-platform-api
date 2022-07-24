@@ -11,10 +11,17 @@ export interface EmailService {
   sendEmail(emailSendData: SendEmailDto): Promise<EmailInstance>;
 }
 
+export enum EmailTemplate {
+  SendOrganizationInvite = 'SendOrganizationInvite',
+  SendSignUpEmailVerification = 'SendSignUpEmailVerification',
+  SendGiftSurvey = 'SendGiftSurvey',
+  SendGiftConfirm = 'SendGiftConfirm',
+}
+
 export class SendEmailDto {
   @IsString()
   @IsNotEmpty()
-  template: string;
+  template: string; // TODO: replace with EmailTemplate enum
 
   @IsString()
   @IsOptional()
