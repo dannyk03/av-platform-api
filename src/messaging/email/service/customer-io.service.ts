@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { APIClient, SendEmailRequest } from 'customerio-node';
 import { HttpService } from '@nestjs/axios';
+import { Observable } from 'rxjs';
+import { AxiosResponse } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import {
-  EmailService,
   EmailInstance,
   EmailStatus,
   CustomerIOTransactionalResponse,
@@ -29,11 +30,28 @@ export class CustomerIOService {
       message_data: emailTemplatePayload,
     });
 
-    const sendResponse = await this.client.sendEmail(request);
-    return this.parseResponse(sendResponse);
+    try {
+      const sendResponse = await this.client.sendEmail(request);
+      return this.getEmailInstance(sendResponse);
+    } catch (error) {
+      // TODO: replace with loggerService
+      console.log(
+        `An error occur in CustomerIOService.sendEmail`,
+        error,
+        emailSendData,
+      );
+      return this.getEmailInstance();
+    }
   }
 
-  parseResponse(sendResult?: Record<string, any>): EmailInstance {
+  getEmailInstance(sendResult?: Record<string, any>): EmailInstance {
+    if (!sendResult) {
+      return {
+        id: null,
+        status: EmailStatus.failure,
+        response: null,
+      };
+    }
     return {
       id: sendResult.delivery_id,
       status: EmailStatus.success,
