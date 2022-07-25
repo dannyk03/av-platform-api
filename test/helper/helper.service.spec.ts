@@ -1,13 +1,16 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
+import { ConfigService } from '@nestjs/config';
+import { ConfigDynamicModule } from '@/config';
 import { HelperService } from '@/utils/helper/service/helper.service';
+import { HelperModule } from '@/utils/helper/helper.module';
 
 describe('HelperService', () => {
   let helperService: HelperService;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CoreModule],
+      imports: [HelperModule, ConfigDynamicModule],
+      providers: [ConfigService],
     }).compile();
 
     helperService = moduleRef.get<HelperService>(HelperService);
