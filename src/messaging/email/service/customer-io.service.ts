@@ -18,7 +18,7 @@ export class CustomerIOService {
     this.client = new APIClient(process.env.CUSTOMER_IO_API_KEY);
   }
   async sendEmail(emailSendData: SendEmailDto): Promise<EmailInstance> {
-    const { to, identifier, template } = emailSendData;
+    const { to, identifier, template, emailTemplatePayload } = emailSendData;
     const transactionalMessageId = await this.getTransactionalMessageId(
       template,
     );
@@ -26,6 +26,7 @@ export class CustomerIOService {
       to: to.join(),
       transactional_message_id: transactionalMessageId,
       identifiers: identifier,
+      message_data: emailTemplatePayload,
     });
 
     const sendResponse = await this.client.sendEmail(request);
