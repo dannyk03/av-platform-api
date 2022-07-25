@@ -23,26 +23,14 @@ export class SendEmailDto {
   @IsNotEmpty()
   template: string; // TODO: replace with EmailTemplate enum
 
-  @IsString()
-  @IsOptional()
-  subject: string;
-
   @IsNotEmpty()
   @IsArray()
   @IsEmail({ allow_display_name: true }, { each: true })
   to: string[];
 
-  @IsOptional()
-  @IsEmail({ allow_display_name: true })
-  from: string;
-
   @IsObject()
   @IsOptional()
   emailTemplatePayload: any;
-
-  @IsString()
-  @IsOptional()
-  warehouseCode: string;
 
   @IsObject()
   @IsOptional()
