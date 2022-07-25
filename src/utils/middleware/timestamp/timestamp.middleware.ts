@@ -15,7 +15,7 @@ export class TimestampMiddleware implements NestMiddleware {
 
   async use(
     req: IRequestApp,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> {
     const mode: string = this.configService.get<string>('app.mode');

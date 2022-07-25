@@ -1,4 +1,4 @@
-export enum EnumProductCodeError {
+export enum EnumProductStatusCodeError {
   ProductExistsError = 5700,
   ProductNotFoundError = 5701,
   ProductInactiveError = 5702,

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import {
   Brackets,
+  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -18,10 +19,13 @@ import { IPaginationOptions } from '@/utils/pagination';
 import { IProductSearch } from '../product.interface';
 import { plainToInstance } from 'class-transformer';
 import { ProductListSerialization } from '../serialization';
+import { EnumProductStatusCodeError } from '../product.constant';
 
 @Injectable()
 export class ProductService {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     @InjectRepository(Product, ConnectionNames.Default)
     private productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,
@@ -140,6 +144,29 @@ export class ProductService {
     }
 
     return searchBuilder.getMany();
+  }
+
+  async deleteProductBy({ id }: { id: string }): Promise<Product> {
+    return this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const removeProduct = await transactionalEntityManager.findOne(
+          Product,
+          {
+            where: { id },
+          },
+        );
+
+        if (!removeProduct) {
+          throw new UnprocessableEntityException({
+            statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+            message: 'product.error.notFound',
+          });
+        }
+
+        return transactionalEntityManager.remove(removeProduct);
+      },
+    );
   }
 
   async serializationList(

@@ -36,7 +36,7 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
 
     morgan.token('req-body', (req: Request) => JSON.stringify(req.body));
 
-    morgan.token('res-body', (req: Request, res: ICustomResponse) => res.body);
+    morgan.token('res-body', (_req: Request, res: ICustomResponse) => res.body);
 
     morgan.token('req-headers', (req: Request) => JSON.stringify(req.headers));
   }
@@ -74,7 +74,7 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
 
 @Injectable()
 export class HttpDebuggerResponseMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(_req: Request, res: Response, next: NextFunction): void {
     const send: any = res.send;
     const resOld: any = res;
 

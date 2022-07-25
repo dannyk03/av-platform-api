@@ -2,9 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   UploadedFiles,
@@ -28,9 +30,10 @@ import {
 import { UploadFileMultiple, EnumFileType } from '@/utils/file';
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
-import { EnumProductCodeError } from '../product.constant';
-import { ProductCreateDto, ProductListDto } from '../dto';
+import { EnumProductStatusCodeError } from '../product.constant';
+import { ProductCreateDto, ProductDeleteDto, ProductListDto } from '../dto';
 import { ProductListSerialization } from '../serialization';
+import { RequestParamGuard } from '@/utils/request';
 
 @Controller({
   version: '1',
@@ -58,7 +61,7 @@ export class ProductController {
     systemOnly: true,
   })
   @UploadFileMultiple('images', EnumFileType.Image)
-  @Post('/create')
+  @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],
     @Body()
@@ -76,7 +79,7 @@ export class ProductController {
 
     if (productExists) {
       throw new BadRequestException({
-        statusCode: EnumProductCodeError.ProductExistsError,
+        statusCode: EnumProductStatusCodeError.ProductExistsError,
         message: 'product.error.exists',
       });
     }
@@ -196,5 +199,22 @@ export class ProductController {
       availableSort,
       data,
     };
+  }
+
+  @Response('product.delete')
+  @RequestParamGuard(ProductDeleteDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Delete,
+        subject: Subject.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id): Promise<IResponse> {
+    const res = await this.productService.deleteProductBy({ id });
+    return res;
   }
 }
