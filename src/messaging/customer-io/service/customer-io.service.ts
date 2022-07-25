@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { APIClient, SendEmailRequest } from 'customerio-node';
 import { HttpService } from '@nestjs/axios';
-import { Observable } from 'rxjs';
-import { AxiosResponse } from 'axios';
 import { firstValueFrom } from 'rxjs';
+import { SendEmailDto } from '@/messaging/email/dto';
 import {
   EmailInstance,
   EmailStatus,
   CustomerIOTransactionalResponse,
-  SendEmailDto,
-} from './types';
+} from '@/messaging/email/email.constant';
 
 @Injectable()
 export class CustomerIOService {
   private readonly client: APIClient;
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
     this.client = new APIClient(process.env.CUSTOMER_IO_API_KEY);
   }
   async sendEmail(emailSendData: SendEmailDto): Promise<EmailInstance> {
@@ -60,7 +62,7 @@ export class CustomerIOService {
   }
 
   getTransactionalMessageId = async (name: string): Promise<string> => {
-    const url = `https://api.customer.io/v1/transactional`;
+    const url = this.configService.get<string>('customer-io.url');
     const { data } = await firstValueFrom(
       this.httpService.get<CustomerIOTransactionalResponse>(url, {
         headers: {

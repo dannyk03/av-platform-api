@@ -18,6 +18,7 @@ import {
 //
 import { ConnectionNames } from '@/database';
 import { GiftRecipientService } from './service/gift-recipient.service';
+import { MessagingModule } from '@/messaging/messaging.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GiftRecipientService } from './service/gift-recipient.service';
       [Gift, GiftRecipient, GiftSender, GiftSendConfirmationLink],
       ConnectionNames.Default,
     ),
+    MessagingModule,
   ],
   exports: [
     GiftService,

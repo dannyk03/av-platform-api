@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CustomerIOService } from './customer-io.service';
-import { EmailTemplate, EmailStatus } from './types';
-import { Observable } from 'rxjs';
-import { AxiosResponse } from 'axios';
+import { CustomerIOService } from '../../customer-io/service/customer-io.service';
+import { EmailTemplate, EmailStatus } from '../email.constant';
 
 @Injectable()
 export class EmailService {

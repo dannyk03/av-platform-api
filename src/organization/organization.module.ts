@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+// Modules
+import { MessagingModule } from '@/messaging/messaging.module';
 // Entities
 import { Organization, OrganizationInviteLink } from './entity';
 // Services
-// import { EmailService } from '@/messaging/email';
 import { OrganizationService, OrganizationInviteService } from './service';
 //
 import { ConnectionNames } from '@/database';
@@ -14,6 +15,7 @@ import { ConnectionNames } from '@/database';
       [Organization, OrganizationInviteLink],
       ConnectionNames.Default,
     ),
+    MessagingModule,
   ],
   exports: [OrganizationService, OrganizationInviteService],
   providers: [OrganizationService, OrganizationInviteService],

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 // Modules
 import { AclRoleModule } from '@acl/role/acl-role.module';
 import { UserModule } from '@/user/user.module';
@@ -12,6 +13,6 @@ import { GiftController } from '@/gifting/gift/controller';
   controllers: [GiftController],
   providers: [],
   exports: [],
-  imports: [GiftModule, MessagingModule, AclRoleModule, UserModule],
+  imports: [HttpModule, GiftModule, MessagingModule, AclRoleModule, UserModule],
 })
 export class RouterGiftingModule {}
