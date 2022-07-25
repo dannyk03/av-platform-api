@@ -14,15 +14,12 @@ export class AwsHealthIndicator extends HealthIndicator {
     super();
   }
 
-  async isHealthy(key: string): Promise<HealthIndicatorResult> {
+  async isHealthy(key = 'aws'): Promise<HealthIndicatorResult> {
     try {
       await this.awsS3Service.listBucket();
       return this.getStatus(key, true);
     } catch (error) {
-      throw new HealthCheckError(
-        'ElasticsearchHealthIndicator failed',
-        this.getStatus(key, false),
-      );
+      throw new HealthCheckError('AWS failed', this.getStatus(key, false));
     }
   }
 }

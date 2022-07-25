@@ -18,6 +18,10 @@ export class CloudinaryService {
     return 'asset_id' in data;
   }
 
+  async ping() {
+    return v2.api.ping();
+  }
+
   async uploadImage({
     image,
     subject,

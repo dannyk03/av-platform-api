@@ -1,12 +1,7 @@
 import { ConnectionNames } from '@/database';
-import { EnumStatusCodeError } from '@/utils/error/error.constant';
+
 import { IResponse } from '@/utils/response/response.interface';
-import {
-  Controller,
-  Get,
-  InternalServerErrorException,
-  VERSION_NEUTRAL,
-} from '@nestjs/common';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheck,
@@ -14,10 +9,13 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { Throttle } from '@nestjs/throttler';
+import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 import { Response } from '@/utils/response';
 
+@Throttle(1, 5)
 @Controller({
   version: VERSION_NEUTRAL,
   path: 'health',
@@ -30,6 +28,7 @@ export class HealthController {
     private readonly memoryHealthIndicator: MemoryHealthIndicator,
     private readonly diskHealthIndicator: DiskHealthIndicator,
     private readonly databaseIndicator: TypeOrmHealthIndicator,
+    private readonly cloudinaryIndicator: CloudinaryHealthIndicator,
   ) {}
 
   private checkDatabase = () =>
@@ -50,6 +49,9 @@ export class HealthController {
       path: '/',
     });
 
+  private checkCloudinary = async () =>
+    await this.cloudinaryIndicator.isHealthy();
+
   @Response('health.check')
   @HealthCheck()
   @Get()
@@ -59,6 +61,7 @@ export class HealthController {
       this.checkMemoryHeap,
       this.checkMemoryRss,
       this.checkStorage,
+      this.checkCloudinary,
     ]);
   }
 
@@ -88,5 +91,12 @@ export class HealthController {
   @Get('/storage')
   async healthCheckStorage(): Promise<IResponse> {
     return this.healthService.check([this.checkStorage]);
+  }
+
+  @Response('health.check')
+  @HealthCheck()
+  @Get('/cloudinary')
+  async healthCheckCloudinary(): Promise<IResponse> {
+    return this.healthService.check([this.checkCloudinary]);
   }
 }
