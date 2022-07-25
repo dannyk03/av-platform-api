@@ -2,7 +2,8 @@ import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { ConfigDynamicModule } from '@/config';
 import { HelperModule } from '@/utils/helper/helper.module';
-import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
+import { faker } from '@faker-js/faker';
+import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
 
 describe('HelperEncryptionService', () => {
   let helperEncryptionService: HelperEncryptionService;
@@ -229,12 +230,12 @@ describe('HelperEncryptionService', () => {
     it('should be called', async () => {
       const test = jest.spyOn(helperEncryptionService, 'jwtVerify');
 
-      const result = await helperEncryptionService.jwtEncrypt(
+      const result = helperEncryptionService.jwtEncrypt(
         { data },
         { expiredIn: '1h', secretKey: data },
       );
-      helperEncryptionService.jwtVerify(result);
-      expect(test).toHaveBeenCalledWith(result);
+      helperEncryptionService.jwtVerify(result, { secretKey: data });
+      expect(test).toHaveBeenCalledWith(result, { secretKey: data });
     });
 
     it('should be success', async () => {
@@ -242,12 +243,16 @@ describe('HelperEncryptionService', () => {
         { data },
         { expiredIn: '1h', secretKey: data },
       );
-      const verify = helperEncryptionService.jwtVerify(result);
+      const verify = helperEncryptionService.jwtVerify(result, {
+        secretKey: data,
+      });
       jest
         .spyOn(helperEncryptionService, 'jwtVerify')
         .mockImplementation(() => verify);
 
-      expect(helperEncryptionService.jwtVerify(result)).toBe(verify);
+      expect(
+        helperEncryptionService.jwtVerify(result, { secretKey: data }),
+      ).toBe(verify);
     });
 
     it('should be failed', async () => {
@@ -255,12 +260,18 @@ describe('HelperEncryptionService', () => {
         { data },
         { expiredIn: '1h', secretKey: data },
       );
-      const verify = helperEncryptionService.jwtVerify(result);
+      const verify = helperEncryptionService.jwtVerify(result, {
+        secretKey: faker.random.alpha(5),
+      });
       jest
         .spyOn(helperEncryptionService, 'jwtVerify')
         .mockImplementation(() => verify);
 
-      expect(helperEncryptionService.jwtVerify(result)).toBe(verify);
+      expect(
+        helperEncryptionService.jwtVerify(result, {
+          secretKey: faker.random.alpha(5),
+        }),
+      ).toBe(verify);
     });
   });
 });
