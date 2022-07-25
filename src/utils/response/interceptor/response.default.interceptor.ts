@@ -42,9 +42,7 @@ export function ResponseDefaultInterceptor(
             const { customLang } = ctx.getRequest<IRequestApp>();
             const customLanguages = customLang.split(',');
 
-            const newStatusCode = statusCode
-              ? statusCode
-              : responseExpress.statusCode;
+            const newStatusCode = statusCode || responseExpress?.statusCode;
             const data: Record<string, any> = await response;
             const message: string | IMessage =
               await this.responseMessageService.get(messagePath, {

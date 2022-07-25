@@ -20,7 +20,6 @@ import { IResult } from 'ua-parser-js';
 import { UserService } from '@/user/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { EmailService } from '@/messaging/email';
 import { AuthService, AuthSignUpVerificationService } from '../service';
 //
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
@@ -57,7 +56,6 @@ export class AuthCommonController {
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
     private readonly authSignUpVerificationService: AuthSignUpVerificationService,
-    private readonly emailService: EmailService,
   ) {}
 
   @Response('auth.login')

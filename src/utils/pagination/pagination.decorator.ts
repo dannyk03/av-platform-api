@@ -104,7 +104,7 @@ export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
 export function PaginationSort(
   sort = PAGINATION_DEFAULT_SORT,
   availableSort = PAGINATION_DEFAULT_AVAILABLE_SORT,
-  nestingAliasMap?,
+  nestingAliasMap?: Record<string, string>,
 ): any {
   return applyDecorators(
     Expose(),
@@ -116,7 +116,7 @@ export function PaginationSort(
       const field: string = rSort.split('@')[0];
       const type: string = rSort.split('@')[1];
       const convertField: string = rAvailableSort.includes(field)
-        ? nestingAliasMap[field] || field
+        ? nestingAliasMap?.[field] || field
         : bSort;
       const convertType =
         type === 'desc' || type === '-1'

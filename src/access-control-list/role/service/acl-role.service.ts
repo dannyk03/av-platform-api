@@ -58,7 +58,7 @@ export class AclRoleService {
     transactionalEntityManager: EntityManager,
     tree: DeepPartial<AclRole>[],
   ): Promise<AclRole[]> {
-    const clone = await Promise.all(
+    return Promise.all(
       tree.map(async (role) => {
         const { policy } = role;
         const policySubjects = await Promise.all(
@@ -95,13 +95,12 @@ export class AclRoleService {
         return transactionalEntityManager.save(roleEntity);
       }),
     );
-    return clone;
   }
 
   async findBy(
     roleIdOrSlug: string,
     organizationIdOrSlug: string,
-  ): Promise<AclRole | null> {
+  ): Promise<AclRole> {
     const organizationId = isUUID(organizationIdOrSlug)
       ? organizationIdOrSlug
       : undefined;
@@ -115,14 +114,12 @@ export class AclRoleService {
       : undefined;
 
     if ((roleId || roleSlug) && (organizationId || organizationSlug)) {
-      const role = await this.aclRoleRepository.findOneBy({
+      return this.aclRoleRepository.findOneBy({
         ...(roleId ? { id: roleId } : { slug: roleSlug }),
         ...(organizationId
           ? { organization: { id: organizationId } }
           : { organization: { slug: organizationSlug } }),
       });
-
-      return role;
     }
 
     return null;

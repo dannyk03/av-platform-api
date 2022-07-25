@@ -34,7 +34,7 @@ export function ResponsePagingInterceptor(
       next: CallHandler,
     ): Promise<Observable<Promise<any> | string>> {
       if (context.getType() === 'http') {
-        const statusCode: number = options.statusCode;
+        const statusCode: number = options?.statusCode;
 
         return next.handle().pipe(
           map(async (response: Promise<Record<string, any>>) => {
@@ -43,9 +43,7 @@ export function ResponsePagingInterceptor(
             const { headers } = ctx.getRequest();
             const customLanguages = headers['x-custom-lang'];
 
-            const newStatusCode = statusCode
-              ? statusCode
-              : responseExpress.statusCode;
+            const newStatusCode = statusCode || responseExpress.statusCode;
             const responseData: Record<string, any> = await response;
             const {
               totalData,
