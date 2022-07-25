@@ -10,6 +10,7 @@ import {
   IPaginationSort,
   PaginationAvailableSort,
   PaginationLanguage,
+  PaginationFilterBoolean,
 } from '@/utils/pagination';
 import {
   PRODUCT_DEFAULT_AVAILABLE_SEARCH,
@@ -18,6 +19,7 @@ import {
   PRODUCT_DEFAULT_SORT,
   PRODUCT_DEFAULT_AVAILABLE_SORT,
   ProductNestingAliasMap,
+  PRODUCT_DEFAULT_ACTIVE,
 } from '../product.constant';
 
 export class ProductListDto implements PaginationListAbstract {
@@ -48,4 +50,7 @@ export class ProductListDto implements PaginationListAbstract {
 
   @PaginationAvailableSort(PRODUCT_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
+
+  @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
+  readonly isActive: boolean[];
 }

@@ -111,7 +111,7 @@ export class ResponseMessageService {
   ): any {
     return this.i18n.translate(key, {
       lang: lang || this.defaultLanguage,
-      args: options && options.properties ? options.properties : undefined,
+      args: options.properties,
     });
   }
 

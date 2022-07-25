@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { IHelperStringRandomOptions } from '../helper.interface';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class HelperStringService {
   checkEmail(email: string): boolean {
-    const regex = /\S+@\S+\.\S+/;
-    return regex.test(email);
+    return isEmail(email);
   }
 
   randomReference(length: number, prefix?: string): string {

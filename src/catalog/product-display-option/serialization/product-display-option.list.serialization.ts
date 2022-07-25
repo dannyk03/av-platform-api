@@ -5,7 +5,6 @@ import { DisplayLanguage } from '@/language/display-language/entity';
 import { Exclude, Expose, plainToInstance, Transform } from 'class-transformer';
 
 export class ProductDisplayOptionListSerialization {
-  readonly id: string;
   readonly name: string;
   readonly description: string;
   readonly keywords!: string[];
@@ -22,6 +21,9 @@ export class ProductDisplayOptionListSerialization {
     ),
   )
   readonly images: ProductImageListSerialization;
+
+  @Exclude()
+  readonly id: string;
 
   @Exclude()
   readonly product: Product;

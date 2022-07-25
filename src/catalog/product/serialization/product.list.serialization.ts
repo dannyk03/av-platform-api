@@ -13,7 +13,7 @@ export class ProductListSerialization {
   @Transform(({ value }) => value?.[0])
   @Type(() => ProductDisplayOptionListSerialization)
   @Expose({ name: 'displayOptions' })
-  readonly displayOption: ProductDisplayOptionListSerialization;
+  readonly display: ProductDisplayOptionListSerialization;
 
   @Exclude()
   readonly language: DisplayLanguage;

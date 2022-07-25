@@ -42,7 +42,7 @@ describe('MessageService', () => {
       {
         target: {
           email: 'adminmail.com',
-          password: 'aaAA@@123444',
+          password: process.env.TEST_PASSWORD,
           rememberMe: true,
         },
         value: 'adminmail.com',
@@ -56,7 +56,7 @@ describe('MessageService', () => {
       {
         target: {
           email: 'adminmail.com',
-          password: 'aaAA@@123444',
+          password: process.env.TEST_PASSWORD,
           rememberMe: true,
         },
         value: 'adminmail.com',
@@ -66,7 +66,7 @@ describe('MessageService', () => {
           {
             target: {
               email: 'adminmail.com',
-              password: 'aaAA@@123444',
+              password: process.env.TEST_PASSWORD,
               rememberMe: true,
             },
             value: 'adminmail.com',
@@ -84,7 +84,7 @@ describe('MessageService', () => {
       {
         target: {
           email: 'adminmail.com',
-          password: 'aaAA@@123444',
+          password: process.env.TEST_PASSWORD,
           rememberMe: true,
         },
         value: 'adminmail.com',
@@ -94,7 +94,7 @@ describe('MessageService', () => {
           {
             target: {
               email: 'adminmail.com',
-              password: 'aaAA@@123444',
+              password: process.env.TEST_PASSWORD,
               rememberMe: true,
             },
             value: 'adminmail.com',
@@ -106,7 +106,7 @@ describe('MessageService', () => {
               {
                 target: {
                   email: 'adminmail.com',
-                  password: 'aaAA@@123444',
+                  password: process.env.TEST_PASSWORD,
                   rememberMe: true,
                 },
                 value: 'adminmail.com',

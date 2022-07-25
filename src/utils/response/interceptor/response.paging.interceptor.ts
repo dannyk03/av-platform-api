@@ -34,8 +34,7 @@ export function ResponsePagingInterceptor(
       next: CallHandler,
     ): Promise<Observable<Promise<any> | string>> {
       if (context.getType() === 'http') {
-        const statusCode: number =
-          options && options.statusCode ? options.statusCode : undefined;
+        const statusCode: number = options.statusCode;
 
         return next.handle().pipe(
           map(async (response: Promise<Record<string, any>>) => {
@@ -71,7 +70,7 @@ export function ResponsePagingInterceptor(
               },
             );
 
-            if (options && options.type === EnumPaginationType.Simple) {
+            if (options?.type === EnumPaginationType.Simple) {
               return {
                 statusCode: newStatusCode,
                 message,
@@ -82,7 +81,7 @@ export function ResponsePagingInterceptor(
                 metadata,
                 data,
               };
-            } else if (options && options.type === EnumPaginationType.Mini) {
+            } else if (options?.type === EnumPaginationType.Mini) {
               return {
                 statusCode: newStatusCode,
                 message,

@@ -7,6 +7,7 @@ export class ProductImageListSerialization {
 
   @Expose()
   readonly fileName: string;
+
   @Expose()
   readonly secureUrl: string;
 

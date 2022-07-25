@@ -147,7 +147,14 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
     IsBoolean({ each: true }),
     Transform(({ value }) =>
       value
-        ? value.split(',').map((val: string) => (val === 'true' ? true : false))
+        ? [
+            ...new Set(
+              value
+                .split(',')
+                .filter((val: string) => ['true', 'false'].includes(val))
+                .map((val: string) => val === 'true'),
+            ),
+          ]
         : defaultValue,
     ),
   );
