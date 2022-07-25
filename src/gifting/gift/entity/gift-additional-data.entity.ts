@@ -22,7 +22,8 @@ export class GiftAdditionalData extends BaseEntity<GiftAdditionalData> {
   currency?: Currency;
 
   @Column({
-    length: 20,
+    type: 'enum',
+    enum: EnumOccasion,
   })
-  occasion: string;
+  occasion: EnumOccasion;
 }
