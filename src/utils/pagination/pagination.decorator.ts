@@ -30,7 +30,7 @@ import {
   IPaginationFilterStringOptions,
 } from './pagination.interface';
 
-export function PaginationSearch(): any {
+export function PaginationSearch(availableSearch: string[]): any {
   return applyDecorators(
     Expose(),
     IsOptional(),
@@ -116,14 +116,14 @@ export function PaginationSort(
       const field: string = rSort.split('@')[0];
       const type: string = rSort.split('@')[1];
       const convertField: string = rAvailableSort.includes(field)
-        ? nestingAliasMap?.[field] || field
+        ? field
         : bSort;
       const convertType =
         type === 'desc' || type === '-1'
           ? EnumPaginationAvailableSortType.Desc
           : EnumPaginationAvailableSortType.Asc;
 
-      const key = convertField
+      const key = (nestingAliasMap?.[convertField] || convertField)
         .split('.')
         .map((field) => snakeCase(field))
         .join('.');

@@ -28,6 +28,5 @@ export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
 export const ProductNestingAliasMap = {
   name: 'displayOptions.name',
   description: 'displayOptions.description',
-  keywords: '_keywords',
   createdAt: 'product.createdAt',
 };

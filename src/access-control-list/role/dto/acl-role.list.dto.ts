@@ -17,7 +17,7 @@ import {
 } from '../acl-role.constant';
 
 export class AclRoleListDto implements PaginationListAbstract {
-  @PaginationSearch()
+  @PaginationSearch(ROLE_DEFAULT_AVAILABLE_SEARCH)
   readonly search: string;
 
   @PaginationAvailableSearch(ROLE_DEFAULT_AVAILABLE_SEARCH)

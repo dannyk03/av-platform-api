@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AES, enc, mode, pad } from 'crypto-js';
-import { IHelperJwtOptions } from '../helper.interface';
+import {
+  IHelperJwtOptions,
+  IHelperJwtVerifyOptions,
+} from '../helper.interface';
 
 @Injectable()
 export class HelperEncryptionService {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   base64Encrypt(data: string): string {
     const buff: Buffer = Buffer.from(data, 'utf8');
@@ -51,20 +50,11 @@ export class HelperEncryptionService {
     return cipher.toString(enc.Utf8);
   }
 
-  jwtEncrypt(
-    payload: Record<string, any>,
-    options?: IHelperJwtOptions,
-  ): string {
+  jwtEncrypt(payload: Record<string, any>, options: IHelperJwtOptions): string {
     return this.jwtService.sign(payload, {
-      secret:
-        options?.secretKey ||
-        this.configService.get<string>('helper.jwt.secretKey'),
-      expiresIn:
-        options?.expiredIn ||
-        this.configService.get<string>('helper.jwt.expirationTime'),
-      notBefore:
-        options?.notBefore ||
-        this.configService.get<string>('helper.jwt.notBeforeExpirationTime'),
+      secret: options.secretKey,
+      expiresIn: options.expiredIn,
+      notBefore: options.notBefore || 0,
     });
   }
 
@@ -72,15 +62,13 @@ export class HelperEncryptionService {
     return this.jwtService.decode(token) as Record<string, any>;
   }
 
-  jwtVerify(token: string, options?: IHelperJwtOptions): boolean {
+  jwtVerify(token: string, options: IHelperJwtVerifyOptions): boolean {
     try {
       this.jwtService.verify(token, {
-        secret:
-          options?.secretKey ||
-          this.configService.get<string>('helper.jwt.secretKey'),
+        secret: options.secretKey,
       });
       return true;
-    } catch (err) {
+    } catch (err: any) {
       return false;
     }
   }

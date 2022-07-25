@@ -469,6 +469,7 @@ export class AuthCommonController {
       throw new InternalServerErrorException({
         statusCode: EnumStatusCodeError.UnknownError,
         message: 'http.serverError.internalServerError',
+        cause: err.message,
       });
     }
 

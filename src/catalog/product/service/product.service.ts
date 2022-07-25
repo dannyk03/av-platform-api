@@ -59,14 +59,14 @@ export class ProductService {
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = await this.productRepository
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
-      .leftJoinAndSelect('displayOptions.language', 'language')
+      .leftJoinAndSelect('product.displayOptions', 'display_options')
+      .leftJoinAndSelect('display_options.language', 'language')
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
 
     if (loadImages) {
-      builder.leftJoinAndSelect('displayOptions.images', 'images');
+      builder.leftJoinAndSelect('display_options.images', 'images');
     }
 
     if (search) {
@@ -76,15 +76,15 @@ export class ProductService {
             builder.setParameters({ search, likeSearch: `%${search}%` });
             qb.where('sku ILIKE :likeSearch')
               .orWhere('brand ILIKE :likeSearch')
-              .orWhere('displayOptions.name ILIKE :likeSearch')
-              .orWhere('displayOptions.description ILIKE :likeSearch');
+              .orWhere('display_options.name ILIKE :likeSearch')
+              .orWhere('display_options.description ILIKE :likeSearch');
           }
         }),
       );
     }
 
     if (keywords) {
-      builder.andWhere('displayOptions.keywords && :keywords');
+      builder.andWhere('display_options.keywords && :keywords');
     }
 
     return builder;
@@ -125,7 +125,7 @@ export class ProductService {
       if (options.order.keywords && keywords) {
         searchBuilder.orderBy(
           `CARDINALITY(ARRAY (
-          SELECT UNNEST(displayOptions.keywords)
+          SELECT UNNEST(display_options.keywords)
           INTERSECT
           SELECT UNNEST(array[:...keywords])))`,
           options.order.keywords,

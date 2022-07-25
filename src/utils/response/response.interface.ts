@@ -13,10 +13,6 @@ export interface IResponsePaging {
   data: Record<string, any>[];
 }
 
-export interface IResponseOptions {
-  statusCode?: number;
-}
-
 export interface IResponsePagingOptions {
   statusCode?: number;
   type?: EnumPaginationType;

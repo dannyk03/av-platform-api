@@ -43,7 +43,7 @@ export class UserPutToRequestGuard implements CanActivate {
 
     const relations = [
       'authConfig',
-      ...(loadRelations.length ? loadRelations : defaultRelations),
+      ...(loadRelations?.length ? loadRelations : defaultRelations),
     ];
 
     const requestUser = await this.userService.findOne({
