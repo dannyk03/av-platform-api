@@ -19,7 +19,7 @@ function throwForbiddenExceptionForCorruptedOrganizationCtx() {
 }
 
 export const ReqOrganizationIdentifierCtx = createParamDecorator(
-  (data: string, ctx: ExecutionContext): IReqOrganizationIdentifierCtx => {
+  (_data: string, ctx: ExecutionContext): IReqOrganizationIdentifierCtx => {
     const request = ctx.switchToHttp().getRequest();
     const { query, body, __user } = request;
     const {

@@ -122,7 +122,7 @@ export function LoginGuard(): any {
 }
 
 export const Token = createParamDecorator(
-  (data: string, ctx: ExecutionContext): string => {
+  (_data: string, ctx: ExecutionContext): string => {
     const { headers } = ctx.switchToHttp().getRequest();
     const { authorization } = headers;
     return authorization ? authorization.split(' ')[1] : undefined;

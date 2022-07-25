@@ -16,10 +16,7 @@ import { ConnectionNames } from '@/database';
     ),
   ],
   exports: [OrganizationService, OrganizationInviteService],
-  providers: [
-    OrganizationService,
-    OrganizationInviteService /*, EmailService*/,
-  ],
+  providers: [OrganizationService, OrganizationInviteService],
   controllers: [],
 })
 export class OrganizationModule {}
