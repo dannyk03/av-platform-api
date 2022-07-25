@@ -7,7 +7,6 @@ import { AclAbility } from '@acl/ability/entity';
 import { AclRole } from '@acl/role/entity';
 import { AclSubject } from '@acl/subject/entity';
 // Services
-import { DebuggerService } from '@/debugger/service';
 import { AclPolicyService } from '@acl/policy/service';
 import { AclSubjectService } from '@acl/subject/service';
 import { AclAbilityService } from '@acl/ability/service';

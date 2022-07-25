@@ -1,5 +1,5 @@
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
-import { Type, Transform } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsEmail,

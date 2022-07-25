@@ -28,7 +28,6 @@ import {
 import { UploadFileMultiple, EnumFileType } from '@/utils/file';
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
-import { RoleListSerialization } from '@acl/role/serialization';
 import { EnumProductCodeError } from '../product.constant';
 import { ProductCreateDto, ProductListDto } from '../dto';
 import { ProductListSerialization } from '../serialization';
@@ -158,7 +157,7 @@ export class ProductController {
       availableSearch,
       isActive,
     }: ProductListDto, // : Promise<IResponsePaging>
-  ) {
+  ): Promise<IResponsePaging> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
     const products = await this.productService.paginatedSearchBy({

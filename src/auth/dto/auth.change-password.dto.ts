@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import { Escape, Trim } from 'class-sanitizer';
 import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 import { Type } from 'class-transformer';

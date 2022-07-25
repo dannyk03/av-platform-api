@@ -7,7 +7,6 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { ThrottlerException } from '@nestjs/throttler';
 import { Response } from 'express';
 // Services
 import { DebuggerService } from 'src/debugger/service/debugger.service';

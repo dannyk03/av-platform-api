@@ -1,9 +1,4 @@
-import {
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { CorsMiddleware } from './cors/cors.middleware';
 import {
   HttpDebuggerMiddleware,

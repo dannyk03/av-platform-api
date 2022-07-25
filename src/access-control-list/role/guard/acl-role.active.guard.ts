@@ -2,7 +2,6 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
 // Services

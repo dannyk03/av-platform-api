@@ -9,10 +9,7 @@ import {
   DeleteDateColumn,
   BeforeInsert,
 } from 'typeorm';
-import {
-  EnumDisplayLanguage,
-  DisplayLanguageCodeType,
-} from '../display-language.constant';
+import { DisplayLanguageCodeType } from '../display-language.constant';
 
 // https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 @Entity()

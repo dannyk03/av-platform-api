@@ -1,5 +1,3 @@
-import { Exclude } from 'class-transformer';
-
 export class UserListSerialization {
   // readonly id: string;
   // @Exclude()
@@ -10,10 +8,6 @@ export class UserListSerialization {
   // readonly lastName: string;
   // @Exclude()
   // readonly password: string;
-  // @Exclude()
-  // readonly passwordExpired: Date;
-  // @Exclude()
-  // readonly salt: string;
   // readonly createdAt: Date;
   // @Exclude()
   // readonly updatedAt: Date;

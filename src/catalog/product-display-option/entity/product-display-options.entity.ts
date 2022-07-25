@@ -3,8 +3,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
   Index,
 } from 'typeorm';

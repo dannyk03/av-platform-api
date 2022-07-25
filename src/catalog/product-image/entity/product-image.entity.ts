@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  ManyToMany,
-  Index,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 // Entities
 import { BaseEntity } from '@/database/entity';
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
