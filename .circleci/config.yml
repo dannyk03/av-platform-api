@@ -44,6 +44,7 @@ workflows:
           context:
             - ci-migrations-job
             - jfrog-platform
+            - cloudinary
       - aws-ecr/build-and-push-image:
           name: build and push image to admin-eu ecr
           remote-docker-layer-caching: true
