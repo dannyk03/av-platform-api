@@ -33,8 +33,7 @@ export function ResponseDefaultInterceptor(
       next: CallHandler,
     ): Promise<Observable<Promise<any> | string>> {
       if (context.getType() === 'http') {
-        const statusCode: number =
-          options && options.statusCode ? options.statusCode : undefined;
+        const statusCode: number = options?.statusCode;
 
         return next.handle().pipe(
           map(async (response: Promise<Record<string, any>>) => {

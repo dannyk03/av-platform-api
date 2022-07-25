@@ -127,10 +127,7 @@ export class AuthService {
     return {
       ...data,
       rememberMe,
-      loginDate:
-        options && options.loginDate
-          ? options.loginDate
-          : this.helperDateService.create(),
+      loginDate: options?.loginDate || this.helperDateService.create(),
     };
   }
 
@@ -142,7 +139,7 @@ export class AuthService {
     return {
       id,
       rememberMe,
-      loginDate: options && options.loginDate ? options.loginDate : undefined,
+      loginDate: options?.loginDate,
     };
   }
 
