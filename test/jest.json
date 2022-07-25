@@ -1,6 +1,5 @@
 {
   "testTimeout": 5000,
-  "maxWorkers": 1,
   "rootDir": "..",
   "modulePaths": ["."],
   "testEnvironment": "node",
