@@ -50,12 +50,6 @@ export type EmailSendResult = {
   accepted: Array<string>;
 };
 
-export type EmailHtmlRequestInfo = {
-  template: string;
-  emailTemplatePayload: any;
-  warehouseCode: string;
-};
-
 export type EmailHtmlResponse = string;
 
 export type CustomerIOTransactionalResponse = {
