@@ -3449,6 +3449,11 @@ currency-symbol-map@^5.1.0:
   resolved "https://registry.yarnpkg.com/currency-symbol-map/-/currency-symbol-map-5.1.0.tgz#59531fbe977ba95e8d358e90e3c9e9053efb75ad"
   integrity sha512-LO/lzYRw134LMDVnLyAf1dHE5tyO6axEFkR3TXjQIOmMkAM9YL6QsiUwuXzZAmFnuDJcs4hayOgyIYtViXFrLw==
 
+customerio-node@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/customerio-node/-/customerio-node-3.3.3.tgz#78d12f93f476f000d4a28675a173323c5b8c11e7"
+  integrity sha512-CYtLZ0NneortCHsrHQpbRmSJf72uzperGnwjsTb/TGN2EXqH8rTWyavkfIK2u8v2LaofZIhRAneb/IVl+3591g==
+
 data-uri-to-buffer@3:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz#594b8973938c5bc2c33046535785341abc4f3636"

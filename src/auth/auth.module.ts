@@ -5,7 +5,7 @@ import { UserAuthConfig, SignUpEmailVerificationLink } from './entity';
 // Services
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
-import { EmailService } from '@/messaging/email';
+// import { EmailService } from '@/messaging/email';
 import { AuthService, AuthSignUpVerificationService } from './service';
 //
 import { ConnectionNames } from '@/database';
@@ -22,7 +22,7 @@ import { ConnectionNames } from '@/database';
     JwtStrategy,
     JwtRefreshStrategy,
     AuthSignUpVerificationService,
-    EmailService,
+    // EmailService,
   ],
   exports: [
     AuthService,
