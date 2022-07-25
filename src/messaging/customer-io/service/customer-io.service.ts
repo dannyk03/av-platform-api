@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APIClient, SendEmailRequest } from 'customerio-node';
 import { HttpService } from '@nestjs/axios';
@@ -9,6 +9,7 @@ import {
   EmailStatus,
   CustomerIOTransactionalResponse,
 } from '@/messaging/email/email.constant';
+import { EnumCustomerIoStatusCodeError } from '../customer-io.constant';
 
 @Injectable()
 export class CustomerIOService {
@@ -18,7 +19,9 @@ export class CustomerIOService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.client = new APIClient(process.env.CUSTOMER_IO_API_KEY);
+    this.client = new APIClient(
+      this.configService.get<string>('customer-io.apiKey'),
+    );
   }
   async sendEmail(emailSendData: SendEmailDto): Promise<EmailInstance> {
     const { to, identifier, template, emailTemplatePayload } = emailSendData;
@@ -66,7 +69,9 @@ export class CustomerIOService {
     const { data } = await firstValueFrom(
       this.httpService.get<CustomerIOTransactionalResponse>(url, {
         headers: {
-          Authorization: `Bearer ${process.env.CUSTOMER_IO_API_KEY}`,
+          Authorization: `Bearer ${this.configService.get<string>(
+            'customer-io.apiKey',
+          )}`,
         },
       }),
     );
@@ -74,9 +79,11 @@ export class CustomerIOService {
     const message = data.messages.find((m) => m.name === name);
 
     if (!message) {
-      throw new Error(
-        `Transactional message ${name} doesn't exist on customer.io`,
-      );
+      throw new BadRequestException({
+        statusCode:
+          EnumCustomerIoStatusCodeError.CustomerIoTransactionalMessageError,
+        message: `Transactional message ${name} doesn't exist on customer.io`,
+      });
     }
     return message.id;
   };

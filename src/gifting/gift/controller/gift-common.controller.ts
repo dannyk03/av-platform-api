@@ -20,8 +20,6 @@ import { User } from '@/user/entity';
 //
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { IResponse, Response } from '@/utils/response';
-import { ReqUser } from '@/user';
-import { EnumStatusCodeError } from '@/utils/error';
 import { GifSendGuard } from '../gift.decorator';
 import { ConnectionNames } from '@/database';
 import { ReqJwtUser } from '@/auth';
@@ -59,75 +57,68 @@ export class GiftController {
       email: reqJwtUser?.email || sender.email,
     });
 
-    try {
-      await this.defaultDataSource.transaction(
-        'SERIALIZABLE',
-        async (transactionalEntityManager) => {
-          const giftSends = await Promise.all(
-            uniqueRecipients.map(async (recipient) => {
-              const maybeRecipientUser = await this.userService.findOneBy({
-                email: recipient.email,
-              });
-
-              return this.giftService.create({
-                sender: {
-                  user: maybeSenderUser,
-                  additionalData: {
-                    ...(await this.giftService.serializationSenderGiftAdditionalData(
-                      sender,
-                    )),
-                  },
-                },
-                recipient: {
-                  user: maybeRecipientUser,
-                  additionalData: {
-                    ...(await this.giftService.serializationRecipientGiftAdditionalData(
-                      recipient,
-                    )),
-                  },
-                },
-                additionalData: {
-                  occasion: additionalData.occasion,
-                  priceMin: additionalData.minPrice,
-                  priceMax: additionalData.maxPrice,
-                  currency: { code: additionalData.currency },
-                },
-              });
-            }),
-          );
-
-          const confirmationLink =
-            await this.giftSendConfirmationLinkService.create({
-              gifts: giftSends,
+    await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const giftSends = await Promise.all(
+          uniqueRecipients.map(async (recipient) => {
+            const maybeRecipientUser = await this.userService.findOneBy({
+              email: recipient.email,
             });
 
-          await transactionalEntityManager.save(confirmationLink);
+            return this.giftService.create({
+              sender: {
+                user: maybeSenderUser,
+                additionalData: {
+                  ...(await this.giftService.serializationSenderGiftAdditionalData(
+                    sender,
+                  )),
+                },
+              },
+              recipient: {
+                user: maybeRecipientUser,
+                additionalData: {
+                  ...(await this.giftService.serializationRecipientGiftAdditionalData(
+                    recipient,
+                  )),
+                },
+              },
+              additionalData: {
+                occasion: additionalData.occasion,
+                priceMin: additionalData.minPrice,
+                priceMax: additionalData.maxPrice,
+                currency: { code: additionalData.currency },
+              },
+            });
+          }),
+        );
 
-          await Promise.all(
-            giftSends.map(async (giftSend) => {
-              const emailSent = await this.emailService.sendGiftConfirm({
-                email: giftSend.sender.user?.email,
-                code: confirmationLink.code,
+        const confirmationLink =
+          await this.giftSendConfirmationLinkService.create({
+            gifts: giftSends,
+          });
+
+        await transactionalEntityManager.save(confirmationLink);
+
+        await Promise.all(
+          giftSends.map(async (giftSend) => {
+            const emailSent = await this.emailService.sendGiftConfirm({
+              email: giftSend.sender.user?.email,
+              code: confirmationLink.code,
+            });
+            if (!emailSent) {
+              throw new InternalServerErrorException({
+                statusCode:
+                  EnumMessagingStatusCodeError.MessagingEmailSendError,
+                message: 'http.serverError.internalServerError',
               });
-              if (!emailSent) {
-                throw new InternalServerErrorException({
-                  statusCode:
-                    EnumMessagingStatusCodeError.MessagingEmailSendError,
-                  message: 'http.serverError.internalServerError',
-                });
-              }
-              giftSend.confirmationLink = confirmationLink;
-              return transactionalEntityManager.save(giftSend);
-            }),
-          );
-        },
-      );
-    } catch (error) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-      });
-    }
+            }
+            giftSend.confirmationLink = confirmationLink;
+            return transactionalEntityManager.save(giftSend);
+          }),
+        );
+      },
+    );
 
     return;
   }
