@@ -88,18 +88,11 @@ export class ProductController {
 
     const uploadImages = await Promise.all(
       images.map(async (image) => {
-        // const existsImage = await this.productImageService.findOneByFileName(
-        //   image.originalname.split('.')[0],
-        // );
-
-        return (
-          // existsImage ||
-          this.cloudinaryService.uploadImage({
-            subject: CloudinarySubject.Product,
-            image,
-            languageIsoCode,
-          })
-        );
+        return this.cloudinaryService.uploadImage({
+          subject: CloudinarySubject.Product,
+          image,
+          languageIsoCode,
+        });
       }),
     );
 
@@ -113,7 +106,7 @@ export class ProductController {
             secureUrl: image.secure_url,
           });
         }
-        // return image as ProductImage;
+
         return Promise.resolve(null);
       }),
     );
