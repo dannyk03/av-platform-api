@@ -1,8 +1,7 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
-// Entities
+import { Column, Entity, ManyToOne } from 'typeorm';
+
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
-//
 
 @Entity()
 export class GiftSender extends BaseEntity<GiftSender> {

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TestingCommonController } from '@/testing';
-// Module
-import { UserModule } from '@/user/user.module';
+
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
-//
+import { UserModule } from '@/user/user.module';
+
+import { TestingCommonController } from '@/testing';
 
 @Module({
   controllers: [TestingCommonController],

@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
+
 import { IAwsS3Response } from '@/aws/aws.interface';
-// import { IRoleEntity } from '@/role/role.interface';
 
 @Exclude()
 export class UserProfileGetSerialization {

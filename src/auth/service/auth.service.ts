@@ -1,20 +1,23 @@
-import { User } from '@/user/entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { plainToInstance } from 'class-transformer';
-// Services
+
 import {
-  HelperHashService,
-  HelperEncryptionService,
   HelperDateService,
-} from 'src/utils/helper/service';
-//
+  HelperEncryptionService,
+  HelperHashService,
+} from '@/utils/helper/service';
+
+import { User } from '@/user/entity';
+
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
+
 import {
   IAuthMagicLoginOptions,
   IAuthPassword,
   IAuthPayloadOptions,
 } from '../auth.interface';
-import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 @Injectable()
 export class AuthService {

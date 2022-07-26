@@ -1,8 +1,11 @@
-import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
+import { Test } from '@nestjs/testing';
+
 import { HelperModule } from '@/utils/helper/helper.module';
-import { HelperArrayService } from 'src/utils/helper/service/helper.array.service';
+
+import { HelperArrayService } from '@/utils/helper/service/helper.array.service';
+
+import { ConfigDynamicModule } from '@/config';
 
 describe('HelperArrayService', () => {
   let helperArrayService: HelperArrayService;

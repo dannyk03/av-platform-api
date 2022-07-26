@@ -1,7 +1,8 @@
 import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import cors, { CorsOptions } from 'cors';
 import { ConfigService } from '@nestjs/config';
+
+import cors, { CorsOptions } from 'cors';
+import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class CorsMiddleware implements NestMiddleware {

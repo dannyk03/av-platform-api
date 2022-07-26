@@ -1,9 +1,10 @@
 import { ForbiddenException, Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response, NextFunction } from 'express';
-import { EnumRequestStatusCodeError } from '@/utils/request/request.constant';
-import { IRequestApp } from '@/utils/request/request.interface';
+
+import { NextFunction, Response } from 'express';
 import userAgentParser from 'ua-parser-js';
+
+import { EnumRequestStatusCodeError, IRequestApp } from '@/utils/request';
 
 @Injectable()
 export class UserAgentMiddleware implements NestMiddleware {

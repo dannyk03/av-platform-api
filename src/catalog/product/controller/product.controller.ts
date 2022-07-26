@@ -12,28 +12,34 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Action, Subject } from '@avo/casl';
+
 import compact from 'lodash/compact';
-// Services
-import { HelperDateService } from '@/utils/helper/service';
-import { CloudinaryService } from '@/cloudinary/service';
-import { ProductImageService } from '@/catalog/product-image/service';
-import { PaginationService } from '@/utils/pagination/service';
+
+import { Action, Subject } from '@avo/casl';
+
 import { ProductService } from '../service';
-//
-import {
-  Response,
-  IResponse,
-  ResponsePaging,
-  IResponsePaging,
-} from '@/utils/response';
-import { UploadFileMultiple, EnumFileType } from '@/utils/file';
+import { ProductImageService } from '@/catalog/product-image/service';
+import { CloudinaryService } from '@/cloudinary/service';
+import { HelperDateService } from '@/utils/helper/service';
+import { PaginationService } from '@/utils/pagination/service';
+
+import { ProductListSerialization } from '../serialization';
+
+import { ProductCreateDto, ProductListDto } from '../dto';
+import { ProductDeleteDto } from '../dto';
+
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
-import { EnumProductStatusCodeError } from '../product.constant';
-import { ProductCreateDto, ProductDeleteDto, ProductListDto } from '../dto';
-import { ProductListSerialization } from '../serialization';
+import { EnumFileType, UploadFileMultiple } from '@/utils/file';
 import { RequestParamGuard } from '@/utils/request';
+import {
+  IResponse,
+  IResponsePaging,
+  Response,
+  ResponsePaging,
+} from '@/utils/response';
+
+import { EnumProductStatusCodeError } from '../product.constant';
 
 @Controller({
   version: '1',
@@ -86,18 +92,11 @@ export class ProductController {
 
     const uploadImages = await Promise.all(
       images.map(async (image) => {
-        // const existsImage = await this.productImageService.findOneByFileName(
-        //   image.originalname.split('.')[0],
-        // );
-
-        return (
-          // existsImage ||
-          this.cloudinaryService.uploadImage({
-            subject: CloudinarySubject.Product,
-            image,
-            languageIsoCode,
-          })
-        );
+        return this.cloudinaryService.uploadImage({
+          subject: CloudinarySubject.Product,
+          image,
+          languageIsoCode,
+        });
       }),
     );
 
@@ -111,7 +110,7 @@ export class ProductController {
             secureUrl: image.secure_url,
           });
         }
-        // return image as ProductImage;
+
         return Promise.resolve(null);
       }),
     );

@@ -1,28 +1,29 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { WinstonModule } from 'nest-winston';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Modules
-import { ConfigDynamicModule } from '@/config';
+
+import { WinstonModule } from 'nest-winston';
+
 import { AuthModule } from '@/auth/auth.module';
-import { ResponseMessageModule } from '@/response-message/response-message.module';
-import { DebuggerModule } from '@/debugger/debugger.module';
-import { DatabaseModule } from '@/database/database.module';
-import { MiddlewareModule } from '@/utils/middleware/middleware.module';
-import { LogModule } from '@/log/log.module';
-import { ErrorModule } from '@/utils/error/error.module';
-import { PaginationModule } from '@/utils/pagination/pagination.module';
-import { HelperModule } from '@/utils/helper/helper.module';
-import { RequestModule } from '@/utils/request/request.module';
-import { VersionModule } from '@/utils/version/version.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
+import { DatabaseModule } from '@/database/database.module';
+import { DebuggerModule } from '@/debugger/debugger.module';
+import { LogModule } from '@/log/log.module';
+import { ResponseMessageModule } from '@/response-message/response-message.module';
+import { ErrorModule } from '@/utils/error/error.module';
+import { HelperModule } from '@/utils/helper/helper.module';
+import { MiddlewareModule } from '@/utils/middleware/middleware.module';
+import { PaginationModule } from '@/utils/pagination/pagination.module';
+import { RequestModule } from '@/utils/request/request.module';
 import { ResponseModule } from '@/utils/response/response.module';
-// Services
-import { DebuggerOptionService } from '@/debugger/service';
+import { VersionModule } from '@/utils/version/version.module';
+
 import { TypeOrmConfigService } from '@/database/service';
-//
+import { DebuggerOptionService } from '@/debugger/service';
+
+import { ConfigDynamicModule } from '@/config';
 import { ConnectionNames } from '@/database/';
 
 @Module({

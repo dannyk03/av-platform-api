@@ -5,12 +5,15 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-// Services
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+
 import { DebuggerService } from '@/debugger/service';
-//
+
+import { RequestControllerGuard } from './guard/request.controller.guard';
+import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { EnumRequestStatusCodeError } from './request.constant';
+import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
 import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';
 import { IsPasswordStrongConstraint } from './validation/request.is-password-strong.validation';
 import { IsPasswordWeakConstraint } from './validation/request.is-password-weak.validation';
@@ -23,9 +26,6 @@ import { IsOnlyDigitsConstraint } from './validation/request.only-digits.validat
 import { SafeStringConstraint } from './validation/request.safe-string.validation';
 import { SkipConstraint } from './validation/request.skip.validation';
 import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
-import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
-import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
-import { RequestControllerGuard } from './guard/request.controller.guard';
 
 @Module({
   controllers: [],

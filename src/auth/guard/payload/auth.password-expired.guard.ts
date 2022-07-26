@@ -1,13 +1,12 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
-// Services
 
 import { HelperDateService } from '@/utils/helper/service';
-//
+
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()

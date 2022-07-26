@@ -1,12 +1,15 @@
-import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
+import { Test } from '@nestjs/testing';
+
 import { HelperModule } from '@/utils/helper/helper.module';
+
+import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+
+import { ConfigDynamicModule } from '@/config';
 import {
   EnumHelperDateDiff,
   EnumHelperDateFormat,
-} from 'src/utils/helper/helper.constant';
-import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
+} from '@/utils/helper/helper.constant';
 
 describe('HelperDateService', () => {
   let helperDateService: HelperDateService;

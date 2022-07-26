@@ -1,12 +1,12 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
-// Services
+
 import { DebuggerService } from '@/debugger/service';
-//
+
 import { EnumRoleStatusCodeError } from '../acl-role.constant';
 
 @Injectable()

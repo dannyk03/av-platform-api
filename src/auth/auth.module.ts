@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Entities
-import { UserAuthConfig, SignUpEmailVerificationLink } from './entity';
-// Services
+
+import { AuthService, AuthSignUpVerificationLinkService } from './service';
+
+import { SignUpEmailVerificationLink, UserAuthConfig } from './entity';
+
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
-import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
-import { AuthService, AuthSignUpVerificationService } from './service';
-//
 import { ConnectionNames } from '@/database';
+
+import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -20,13 +21,13 @@ import { ConnectionNames } from '@/database';
     AuthService,
     JwtStrategy,
     JwtRefreshStrategy,
-    AuthSignUpVerificationService,
+    AuthSignUpVerificationLinkService,
   ],
   exports: [
     AuthService,
     JwtStrategy,
     JwtRefreshStrategy,
-    AuthSignUpVerificationService,
+    AuthSignUpVerificationLinkService,
   ],
   controllers: [],
 })

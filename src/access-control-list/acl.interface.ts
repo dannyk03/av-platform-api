@@ -1,4 +1,4 @@
-import { Subject, Action } from '@avo/casl';
+import { Action, Subject } from '@avo/casl';
 
 export interface IReqAclAbility {
   action: Action;

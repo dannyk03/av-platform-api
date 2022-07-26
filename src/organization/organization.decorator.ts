@@ -1,15 +1,18 @@
-import { SYSTEM_ORGANIZATION_NAME } from '@/system';
-import { EnumRequestStatusCodeError } from '@/utils/request';
 import {
-  createParamDecorator,
   ExecutionContext,
   ForbiddenException,
   UnprocessableEntityException,
+  createParamDecorator,
 } from '@nestjs/common';
+
 import { isUUID } from 'class-validator';
-import { IReqOrganizationIdentifierCtx } from './organization.interface';
-import { slugify } from '@/utils/helper';
+
 import { PermissionsStatusCodeError } from '@/access-control-list/ability';
+import { SYSTEM_ORGANIZATION_NAME } from '@/system';
+import { slugify } from '@/utils/helper';
+import { EnumRequestStatusCodeError } from '@/utils/request';
+
+import { IReqOrganizationIdentifierCtx } from './organization.interface';
 
 function throwForbiddenExceptionForCorruptedOrganizationCtx() {
   throw new ForbiddenException({

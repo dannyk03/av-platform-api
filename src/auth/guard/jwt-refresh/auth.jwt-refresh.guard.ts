@@ -1,8 +1,8 @@
-import { AuthGuard } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-// Services
+import { AuthGuard } from '@nestjs/passport';
+
 import { DebuggerService } from '@/debugger/service';
-//
+
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()

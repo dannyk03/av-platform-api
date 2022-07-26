@@ -1,11 +1,12 @@
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
+
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class VersionInterceptor implements NestInterceptor<Promise<any>> {

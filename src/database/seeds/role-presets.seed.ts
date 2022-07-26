@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+
 import { Command } from 'nestjs-command';
-// Entities
+import { DataSource } from 'typeorm';
+
+import { AclAbilityService } from '@acl/ability/service';
+import { AclPolicyService } from '@acl/policy/service';
+import { AclRolePresetService } from '@acl/role/service';
+import { AclSubjectService } from '@acl/subject/service';
+
 import { AclAbility } from '@acl/ability/entity';
 import { AclRole } from '@acl/role/entity';
 import { AclSubject } from '@acl/subject/entity';
-// Services
-import { AclPolicyService } from '@acl/policy/service';
-import { AclSubjectService } from '@acl/subject/service';
-import { AclAbilityService } from '@acl/ability/service';
-import { AclRolePresetService } from '@acl/role/service';
-//
+
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';
 

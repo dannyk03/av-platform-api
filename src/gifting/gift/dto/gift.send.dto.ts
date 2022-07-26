@@ -1,25 +1,27 @@
-import { Transform, Type } from 'class-transformer';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
+import { Transform, Type } from 'class-transformer';
 import {
-  IsEmail,
   ArrayMaxSize,
   ArrayMinSize,
-  MaxLength,
-  IsOptional,
-  IsObject,
   IsArray,
-  ValidateNested,
-  IsNotEmpty,
-  IsString,
-  IsNumber,
-  Max,
-  Min,
+  IsEmail,
   IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import { isArray } from 'lodash';
-import { EmptyStringToUndefinedTransform } from '@/utils/request/transform';
+
+import { EnumCurrency, EnumOccasion } from '@avo/type';
+
 import { MinGreaterThan } from '@/utils/request';
-import { EnumOccasion, EnumCurrency } from '@avo/type';
+import { EmptyStringToUndefinedTransform } from '@/utils/request/transform';
 
 export class GiftSendRecipientDto {
   @MaxLength(50)

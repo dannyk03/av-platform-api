@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { DeepPartial, Repository } from 'typeorm';
-import { ConnectionNames } from '@/database';
+
 import { AclSubject } from '../entity';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class AclSubjectService {

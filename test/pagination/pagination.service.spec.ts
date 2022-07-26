@@ -1,6 +1,8 @@
-import { PaginationService } from '@/utils/pagination/service';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
+
+import { CoreModule } from '@/core/core.module';
+
+import { PaginationService } from '@/utils/pagination/service';
 
 describe('PaginationService', () => {
   let paginationService: PaginationService;

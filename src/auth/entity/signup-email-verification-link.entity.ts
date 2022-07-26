@@ -1,9 +1,8 @@
-import { Entity, Column, Index, JoinColumn, OneToOne } from 'typeorm';
-// Entities
+import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
+import { IResult } from 'ua-parser-js';
+
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
-//
-import { IResult } from 'ua-parser-js';
 
 @Entity()
 export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificationLink> {

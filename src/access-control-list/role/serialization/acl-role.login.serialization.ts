@@ -1,5 +1,6 @@
-import { AclPolicy } from '@acl/policy/entity';
 import { Exclude } from 'class-transformer';
+
+import { AclPolicy } from '@acl/policy/entity';
 
 export class AclRoleLoginSerialization {
   readonly isActive: boolean;

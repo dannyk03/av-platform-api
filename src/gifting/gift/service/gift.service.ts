@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
+  FindOneOptions,
   FindOptionsWhere,
   Repository,
-  FindOneOptions,
 } from 'typeorm';
-// Entities
+
 import { Gift } from '../entity';
-//
-import { ConnectionNames } from '@/database';
-import { plainToInstance } from 'class-transformer';
+
 import {
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class GiftService {

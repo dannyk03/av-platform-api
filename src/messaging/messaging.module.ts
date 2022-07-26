@@ -1,5 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+
 import { CustomerIOService } from './customer-io';
 import { EmailService } from './email';
 

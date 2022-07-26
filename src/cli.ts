@@ -1,6 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+
 import { CommandModule, CommandService } from 'nestjs-command';
+
 import { SeedsModule } from './database/seeds/seeds.module';
 
 async function bootstrap() {

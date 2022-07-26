@@ -113,6 +113,30 @@ spec:
                   name: auth-secret
                   key: basic-token-client-secret
 
+            # CUSTOMER.IO
+            - name: CUSTOMER_IO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: customer-io-secret
+                  key: api-key
+
+            # CLOUDINARY
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: cloud-name
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: api-key
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cloudinary-secret
+                  key: api-secret
+
             # APP
             - name: APP_NAME
               value: 'platform'
@@ -140,7 +164,7 @@ spec:
               value: '5m'
             - name: MIDDLEWARE_TIMEOUT
               value: '30s'
-            - name: 'DD_ENV'
+            - name: DD_ENV
               value: staging
 
           livenessProbe:

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Entities
-import { AclSubject } from './entity';
-// Services
+
 import { AclSubjectService } from './service';
-//
+
+import { AclSubject } from './entity';
+
 import { ConnectionNames } from '@/database';
 
 @Module({

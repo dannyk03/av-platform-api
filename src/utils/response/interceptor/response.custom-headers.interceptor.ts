@@ -1,12 +1,13 @@
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
 } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+
 import { Response } from 'express';
+import { Observable, map } from 'rxjs';
 
 @Injectable()
 export class ResponseCustomHeadersInterceptor

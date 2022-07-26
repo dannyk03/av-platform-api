@@ -1,7 +1,8 @@
-import { IsEmail, MaxLength, Length } from 'class-validator';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
-import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
+import { IsEmail, Length, MaxLength } from 'class-validator';
+
+import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class OrganizationCreateDto {
   @IsEmail()

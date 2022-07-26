@@ -1,11 +1,11 @@
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import {
-  IsNotEmpty,
-  IsEmail,
-  MaxLength,
   IsBoolean,
+  IsEmail,
+  IsNotEmpty,
   IsOptional,
+  MaxLength,
 } from 'class-validator';
 
 export class AuthLoginDto {

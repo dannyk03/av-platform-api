@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
+
 import {
-  registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  registerDecorator,
 } from 'class-validator';
-// Services
+
 import { HelperStringService } from '@/utils/helper/service';
-//
+
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class SafeStringConstraint implements ValidatorConstraintInterface {

@@ -1,15 +1,15 @@
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
+import { Type } from 'class-transformer';
 import {
-  IsString,
-  IsNotEmpty,
   IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
   MaxLength,
   MinLength,
-  IsOptional,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
-import { IsPasswordStrong } from '@/utils/request/validation';
-import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
+
+import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class AuthSignUpDto {
   @MaxLength(50)

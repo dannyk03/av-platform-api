@@ -1,15 +1,15 @@
 import {
-  Entity,
-  Column,
-  Index,
   BeforeInsert,
+  Column,
+  Entity,
+  Index,
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-// Entities
+
 import { BaseEntity } from '@/database/entity';
 import { AclPolicy } from '@acl/policy/entity';
-//
+
 import { slugify } from '@/utils/helper';
 
 @Entity()

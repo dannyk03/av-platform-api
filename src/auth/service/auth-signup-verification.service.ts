@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-// Entities
-import { SignUpEmailVerificationLink } from '../entity';
-// Services
+
 import { HelperHashService } from '@/utils/helper/service';
-//
+
+import { SignUpEmailVerificationLink } from '../entity';
+
 import { ConnectionNames } from '@/database';
 
 @Injectable()
-export class AuthSignUpVerificationService {
+export class AuthSignUpVerificationLinkService {
   constructor(
     @InjectRepository(SignUpEmailVerificationLink, ConnectionNames.Default)
     private signUpEmailVerificationLinkRepository: Repository<SignUpEmailVerificationLink>,

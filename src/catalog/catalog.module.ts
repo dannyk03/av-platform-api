@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
-
-import { ConnectionNames } from '@/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Services
+
 import { ProductImageService } from './product-image/service';
 import { ProductService } from './product/service';
-import { CloudinaryService } from '@/cloudinary/service';
 import { CatalogService } from './service';
-// Entities
+import { CloudinaryService } from '@/cloudinary/service';
+
 import { ProductDisplayOption } from './product-display-option/entity';
 import { ProductImage } from './product-image/entity';
 import { Product } from './product/entity';
 
-//
+import { ConnectionNames } from '@/database';
 
 @Module({
   imports: [

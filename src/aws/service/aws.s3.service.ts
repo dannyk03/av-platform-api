@@ -1,16 +1,18 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
 import {
-  S3Client,
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
   ListBucketsCommand,
   ListObjectsV2Command,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  DeleteObjectsCommand,
   ObjectIdentifier,
+  PutObjectCommand,
+  S3Client,
 } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
+
 import { IAwsS3PutItemOptions, IAwsS3Response } from '../aws.interface';
 
 @Injectable()

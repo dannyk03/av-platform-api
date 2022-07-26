@@ -1,6 +1,3 @@
-import { ConnectionNames } from '@/database';
-
-import { IResponse } from '@/utils/response/response.interface';
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import {
   DiskHealthIndicator,
@@ -9,11 +6,16 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { Throttle } from '@nestjs/throttler';
-import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
+import { InjectDataSource } from '@nestjs/typeorm';
+
+import { DataSource } from 'typeorm';
+
+import { ConnectionNames } from '@/database';
 import { Response } from '@/utils/response';
+import { IResponse } from '@/utils/response/response.interface';
+
+import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 
 @Throttle(1, 5)
 @Controller({
@@ -49,8 +51,7 @@ export class HealthController {
       path: '/',
     });
 
-  private checkCloudinary = async () =>
-    await this.cloudinaryIndicator.isHealthy();
+  private checkCloudinary = async () => this.cloudinaryIndicator.isHealthy();
 
   @Response('health.check')
   @HealthCheck()

@@ -1,6 +1,6 @@
-export const CLOUDINARY = 'Cloudinary';
-
 import pluralize from 'pluralize';
+
+export const CLOUDINARY = 'Cloudinary';
 
 const ROOT_FOLDER = 'platform';
 

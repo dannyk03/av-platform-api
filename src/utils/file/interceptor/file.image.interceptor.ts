@@ -1,16 +1,18 @@
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  UnprocessableEntityException,
   PayloadTooLargeException,
-  UnsupportedMediaTypeException,
   Type,
+  UnprocessableEntityException,
+  UnsupportedMediaTypeException,
   mixin,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
+
+import { Observable } from 'rxjs';
+
 import { EnumFileImageMime, EnumFileStatusCodeError } from '../file.constant';
 import { IFile } from '../file.interface';
 

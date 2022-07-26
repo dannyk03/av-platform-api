@@ -1,10 +1,10 @@
-import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
-import { SubjectType, Subject } from '@avo/casl';
-// Entities
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+
+import { Subject, SubjectType } from '@avo/casl';
+
 import { BaseEntity } from '@/database/entity';
-import { AclPolicy } from '@acl/policy/entity';
 import { AclAbility } from '@acl/ability/entity';
-//
+import { AclPolicy } from '@acl/policy/entity';
 
 @Entity()
 export class AclSubject extends BaseEntity<AclSubject> {

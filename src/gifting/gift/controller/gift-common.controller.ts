@@ -6,24 +6,27 @@ import {
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
+import { InjectDataSource } from '@nestjs/typeorm';
+
 import { DataSource } from 'typeorm';
-// Services
-import { EmailService } from '@/messaging/email';
-import { HelperDateService } from '@/utils/helper/service';
+
 import { GiftSendConfirmationLinkService, GiftService } from '../service';
 import { UserService } from '@/user/service';
-// Entities
+import { HelperDateService } from '@/utils/helper/service';
+
 import { User } from '@/user/entity';
-//
-import { GiftSendDto } from '../dto/gift.send.dto';
-import { IResponse, Response } from '@/utils/response';
+
 import { GifSendGuard } from '../gift.decorator';
-import { ConnectionNames } from '@/database';
+
+import { GiftSendDto } from '../dto/gift.send.dto';
+
 import { ReqJwtUser } from '@/auth';
+import { ConnectionNames } from '@/database';
 import { EnumMessagingStatusCodeError } from '@/messaging';
+import { EmailService } from '@/messaging/email';
+import { IResponse, Response } from '@/utils/response';
 
 @Controller({
   version: '1',

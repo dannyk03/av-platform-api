@@ -1,5 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+
+import { plainToInstance } from 'class-transformer';
 import {
   Brackets,
   DataSource,
@@ -9,17 +11,18 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-// Entities
-import { Product } from '../entity';
-// Services
+
 import { CloudinaryService } from '@/cloudinary/service';
-//
+
+import { Product } from '../entity';
+
+import { ProductListSerialization } from '../serialization';
+
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
-import { IProductSearch } from '../product.interface';
-import { plainToInstance } from 'class-transformer';
-import { ProductListSerialization } from '../serialization';
+
 import { EnumProductStatusCodeError } from '../product.constant';
+import { IProductSearch } from '../product.interface';
 
 @Injectable()
 export class ProductService {
@@ -76,13 +79,11 @@ export class ProductService {
     if (search) {
       builder.andWhere(
         new Brackets((qb) => {
-          if (search) {
-            builder.setParameters({ search, likeSearch: `%${search}%` });
-            qb.where('sku ILIKE :likeSearch')
-              .orWhere('brand ILIKE :likeSearch')
-              .orWhere('display_options.name ILIKE :likeSearch')
-              .orWhere('display_options.description ILIKE :likeSearch');
-          }
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+          qb.where('sku ILIKE :likeSearch')
+            .orWhere('brand ILIKE :likeSearch')
+            .orWhere('display_options.name ILIKE :likeSearch')
+            .orWhere('display_options.description ILIKE :likeSearch');
         }),
       );
     }

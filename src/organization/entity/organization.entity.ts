@@ -1,10 +1,10 @@
-import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
-// Entities
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+
 import { BaseEntity } from '@/database/entity';
-import { AclRole } from '@acl/role/entity';
-import { User } from '@/user/entity';
 import { OrganizationInviteLink } from '@/organization/entity';
-//
+import { User } from '@/user/entity';
+import { AclRole } from '@acl/role/entity';
+
 import { slugify } from '@/utils/helper';
 
 @Entity()

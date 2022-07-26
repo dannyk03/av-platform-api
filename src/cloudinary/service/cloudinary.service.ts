@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { createReadStream } from 'streamifier';
-import { ConfigService } from '@nestjs/config';
 import util from 'util';
-// Services
 
 import { CloudinaryFolder } from '../cloudinary.constant';
 import { UploadCloudinaryImage } from '../cloudinary.interface';
+
 @Injectable()
 export class CloudinaryService {
   private readonly isProduction: boolean;

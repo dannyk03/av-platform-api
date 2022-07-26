@@ -1,7 +1,8 @@
-import { IsNotEmpty } from 'class-validator';
 import { Escape, Trim } from 'class-sanitizer';
-import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 import { Type } from 'class-transformer';
+import { IsNotEmpty } from 'class-validator';
+
+import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class AuthChangePasswordDto {
   @IsPasswordStrong()

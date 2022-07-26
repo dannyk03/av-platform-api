@@ -1,45 +1,52 @@
 import {
-  Controller,
-  Post,
-  Body,
-  HttpStatus,
-  HttpCode,
   BadRequestException,
+  Body,
+  Controller,
   ForbiddenException,
-  NotFoundException,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Patch,
+  Post,
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+
 import { Response as ExpressResponse } from 'express';
+import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
-// Services
-import { UserService } from '@/user/service';
+
+import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 import { LogService } from '@/log/service';
+import { UserService } from '@/user/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { AuthService, AuthSignUpVerificationService } from '../service';
-//
-import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { EnumLoggerAction, IReqLogData } from '@/log';
-import { EnumStatusCodeError, SuccessException } from '@/utils/error';
-import { Response, IResponse } from '@/utils/response';
+
+import { User } from '@/user/entity';
+
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
-import { AuthLoginDto } from '../dto/auth.login.dto';
-import { EnumAuthStatusCodeError } from '../auth.constant';
+
 import {
   AuthChangePasswordGuard,
   AuthRefreshJwtGuard,
-  Token,
-  ReqJwtUser,
   LoginGuard,
+  ReqJwtUser,
+  Token,
 } from '../auth.decorator';
+
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
-import { ReqLogData, RequestUserAgent } from '@/utils/request';
-import { User } from '@/user/entity';
+import { AuthLoginDto } from '../dto/auth.login.dto';
+
 import { ConnectionNames } from '@/database';
+import { EnumLoggerAction, IReqLogData } from '@/log';
+import { EmailService } from '@/messaging/email';
+import { EnumUserStatusCodeError, ReqUser } from '@/user';
+import { EnumStatusCodeError, SuccessException } from '@/utils/error';
+import { ReqLogData, RequestUserAgent } from '@/utils/request';
+import { IResponse, Response } from '@/utils/response';
+
+import { EnumAuthStatusCodeError } from '../auth.constant';
 
 @Controller({
   version: '1',
@@ -55,7 +62,8 @@ export class AuthCommonController {
     private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
-    private readonly authSignUpVerificationService: AuthSignUpVerificationService,
+    private readonly emailService: EmailService,
+    private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 
   @Response('auth.login')
@@ -142,7 +150,6 @@ export class AuthCommonController {
     });
 
     return {
-      accessToken,
       refreshToken,
     };
   }
@@ -237,9 +244,9 @@ export class AuthCommonController {
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
-    // const expiresInDays = this.configService.get<number>(
-    //   'user.signUpCodeExpiresInDays',
-    // );
+    const expiresInDays = this.configService.get<number>(
+      'user.signUpCodeExpiresInDays',
+    );
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
     const checkExist = await this.userService.checkExist(email, phoneNumber);
@@ -265,101 +272,79 @@ export class AuthCommonController {
       });
     }
 
-    try {
-      return await this.defaultDataSource.transaction(
-        'SERIALIZABLE',
-        async (transactionalEntityManager) => {
-          const { salt, passwordHash, passwordExpiredAt } =
-            await this.authService.createPassword(password);
+    return await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const { salt, passwordHash, passwordExpiredAt } =
+          await this.authService.createPassword(password);
 
-          const signUpUser = await this.userService.create({
-            isActive: true,
+        const signUpUser = await this.userService.create({
+          isActive: true,
+          email,
+          phoneNumber,
+          profile: { firstName, lastName },
+          authConfig: {
+            password: passwordHash,
+            salt,
+            passwordExpiredAt,
+          },
+        });
+
+        await transactionalEntityManager.save(signUpUser);
+
+        const signUpEmailVerificationLink =
+          await this.authSignUpVerificationLinkService.create({
             email,
-            phoneNumber,
-            profile: { firstName, lastName },
-            authConfig: {
-              password: passwordHash,
-              salt,
-              passwordExpiredAt,
-            },
-          });
-
-          await transactionalEntityManager.save(signUpUser);
-
-          const signUpEmailVerificationLink =
-            await this.authSignUpVerificationService.create({
-              email,
-              user: signUpUser,
-              userAgent,
-              // expiresAt: this.helperDateService.forwardInDays(expiresInDays),
-            });
-          await transactionalEntityManager.save(signUpEmailVerificationLink);
-
-          const safeData: AuthUserLoginSerialization =
-            await this.authService.serializationLogin(signUpUser);
-
-          // TODO: cache in redis safeData with user role and permission for next api calls
-
-          const rememberMe = false;
-          const payloadAccessToken: Record<string, any> =
-            await this.authService.createPayloadAccessToken(
-              safeData,
-              rememberMe,
-            );
-          const payloadRefreshToken: Record<string, any> =
-            await this.authService.createPayloadRefreshToken(
-              safeData,
-              rememberMe,
-              {
-                loginDate: payloadAccessToken.loginDate,
-              },
-            );
-
-          const accessToken: string = await this.authService.createAccessToken(
-            payloadAccessToken,
-          );
-
-          const refreshToken: string =
-            await this.authService.createRefreshToken(
-              payloadRefreshToken,
-              false,
-            );
-
-          await this.logService.info({
-            ...logData,
-            action: EnumLoggerAction.SignUp,
-            description: `${signUpUser.email} do signup`,
             user: signUpUser,
-            tags: ['signup', 'withEmail'],
-            transactionalEntityManager,
+            userAgent,
+            expiresAt: this.helperDateService.forwardInDays(expiresInDays),
           });
 
-          response.cookie('accessToken', accessToken, {
-            secure: isSecureMode,
-            expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-            sameSite: 'strict',
-            httpOnly: true,
-          });
+        const safeData: AuthUserLoginSerialization =
+          await this.authService.serializationLogin(signUpUser);
 
-          return {
-            accessToken,
-            refreshToken,
-          };
+        // TODO: cache in redis safeData with user role and permission for next api calls
 
-          // this.emailService.sendSignUpEmailVerification({
-          //   email,
-          //   code: signUpCode,
-          //   expiresInDays,
-          // });
-        },
-      );
-    } catch (error) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-        error,
-      });
-    }
+        const rememberMe = false;
+        const payloadAccessToken: Record<string, any> =
+          await this.authService.createPayloadAccessToken(safeData, rememberMe);
+
+        const accessToken: string = await this.authService.createAccessToken(
+          payloadAccessToken,
+        );
+
+        await this.logService.info({
+          ...logData,
+          action: EnumLoggerAction.SignUp,
+          description: `${signUpUser.email} do signup`,
+          user: signUpUser,
+          tags: ['signup', 'withEmail'],
+          transactionalEntityManager,
+        });
+
+        await this.emailService.sendSignUpEmailVerification({
+          email,
+          code: signUpEmailVerificationLink.code,
+          expiresInDays,
+        });
+
+        await transactionalEntityManager.save(signUpEmailVerificationLink);
+
+        response.cookie('accessToken', accessToken, {
+          secure: isSecureMode,
+          expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+          sameSite: 'strict',
+          httpOnly: true,
+        });
+
+        // For local development/testing
+        const isProduction =
+          this.configService.get<boolean>('app.isProduction');
+        if (!(isProduction || isSecureMode)) {
+          return { code: signUpEmailVerificationLink.code };
+        }
+      },
+    );
   }
 
   @Response('auth.refresh')

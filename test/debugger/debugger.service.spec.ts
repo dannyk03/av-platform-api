@@ -1,6 +1,8 @@
 import { Test } from '@nestjs/testing';
-import { CoreModule } from 'src/core/core.module';
-import { DebuggerService } from 'src/debugger/service/debugger.service';
+
+import { CoreModule } from '@/core/core.module';
+
+import { DebuggerService } from '@/debugger/service/debugger.service';
 
 describe('DebuggerService', () => {
   let debuggerService: DebuggerService;

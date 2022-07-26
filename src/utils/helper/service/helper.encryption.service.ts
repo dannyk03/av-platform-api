@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
 import { AES, enc, mode, pad } from 'crypto-js';
+
 import {
   IHelperJwtOptions,
   IHelperJwtVerifyOptions,

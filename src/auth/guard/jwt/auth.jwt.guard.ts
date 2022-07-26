@@ -1,5 +1,6 @@
-import { AuthGuard } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()

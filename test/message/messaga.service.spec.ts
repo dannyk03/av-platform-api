@@ -1,5 +1,7 @@
 import { Test } from '@nestjs/testing';
+
 import { CoreModule } from '@/core/core.module';
+
 import { ResponseMessageService } from '@/response-message/service/response-message.service';
 
 describe('MessageService', () => {

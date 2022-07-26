@@ -1,17 +1,18 @@
-import { Transform, Type } from 'class-transformer';
 import { Escape, Trim } from 'class-sanitizer';
+import { Transform, Type } from 'class-transformer';
 import {
-  IsString,
-  IsNotEmpty,
-  Length,
-  IsOptional,
-  MaxLength,
-  IsBoolean,
   IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  MaxLength,
 } from 'class-validator';
 import { isString } from 'lodash';
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+
 import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
+import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 
 export class ProductCreateDto {
   @IsNotEmpty()
