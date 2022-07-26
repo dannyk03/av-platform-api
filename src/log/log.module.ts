@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Services
 import { LogService } from './service';
 //
-import { ConnectionNames } from '@/database/database.constant';
+import { ConnectionNames } from '$/database/database.constant';
 import { Log } from './entity';
 
 @Global()

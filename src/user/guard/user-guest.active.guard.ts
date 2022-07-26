@@ -5,7 +5,7 @@
 //   ForbiddenException,
 // } from '@nestjs/common';
 // // Services
-// import { DebuggerService } from '@/debugger/service';
+// import { DebuggerService } from '$/debugger/service';
 // //
 // import { EnumUserStatusCodeError } from '../user.constant';
 

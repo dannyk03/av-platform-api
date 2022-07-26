@@ -1,6 +1,6 @@
+import { TypeOrmConfigService } from '$/database/service/typeorm-config.service';
 import { Test } from '@nestjs/testing';
 import { CoreModule } from 'src/core/core.module';
-import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
 
 describe('DatabaseService', () => {
   let databaseService: TypeOrmConfigService;

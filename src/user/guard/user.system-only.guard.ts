@@ -1,14 +1,14 @@
+import { EnumOrganizationStatusCodeError } from '$/organization';
+import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '$/system';
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
-  NotFoundException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { EnumUserStatusCodeError } from '../user.constant';
-import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
-import { EnumOrganizationStatusCodeError } from '@/organization';
 
 @Injectable()
 export class ReqUserSystemOnlyGuard implements CanActivate {

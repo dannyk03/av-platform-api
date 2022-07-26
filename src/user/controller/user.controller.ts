@@ -1,15 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // Services
-import { AclRoleService } from '@acl/role/service';
+import { HelperDateService } from '$/utils/helper/service';
+import { AclRoleService } from '$acl/role/service';
 import { UserService } from '../service';
-import { HelperDateService } from '@/utils/helper/service';
 // Entities
 import { User } from '../entity';
 //
-import { AclGuard } from '@/auth';
+import { AclGuard } from '$/auth';
+import { IResponse, Response } from '$/utils/response';
 import { ReqUser } from '../user.decorator';
-import { IResponse, Response } from '@/utils/response';
 //
 
 @Controller({

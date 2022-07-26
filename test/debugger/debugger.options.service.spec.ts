@@ -1,6 +1,6 @@
+import { CoreModule } from '$/core/core.module';
+import { DebuggerOptionService } from '$/debugger/service/debugger.option.service';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
-import { DebuggerOptionService } from '@/debugger/service/debugger.option.service';
 
 describe('DebuggerOptionService', () => {
   let debuggerOptionService: DebuggerOptionService;

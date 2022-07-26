@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
+import { isUUID } from 'class-validator';
 import {
   DeepPartial,
   EntityManager,
   FindOneOptions,
   Repository,
 } from 'typeorm';
-import { isUUID } from 'class-validator';
 // Entities
 import { AclRole } from '../entity';
 // Services
-import { AclPolicyService } from '@acl/policy/service';
-import { AclAbilityService } from '@acl/ability/service';
-import { AclSubjectService } from '@acl/subject/service';
-import { HelperSlugService } from '@/utils/helper/service';
+import { HelperSlugService } from '$/utils/helper/service';
+import { AclAbilityService } from '$acl/ability/service';
+import { AclPolicyService } from '$acl/policy/service';
+import { AclSubjectService } from '$acl/subject/service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
+import { IPaginationOptions } from '$/utils/pagination';
 import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
-import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()
 export class AclRoleService {

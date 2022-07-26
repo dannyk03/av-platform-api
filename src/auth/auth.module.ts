@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
-import { UserAuthConfig, SignUpEmailVerificationLink } from './entity';
+import { SignUpEmailVerificationLink, UserAuthConfig } from './entity';
 // Services
-import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
+import { JwtStrategy } from '$/auth/guard/jwt/auth.jwt.strategy';
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
 import { AuthService, AuthSignUpVerificationLinkService } from './service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Module({
   imports: [

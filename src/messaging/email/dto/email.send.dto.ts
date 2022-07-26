@@ -1,10 +1,10 @@
 import {
-  IsString,
-  IsNotEmpty,
   IsArray,
   IsEmail,
+  IsNotEmpty,
   IsObject,
   IsOptional,
+  IsString,
 } from 'class-validator';
 import { Identifier } from '../email.constant';
 

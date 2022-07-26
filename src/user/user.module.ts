@@ -5,7 +5,7 @@ import { UserService } from './service';
 // Entities
 import { User, UserProfile } from './entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Module({
   imports: [

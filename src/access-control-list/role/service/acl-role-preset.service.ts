@@ -4,7 +4,7 @@ import { DeepPartial, Repository } from 'typeorm';
 // Entities
 import { AclRolePreset } from '../entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 @Injectable()
 export class AclRolePresetService {
   constructor(

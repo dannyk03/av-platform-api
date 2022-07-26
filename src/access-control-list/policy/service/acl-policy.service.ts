@@ -5,7 +5,7 @@ import { DeepPartial, Repository } from 'typeorm';
 // Entities
 import { AclPolicy } from '../entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 import { plainToInstance } from 'class-transformer';
 import { AclPolicySerialization } from '../serialization/acl-policy.serialization';
 

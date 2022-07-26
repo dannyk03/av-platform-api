@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsEmail, MaxLength } from 'class-validator';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
+import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 export class OrganizationInviteDto {
   @MaxLength(50)
   @IsEmail()

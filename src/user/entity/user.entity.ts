@@ -1,17 +1,17 @@
 import {
-  Entity,
-  Column,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
   BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { Organization } from '@/organization/entity';
-import { AclRole } from '@acl/role/entity';
-import { UserAuthConfig } from '@/auth/entity';
+import { UserAuthConfig } from '$/auth/entity';
+import { BaseEntity } from '$/database/entity';
+import { Organization } from '$/organization/entity';
+import { AclRole } from '$acl/role/entity';
 import { UserProfile } from './user-profile.entity';
 //
 

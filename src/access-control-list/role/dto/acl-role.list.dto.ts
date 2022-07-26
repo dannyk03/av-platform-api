@@ -1,13 +1,13 @@
 import {
-  PaginationListAbstract,
+  IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
+  PaginationListAbstract,
   PaginationPage,
   PaginationPerPage,
   PaginationSearch,
   PaginationSort,
-  IPaginationSort,
-} from '@/utils/pagination';
+} from '$/utils/pagination';
 import {
   ROLE_DEFAULT_AVAILABLE_SEARCH,
   ROLE_DEFAULT_AVAILABLE_SORT,

@@ -1,13 +1,13 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 // Services
-import { DebuggerService } from '@/debugger/service';
+import { DebuggerService } from '$/debugger/service';
 //
-import { EnumAuthStatusCodeError } from '@/auth';
+import { EnumAuthStatusCodeError } from '$/auth';
 
 @Injectable()
 export class JwtUserActiveGuard implements CanActivate {

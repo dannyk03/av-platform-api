@@ -1,7 +1,7 @@
+import { UserAuthConfig } from '$/auth/entity';
+import { IAwsS3Response } from '$/aws/aws.interface';
 import { Exclude } from 'class-transformer';
-import { IAwsS3Response } from '@/aws/aws.interface';
-import { UserAuthConfig } from '@/auth/entity';
-// import { IRoleEntity } from '@/role/role.interface';
+// import { IRoleEntity } from '$/role/role.interface';
 
 export class UserProfileSerialization {
   readonly id: string;

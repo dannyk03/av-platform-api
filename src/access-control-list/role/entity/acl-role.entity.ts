@@ -1,22 +1,21 @@
 import {
-  Entity,
-  Column,
-  Index,
   BeforeInsert,
+  Column,
+  Entity,
+  Index,
   JoinColumn,
-  OneToOne,
   ManyToOne,
-  Unique,
   OneToMany,
+  OneToOne,
+  Unique,
 } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { Organization } from '@/organization/entity';
-import { AclPolicy } from '@acl/policy/entity';
-import { User } from '@/user/entity';
-import { OrganizationInviteLink } from '@/organization/entity';
+import { BaseEntity } from '$/database/entity';
+import { Organization, OrganizationInviteLink } from '$/organization/entity';
+import { User } from '$/user/entity';
+import { AclPolicy } from '$acl/policy/entity';
 //
-import { slugify } from '@/utils/helper';
+import { slugify } from '$/utils/helper';
 
 @Entity()
 @Unique(['slug', 'name', 'organization'])

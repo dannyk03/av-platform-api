@@ -1,8 +1,8 @@
-import { Test } from '@nestjs/testing';
+import { ConfigDynamicModule } from '$/config';
+import { HelperModule } from '$/utils/helper/helper.module';
+import { HelperHashService } from '$/utils/helper/service/helper.hash.service';
 import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
-import { HelperHashService } from '@/utils/helper/service/helper.hash.service';
-import { HelperModule } from '@/utils/helper/helper.module';
+import { Test } from '@nestjs/testing';
 
 describe('HelperHashService', () => {
   let helperHashService: HelperHashService;

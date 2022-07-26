@@ -1,6 +1,7 @@
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
-import { IResponse } from '@/utils/response/response.interface';
+import { Response } from '$/utils/response';
+import { IResponse } from '$/utils/response/response.interface';
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import {
   DiskHealthIndicator,
@@ -9,11 +10,10 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { Throttle } from '@nestjs/throttler';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
-import { Response } from '@/utils/response';
 
 @Throttle(1, 5)
 @Controller({

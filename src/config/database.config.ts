@@ -1,5 +1,5 @@
-import { ConnectionNames } from '@/database';
-import { TypeormSnakeCaseNamingStrategy } from '@/database/naming-strategy';
+import { ConnectionNames } from '$/database';
+import { TypeormSnakeCaseNamingStrategy } from '$/database/naming-strategy';
 import { registerAs } from '@nestjs/config';
 import { DataSourceOptions } from 'typeorm';
 

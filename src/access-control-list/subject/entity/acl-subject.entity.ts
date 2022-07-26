@@ -1,9 +1,9 @@
-import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
-import { SubjectType, Subject } from '@avo/casl';
+import { Subject, SubjectType } from '@avo/casl';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { AclPolicy } from '@acl/policy/entity';
-import { AclAbility } from '@acl/ability/entity';
+import { BaseEntity } from '$/database/entity';
+import { AclAbility } from '$acl/ability/entity';
+import { AclPolicy } from '$acl/policy/entity';
 //
 
 @Entity()

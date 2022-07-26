@@ -5,7 +5,7 @@ import { AclAbility } from './entity';
 // Services
 import { AclAbilityService } from './service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 @Module({
   imports: [TypeOrmModule.forFeature([AclAbility], ConnectionNames.Default)],
   exports: [AclAbilityService],

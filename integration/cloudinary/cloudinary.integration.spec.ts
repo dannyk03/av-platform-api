@@ -1,12 +1,12 @@
+import { CoreModule } from '$/core/core.module';
+import { HealthController } from '$/health/controller/health.controller';
+import { faker } from '@faker-js/faker';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { Test } from '@nestjs/testing';
-import { CoreModule } from '@/core/core.module';
-import { HealthController } from '@/health/controller/health.controller';
 import { HealthModule } from 'src/health/health.module';
 import { HelperDateService } from 'src/utils/helper/service/helper.date.service';
 import request from 'supertest';
-import { faker } from '@faker-js/faker';
 import { INTEGRATION_CLOUDINARY_URL } from './cloudinary.constant';
 
 describe('Cloudinary Integration', () => {

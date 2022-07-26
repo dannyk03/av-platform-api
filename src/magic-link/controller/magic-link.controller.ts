@@ -7,25 +7,25 @@ import {
   Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import uniqBy from 'lodash/uniqBy';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { Response as ExpressResponse } from 'express';
+import uniqBy from 'lodash/uniqBy';
+import { DataSource } from 'typeorm';
 // Services
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
-import { OrganizationInviteService } from '@/organization/service';
-import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
-import { EmailService } from '@/messaging/email';
+import { AuthService, AuthSignUpVerificationLinkService } from '$/auth/service';
+import { GiftSendConfirmationLinkService } from '$/gifting/gift/service';
+import { EmailService } from '$/messaging/email';
+import { OrganizationInviteService } from '$/organization/service';
+import { HelperDateService, HelperJwtService } from '$/utils/helper/service';
 //
-import { ConnectionNames } from '@/database';
-import { Response, IResponse } from '@/utils/response';
-import { EnumOrganizationStatusCodeError } from '@/organization';
+import { AuthUserLoginSerialization } from '$/auth';
+import { ConnectionNames } from '$/database';
+import { EnumGiftStatusCodeError } from '$/gifting/gift';
+import { EnumOrganizationStatusCodeError } from '$/organization';
+import { EnumUserStatusCodeError } from '$/user';
+import { IResponse, Response } from '$/utils/response';
 import { MagicLinkDto } from '../dto';
-import { EnumUserStatusCodeError } from '@/user';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
-import { AuthUserLoginSerialization } from '@/auth';
 
 @Controller({})
 export class MagicLinkController {

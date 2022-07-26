@@ -1,14 +1,14 @@
-import { EnumLoggerAction, EnumLoggerLevel } from '../log.constant';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  Entity,
   ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IResult } from 'ua-parser-js';
+import { EnumLoggerAction, EnumLoggerLevel } from '../log.constant';
 // Entities
-import { User } from '@/user/entity';
+import { User } from '$/user/entity';
 //
 
 @Entity()

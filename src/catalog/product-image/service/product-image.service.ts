@@ -9,7 +9,7 @@ import {
 // Entities
 import { ProductImage } from '../entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class ProductImageService {

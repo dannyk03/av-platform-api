@@ -1,9 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // Entities
+import { Currency } from '$/currency/entity';
 import { Gift } from './gift.entity';
-import { Currency } from '@/currency/entity';
 //
-import { BaseEntity } from '@/database/entity';
+import { BaseEntity } from '$/database/entity';
 import { EnumOccasion } from '@avo/type';
 
 @Entity()

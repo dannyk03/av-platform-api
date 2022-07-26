@@ -1,7 +1,7 @@
+import { IRequestApp } from '$/utils/request/request.interface';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response, NextFunction } from 'express';
-import { IRequestApp } from '@/utils/request/request.interface';
+import { NextFunction, Response } from 'express';
 import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()

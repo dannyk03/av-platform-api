@@ -1,46 +1,46 @@
 import {
-  Controller,
-  Post,
-  Body,
-  HttpStatus,
-  HttpCode,
   BadRequestException,
+  Body,
+  Controller,
   ForbiddenException,
-  NotFoundException,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Patch,
+  Post,
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { Response as ExpressResponse } from 'express';
+import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 // Services
-import { UserService } from '@/user/service';
-import { LogService } from '@/log/service';
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { LogService } from '$/log/service';
+import { UserService } from '$/user/service';
+import { HelperDateService, HelperJwtService } from '$/utils/helper/service';
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 //
-import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { EnumLoggerAction, IReqLogData } from '@/log';
-import { EnumStatusCodeError, SuccessException } from '@/utils/error';
-import { Response, IResponse } from '@/utils/response';
-import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
-import { AuthLoginDto } from '../dto/auth.login.dto';
+import { ConnectionNames } from '$/database';
+import { EnumLoggerAction, IReqLogData } from '$/log';
+import { EmailService } from '$/messaging/email';
+import { EnumUserStatusCodeError, ReqUser } from '$/user';
+import { User } from '$/user/entity';
+import { EnumStatusCodeError, SuccessException } from '$/utils/error';
+import { ReqLogData, RequestUserAgent } from '$/utils/request';
+import { IResponse, Response } from '$/utils/response';
 import { EnumAuthStatusCodeError } from '../auth.constant';
 import {
   AuthChangePasswordGuard,
   AuthRefreshJwtGuard,
-  Token,
-  ReqJwtUser,
   LoginGuard,
+  ReqJwtUser,
+  Token,
 } from '../auth.decorator';
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
-import { ReqLogData, RequestUserAgent } from '@/utils/request';
-import { User } from '@/user/entity';
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
+import { AuthLoginDto } from '../dto/auth.login.dto';
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 @Controller({
   version: '1',

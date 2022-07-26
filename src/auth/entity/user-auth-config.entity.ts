@@ -1,6 +1,6 @@
-import { Entity, Column, Index } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
+import { BaseEntity } from '$/database/entity';
 //
 
 @Entity()
