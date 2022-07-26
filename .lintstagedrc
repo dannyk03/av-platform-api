@@ -1,8 +1,8 @@
 {
-    "*.{js,ts}": [
-        "yarn lint -- --quiet --fix"
-    ],
     "*.{js,ts,md,yml,yaml,json}": [
-        "yarn format -- --write"
+        "yarn format"
+    ],
+    "*.{js,ts}": [
+        "yarn eslint:check  --fix"
     ]
 }
