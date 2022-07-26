@@ -49,8 +49,7 @@ export class HealthController {
       path: '/',
     });
 
-  private checkCloudinary = async () =>
-    await this.cloudinaryIndicator.isHealthy();
+  private checkCloudinary = async () => this.cloudinaryIndicator.isHealthy();
 
   @Response('health.check')
   @HealthCheck()

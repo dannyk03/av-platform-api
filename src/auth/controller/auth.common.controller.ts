@@ -316,24 +316,20 @@ export class AuthCommonController {
           transactionalEntityManager,
         });
 
-        try {
-          await this.emailService.sendSignUpEmailVerification({
-            email,
-            code: signUpEmailVerificationLink.code,
-            expiresInDays,
-          });
+        await this.emailService.sendSignUpEmailVerification({
+          email,
+          code: signUpEmailVerificationLink.code,
+          expiresInDays,
+        });
 
-          response.cookie('accessToken', accessToken, {
-            secure: isSecureMode,
-            expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-            sameSite: 'strict',
-            httpOnly: true,
-          });
+        await transactionalEntityManager.save(signUpEmailVerificationLink);
 
-          await transactionalEntityManager.save(signUpEmailVerificationLink);
-        } catch (err) {
-          throw err;
-        }
+        response.cookie('accessToken', accessToken, {
+          secure: isSecureMode,
+          expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+          sameSite: 'strict',
+          httpOnly: true,
+        });
       },
     );
 

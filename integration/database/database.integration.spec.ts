@@ -35,8 +35,6 @@ describe('Database Integration', () => {
 
     expect(response.status).toEqual(HttpStatus.OK);
     expect(response.body.statusCode).toEqual(HttpStatus.OK);
-
-    return;
   });
 
   afterAll(async () => {
