@@ -1,9 +1,9 @@
-import { SendEmailDto } from '$/messaging/email/dto';
+import { SendEmailDto } from '@/messaging/email/dto';
 import {
   CustomerIOTransactionalResponse,
   EmailInstance,
   EmailStatus,
-} from '$/messaging/email/email.constant';
+} from '@/messaging/email/email.constant';
 import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
