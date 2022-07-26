@@ -1,7 +1,7 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { User } from '@/user/entity';
+import { BaseEntity } from '$/database/entity';
+import { User } from '$/user/entity';
 //
 
 @Entity()

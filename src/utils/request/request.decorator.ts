@@ -1,4 +1,4 @@
-import { IReqLogData } from '@/log';
+import { IReqLogData } from '$/log';
 import {
   applyDecorators,
   createParamDecorator,

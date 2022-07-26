@@ -1,8 +1,8 @@
-import { Entity, Column, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { Organization } from '@/organization/entity';
-import { AclRole } from '@acl/role/entity';
+import { BaseEntity } from '$/database/entity';
+import { Organization } from '$/organization/entity';
+import { AclRole } from '$acl/role/entity';
 //
 
 @Entity()

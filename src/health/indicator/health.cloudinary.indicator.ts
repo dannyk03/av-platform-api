@@ -5,7 +5,7 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 // Services
-import { CloudinaryService } from '@/cloudinary/service';
+import { CloudinaryService } from '$/cloudinary/service';
 //
 
 @Injectable()

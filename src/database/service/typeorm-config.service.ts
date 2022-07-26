@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { ConnectionNames } from '../database.constant';
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
+import { ConnectionNames } from '../database.constant';
 import { createDB } from '../utils';
 
 @Injectable()

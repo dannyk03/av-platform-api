@@ -1,12 +1,12 @@
-import { NestApplication, NestFactory } from '@nestjs/core';
+import { AppModule } from '$/app/app.module';
 import {
   Logger,
   RequestMethod,
   VersioningType,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
-import { AppModule } from '@/app/app.module';
 import { ConfigService } from '@nestjs/config';
+import { NestApplication, NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { ConnectionNames } from './database';
 

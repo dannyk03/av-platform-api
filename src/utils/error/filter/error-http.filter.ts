@@ -1,9 +1,9 @@
-import { IMessage } from '@/response-message';
-import { ResponseMessageService } from '@/response-message/service';
+import { IMessage } from '$/response-message';
+import { ResponseMessageService } from '$/response-message/service';
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';

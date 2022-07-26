@@ -1,24 +1,24 @@
 import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
   CallHandler,
+  ExecutionContext,
+  Injectable,
   mixin,
+  NestInterceptor,
   Type,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 // Services
-import { ResponseMessageService } from '@/response-message/service';
+import { ResponseMessageService } from '$/response-message/service';
 //
-import { IResponsePagingOptions } from '../response.interface';
+import { IMessage } from '$/response-message';
 import {
   EnumPaginationType,
   PAGINATION_DEFAULT_MAX_PAGE,
-} from '@/utils/pagination';
-import { IMessage } from '@/response-message';
+} from '$/utils/pagination';
+import { IResponsePagingOptions } from '../response.interface';
 
 // This interceptor for restructure response success
 export function ResponsePagingInterceptor(

@@ -1,18 +1,18 @@
+import { IAuthPassword } from '$/auth/auth.interface';
+import { ConnectionNames } from '$/database';
 import { Injectable } from '@nestjs/common';
-import { IAuthPassword } from '@/auth/auth.interface';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../entity';
-import { ConnectionNames } from '@/database';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { IUserCheckExist } from '../user.interface';
-import { plainToInstance } from 'class-transformer';
+import { User } from '../entity';
 import { UserProfileGetSerialization } from '../serialization';
+import { IUserCheckExist } from '../user.interface';
 
 @Injectable()
 export class UserService {

@@ -1,5 +1,5 @@
-import { AclAbilitySerialization } from '@acl/ability';
-import { AclAbility } from '@acl/ability/entity';
+import { AclAbilitySerialization } from '$acl/ability';
+import { AclAbility } from '$acl/ability/entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
 export class AclSubjectSerialization {

@@ -1,8 +1,8 @@
-import { Test } from '@nestjs/testing';
+import { ConfigDynamicModule } from '$/config';
+import { HelperModule } from '$/utils/helper/helper.module';
+import { HelperService } from '$/utils/helper/service/helper.service';
 import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
-import { HelperService } from '@/utils/helper/service/helper.service';
-import { HelperModule } from '@/utils/helper/helper.module';
+import { Test } from '@nestjs/testing';
 
 describe('HelperService', () => {
   let helperService: HelperService;

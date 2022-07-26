@@ -1,7 +1,7 @@
-import { Test } from '@nestjs/testing';
+import { ConfigDynamicModule } from '$/config';
+import { HelperModule } from '$/utils/helper/helper.module';
 import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
-import { HelperModule } from '@/utils/helper/helper.module';
+import { Test } from '@nestjs/testing';
 import { HelperStringService } from 'src/utils/helper/service/helper.string.service';
 
 describe('HelperStringService', () => {

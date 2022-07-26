@@ -1,12 +1,12 @@
+import { AbilityVerb, Action, Subject } from '@avo/casl';
 import { DeepPartial } from 'typeorm';
-import { Action, AbilityVerb, Subject } from '@avo/casl';
 // Entities
-import { User } from '@/user/entity';
-import { Organization } from '@/organization/entity';
-import { AclRole } from '@/access-control-list/role/entity';
+import { AclRole } from '$/access-control-list/role/entity';
+import { Organization } from '$/organization/entity';
+import { User } from '$/user/entity';
 //
-import { EnumSystemRole } from '@acl/role';
-import { SYSTEM_ORGANIZATION_NAME } from '@/system';
+import { SYSTEM_ORGANIZATION_NAME } from '$/system';
+import { EnumSystemRole } from '$acl/role';
 
 export const systemSeedData: {
   systemAdmin: DeepPartial<User>;

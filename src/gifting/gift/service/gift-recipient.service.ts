@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,
+  FindOneOptions,
   FindOptionsWhere,
   Repository,
-  FindOneOptions,
 } from 'typeorm';
 // Entities
 import { GiftRecipient } from '../entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class GiftRecipientService {

@@ -1,4 +1,4 @@
-import { PaginationService } from '@/utils/pagination/service';
+import { PaginationService } from '$/utils/pagination/service';
 import { Test } from '@nestjs/testing';
 import { CoreModule } from 'src/core/core.module';
 

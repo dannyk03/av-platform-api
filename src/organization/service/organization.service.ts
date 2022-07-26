@@ -9,9 +9,9 @@ import {
 // Entities
 import { Organization } from '../entity';
 // Services
-import { HelperSlugService } from '@/utils/helper/service';
+import { HelperSlugService } from '$/utils/helper/service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class OrganizationService {

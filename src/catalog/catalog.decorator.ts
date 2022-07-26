@@ -1,4 +1,4 @@
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { EnumDisplayLanguage } from '$/language/display-language/display-language.constant';
 import { applyDecorators } from '@nestjs/common';
 import { Expose, Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString } from 'class-validator';

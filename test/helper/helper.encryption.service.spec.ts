@@ -1,8 +1,8 @@
-import { Test } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { ConfigDynamicModule } from '@/config';
-import { HelperModule } from '@/utils/helper/helper.module';
+import { ConfigDynamicModule } from '$/config';
+import { HelperModule } from '$/utils/helper/helper.module';
 import { faker } from '@faker-js/faker';
+import { ConfigService } from '@nestjs/config';
+import { Test } from '@nestjs/testing';
 import { HelperEncryptionService } from 'src/utils/helper/service/helper.encryption.service';
 
 describe('HelperEncryptionService', () => {

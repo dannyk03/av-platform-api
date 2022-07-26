@@ -5,7 +5,7 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 // Services
-import { AwsS3Service } from '@/aws/service';
+import { AwsS3Service } from '$/aws/service';
 //
 
 @Injectable()

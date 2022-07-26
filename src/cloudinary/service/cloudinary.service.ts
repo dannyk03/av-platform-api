@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { createReadStream } from 'streamifier';
-import { ConfigService } from '@nestjs/config';
 import util from 'util';
 // Services
 

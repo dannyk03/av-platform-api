@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 // Modules
-import { AclRoleModule } from '@acl/role/acl-role.module';
-import { UserModule } from '@/user/user.module';
-import { MessagingModule } from '@/messaging/messaging.module';
-import { GiftModule } from '@/gifting/gift/gift.module';
+import { GiftModule } from '$/gifting/gift/gift.module';
+import { MessagingModule } from '$/messaging/messaging.module';
+import { UserModule } from '$/user/user.module';
+import { AclRoleModule } from '$acl/role/acl-role.module';
 // Controllers
-import { GiftController } from '@/gifting/gift/controller';
+import { GiftController } from '$/gifting/gift/controller';
 //
 
 @Module({

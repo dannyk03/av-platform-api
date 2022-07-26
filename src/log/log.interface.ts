@@ -1,7 +1,7 @@
-import { User } from '@/user/entity';
-import { EnumLoggerAction } from './log.constant';
-import { IResult } from 'ua-parser-js';
+import { User } from '$/user/entity';
 import { EntityManager } from 'typeorm';
+import { IResult } from 'ua-parser-js';
+import { EnumLoggerAction } from './log.constant';
 
 export interface IReqLogData {
   correlationId: string;

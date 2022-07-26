@@ -6,7 +6,7 @@ import { CurrencyService } from './service';
 // Entities
 import { Currency } from './entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Currency], ConnectionNames.Default)],

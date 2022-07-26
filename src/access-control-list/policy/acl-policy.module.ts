@@ -5,7 +5,7 @@ import { AclPolicy } from './entity';
 // Services
 import { AclPolicyService } from './service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AclPolicy], ConnectionNames.Default)],

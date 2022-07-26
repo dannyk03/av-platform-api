@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 // Entities
 import { Log } from '../entity';
 //
-import { ILog } from '../log.interface';
+import { ConnectionNames } from '$/database';
 import { EnumLoggerLevel } from '../log.constant';
-import { ConnectionNames } from '@/database';
+import { ILog } from '../log.interface';
 
 @Injectable()
 export class LogService {

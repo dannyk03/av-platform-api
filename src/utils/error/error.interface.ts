@@ -1,4 +1,4 @@
-import { IMessage, IMessageOptionsProperties } from '@/response-message';
+import { IMessage, IMessageOptionsProperties } from '$/response-message';
 
 export interface IErrors {
   readonly message: string | IMessage;

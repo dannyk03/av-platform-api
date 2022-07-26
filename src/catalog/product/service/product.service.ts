@@ -11,12 +11,12 @@ import {
 // Entities
 import { Product } from '../entity';
 // Services
-import { CloudinaryService } from '@/cloudinary/service';
+import { CloudinaryService } from '$/cloudinary/service';
 //
-import { ConnectionNames } from '@/database';
-import { IPaginationOptions } from '@/utils/pagination';
-import { IProductSearch } from '../product.interface';
+import { ConnectionNames } from '$/database';
+import { IPaginationOptions } from '$/utils/pagination';
 import { plainToInstance } from 'class-transformer';
+import { IProductSearch } from '../product.interface';
 import { ProductListSerialization } from '../serialization';
 
 @Injectable()

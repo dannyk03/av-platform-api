@@ -1,21 +1,21 @@
-import { Command } from 'nestjs-command';
+import { EnumCurrency } from '@avo/type';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { Command } from 'nestjs-command';
 import { DataSource } from 'typeorm';
-import { EnumCurrency } from '@avo/type';
 // Services
-import { AuthService } from '@/auth/service';
-import { OrganizationService } from '@/organization/service';
-import { UserService } from '@/user/service';
-import { AclRoleService } from '@acl/role/service';
-import { HelperDateService } from '@/utils/helper/service';
-import { DisplayLanguageService } from '@/language/display-language/service';
-import { CurrencyService } from '@/currency/service';
+import { AuthService } from '$/auth/service';
+import { CurrencyService } from '$/currency/service';
+import { DisplayLanguageService } from '$/language/display-language/service';
+import { OrganizationService } from '$/organization/service';
+import { UserService } from '$/user/service';
+import { HelperDateService } from '$/utils/helper/service';
+import { AclRoleService } from '$acl/role/service';
 //
-import { EnumSystemRole } from '@acl/role';
+import { EnumDisplayLanguage } from '$/language/display-language/display-language.constant';
+import { EnumSystemRole } from '$acl/role';
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 
 @Injectable()
 export class SystemSeed {

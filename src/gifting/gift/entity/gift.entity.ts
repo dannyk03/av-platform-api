@@ -1,10 +1,10 @@
-import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { GiftRecipient } from './gift-recipient.entity';
-import { GiftSender } from './gift-sender.entity';
-import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
+import { BaseEntity } from '$/database/entity';
 import { GiftAdditionalData } from './gift-additional-data.entity';
+import { GiftRecipient } from './gift-recipient.entity';
+import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
+import { GiftSender } from './gift-sender.entity';
 //
 
 @Entity()

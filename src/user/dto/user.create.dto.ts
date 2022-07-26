@@ -1,15 +1,15 @@
+import { IsPasswordStrong } from '$/utils/request/validation/request.is-password-strong.validation';
+import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
+import { Type } from 'class-transformer';
 import {
-  IsString,
-  IsNotEmpty,
   IsEmail,
-  MaxLength,
-  MinLength,
+  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
+  IsString,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
-import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
 
 export class UserCreateDto {
   @MaxLength(50)

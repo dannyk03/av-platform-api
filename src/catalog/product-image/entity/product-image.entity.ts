@@ -1,7 +1,7 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 // Entities
-import { BaseEntity } from '@/database/entity';
-import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
+import { ProductDisplayOption } from '$/catalog/product-display-option/entity';
+import { BaseEntity } from '$/database/entity';
 //
 
 @Entity()

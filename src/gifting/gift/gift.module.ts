@@ -4,21 +4,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   Gift,
   GiftRecipient,
-  GiftSender,
   GiftSendConfirmationLink,
+  GiftSender,
 } from './entity';
 
 // Services
-import { EmailService } from '@/messaging/email';
+import { EmailService } from '$/messaging/email';
 import {
-  GiftSenderService,
   GiftSendConfirmationLinkService,
+  GiftSenderService,
   GiftService,
 } from './service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
+import { MessagingModule } from '$/messaging/messaging.module';
 import { GiftRecipientService } from './service/gift-recipient.service';
-import { MessagingModule } from '@/messaging/messaging.module';
 
 @Module({
   imports: [

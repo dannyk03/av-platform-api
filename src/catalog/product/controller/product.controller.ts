@@ -1,3 +1,4 @@
+import { Action, Subject } from '@avo/casl';
 import {
   BadRequestException,
   Body,
@@ -10,26 +11,25 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Action, Subject } from '@avo/casl';
 import compact from 'lodash/compact';
 // Services
-import { HelperDateService } from '@/utils/helper/service';
-import { CloudinaryService } from '@/cloudinary/service';
-import { ProductImageService } from '@/catalog/product-image/service';
-import { PaginationService } from '@/utils/pagination/service';
+import { ProductImageService } from '$/catalog/product-image/service';
+import { CloudinaryService } from '$/cloudinary/service';
+import { HelperDateService } from '$/utils/helper/service';
+import { PaginationService } from '$/utils/pagination/service';
 import { ProductService } from '../service';
 //
+import { AclGuard } from '$/auth';
+import { CloudinarySubject } from '$/cloudinary';
+import { EnumFileType, UploadFileMultiple } from '$/utils/file';
 import {
-  Response,
   IResponse,
-  ResponsePaging,
   IResponsePaging,
-} from '@/utils/response';
-import { UploadFileMultiple, EnumFileType } from '@/utils/file';
-import { AclGuard } from '@/auth';
-import { CloudinarySubject } from '@/cloudinary';
-import { EnumProductCodeError } from '../product.constant';
+  Response,
+  ResponsePaging,
+} from '$/utils/response';
 import { ProductCreateDto, ProductListDto } from '../dto';
+import { EnumProductCodeError } from '../product.constant';
 import { ProductListSerialization } from '../serialization';
 
 @Controller({

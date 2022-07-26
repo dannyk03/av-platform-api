@@ -1,13 +1,13 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 // Services
 import { UserService } from '../service';
 //
-import { EnumAuthStatusCodeError } from '@/auth';
+import { EnumAuthStatusCodeError } from '$/auth';
 import { Reflector } from '@nestjs/core';
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA,

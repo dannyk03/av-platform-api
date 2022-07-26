@@ -4,37 +4,42 @@ import {
   Get,
   NotFoundException,
   Query,
+  Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
+import { DataSource } from 'typeorm';
 // Services
-import { HelperDateService } from '@/utils/helper/service';
-import { AuthSignUpVerificationService } from '@/auth/service';
-import { OrganizationInviteService } from '@/organization/service';
-import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
-import { EmailService } from '@/messaging/email';
+import { AuthService, AuthSignUpVerificationLinkService } from '$/auth/service';
+import { GiftSendConfirmationLinkService } from '$/gifting/gift/service';
+import { EmailService } from '$/messaging/email';
+import { OrganizationInviteService } from '$/organization/service';
+import { HelperDateService, HelperJwtService } from '$/utils/helper/service';
 //
-import { ConnectionNames } from '@/database';
-import { Response, IResponse } from '@/utils/response';
-import { EnumOrganizationStatusCodeError } from '@/organization';
+import { AuthUserLoginSerialization } from '$/auth';
+import { ConnectionNames } from '$/database';
+import { EnumGiftStatusCodeError } from '$/gifting/gift';
+import { EnumOrganizationStatusCodeError } from '$/organization';
+import { EnumUserStatusCodeError } from '$/user';
+import { IResponse, Response } from '$/utils/response';
 import { MagicLinkDto } from '../dto';
-import { EnumUserStatusCodeError } from '@/user';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
 
 @Controller({})
 export class MagicLinkController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly authSignUpVerificationService: AuthSignUpVerificationService,
+    private readonly authSignUpVerificationService: AuthSignUpVerificationLinkService,
     private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
     private readonly organizationInviteService: OrganizationInviteService,
     private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
     private readonly emailService: EmailService,
-    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+    private readonly helperJwtService: HelperJwtService,
   ) {}
 
   @Response('user.signUpSuccess')
@@ -42,6 +47,8 @@ export class MagicLinkController {
   async signUpValidate(
     @Query()
     { code }: MagicLinkDto,
+    @Res({ passthrough: true })
+    response: ExpressResponse,
   ): Promise<IResponse> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
@@ -67,6 +74,9 @@ export class MagicLinkController {
       });
     }
 
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
+
     const now = this.helperDateService.create();
     const expiresAt =
       existingSignUpLink.expiresAt &&
@@ -81,7 +91,7 @@ export class MagicLinkController {
       });
     }
 
-    this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         existingSignUpLink.usedAt = this.helperDateService.create();
@@ -93,7 +103,39 @@ export class MagicLinkController {
       },
     );
 
-    return;
+    const safeData: AuthUserLoginSerialization =
+      await this.authService.serializationLogin(existingSignUpLink.user);
+
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
+    const rememberMe = true;
+    const payloadAccessToken: Record<string, any> =
+      await this.authService.createPayloadAccessToken(safeData, rememberMe);
+
+    const payloadRefreshToken: Record<string, any> =
+      await this.authService.createPayloadRefreshToken(safeData, rememberMe, {
+        loginDate: payloadAccessToken.loginDate,
+      });
+
+    const accessToken: string = await this.authService.createAccessToken(
+      payloadAccessToken,
+    );
+
+    const refreshToken: string = await this.authService.createRefreshToken(
+      payloadRefreshToken,
+      false,
+    );
+
+    response.cookie('accessToken', accessToken, {
+      secure: isSecureMode,
+      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+      sameSite: 'strict',
+      httpOnly: true,
+    });
+
+    return {
+      refreshToken,
+    };
   }
 
   @Response('organization.inviteValid')

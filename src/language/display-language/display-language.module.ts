@@ -6,7 +6,7 @@ import { DisplayLanguageService } from './service';
 // Entities
 import { DisplayLanguage } from './entity';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Module({
   imports: [

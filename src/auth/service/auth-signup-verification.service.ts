@@ -9,12 +9,12 @@ import {
 // Entities
 import { SignUpEmailVerificationLink } from '../entity';
 // Services
-import { HelperHashService } from '@/utils/helper/service';
+import { HelperHashService } from '$/utils/helper/service';
 //
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '$/database';
 
 @Injectable()
-export class AuthSignUpVerificationService {
+export class AuthSignUpVerificationLinkService {
   constructor(
     @InjectRepository(SignUpEmailVerificationLink, ConnectionNames.Default)
     private signUpEmailVerificationLinkRepository: Repository<SignUpEmailVerificationLink>,

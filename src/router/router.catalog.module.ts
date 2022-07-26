@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 // Modules
-import { DisplayLanguageModule } from '@/language/display-language/display-language.module';
-import { UserModule } from '@/user/user.module';
-import { CatalogModule } from '@/catalog/catalog.module';
+import { CatalogModule } from '$/catalog/catalog.module';
+import { DisplayLanguageModule } from '$/language/display-language/display-language.module';
+import { UserModule } from '$/user/user.module';
 // Services
-import { CloudinaryService } from '@/cloudinary/service';
+import { CloudinaryService } from '$/cloudinary/service';
 // Controllers
-import { ProductController } from '@/catalog/product/controller';
+import { ProductController } from '$/catalog/product/controller';
 //
 
 @Module({
