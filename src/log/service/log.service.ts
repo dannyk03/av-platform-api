@@ -7,36 +7,45 @@ import { Log } from '../entity';
 
 import { ConnectionNames } from '@/database';
 
-import { EnumLoggerLevel } from '../log.constant';
+import { EnumLogLevel } from '../log.constant';
 import { ILog } from '../log.interface';
 
 @Injectable()
 export class LogService {
   constructor(
     @InjectRepository(Log, ConnectionNames.Default)
-    private logRepository: Repository<Log>,
+    private readonly logRepository: Repository<Log>,
   ) {}
 
   async info({
-    correlationId,
     action,
     description,
     user,
+    method,
+    correlationId,
+    role,
+    params,
+    bodies,
+    statusCode,
     tags,
     userAgent,
-    method,
     originalUrl,
     transactionalEntityManager,
-  }: ILog): Promise<any> {
+  }: ILog): Promise<Log> {
     const create = this.logRepository.create({
-      level: EnumLoggerLevel.Info,
+      level: EnumLogLevel.Info,
       user: user,
+      anonymous: Boolean(user),
+      method,
       correlationId,
+      role: role,
+      params,
+      bodies,
+      statusCode,
+      tags,
       action,
       description,
-      tags,
       userAgent,
-      method,
       originalUrl,
     });
     return transactionalEntityManager
@@ -48,15 +57,32 @@ export class LogService {
     action,
     description,
     user,
+    method,
+    correlationId,
+    role,
+    params,
+    bodies,
+    statusCode,
     tags,
+    userAgent,
+    originalUrl,
     transactionalEntityManager,
-  }: ILog): Promise<any> {
+  }: ILog): Promise<Log> {
     const create = this.logRepository.create({
-      level: EnumLoggerLevel.Debug,
+      level: EnumLogLevel.Debug,
       user: user,
+      anonymous: Boolean(user),
+      method,
+      correlationId,
+      role: role,
+      params,
+      bodies,
+      statusCode,
+      tags,
       action,
       description,
-      tags,
+      userAgent,
+      originalUrl,
     });
 
     return transactionalEntityManager
@@ -64,19 +90,36 @@ export class LogService {
       : this.logRepository.save(create);
   }
 
-  async warning({
+  async warn({
     action,
     description,
     user,
+    method,
+    correlationId,
+    role,
+    params,
+    bodies,
+    statusCode,
     tags,
+    userAgent,
+    originalUrl,
     transactionalEntityManager,
-  }: ILog): Promise<any> {
+  }: ILog): Promise<Log> {
     const create = this.logRepository.create({
-      level: EnumLoggerLevel.Warn,
+      level: EnumLogLevel.Warn,
       user: user,
+      anonymous: Boolean(user),
+      method,
+      correlationId,
+      role: role,
+      params,
+      bodies,
+      statusCode,
+      tags,
       action,
       description,
-      tags,
+      userAgent,
+      originalUrl,
     });
 
     return transactionalEntityManager
@@ -88,15 +131,32 @@ export class LogService {
     action,
     description,
     user,
+    method,
+    correlationId,
+    role,
+    params,
+    bodies,
+    statusCode,
     tags,
+    userAgent,
+    originalUrl,
     transactionalEntityManager,
-  }: ILog): Promise<any> {
+  }: ILog): Promise<Log> {
     const create = this.logRepository.create({
-      level: EnumLoggerLevel.Fatal,
+      level: EnumLogLevel.Fatal,
       user: user,
+      anonymous: Boolean(user),
+      method,
+      correlationId,
+      role: role,
+      params,
+      bodies,
+      statusCode,
+      tags,
       action,
       description,
-      tags,
+      userAgent,
+      originalUrl,
     });
 
     return transactionalEntityManager

@@ -18,7 +18,6 @@ import { User } from '@/user/entity';
 
 import { OrganizationInviteService, OrganizationService } from '../service';
 import { AuthService } from '@/auth/service';
-import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
@@ -26,7 +25,7 @@ import { OrganizationCreateDto } from '../dto/organization.create.dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EnumLoggerAction, IReqLogData } from '@/log';
+import { IReqLogData } from '@/log';
 import { ReqUser } from '@/user';
 import { EnumStatusCodeError } from '@/utils/error';
 import { ReqLogData } from '@/utils/request';
@@ -48,7 +47,6 @@ export class OrganizationController {
     private readonly rolePresetService: AclRolePresetService,
     private readonly aclRoleService: AclRoleService,
     private readonly authService: AuthService,
-    private readonly logService: LogService,
   ) {}
 
   @Response('organization.create')
@@ -152,15 +150,6 @@ export class OrganizationController {
             owner: { id: organizationOwner.id },
             invite: inviteRes,
           };
-
-          await this.logService.info({
-            ...logData,
-            action: EnumLoggerAction.CreateOrganization,
-            description: `${reqUser.id} created organization`,
-            user: reqUser,
-            tags: ['create', 'organization'],
-            transactionalEntityManager,
-          });
 
           return organizationCreateResult;
         } catch (err) {

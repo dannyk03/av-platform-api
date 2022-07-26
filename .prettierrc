@@ -11,7 +11,7 @@
     "^(.*).decorator(.*)$",
     "^(.*).dto(.*)$",
     "^@/(.*)$",
-    "^[..*/]"
+    "^[.*/]"
   ],
   "importOrderSortSpecifiers": true,
   "importOrderGroupNamespaceSpecifiers": true,

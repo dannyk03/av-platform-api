@@ -32,7 +32,7 @@ export class HelperHashService {
   }
 
   async nanoId(length: number): Promise<string> {
-    return await nanoid(length);
+    return nanoid(length);
   }
 
   async magicCode(): Promise<string> {

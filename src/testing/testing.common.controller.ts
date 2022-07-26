@@ -13,6 +13,7 @@ import { CloudinaryService } from '@/cloudinary/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
 import { AclGuard, ReqJwtUser } from '@/auth';
+import { EnumLogAction, LogTrace } from '@/log';
 import { ErrorMeta } from '@/utils/error';
 import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
@@ -30,6 +31,7 @@ export class TestingCommonController {
   ) {}
   @Response('test.ping')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.Test, { tags: ['test'] })
   @Get()
   async hello(
     @RequestUserAgent() userAgent: IResult,

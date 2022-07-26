@@ -39,7 +39,7 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 
 import { ConnectionNames } from '@/database';
-import { EnumLoggerAction, IReqLogData } from '@/log';
+import { EnumLogAction, IReqLogData } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
@@ -136,7 +136,7 @@ export class AuthCommonController {
 
     await this.logService.info({
       ...logData,
-      action: EnumLoggerAction.Login,
+      action: EnumLogAction.Login,
       description: `${user.id} do login`,
       user: user,
       tags: ['login', 'withEmail'],
@@ -234,15 +234,6 @@ export class AuthCommonController {
         const accessToken: string = await this.authService.createAccessToken(
           payloadAccessToken,
         );
-
-        await this.logService.info({
-          ...logData,
-          action: EnumLoggerAction.SignUp,
-          description: `${signUpUser.email} do signup`,
-          user: signUpUser,
-          tags: ['signup', 'withEmail'],
-          transactionalEntityManager,
-        });
 
         await this.emailService.sendSignUpEmailVerification({
           email,
