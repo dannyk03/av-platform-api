@@ -266,7 +266,7 @@ export class AuthCommonController {
       });
     }
 
-    await this.defaultDataSource.transaction(
+    return await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { salt, passwordHash, passwordExpiredAt } =
@@ -330,10 +330,13 @@ export class AuthCommonController {
           sameSite: 'strict',
           httpOnly: true,
         });
+
+        // For local development/testing
+        if (!this.configService.get<boolean>('app.isProduction')) {
+          return { code: signUpEmailVerificationLink.code };
+        }
       },
     );
-
-    return;
   }
 
   @Response('auth.refresh')

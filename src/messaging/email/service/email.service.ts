@@ -45,6 +45,11 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    // Temporary for local development
+    if (!isProduction) {
+      return true;
+    }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
@@ -53,7 +58,7 @@ export class EmailService {
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
-    return Boolean(sendResult.status == EmailStatus.success);
+    return sendResult.status == EmailStatus.success;
   }
 
   async sendGiftSurvey({
