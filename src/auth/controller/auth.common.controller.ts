@@ -332,7 +332,9 @@ export class AuthCommonController {
         });
 
         // For local development/testing
-        if (!this.configService.get<boolean>('app.isProduction')) {
+        const isProduction =
+          this.configService.get<boolean>('app.isProduction');
+        if (!(isProduction || isSecureMode)) {
           return { code: signUpEmailVerificationLink.code };
         }
       },
