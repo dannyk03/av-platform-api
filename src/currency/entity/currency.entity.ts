@@ -1,4 +1,3 @@
-import { CurrencyCodeType } from '@avo/type';
 import cc from 'currency-codes';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import currencyToSymbolMap from 'currency-symbol-map/map';
@@ -11,6 +10,8 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { CurrencyCodeType } from '@avo/type';
 
 @Entity({ name: 'currencies' })
 export class Currency {

@@ -9,10 +9,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
+
 import ms from 'ms';
 import { Observable, throwError, TimeoutError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
-import { EnumStatusCodeError } from 'src/utils/error/error.constant';
+
+import { EnumStatusCodeError } from '@/utils/error/error.constant';
+
 import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from '../response.constant';
 
 export function ResponseTimeoutInterceptor(

@@ -1,7 +1,9 @@
-import { IsPasswordStrong } from '$/utils/request/validation/request.is-password-strong.validation';
 import { Escape, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+
+import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
+
 export class OrganizationJoinDto {
   @IsString()
   @IsOptional()

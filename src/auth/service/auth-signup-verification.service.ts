@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+import { HelperHashService } from '@/utils/helper/service';
+
 import { SignUpEmailVerificationLink } from '../entity';
-// Services
-import { HelperHashService } from '$/utils/helper/service';
-//
-import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class AuthSignUpVerificationLinkService {

@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+
 import { Identifier } from '../email.constant';
 
 export class SendEmailDto {

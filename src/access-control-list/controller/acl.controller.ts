@@ -1,12 +1,11 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-// Services
+
+import { AclGuard } from '@/auth';
+import { ReqUser } from '@/user';
+import { User } from '@/user/entity';
+import { IResponse, Response } from '@/utils/response';
+
 import { AclPolicyService } from '../policy/service';
-// Entities
-import { User } from '$/user/entity';
-//
-import { AclGuard } from '$/auth';
-import { ReqUser } from '$/user';
-import { IResponse, Response } from '$/utils/response';
 
 @Controller({
   version: '1',

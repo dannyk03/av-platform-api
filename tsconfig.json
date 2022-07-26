@@ -21,8 +21,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "$/*": ["src/*"],
-      "$acl/*": ["src/access-control-list/*"]
+      "@/*": ["src/*"],
+      "@acl/*": ["src/access-control-list/*"]
     }
   },
   "include": ["src", "test", "e2e", "integration"],

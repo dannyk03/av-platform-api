@@ -1,13 +1,16 @@
-import { AppModule } from '$/app/app.module';
 import {
   Logger,
   RequestMethod,
-  VersioningType,
   VERSION_NEUTRAL,
+  VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestApplication, NestFactory } from '@nestjs/core';
+
 import { useContainer } from 'class-validator';
+
+import { AppModule } from '@/app/app.module';
+
 import { ConnectionNames } from './database';
 
 async function bootstrap() {

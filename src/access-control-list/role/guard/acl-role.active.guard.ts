@@ -4,9 +4,9 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-// Services
-import { DebuggerService } from '$/debugger/service';
-//
+
+import { DebuggerService } from '@/debugger/service';
+
 import { EnumRoleStatusCodeError } from '../acl-role.constant';
 
 @Injectable()

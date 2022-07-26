@@ -1,11 +1,11 @@
+import { AclRoleLoginSerialization } from '@acl/role';
+import { AclRole } from '@acl/role/entity';
 import { Exclude, plainToInstance, Transform } from 'class-transformer';
-// Entities
-import { Organization } from '$/organization/entity';
-import { AclRole } from '$acl/role/entity';
+
+import { Organization } from '@/organization/entity';
+import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
+
 import { UserAuthConfig } from '../entity';
-//
-import { OrganizationLoginSerialization } from '$/organization/serialization/organization.login.serialization';
-import { AclRoleLoginSerialization } from '$acl/role';
 import { AuthConfigLoginSerialization } from './auth-config.login.serialization';
 
 export class AuthUserLoginSerialization {

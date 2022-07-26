@@ -1,3 +1,4 @@
+import { AclPolicy } from '@acl/policy/entity';
 import {
   BeforeInsert,
   Column,
@@ -9,13 +10,11 @@ import {
   OneToOne,
   Unique,
 } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
-import { Organization, OrganizationInviteLink } from '$/organization/entity';
-import { User } from '$/user/entity';
-import { AclPolicy } from '$acl/policy/entity';
-//
-import { slugify } from '$/utils/helper';
+
+import { BaseEntity } from '@/database/entity';
+import { Organization, OrganizationInviteLink } from '@/organization/entity';
+import { User } from '@/user/entity';
+import { slugify } from '@/utils/helper';
 
 @Entity()
 @Unique(['slug', 'name', 'organization'])

@@ -6,14 +6,11 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
 
-import { ProductImage } from '$/catalog/product-image/entity';
-import { Product } from '$/catalog/product/entity';
-import { DisplayLanguage } from '$/language/display-language/entity';
-
-//
+import { ProductImage } from '@/catalog/product-image/entity';
+import { Product } from '@/catalog/product/entity';
+import { BaseEntity } from '@/database/entity';
+import { DisplayLanguage } from '@/language/display-language/entity';
 
 @Entity()
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {

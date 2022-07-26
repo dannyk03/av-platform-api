@@ -1,10 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { NextFunction, Response } from 'express';
-// Services
-import { HelperDateService } from 'src/utils/helper/service';
-//
-import { IRequestApp } from 'src/utils/request/request.interface';
+
+import { HelperDateService } from '@/utils/helper/service';
+import { IRequestApp } from '@/utils/request/request.interface';
 
 @Injectable()
 export class TimestampMiddleware implements NestMiddleware {

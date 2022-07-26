@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { DisplayLanguage } from '../entity';
-//
-import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class DisplayLanguageService {

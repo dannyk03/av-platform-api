@@ -1,4 +1,3 @@
-import { defineAbilities } from '@avo/casl';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,8 +5,11 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-//
-import { IReqAclAbility } from '$acl/acl.interface';
+
+import { IReqAclAbility } from '@acl/acl.interface';
+
+import { defineAbilities } from '@avo/casl';
+
 import {
   ABILITY_META_KEY,
   PermissionsStatusCodeError,

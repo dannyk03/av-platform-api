@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { DeepPartial, Repository } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { AclAbility } from '../entity';
-//
-import { ConnectionNames } from '$/database';
+
 @Injectable()
 export class AclAbilityService {
   constructor(

@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { Gift } from '../entity';
-//
-import { ConnectionNames } from '$/database';
-import { plainToInstance } from 'class-transformer';
 import {
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,

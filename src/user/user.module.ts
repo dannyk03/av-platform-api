@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Services
-import { UserService } from './service';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { User, UserProfile } from './entity';
-//
-import { ConnectionNames } from '$/database';
+import { UserService } from './service';
 
 @Module({
   imports: [

@@ -1,5 +1,6 @@
-import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
+
+import { faker } from '@faker-js/faker';
 
 @Injectable()
 export class HelperNumberService {

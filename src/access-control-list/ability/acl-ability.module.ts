@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { AclAbility } from './entity';
-// Services
 import { AclAbilityService } from './service';
-//
-import { ConnectionNames } from '$/database';
+
 @Module({
   imports: [TypeOrmModule.forFeature([AclAbility], ConnectionNames.Default)],
   exports: [AclAbilityService],

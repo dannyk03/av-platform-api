@@ -1,4 +1,4 @@
-import { IReqAclAbility } from '$acl/acl.interface';
+import { IReqAclAbility } from '@acl/acl.interface';
 
 export interface IAuthPassword {
   salt: string;

@@ -1,5 +1,3 @@
-import { ProductDisplayLanguage, ProductSKU } from '$/catalog';
-import { EnumDisplayLanguage } from '$/language/display-language/display-language.constant';
 import { Escape, Trim } from 'class-sanitizer';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -12,6 +10,9 @@ import {
   MaxLength,
 } from 'class-validator';
 import { isString } from 'lodash';
+
+import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
+import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 
 export class ProductCreateDto {
   @IsNotEmpty()

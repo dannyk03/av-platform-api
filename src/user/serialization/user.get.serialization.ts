@@ -1,6 +1,6 @@
-import { IAwsS3Response } from '$/aws/aws.interface';
 import { Exclude } from 'class-transformer';
-// import { IRoleEntity } from '$/role/role.interface';
+
+import { IAwsS3Response } from '@/aws/aws.interface';
 
 export class UserGetSerialization {
   readonly id: string;

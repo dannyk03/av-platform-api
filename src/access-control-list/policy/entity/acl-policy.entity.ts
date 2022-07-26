@@ -1,8 +1,7 @@
+import { AclSubject } from '@acl/subject/entity';
 import { Entity, OneToMany } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
-import { AclSubject } from '$acl/subject/entity';
-//
+
+import { BaseEntity } from '@/database/entity';
 
 @Entity({ name: 'acl_policies' })
 export class AclPolicy extends BaseEntity<AclPolicy> {

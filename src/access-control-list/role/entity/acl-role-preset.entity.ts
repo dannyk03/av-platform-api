@@ -1,3 +1,4 @@
+import { AclPolicy } from '@acl/policy/entity';
 import {
   BeforeInsert,
   Column,
@@ -6,11 +7,9 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
-import { AclPolicy } from '$acl/policy/entity';
-//
-import { slugify } from '$/utils/helper';
+
+import { BaseEntity } from '@/database/entity';
+import { slugify } from '@/utils/helper';
 
 @Entity()
 export class AclRolePreset extends BaseEntity<AclRolePreset> {

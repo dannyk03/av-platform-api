@@ -1,5 +1,17 @@
 {
-  "plugins": ["prettier-plugin-organize-imports"],
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "importOrder": [
+    "^@nestjs/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@avo/(.*)$",
+    "^@/(.*)$",
+    "^[./]",
+    "^[../]"
+  ],
+  "importOrderSortSpecifiers": true,
+  "importOrderGroupNamespaceSpecifiers": true,
+  "importOrderCaseInsensitive": true,
+  "importOrderSeparation": true,
   "singleQuote": true,
   "trailingComma": "all"
 }

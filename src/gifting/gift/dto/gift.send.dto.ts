@@ -1,6 +1,3 @@
-import { MinGreaterThan } from '$/utils/request';
-import { EmptyStringToUndefinedTransform } from '$/utils/request/transform';
-import { EnumCurrency, EnumOccasion } from '@avo/type';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -20,6 +17,11 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { isArray } from 'lodash';
+
+import { EnumCurrency, EnumOccasion } from '@avo/type';
+
+import { MinGreaterThan } from '@/utils/request';
+import { EmptyStringToUndefinedTransform } from '@/utils/request/transform';
 
 export class GiftSendRecipientDto {
   @MaxLength(50)

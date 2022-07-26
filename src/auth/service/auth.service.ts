@@ -1,14 +1,15 @@
-import { User } from '$/user/entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { plainToInstance } from 'class-transformer';
-// Services
+
+import { User } from '@/user/entity';
 import {
   HelperDateService,
   HelperEncryptionService,
   HelperHashService,
-} from 'src/utils/helper/service';
-//
+} from '@/utils/helper/service';
+
 import {
   IAuthMagicLoginOptions,
   IAuthPassword,

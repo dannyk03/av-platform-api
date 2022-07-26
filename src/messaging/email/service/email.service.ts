@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 import { EmailStatus, EmailTemplate } from '../email.constant';
 

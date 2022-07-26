@@ -1,5 +1,3 @@
-import { EnumOrganizationStatusCodeError } from '$/organization';
-import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '$/system';
 import {
   CanActivate,
   ExecutionContext,
@@ -8,6 +6,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+import { EnumOrganizationStatusCodeError } from '@/organization';
+import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
+
 import { EnumUserStatusCodeError } from '../user.constant';
 
 @Injectable()

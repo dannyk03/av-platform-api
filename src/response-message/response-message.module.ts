@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
+
 import * as path from 'path';
-// Services
-import { ResponseMessageService } from './service';
-//
+import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
+
 import { EnumMessageLanguage } from './response-message.constant';
+import { ResponseMessageService } from './service';
 
 @Global()
 @Module({

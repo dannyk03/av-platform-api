@@ -1,14 +1,17 @@
-import { SendEmailDto } from '$/messaging/email/dto';
+import { HttpService } from '@nestjs/axios';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { APIClient, SendEmailRequest } from 'customerio-node';
+import { firstValueFrom } from 'rxjs';
+
+import { SendEmailDto } from '@/messaging/email/dto';
 import {
   CustomerIOTransactionalResponse,
   EmailInstance,
   EmailStatus,
-} from '$/messaging/email/email.constant';
-import { HttpService } from '@nestjs/axios';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { APIClient, SendEmailRequest } from 'customerio-node';
-import { firstValueFrom } from 'rxjs';
+} from '@/messaging/email/email.constant';
+
 import { EnumCustomerIoStatusCodeError } from '../customer-io.constant';
 
 @Injectable()

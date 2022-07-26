@@ -1,7 +1,9 @@
-import { AclRole } from '$/access-control-list/role/entity';
-import { EnumOrganizationRole } from '$acl/role';
-import { AbilityVerb, Action, Subject } from '@avo/casl';
+import { EnumOrganizationRole } from '@acl/role';
 import { DeepPartial } from 'typeorm';
+
+import { AbilityVerb, Action, Subject } from '@avo/casl';
+
+import { AclRole } from '@/access-control-list/role/entity';
 
 export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
   roles: [

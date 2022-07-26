@@ -1,7 +1,6 @@
 import { Column, Entity, Index } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
-//
+
+import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class UserAuthConfig extends BaseEntity<UserAuthConfig> {

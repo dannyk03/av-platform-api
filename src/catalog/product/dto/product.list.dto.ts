@@ -1,4 +1,4 @@
-import { EnumDisplayLanguage } from '$/language/display-language';
+import { EnumDisplayLanguage } from '@/language/display-language';
 import {
   IPaginationSort,
   PaginationAvailableSearch,
@@ -11,15 +11,16 @@ import {
   PaginationPerPage,
   PaginationSearch,
   PaginationSort,
-} from '$/utils/pagination';
+} from '@/utils/pagination';
+
 import {
-  ProductNestingAliasMap,
   PRODUCT_DEFAULT_ACTIVE,
   PRODUCT_DEFAULT_AVAILABLE_SEARCH,
   PRODUCT_DEFAULT_AVAILABLE_SORT,
   PRODUCT_DEFAULT_PAGE,
   PRODUCT_DEFAULT_PER_PAGE,
   PRODUCT_DEFAULT_SORT,
+  ProductNestingAliasMap,
 } from '../product.constant';
 
 export class ProductListDto implements PaginationListAbstract {

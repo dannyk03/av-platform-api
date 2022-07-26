@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IResult } from 'ua-parser-js';
+
+import { User } from '@/user/entity';
+
 import { EnumLoggerAction, EnumLoggerLevel } from '../log.constant';
-// Entities
-import { User } from '$/user/entity';
-//
 
 @Entity()
 export class Log {

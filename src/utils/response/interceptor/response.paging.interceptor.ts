@@ -7,17 +7,18 @@ import {
   Type,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-// Services
-import { ResponseMessageService } from '$/response-message/service';
-//
-import { IMessage } from '$/response-message';
+
+import { IMessage } from '@/response-message';
+import { ResponseMessageService } from '@/response-message/service';
 import {
   EnumPaginationType,
   PAGINATION_DEFAULT_MAX_PAGE,
-} from '$/utils/pagination';
+} from '@/utils/pagination';
+
 import { IResponsePagingOptions } from '../response.interface';
 
 // This interceptor for restructure response success

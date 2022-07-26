@@ -1,5 +1,3 @@
-import { IsPasswordStrong } from '$/utils/request/validation';
-import { IsPhoneNumber } from '$/utils/request/validation/request.is-mobile-number.validation';
 import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import {
@@ -10,6 +8,9 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+
+import { IsPasswordStrong } from '@/utils/request/validation';
+import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
 
 export class AuthSignUpDto {
   @MaxLength(50)

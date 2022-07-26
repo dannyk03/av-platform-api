@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
 import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middleware';

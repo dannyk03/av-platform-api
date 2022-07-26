@@ -7,7 +7,8 @@ import {
   PaginationPerPage,
   PaginationSearch,
   PaginationSort,
-} from '$/utils/pagination';
+} from '@/utils/pagination';
+
 import {
   ROLE_DEFAULT_AVAILABLE_SEARCH,
   ROLE_DEFAULT_AVAILABLE_SORT,

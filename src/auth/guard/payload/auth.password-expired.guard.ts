@@ -4,11 +4,9 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-// Services
 
-import { HelperDateService } from '$/utils/helper/service';
-//
-import { EnumAuthStatusCodeError } from '$/auth';
+import { EnumAuthStatusCodeError } from '@/auth';
+import { HelperDateService } from '@/utils/helper/service';
 
 @Injectable()
 export class AuthPayloadPasswordExpiredGuard implements CanActivate {

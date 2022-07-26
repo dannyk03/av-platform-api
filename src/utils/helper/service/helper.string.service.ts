@@ -1,6 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
+
+import { faker } from '@faker-js/faker';
 import { isEmail } from 'class-validator';
+
 import { IHelperStringRandomOptions } from '../helper.interface';
 
 @Injectable()

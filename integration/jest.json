@@ -20,7 +20,7 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "$/(.*)": "<rootDir>/src/$1",
-    "$acl/(.*)": "<rootDir>/src/access-control-list/$1"
+    "@/(.*)": "<rootDir>/src/$1",
+    "@acl/(.*)": "<rootDir>/src/access-control-list/$1"
   }
 }

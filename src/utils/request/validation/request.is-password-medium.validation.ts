@@ -1,5 +1,5 @@
-import { HelperStringService } from '$/utils/helper/service';
 import { Injectable } from '@nestjs/common';
+
 import {
   registerDecorator,
   ValidationArguments,
@@ -7,6 +7,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+
+import { HelperStringService } from '@/utils/helper/service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()

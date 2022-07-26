@@ -1,8 +1,7 @@
 import { BeforeInsert, Column, Entity, Index, OneToMany } from 'typeorm';
-// Entities
-import { ProductDisplayOption } from '$/catalog/product-display-option/entity';
-import { BaseEntity } from '$/database/entity';
-//
+
+import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
+import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {

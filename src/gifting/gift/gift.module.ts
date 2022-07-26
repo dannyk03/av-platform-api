@@ -1,23 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+import { EmailService } from '@/messaging/email';
+import { MessagingModule } from '@/messaging/messaging.module';
+
 import {
   Gift,
   GiftRecipient,
   GiftSendConfirmationLink,
   GiftSender,
 } from './entity';
-
-// Services
-import { EmailService } from '$/messaging/email';
 import {
   GiftSendConfirmationLinkService,
   GiftSenderService,
   GiftService,
 } from './service';
-//
-import { ConnectionNames } from '$/database';
-import { MessagingModule } from '$/messaging/messaging.module';
 import { GiftRecipientService } from './service/gift-recipient.service';
 
 @Module({

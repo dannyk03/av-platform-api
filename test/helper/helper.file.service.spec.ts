@@ -1,8 +1,9 @@
-import { ConfigDynamicModule } from '$/config';
-import { HelperModule } from '$/utils/helper/helper.module';
-import { HelperFileService } from '$/utils/helper/service/helper.file.service';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+
+import { ConfigDynamicModule } from '@/config';
+import { HelperModule } from '@/utils/helper/helper.module';
+import { HelperFileService } from '@/utils/helper/service/helper.file.service';
 
 describe('HelperFileService', () => {
   let helperFileService: HelperFileService;

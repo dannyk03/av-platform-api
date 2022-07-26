@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import winston, { LoggerOptions } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+
 import { DEBUGGER_NAME } from '../debugger.constant';
 
 @Injectable()

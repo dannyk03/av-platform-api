@@ -9,21 +9,21 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
+
 import { DataSource } from 'typeorm';
-// Services
-import { EmailService } from '$/messaging/email';
-import { UserService } from '$/user/service';
-import { HelperDateService } from '$/utils/helper/service';
-import { GiftSendConfirmationLinkService, GiftService } from '../service';
-// Entities
-import { User } from '$/user/entity';
-//
-import { ReqJwtUser } from '$/auth';
-import { ConnectionNames } from '$/database';
-import { EnumMessagingStatusCodeError } from '$/messaging';
-import { IResponse, Response } from '$/utils/response';
+
+import { ReqJwtUser } from '@/auth';
+import { ConnectionNames } from '@/database';
+import { EnumMessagingStatusCodeError } from '@/messaging';
+import { EmailService } from '@/messaging/email';
+import { User } from '@/user/entity';
+import { UserService } from '@/user/service';
+import { HelperDateService } from '@/utils/helper/service';
+import { IResponse, Response } from '@/utils/response';
+
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { GifSendGuard } from '../gift.decorator';
+import { GiftSendConfirmationLinkService, GiftService } from '../service';
 
 @Controller({
   version: '1',

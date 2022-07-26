@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-// Services
-import { DebuggerService } from '$/debugger/service';
-//
+
+import { DebuggerService } from '@/debugger/service';
+
 import { RequestControllerGuard } from './guard/request.controller.guard';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { EnumRequestStatusCodeError } from './request.constant';

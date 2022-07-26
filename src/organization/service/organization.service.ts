@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+import { HelperSlugService } from '@/utils/helper/service';
+
 import { Organization } from '../entity';
-// Services
-import { HelperSlugService } from '$/utils/helper/service';
-//
-import { ConnectionNames } from '$/database';
 
 @Injectable()
 export class OrganizationService {

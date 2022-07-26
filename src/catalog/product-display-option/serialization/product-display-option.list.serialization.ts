@@ -1,8 +1,9 @@
-import { ProductImage } from '$/catalog/product-image/entity';
-import { ProductImageListSerialization } from '$/catalog/product-image/serialization';
-import { Product } from '$/catalog/product/entity';
-import { DisplayLanguage } from '$/language/display-language/entity';
 import { Exclude, Expose, plainToInstance, Transform } from 'class-transformer';
+
+import { ProductImage } from '@/catalog/product-image/entity';
+import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
+import { Product } from '@/catalog/product/entity';
+import { DisplayLanguage } from '@/language/display-language/entity';
 
 export class ProductDisplayOptionListSerialization {
   readonly name: string;

@@ -1,6 +1,7 @@
-import { ProductDisplayOptionListSerialization } from '$/catalog/product-display-option/serialization';
-import { DisplayLanguage } from '$/language/display-language/entity';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
+
+import { ProductDisplayOptionListSerialization } from '@/catalog/product-display-option/serialization';
+import { DisplayLanguage } from '@/language/display-language/entity';
 
 export class ProductListSerialization {
   readonly id: string;

@@ -1,6 +1,3 @@
-import { SYSTEM_ONLY_META_KEY } from '$/system';
-import { ABILITY_META_KEY } from '$acl/ability';
-import { IReqAclAbility } from '$acl/acl.interface';
 import {
   applyDecorators,
   createParamDecorator,
@@ -8,28 +5,32 @@ import {
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
+
+import { ABILITY_META_KEY } from '@acl/ability';
+import { AclAbilityGuard } from '@acl/ability/guard';
+import { IReqAclAbility } from '@acl/acl.interface';
+import { ReqUserAclRoleActiveGuard } from '@acl/role/guard';
+
 // Guards
-import { ReqUserOrganizationActiveGuard } from '$/organization/guard';
+import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
+import { SYSTEM_ONLY_META_KEY } from '@/system';
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA,
   USER_RELATIONS_META_KEY,
   USER_VERIFIED_ONLY_META_KEY,
-} from '$/user';
+} from '@/user';
 import {
   ReqUserActiveGuard,
   ReqUserSystemOnlyGuard,
   ReqUserVerifiedOnlyGuard,
   UserPutToRequestGuard,
-} from '$/user/guard';
-import { AclAbilityGuard } from '$acl/ability/guard';
-import { ReqUserAclRoleActiveGuard } from '$acl/role/guard';
+} from '@/user/guard';
+
 import { IAclGuard } from './auth.interface';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
 import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
-
-//
 
 export function IsActiveGuard(): any {
   return applyDecorators(

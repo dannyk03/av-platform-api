@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
-// Entities
+
+import { ConnectionNames } from '@/database';
+
 import { Log } from '../entity';
-//
-import { ConnectionNames } from '$/database';
 import { EnumLoggerLevel } from '../log.constant';
 import { ILog } from '../log.interface';
 

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { plainToInstance } from 'class-transformer';
 import {
   Brackets,
   DeepPartial,
@@ -8,14 +10,12 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-// Entities
+
+import { CloudinaryService } from '@/cloudinary/service';
+import { ConnectionNames } from '@/database';
+import { IPaginationOptions } from '@/utils/pagination';
+
 import { Product } from '../entity';
-// Services
-import { CloudinaryService } from '$/cloudinary/service';
-//
-import { ConnectionNames } from '$/database';
-import { IPaginationOptions } from '$/utils/pagination';
-import { plainToInstance } from 'class-transformer';
 import { IProductSearch } from '../product.interface';
 import { ProductListSerialization } from '../serialization';
 

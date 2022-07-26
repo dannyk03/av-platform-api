@@ -1,9 +1,8 @@
+import { AclRole } from '@acl/role/entity';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-// Entities
-import { BaseEntity } from '$/database/entity';
-import { Organization } from '$/organization/entity';
-import { AclRole } from '$acl/role/entity';
-//
+
+import { BaseEntity } from '@/database/entity';
+import { Organization } from '@/organization/entity';
 
 @Entity()
 export class OrganizationInviteLink extends BaseEntity<OrganizationInviteLink> {

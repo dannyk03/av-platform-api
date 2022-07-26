@@ -1,5 +1,5 @@
-import { EnumDisplayLanguage } from '$/language/display-language';
-import { IPaginationOptions } from '$/utils/pagination';
+import { EnumDisplayLanguage } from '@/language/display-language';
+import { IPaginationOptions } from '@/utils/pagination';
 
 export interface IProductSearch {
   language: EnumDisplayLanguage;

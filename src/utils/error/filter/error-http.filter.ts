@@ -1,5 +1,3 @@
-import { IMessage } from '$/response-message';
-import { ResponseMessageService } from '$/response-message/service';
 import {
   ArgumentsHost,
   Catch,
@@ -7,11 +5,14 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+
 import { Response } from 'express';
-// Services
-import { DebuggerService } from 'src/debugger/service/debugger.service';
-//
-import { IRequestApp } from 'src/utils/request/request.interface';
+
+import { DebuggerService } from '@/debugger/service/debugger.service';
+import { IMessage } from '@/response-message';
+import { ResponseMessageService } from '@/response-message/service';
+import { IRequestApp } from '@/utils/request/request.interface';
+
 import { IErrorException } from '../error.interface';
 
 @Catch(HttpException)

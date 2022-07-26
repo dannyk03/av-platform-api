@@ -1,5 +1,6 @@
-import { AclPolicy } from '$/access-control-list/policy/entity';
 import { Exclude } from 'class-transformer';
+
+import { AclPolicy } from '@/access-control-list/policy/entity';
 
 export class RoleListSerialization {
   readonly name: string;
