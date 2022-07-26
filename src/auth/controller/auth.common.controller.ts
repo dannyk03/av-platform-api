@@ -20,7 +20,7 @@ import { IResult } from 'ua-parser-js';
 import { UserService } from '@/user/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { AuthService, AuthSignUpVerificationService } from '../service';
+import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 //
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumLoggerAction, IReqLogData } from '@/log';
@@ -40,6 +40,7 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { ReqLogData, RequestUserAgent } from '@/utils/request';
 import { User } from '@/user/entity';
 import { ConnectionNames } from '@/database';
+import { EmailService } from '@/messaging/email';
 
 @Controller({
   version: '1',
@@ -55,7 +56,8 @@ export class AuthCommonController {
     private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
-    private readonly authSignUpVerificationService: AuthSignUpVerificationService,
+    private readonly emailService: EmailService,
+    private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 
   @Response('auth.login')
@@ -142,7 +144,6 @@ export class AuthCommonController {
     });
 
     return {
-      accessToken,
       refreshToken,
     };
   }
@@ -237,9 +238,9 @@ export class AuthCommonController {
     @ReqLogData()
     logData: IReqLogData,
   ): Promise<IResponse> {
-    // const expiresInDays = this.configService.get<number>(
-    //   'user.signUpCodeExpiresInDays',
-    // );
+    const expiresInDays = this.configService.get<number>(
+      'user.signUpCodeExpiresInDays',
+    );
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
     const checkExist = await this.userService.checkExist(email, phoneNumber);
@@ -265,73 +266,61 @@ export class AuthCommonController {
       });
     }
 
-    try {
-      return await this.defaultDataSource.transaction(
-        'SERIALIZABLE',
-        async (transactionalEntityManager) => {
-          const { salt, passwordHash, passwordExpiredAt } =
-            await this.authService.createPassword(password);
+    await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const { salt, passwordHash, passwordExpiredAt } =
+          await this.authService.createPassword(password);
 
-          const signUpUser = await this.userService.create({
-            isActive: true,
+        const signUpUser = await this.userService.create({
+          isActive: true,
+          email,
+          phoneNumber,
+          profile: { firstName, lastName },
+          authConfig: {
+            password: passwordHash,
+            salt,
+            passwordExpiredAt,
+          },
+        });
+
+        await transactionalEntityManager.save(signUpUser);
+
+        const signUpEmailVerificationLink =
+          await this.authSignUpVerificationLinkService.create({
             email,
-            phoneNumber,
-            profile: { firstName, lastName },
-            authConfig: {
-              password: passwordHash,
-              salt,
-              passwordExpiredAt,
-            },
+            user: signUpUser,
+            userAgent,
+            expiresAt: this.helperDateService.forwardInDays(expiresInDays),
           });
 
-          await transactionalEntityManager.save(signUpUser);
+        const safeData: AuthUserLoginSerialization =
+          await this.authService.serializationLogin(signUpUser);
 
-          const signUpEmailVerificationLink =
-            await this.authSignUpVerificationService.create({
-              email,
-              user: signUpUser,
-              userAgent,
-              // expiresAt: this.helperDateService.forwardInDays(expiresInDays),
-            });
-          await transactionalEntityManager.save(signUpEmailVerificationLink);
+        // TODO: cache in redis safeData with user role and permission for next api calls
 
-          const safeData: AuthUserLoginSerialization =
-            await this.authService.serializationLogin(signUpUser);
+        const rememberMe = false;
+        const payloadAccessToken: Record<string, any> =
+          await this.authService.createPayloadAccessToken(safeData, rememberMe);
 
-          // TODO: cache in redis safeData with user role and permission for next api calls
+        const accessToken: string = await this.authService.createAccessToken(
+          payloadAccessToken,
+        );
 
-          const rememberMe = false;
-          const payloadAccessToken: Record<string, any> =
-            await this.authService.createPayloadAccessToken(
-              safeData,
-              rememberMe,
-            );
-          const payloadRefreshToken: Record<string, any> =
-            await this.authService.createPayloadRefreshToken(
-              safeData,
-              rememberMe,
-              {
-                loginDate: payloadAccessToken.loginDate,
-              },
-            );
+        await this.logService.info({
+          ...logData,
+          action: EnumLoggerAction.SignUp,
+          description: `${signUpUser.email} do signup`,
+          user: signUpUser,
+          tags: ['signup', 'withEmail'],
+          transactionalEntityManager,
+        });
 
-          const accessToken: string = await this.authService.createAccessToken(
-            payloadAccessToken,
-          );
-
-          const refreshToken: string =
-            await this.authService.createRefreshToken(
-              payloadRefreshToken,
-              false,
-            );
-
-          await this.logService.info({
-            ...logData,
-            action: EnumLoggerAction.SignUp,
-            description: `${signUpUser.email} do signup`,
-            user: signUpUser,
-            tags: ['signup', 'withEmail'],
-            transactionalEntityManager,
+        try {
+          await this.emailService.sendSignUpEmailVerification({
+            email,
+            code: signUpEmailVerificationLink.code,
+            expiresInDays,
           });
 
           response.cookie('accessToken', accessToken, {
@@ -341,25 +330,14 @@ export class AuthCommonController {
             httpOnly: true,
           });
 
-          return {
-            accessToken,
-            refreshToken,
-          };
+          await transactionalEntityManager.save(signUpEmailVerificationLink);
+        } catch (err) {
+          throw err;
+        }
+      },
+    );
 
-          // this.emailService.sendSignUpEmailVerification({
-          //   email,
-          //   code: signUpCode,
-          //   expiresInDays,
-          // });
-        },
-      );
-    } catch (error) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-        error,
-      });
-    }
+    return;
   }
 
   @Response('auth.refresh')
