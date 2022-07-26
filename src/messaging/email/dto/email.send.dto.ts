@@ -26,7 +26,8 @@ export class SendEmailDto {
   @IsOptional()
   emailTemplatePayload:
     | GiftSurveyMessageData
-    | SignUpEmailVerificationMessageData;
+    | SignUpEmailVerificationMessageData
+    | any;
 
   @IsObject()
   @IsOptional()
