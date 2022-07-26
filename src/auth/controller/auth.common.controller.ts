@@ -18,10 +18,10 @@ import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
-import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 
 import { User } from '@/user/entity';
 
@@ -243,7 +243,7 @@ export class AuthCommonController {
     @RequestUserAgent() userAgent: IResult,
     @ReqLogData()
     logData: IReqLogData,
-  ): Promise<IResponse> {
+  ) {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
@@ -272,7 +272,7 @@ export class AuthCommonController {
       });
     }
 
-    return await this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { salt, passwordHash, passwordExpiredAt } =
