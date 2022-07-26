@@ -72,13 +72,11 @@ export class ProductService {
     if (search) {
       builder.andWhere(
         new Brackets((qb) => {
-          if (search) {
-            builder.setParameters({ search, likeSearch: `%${search}%` });
-            qb.where('sku ILIKE :likeSearch')
-              .orWhere('brand ILIKE :likeSearch')
-              .orWhere('display_options.name ILIKE :likeSearch')
-              .orWhere('display_options.description ILIKE :likeSearch');
-          }
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+          qb.where('sku ILIKE :likeSearch')
+            .orWhere('brand ILIKE :likeSearch')
+            .orWhere('display_options.name ILIKE :likeSearch')
+            .orWhere('display_options.description ILIKE :likeSearch');
         }),
       );
     }
