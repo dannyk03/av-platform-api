@@ -7,7 +7,11 @@ import {
   IsString,
 } from 'class-validator';
 
-import { Identifier } from '../email.constant';
+import {
+  GiftSurveyMessageData,
+  Identifier,
+  SignUpEmailVerificationMessageData,
+} from '../email.constant';
 
 export class SendEmailDto {
   @IsString()
@@ -21,7 +25,10 @@ export class SendEmailDto {
 
   @IsObject()
   @IsOptional()
-  emailTemplatePayload: any;
+  emailTemplatePayload:
+    | GiftSurveyMessageData
+    | SignUpEmailVerificationMessageData
+    | any;
 
   @IsObject()
   @IsOptional()
