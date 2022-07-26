@@ -8,10 +8,11 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
 import { HelperHashService } from '@/utils/helper/service';
 
 import { GiftSendConfirmationLink } from '../entity';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class GiftSendConfirmationLinkService {

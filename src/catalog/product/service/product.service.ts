@@ -12,12 +12,15 @@ import {
 } from 'typeorm';
 
 import { CloudinaryService } from '@/cloudinary/service';
+
+import { Product } from '../entity';
+
+import { ProductListSerialization } from '../serialization';
+
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
 
-import { Product } from '../entity';
 import { IProductSearch } from '../product.interface';
-import { ProductListSerialization } from '../serialization';
 
 @Injectable()
 export class ProductService {

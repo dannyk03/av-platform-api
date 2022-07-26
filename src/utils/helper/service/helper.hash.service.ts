@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
-import { enc, SHA256 } from 'crypto-js';
+import { SHA256, enc } from 'crypto-js';
 import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()

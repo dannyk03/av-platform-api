@@ -9,13 +9,14 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
-
 import { Gift } from '../entity';
+
 import {
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class GiftService {

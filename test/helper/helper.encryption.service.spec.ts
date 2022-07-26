@@ -3,9 +3,11 @@ import { Test } from '@nestjs/testing';
 
 import { faker } from '@faker-js/faker';
 
-import { ConfigDynamicModule } from '@/config';
 import { HelperModule } from '@/utils/helper/helper.module';
+
 import { HelperEncryptionService } from '@/utils/helper/service/helper.encryption.service';
+
+import { ConfigDynamicModule } from '@/config';
 
 describe('HelperEncryptionService', () => {
   let helperEncryptionService: HelperEncryptionService;

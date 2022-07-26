@@ -1,4 +1,3 @@
-import { AclPolicy } from '@acl/policy/entity';
 import {
   BeforeInsert,
   Column,
@@ -9,6 +8,8 @@ import {
 } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
+import { AclPolicy } from '@acl/policy/entity';
+
 import { slugify } from '@/utils/helper';
 
 @Entity()

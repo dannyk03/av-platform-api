@@ -1,8 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { EnumAuthStatusCodeError } from '@/auth';
 import { DebuggerService } from '@/debugger/service';
+
+import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
 export class JwtRefreshGuard extends AuthGuard('jwtRefresh') {

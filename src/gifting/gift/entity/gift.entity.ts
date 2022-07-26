@@ -1,11 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
-import { BaseEntity } from '@/database/entity';
-
 import { GiftAdditionalData } from './gift-additional-data.entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
 import { GiftSender } from './gift-sender.entity';
+import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class Gift extends BaseEntity<Gift> {

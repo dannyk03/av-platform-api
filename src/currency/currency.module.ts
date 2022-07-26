@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ConnectionNames } from '@/database';
+import { CurrencyService } from './service';
 
 import { Currency } from './entity';
-import { CurrencyService } from './service';
+
+import { ConnectionNames } from '@/database';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Currency], ConnectionNames.Default)],

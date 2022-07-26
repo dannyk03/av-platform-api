@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/core.module';
+
 import { PaginationService } from '@/utils/pagination/service';
 
 describe('PaginationService', () => {

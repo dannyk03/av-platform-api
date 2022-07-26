@@ -4,8 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { NextFunction, Response } from 'express';
 import userAgentParser from 'ua-parser-js';
 
-import { EnumRequestStatusCodeError } from '@/utils/request/request.constant';
-import { IRequestApp } from '@/utils/request/request.interface';
+import { EnumRequestStatusCodeError, IRequestApp } from '@/utils/request';
 
 @Injectable()
 export class UserAgentMiddleware implements NestMiddleware {

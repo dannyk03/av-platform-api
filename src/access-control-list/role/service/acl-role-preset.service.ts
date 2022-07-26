@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeepPartial, Repository } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
-
 import { AclRolePreset } from '../entity';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class AclRolePresetService {

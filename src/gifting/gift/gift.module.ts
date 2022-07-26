@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
 import { MessagingModule } from '@/messaging/messaging.module';
+
+import {
+  GiftSendConfirmationLinkService,
+  GiftSenderService,
+  GiftService,
+} from './service';
+import { GiftRecipientService } from './service/gift-recipient.service';
 
 import {
   Gift,
@@ -11,12 +16,9 @@ import {
   GiftSendConfirmationLink,
   GiftSender,
 } from './entity';
-import {
-  GiftSendConfirmationLinkService,
-  GiftSenderService,
-  GiftService,
-} from './service';
-import { GiftRecipientService } from './service/gift-recipient.service';
+
+import { ConnectionNames } from '@/database';
+import { EmailService } from '@/messaging/email';
 
 @Module({
   imports: [

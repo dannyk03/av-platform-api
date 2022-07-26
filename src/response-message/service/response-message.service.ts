@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { isArray, ValidationError } from 'class-validator';
+import { ValidationError, isArray } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 
 import { IErrors } from '@/utils/error/error.interface';

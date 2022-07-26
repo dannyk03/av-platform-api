@@ -14,19 +14,20 @@ import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource } from 'typeorm';
 
-import { AuthUserLoginSerialization } from '@/auth';
 import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
-import { ConnectionNames } from '@/database';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
 import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
-import { EmailService } from '@/messaging/email';
-import { EnumOrganizationStatusCodeError } from '@/organization';
 import { OrganizationInviteService } from '@/organization/service';
-import { EnumUserStatusCodeError } from '@/user';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { IResponse, Response } from '@/utils/response';
 
 import { MagicLinkDto } from '../dto';
+
+import { AuthUserLoginSerialization } from '@/auth';
+import { ConnectionNames } from '@/database';
+import { EnumGiftStatusCodeError } from '@/gifting/gift';
+import { EmailService } from '@/messaging/email';
+import { EnumOrganizationStatusCodeError } from '@/organization';
+import { EnumUserStatusCodeError } from '@/user';
+import { IResponse, Response } from '@/utils/response';
 
 @Controller({})
 export class MagicLinkController {

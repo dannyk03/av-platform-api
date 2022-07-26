@@ -8,12 +8,8 @@ import { WinstonModule } from 'nest-winston';
 
 import { AuthModule } from '@/auth/auth.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
-import { ConfigDynamicModule } from '@/config';
-import { ConnectionNames } from '@/database/';
 import { DatabaseModule } from '@/database/database.module';
-import { TypeOrmConfigService } from '@/database/service';
 import { DebuggerModule } from '@/debugger/debugger.module';
-import { DebuggerOptionService } from '@/debugger/service';
 import { LogModule } from '@/log/log.module';
 import { ResponseMessageModule } from '@/response-message/response-message.module';
 import { ErrorModule } from '@/utils/error/error.module';
@@ -23,6 +19,12 @@ import { PaginationModule } from '@/utils/pagination/pagination.module';
 import { RequestModule } from '@/utils/request/request.module';
 import { ResponseModule } from '@/utils/response/response.module';
 import { VersionModule } from '@/utils/version/version.module';
+
+import { TypeOrmConfigService } from '@/database/service';
+import { DebuggerOptionService } from '@/debugger/service';
+
+import { ConfigDynamicModule } from '@/config';
+import { ConnectionNames } from '@/database/';
 
 @Module({
   controllers: [],

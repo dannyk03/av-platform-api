@@ -6,9 +6,11 @@ import { faker } from '@faker-js/faker';
 import request from 'supertest';
 
 import { CoreModule } from '@/core/core.module';
-import { HealthController } from '@/health/controller/health.controller';
 import { HealthModule } from '@/health/health.module';
+
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+
+import { HealthController } from '@/health/controller/health.controller';
 
 import { INTEGRATION_DATABASE_URL } from './database.constant';
 

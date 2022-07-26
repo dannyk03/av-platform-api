@@ -1,8 +1,7 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
-import { BaseEntity } from '@/database/entity';
-
 import { Gift } from './gift.entity';
+import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLink> {

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import {
-  registerDecorator,
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  registerDecorator,
 } from 'class-validator';
 import { CountryCode } from 'libphonenumber-js/types';
 import get from 'lodash/get';

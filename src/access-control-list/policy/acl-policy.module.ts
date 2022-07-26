@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ConnectionNames } from '@/database';
+import { AclPolicyService } from './service';
 
 import { AclPolicy } from './entity';
-import { AclPolicyService } from './service';
+
+import { ConnectionNames } from '@/database';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AclPolicy], ConnectionNames.Default)],

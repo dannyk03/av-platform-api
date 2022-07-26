@@ -2,16 +2,16 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  mixin,
   NestInterceptor,
   RequestTimeoutException,
   Type,
+  mixin,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
 import ms from 'ms';
-import { Observable, throwError, TimeoutError } from 'rxjs';
+import { Observable, TimeoutError, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 
 import { EnumStatusCodeError } from '@/utils/error/error.constant';

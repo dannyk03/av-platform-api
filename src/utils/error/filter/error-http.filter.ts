@@ -9,9 +9,10 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 
 import { DebuggerService } from '@/debugger/service/debugger.service';
-import { IMessage } from '@/response-message';
 import { ResponseMessageService } from '@/response-message/service';
-import { IRequestApp } from '@/utils/request/request.interface';
+
+import { IMessage } from '@/response-message';
+import { IRequestApp } from '@/utils/request';
 
 import { IErrorException } from '../error.interface';
 

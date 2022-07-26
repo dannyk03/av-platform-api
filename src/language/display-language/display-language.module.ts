@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ConnectionNames } from '@/database';
+import { DisplayLanguageService } from './service';
 
 import { DisplayLanguage } from './entity';
-import { DisplayLanguageService } from './service';
+
+import { ConnectionNames } from '@/database';
 
 @Module({
   imports: [

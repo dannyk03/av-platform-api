@@ -7,7 +7,7 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 import { Response } from 'express';
-import { map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Injectable()
 export class ResponseCustomHeadersInterceptor

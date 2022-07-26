@@ -5,8 +5,9 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { EnumAuthStatusCodeError } from '@/auth';
 import { DebuggerService } from '@/debugger/service';
+
+import { EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
 export class JwtUserActiveGuard implements CanActivate {

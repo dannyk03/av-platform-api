@@ -2,7 +2,7 @@ import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import { IsEmail, Length, MaxLength } from 'class-validator';
 
-import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
+import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class OrganizationCreateDto {
   @IsEmail()

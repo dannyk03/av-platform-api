@@ -2,9 +2,9 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  mixin,
   NestInterceptor,
   Type,
+  mixin,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
@@ -12,8 +12,9 @@ import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IMessage } from '@/response-message';
 import { ResponseMessageService } from '@/response-message/service';
+
+import { IMessage } from '@/response-message';
 import {
   EnumPaginationType,
   PAGINATION_DEFAULT_MAX_PAGE,

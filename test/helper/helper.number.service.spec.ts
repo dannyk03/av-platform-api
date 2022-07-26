@@ -1,9 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 
-import { ConfigDynamicModule } from '@/config';
 import { HelperModule } from '@/utils/helper/helper.module';
+
 import { HelperNumberService } from '@/utils/helper/service/helper.number.service';
+
+import { ConfigDynamicModule } from '@/config';
 
 describe('HelperNumberService', () => {
   let helperNumberService: HelperNumberService;

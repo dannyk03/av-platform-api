@@ -8,9 +8,9 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
-
 import { ProductImage } from '../entity';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class ProductImageService {

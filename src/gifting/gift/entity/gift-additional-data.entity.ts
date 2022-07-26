@@ -2,10 +2,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { EnumOccasion } from '@avo/type';
 
+import { Gift } from './gift.entity';
 import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
-
-import { Gift } from './gift.entity';
 
 @Entity()
 export class GiftAdditionalData extends BaseEntity<GiftAdditionalData> {

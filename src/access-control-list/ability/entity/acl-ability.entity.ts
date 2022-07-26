@@ -1,9 +1,9 @@
-import { AclSubject } from '@acl/subject/entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { AbilityVerb, Action } from '@avo/casl';
 
 import { BaseEntity } from '@/database/entity';
+import { AclSubject } from '@acl/subject/entity';
 
 @Entity({ name: 'acl_abilities' })
 export class AclAbility extends BaseEntity<AclAbility> {

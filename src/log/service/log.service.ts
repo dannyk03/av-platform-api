@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
+import { Log } from '../entity';
+
 import { ConnectionNames } from '@/database';
 
-import { Log } from '../entity';
 import { EnumLoggerLevel } from '../log.constant';
 import { ILog } from '../log.interface';
 

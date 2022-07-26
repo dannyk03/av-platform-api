@@ -6,6 +6,7 @@ import { APIClient, SendEmailRequest } from 'customerio-node';
 import { firstValueFrom } from 'rxjs';
 
 import { SendEmailDto } from '@/messaging/email/dto';
+
 import {
   CustomerIOTransactionalResponse,
   EmailInstance,

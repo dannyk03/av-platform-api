@@ -3,12 +3,12 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  mixin,
   Type,
+  mixin,
 } from '@nestjs/common';
 
 import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { ValidationError, validate } from 'class-validator';
 
 import { EnumRequestStatusCodeError } from '../request.constant';
 

@@ -18,19 +18,15 @@ import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
-import { ConnectionNames } from '@/database';
-import { EnumLoggerAction, IReqLogData } from '@/log';
+import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 import { LogService } from '@/log/service';
-import { EmailService } from '@/messaging/email';
-import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { User } from '@/user/entity';
 import { UserService } from '@/user/service';
-import { EnumStatusCodeError, SuccessException } from '@/utils/error';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { ReqLogData, RequestUserAgent } from '@/utils/request';
-import { IResponse, Response } from '@/utils/response';
 
-import { EnumAuthStatusCodeError } from '../auth.constant';
+import { User } from '@/user/entity';
+
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
+
 import {
   AuthChangePasswordGuard,
   AuthRefreshJwtGuard,
@@ -38,10 +34,19 @@ import {
   ReqJwtUser,
   Token,
 } from '../auth.decorator';
+
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
-import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
-import { AuthService, AuthSignUpVerificationLinkService } from '../service';
+
+import { ConnectionNames } from '@/database';
+import { EnumLoggerAction, IReqLogData } from '@/log';
+import { EmailService } from '@/messaging/email';
+import { EnumUserStatusCodeError, ReqUser } from '@/user';
+import { EnumStatusCodeError, SuccessException } from '@/utils/error';
+import { ReqLogData, RequestUserAgent } from '@/utils/request';
+import { IResponse, Response } from '@/utils/response';
+
+import { EnumAuthStatusCodeError } from '../auth.constant';
 
 @Controller({
   version: '1',

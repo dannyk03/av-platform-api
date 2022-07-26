@@ -4,8 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import * as path from 'path';
 import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
 
-import { EnumMessageLanguage } from './response-message.constant';
 import { ResponseMessageService } from './service';
+
+import { EnumMessageLanguage } from './response-message.constant';
 
 @Global()
 @Module({

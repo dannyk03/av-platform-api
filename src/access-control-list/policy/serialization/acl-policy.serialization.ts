@@ -1,6 +1,7 @@
 import { AclSubjectSerialization } from '@acl/subject';
+import { Exclude, Transform, plainToInstance } from 'class-transformer';
+
 import { AclSubject } from '@acl/subject/entity';
-import { Exclude, plainToInstance, Transform } from 'class-transformer';
 
 export class AclPolicySerialization {
   @Transform(({ value: subjects }) =>

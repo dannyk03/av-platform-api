@@ -8,10 +8,11 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
 import { HelperSlugService } from '@/utils/helper/service';
 
 import { Organization } from '../entity';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class OrganizationService {

@@ -1,4 +1,3 @@
-import { AclRole } from '@acl/role/entity';
 import {
   BeforeInsert,
   Column,
@@ -9,11 +8,11 @@ import {
   OneToOne,
 } from 'typeorm';
 
+import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
 import { Organization } from '@/organization/entity';
-
-import { UserProfile } from './user-profile.entity';
+import { AclRole } from '@acl/role/entity';
 
 @Entity()
 export class User extends BaseEntity<User> {

@@ -9,8 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { IsPasswordStrong } from '@/utils/request/validation';
-import { IsPhoneNumber } from '@/utils/request/validation/request.is-mobile-number.validation';
+import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class AuthSignUpDto {
   @MaxLength(50)

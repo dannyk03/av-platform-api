@@ -5,7 +5,8 @@ import { NextFunction, Response } from 'express';
 
 import { ResponseMessageService } from '@/response-message/service';
 import { HelperArrayService } from '@/utils/helper/service/helper.array.service';
-import { IRequestApp } from '@/utils/request/request.interface';
+
+import { IRequestApp } from '@/utils/request';
 
 @Injectable()
 export class CustomLanguageMiddleware implements NestMiddleware {

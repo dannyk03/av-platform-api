@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/core.module';
+
 import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
 
 describe('DatabaseService', () => {

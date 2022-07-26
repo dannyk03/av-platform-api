@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/core.module';
+
 import { DebuggerService } from '@/debugger/service/debugger.service';
 
 describe('DebuggerService', () => {

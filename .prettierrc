@@ -4,13 +4,17 @@
     "^@nestjs/(.*)$",
     "<THIRD_PARTY_MODULES>",
     "^@avo/(.*)$",
+    "^(.*).module(.*)$",
+    "^(.*).service(.*)$",
+    "^(.*).entity(.*)$",
+    "^(.*).serialization(.*)$",
+    "^(.*).decorator(.*)$",
+    "^(.*).dto(.*)$",
     "^@/(.*)$",
-    "^[./]",
-    "^[../]"
+    "^[..*/]"
   ],
   "importOrderSortSpecifiers": true,
   "importOrderGroupNamespaceSpecifiers": true,
-  "importOrderCaseInsensitive": true,
   "importOrderSeparation": true,
   "singleQuote": true,
   "trailingComma": "all"

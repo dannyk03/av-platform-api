@@ -1,4 +1,4 @@
-import { applyDecorators, SetMetadata } from '@nestjs/common';
+import { SetMetadata, applyDecorators } from '@nestjs/common';
 
 import {
   ERROR_CLASS_META_KEY,

@@ -2,12 +2,12 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  mixin,
   NestInterceptor,
   PayloadTooLargeException,
   Type,
   UnprocessableEntityException,
   UnsupportedMediaTypeException,
+  mixin,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 

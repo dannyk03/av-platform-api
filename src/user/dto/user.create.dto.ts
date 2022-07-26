@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { IsPasswordStrong } from '@/utils/request/validation/request.is-password-strong.validation';
+import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class UserCreateDto {
   @MaxLength(50)

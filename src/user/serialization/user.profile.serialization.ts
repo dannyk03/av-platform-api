@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 
 import { UserAuthConfig } from '@/auth/entity';
+
 import { IAwsS3Response } from '@/aws/aws.interface';
 
 export class UserProfileSerialization {

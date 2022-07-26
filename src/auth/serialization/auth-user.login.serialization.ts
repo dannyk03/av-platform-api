@@ -1,12 +1,12 @@
 import { AclRoleLoginSerialization } from '@acl/role';
-import { AclRole } from '@acl/role/entity';
-import { Exclude, plainToInstance, Transform } from 'class-transformer';
-
-import { Organization } from '@/organization/entity';
-import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
+import { Exclude, Transform, plainToInstance } from 'class-transformer';
 
 import { UserAuthConfig } from '../entity';
+import { Organization } from '@/organization/entity';
+import { AclRole } from '@acl/role/entity';
+
 import { AuthConfigLoginSerialization } from './auth-config.login.serialization';
+import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
 
 export class AuthUserLoginSerialization {
   readonly email: string;
