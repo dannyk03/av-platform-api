@@ -1,7 +1,7 @@
 export enum EmailTemplate {
   SendOrganizationInvite = 'SendOrganizationInvite',
-  SendSignUpEmailVerification = 'SendSignUpEmailVerification',
-  SendGiftSurvey = 'SendGiftSurvey',
+  SendSignUpEmailVerification = 'Email Verification',
+  SendGiftSurvey = 'Survey Confirmation',
   SendGiftConfirm = 'SendGiftConfirm',
 }
 
@@ -36,4 +36,21 @@ export type CustomerIOTransactionalMessage = {
 
 export type Identifier = {
   id: string;
+};
+
+export type GiftSurveyMessageData = {
+  sender: {
+    organization: string;
+    firstName: string;
+  };
+  recipient: {
+    firstName: string;
+  };
+};
+
+export type SignUpEmailVerificationMessageData = {
+  user: {
+    firstName: string;
+  };
+  verificationLink: string;
 };
