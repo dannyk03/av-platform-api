@@ -7,8 +7,8 @@ import {
   IsString,
 } from 'class-validator';
 import {
-  Identifier,
   GiftSurveyMessageData,
+  Identifier,
   SignUpEmailVerificationMessageData,
 } from '../email.constant';
 
