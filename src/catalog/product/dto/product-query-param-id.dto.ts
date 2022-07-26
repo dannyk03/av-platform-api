@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class ProductDeleteDto {
+export class ProductQueryParamIdDto {
   @IsNotEmpty()
   @IsUUID()
   @Type(() => String)
