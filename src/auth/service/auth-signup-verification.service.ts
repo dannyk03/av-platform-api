@@ -27,7 +27,7 @@ export class AuthSignUpVerificationLinkService {
   ): Promise<SignUpEmailVerificationLink> {
     return this.signUpEmailVerificationLinkRepository.create({
       ...props,
-      code: this.helperHashService.code32char(),
+      code: await this.helperHashService.magicCode(),
     });
   }
 

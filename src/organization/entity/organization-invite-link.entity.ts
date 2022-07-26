@@ -16,7 +16,8 @@ export class OrganizationInviteLink extends BaseEntity<OrganizationInviteLink> {
   @Index()
   @Column({
     unique: true,
-    length: 32,
+    length: 16,
+    update: false,
   })
   code!: string;
 

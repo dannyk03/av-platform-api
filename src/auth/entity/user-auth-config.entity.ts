@@ -27,7 +27,7 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   @Index()
   @Column({
     unique: true,
-    length: 32,
+    length: 16,
     nullable: true,
   })
   loginCode?: string;

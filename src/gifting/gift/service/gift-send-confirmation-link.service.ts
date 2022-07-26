@@ -27,7 +27,7 @@ export class GiftSendConfirmationLinkService {
   ): Promise<GiftSendConfirmationLink> {
     return this.giftSendVerificationLink.create({
       ...props,
-      code: this.helperHashService.code32char(),
+      code: await this.helperHashService.magicCode(),
     });
   }
 

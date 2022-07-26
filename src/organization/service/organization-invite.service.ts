@@ -43,7 +43,7 @@ export class OrganizationInviteService {
   ): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.create({
       ...props,
-      code: this.helperHashService.code32char(),
+      code: await this.helperHashService.magicCode(),
     });
   }
 
