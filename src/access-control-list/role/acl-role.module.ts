@@ -5,9 +5,9 @@ import { AclAbilityModule } from '@acl/ability/acl-ability.module';
 import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 
-import { AclRolePresetService, AclRoleService } from './service';
-
 import { AclRole, AclRolePreset } from './entity';
+
+import { AclRolePresetService, AclRoleService } from './service';
 
 import { ConnectionNames } from '@/database';
 

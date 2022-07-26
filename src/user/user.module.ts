@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserService } from './service';
-
 import { User, UserProfile } from './entity';
+
+import { UserService } from './service';
 
 import { ConnectionNames } from '@/database';
 

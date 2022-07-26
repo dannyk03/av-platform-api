@@ -12,11 +12,11 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { DataSource } from 'typeorm';
 
+import { User } from '@/user/entity';
+
 import { GiftSendConfirmationLinkService, GiftService } from '../service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
-
-import { User } from '@/user/entity';
 
 import { GifSendGuard } from '../gift.decorator';
 

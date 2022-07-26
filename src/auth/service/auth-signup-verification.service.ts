@@ -8,9 +8,9 @@ import {
   Repository,
 } from 'typeorm';
 
-import { HelperHashService } from '@/utils/helper/service';
-
 import { SignUpEmailVerificationLink } from '../entity';
+
+import { HelperHashService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database';
 

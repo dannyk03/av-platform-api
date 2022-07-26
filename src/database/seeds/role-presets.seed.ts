@@ -4,14 +4,14 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { Command } from 'nestjs-command';
 import { DataSource } from 'typeorm';
 
+import { AclAbility } from '@acl/ability/entity';
+import { AclRole } from '@acl/role/entity';
+import { AclSubject } from '@acl/subject/entity';
+
 import { AclAbilityService } from '@acl/ability/service';
 import { AclPolicyService } from '@acl/policy/service';
 import { AclRolePresetService } from '@acl/role/service';
 import { AclSubjectService } from '@acl/subject/service';
-
-import { AclAbility } from '@acl/ability/entity';
-import { AclRole } from '@acl/role/entity';
-import { AclSubject } from '@acl/subject/entity';
 
 import { ConnectionNames } from '../database.constant';
 import { rolePresetsSeedData } from './data';

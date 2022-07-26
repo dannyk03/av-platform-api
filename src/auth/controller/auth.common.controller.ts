@@ -18,12 +18,12 @@ import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { User } from '@/user/entity';
+
+import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-import { AuthService, AuthSignUpVerificationLinkService } from '../service';
-
-import { User } from '@/user/entity';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 

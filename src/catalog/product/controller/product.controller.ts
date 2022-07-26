@@ -14,10 +14,10 @@ import compact from 'lodash/compact';
 
 import { Action, Subject } from '@avo/casl';
 
+import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { CloudinaryService } from '@/cloudinary/service';
 import { PaginationService } from '@/utils/pagination/service';
-import { ProductService } from '../service';
 
 import { ProductListSerialization } from '../serialization';
 
