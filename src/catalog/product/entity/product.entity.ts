@@ -29,6 +29,7 @@ export class Product extends BaseEntity<Product> {
     (productDisplayOption) => productDisplayOption.product,
     {
       cascade: true,
+      onDelete: 'CASCADE',
     },
   )
   displayOptions!: ProductDisplayOption[];

@@ -24,7 +24,7 @@ import { PaginationService } from '@/utils/pagination/service';
 import { ProductListSerialization } from '../serialization';
 
 import { ProductCreateDto, ProductListDto } from '../dto';
-import { ProductQueryParamIdDto } from '../dto';
+import { ProductIdQueryParamDto } from '../dto';
 
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
@@ -195,7 +195,7 @@ export class ProductController {
   }
 
   @Response('product.delete')
-  @RequestParamGuard(ProductQueryParamIdDto)
+  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -206,7 +206,7 @@ export class ProductController {
     systemOnly: true,
   })
   @Delete('/:id')
-  async deleteProduct(@Param('id') id): Promise<IResponse> {
+  async deleteProduct(@Param('id') id: string): Promise<IResponse> {
     const res = await this.productService.deleteProductBy({ id });
     return res;
   }

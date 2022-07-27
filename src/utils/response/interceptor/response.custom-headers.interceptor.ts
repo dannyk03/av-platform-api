@@ -25,7 +25,7 @@ export class ResponseCustomHeadersInterceptor
           const { headers }: Request = ctx.getRequest();
 
           responseExpress.setHeader('x-custom-lang', headers['x-custom-lang']);
-          responseExpress.setHeader('x-timestamp', headers['x-timestamp']);
+          // responseExpress.setHeader('x-timestamp', headers['x-timestamp']);
           responseExpress.setHeader('x-timezone', headers['x-timezone']);
           responseExpress.setHeader(
             'x-correlation-id',

@@ -39,12 +39,12 @@ export class MiddlewareModule implements NestModule {
       )
       .forRoutes('*');
 
-    consumer
-      .apply(TimestampMiddleware)
-      .exclude({
-        path: 'health/(.*)',
-        method: RequestMethod.GET,
-      })
-      .forRoutes('*');
+    // consumer
+    //   .apply(TimestampMiddleware)
+    //   .exclude({
+    //     path: 'health/(.*)',
+    //     method: RequestMethod.GET,
+    //   })
+    //   .forRoutes('*');
   }
 }
