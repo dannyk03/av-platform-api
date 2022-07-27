@@ -200,7 +200,7 @@ export class ProductController {
     abilities: [
       {
         action: Action.Delete,
-        subject: Subject.Product,
+        subject: Subjects.Product,
       },
     ],
     systemOnly: true,
