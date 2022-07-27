@@ -85,5 +85,9 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/package.json ./
 
+# TODO enable this configuration after we have efficient logging mechanism (Datadog etc...)(after removing Winston/Morgan)
+# Use the node user from the image (instead of the root user)
+# USER node
+
 # Start the server using the production build
 CMD [ "yarn", "start:prod" ]
