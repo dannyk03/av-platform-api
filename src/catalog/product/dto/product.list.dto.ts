@@ -27,7 +27,7 @@ export class ProductListDto implements PaginationListAbstract {
   @PaginationLanguage()
   lang: EnumDisplayLanguage;
 
-  @PaginationSearch(PRODUCT_DEFAULT_AVAILABLE_SEARCH)
+  @PaginationSearch()
   readonly search: string;
 
   @PaginationMultiSearch()
