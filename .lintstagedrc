@@ -3,6 +3,6 @@
         "yarn format"
     ],
     "*.{js,ts}": [
-        "yarn eslint:check  --fix"
+        "yarn eslint:check --fix"
     ]
 }

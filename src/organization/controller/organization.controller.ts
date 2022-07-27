@@ -136,13 +136,11 @@ export class OrganizationController {
           aclRole: organizationOwnerRole,
         });
 
-        const organizationCreateResult = {
+        return {
           organization: { id: organization.id },
           owner: { id: organizationOwner.id },
           invite: inviteRes,
         };
-
-        return organizationCreateResult;
       },
     );
   }
