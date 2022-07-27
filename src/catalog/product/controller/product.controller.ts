@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -209,5 +210,51 @@ export class ProductController {
   @Delete('/:id')
   async deleteProduct(@Param('id') id: string): Promise<void> {
     await this.productService.deleteProductBy({ id });
+  }
+
+  @Response('product.active')
+  @RequestParamGuard(ProductIdQueryParamDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch('active/:id')
+  async activeProduct(@Param('id') id: string): Promise<IResponse> {
+    const { affected } = await this.productService.updateProductActiveStatus({
+      id,
+      isActive: true,
+    });
+
+    return {
+      affected,
+    };
+  }
+
+  @Response('product.inactive')
+  @RequestParamGuard(ProductIdQueryParamDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch('inactive/:id')
+  async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
+    const { affected } = await this.productService.updateProductActiveStatus({
+      id,
+      isActive: false,
+    });
+
+    return {
+      affected,
+    };
   }
 }

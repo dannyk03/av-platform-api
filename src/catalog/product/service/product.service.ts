@@ -11,6 +11,7 @@ import {
   FindOptionsWhere,
   Repository,
   SelectQueryBuilder,
+  UpdateResult,
 } from 'typeorm';
 
 import { Product } from '../entity';
@@ -167,6 +168,22 @@ export class ProductService {
 
     await this.cloudinaryService.deleteImages({ publicIds: imagePublicIds });
     return this.productRepository.remove(removeProduct);
+  }
+
+  async updateProductActiveStatus({
+    id,
+    isActive,
+  }: {
+    id: string;
+    isActive: boolean;
+  }): Promise<UpdateResult> {
+    return this.productRepository
+      .createQueryBuilder()
+      .update(Product)
+      .set({ isActive })
+      .where('id = :id', { id })
+      .andWhere('isActive != :isActive', { isActive })
+      .execute();
   }
 
   async serialization(data: Product): Promise<ProductListSerialization> {
