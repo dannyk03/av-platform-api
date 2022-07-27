@@ -18,7 +18,7 @@ export class CustomLanguageMiddleware implements NestMiddleware {
 
   async use(
     req: IRequestApp,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> {
     let language: string = this.configService.get<string>('app.language');

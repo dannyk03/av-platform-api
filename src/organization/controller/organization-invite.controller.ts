@@ -188,7 +188,5 @@ export class OrganizationInviteController {
         await transactionalEntityManager.save(existingInvite);
       },
     );
-
-    return;
   }
 }
