@@ -39,9 +39,9 @@ export class RequestTimestampInterceptor
       const mode: string = this.configService.get<string>('app.mode');
       const reqTs: string = headers['x-timestamp'] as string;
       const currentTimestamp: number = this.helperDateService.timestamp();
-      const excludeTimestamp = this.reflector.get<boolean>(
+      const excludeTimestamp = this.reflector.getAllAndOverride<boolean>(
         REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
-        context.getHandler(),
+        [context.getHandler(), context.getClass()],
       );
 
       if (!excludeTimestamp && mode === 'secure') {
