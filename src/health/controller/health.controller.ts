@@ -12,12 +12,14 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 import { ConnectionNames } from '@/database';
+import { RequestExcludeTimestamp } from '@/utils/request';
 import { Response } from '@/utils/response';
 import { IResponse } from '@/utils/response/response.interface';
 
 import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 
 @Throttle(1, 5)
+@RequestExcludeTimestamp()
 @Controller({
   version: VERSION_NEUTRAL,
   path: 'health',

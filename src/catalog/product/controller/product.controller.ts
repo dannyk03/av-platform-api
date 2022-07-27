@@ -14,7 +14,7 @@ import {
 
 import compact from 'lodash/compact';
 
-import { Action, Subject } from '@avo/casl';
+import { Action, Subjects } from '@avo/casl';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
@@ -57,7 +57,7 @@ export class ProductController {
     abilities: [
       {
         action: Action.Create,
-        subject: Subject.Product,
+        subject: Subjects.Product,
       },
     ],
     systemOnly: true,
@@ -134,7 +134,7 @@ export class ProductController {
     abilities: [
       {
         action: Action.Read,
-        subject: Subject.Product,
+        subject: Subjects.Product,
       },
     ],
     systemOnly: true,

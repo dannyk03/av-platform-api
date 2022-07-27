@@ -11,7 +11,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { EnumOrganizationRole } from '@acl/role';
 import { DataSource } from 'typeorm';
 
-import { Action, Subject } from '@avo/casl';
+import { Action, Subjects } from '@avo/casl';
 
 import { OrganizationInviteService, OrganizationService } from '../service';
 import { AuthService } from '@/auth/service';
@@ -52,11 +52,11 @@ export class OrganizationController {
     abilities: [
       {
         action: Action.Create,
-        subject: Subject.Organization,
+        subject: Subjects.Organization,
       },
       {
         action: Action.Create,
-        subject: Subject.User,
+        subject: Subjects.User,
       },
     ],
     systemOnly: true,

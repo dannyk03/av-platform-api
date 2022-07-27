@@ -1,6 +1,6 @@
-import { Action, Subject } from '@avo/casl';
+import { Action, Subjects } from '@avo/casl';
 
 export interface IReqAclAbility {
   action: Action;
-  subject: keyof typeof Subject;
+  subject: keyof typeof Subjects;
 }
