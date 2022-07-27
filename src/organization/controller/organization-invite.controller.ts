@@ -29,7 +29,7 @@ import { MagicLinkDto } from '@/magic-link/dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 import { IReqOrganizationIdentifierCtx } from '../organization.interface';
@@ -188,7 +188,5 @@ export class OrganizationInviteController {
         await transactionalEntityManager.save(existingInvite);
       },
     );
-
-    return;
   }
 }

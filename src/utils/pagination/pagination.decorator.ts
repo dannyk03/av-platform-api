@@ -32,7 +32,7 @@ import {
   IPaginationFilterStringOptions,
 } from './pagination.interface';
 
-export function PaginationSearch(availableSearch: string[]): any {
+export function PaginationSearch(): any {
   return applyDecorators(
     Expose(),
     IsOptional(),

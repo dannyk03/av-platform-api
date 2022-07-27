@@ -16,7 +16,7 @@ export class TimezoneMiddleware implements NestMiddleware {
 
   async use(
     req: IRequestApp,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> {
     const tz: string = this.configService.get<string>('app.timezone');

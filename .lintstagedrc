@@ -1,8 +1,8 @@
 {
     "*.{js,ts,md,yml,yaml,json}": [
-        "yarn format"
+        "prettier --write"
     ],
     "*.{js,ts}": [
-        "yarn eslint:check  --fix"
+        "eslint --fix"
     ]
 }
