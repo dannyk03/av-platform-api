@@ -19,7 +19,7 @@ import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
 import { IResponse, Response, ResponseTimeout } from '@/utils/response';
 
-@Throttle(1, 5)
+@Throttle(1, 10)
 @Controller({
   version: VERSION_NEUTRAL,
 })
@@ -45,6 +45,7 @@ export class TestingCommonController {
       date: newDate,
       format: this.helperDateService.format(newDate, {
         timezone: timezone,
+        format: EnumHelperDateFormat.FriendlyDateTime,
       }),
       timestamp: this.helperDateService.timestamp({
         date: newDate,

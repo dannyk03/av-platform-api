@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1658876293711 implements MigrationInterface {
-  name = 'migration1658876293711';
+export class migration1658880338241 implements MigrationInterface {
+  name = 'migration1658880338241';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -18,7 +18,7 @@ export class migration1658876293711 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "logs"
-            ADD "anonymous" boolean NOT NULL
+            ADD "version" character varying(3) NOT NULL
         `);
     await queryRunner.query(`
             ALTER TABLE "logs"
@@ -66,7 +66,7 @@ export class migration1658876293711 implements MigrationInterface {
             ALTER TABLE "logs" DROP COLUMN "role_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "logs" DROP COLUMN "anonymous"
+            ALTER TABLE "logs" DROP COLUMN "version"
         `);
     await queryRunner.query(`
             ALTER TABLE "logs" DROP COLUMN "status_code"

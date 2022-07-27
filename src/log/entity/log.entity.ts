@@ -91,8 +91,12 @@ export class Log {
   })
   originalUrl!: string;
 
-  @Column()
-  anonymous!: boolean;
+  @Column({
+    length: 3,
+    nullable: true,
+    update: false,
+  })
+  version!: string;
 
   @CreateDateColumn({
     update: false,

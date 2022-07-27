@@ -14,8 +14,6 @@ import { DataSource } from 'typeorm';
 
 import { Action, Subject } from '@avo/casl';
 
-import { User } from '@/user/entity';
-
 import { OrganizationInviteService, OrganizationService } from '../service';
 import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
@@ -25,10 +23,8 @@ import { OrganizationCreateDto } from '../dto/organization.create.dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { IReqLogData } from '@/log';
-import { ReqUser } from '@/user';
+import { EnumLogAction, LogTrace } from '@/log';
 import { EnumStatusCodeError } from '@/utils/error';
-import { ReqLogData } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
 
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
@@ -51,6 +47,9 @@ export class OrganizationController {
 
   @Response('organization.create')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CreateOrganization, {
+    tags: ['organization', 'create'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -72,10 +71,6 @@ export class OrganizationController {
       email: organizationOwnerEmail,
       password: initialOwnerPassword,
     }: OrganizationCreateDto,
-    @ReqUser()
-    reqUser: User,
-    @ReqLogData()
-    logData: IReqLogData,
   ): Promise<IResponse> {
     const checkOrganizationExist =
       await this.organizationService.checkExistsByName(organizationName);

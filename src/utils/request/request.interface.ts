@@ -7,10 +7,10 @@ export interface IRequestApp extends Request {
   correlationId: string;
   timezone: string;
   timestamp?: string;
-  userAgent?: IResult;
-  customLang: string;
   user?: Record<string, any>;
+  customLang: string;
   version?: string;
+  userAgent?: IResult;
   __user?: User;
   __class: string;
   __function: string;

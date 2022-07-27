@@ -13,10 +13,12 @@ import { Observable, tap } from 'rxjs';
 import { EnumRequestMethod } from 'src/utils/request/request.constant';
 import { IRequestApp } from 'src/utils/request/request.interface';
 
+import { Log } from '../entity';
+
 import { LogService } from '../service/log.service';
 
 import { EnumLogAction, EnumLogLevel } from '../log.constant';
-import { ILogOptions } from '../log.interface';
+import { ILog, ILogOptions } from '../log.interface';
 
 export function LogInterceptor(
   action: EnumLogAction,
@@ -24,7 +26,18 @@ export function LogInterceptor(
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinLoggerInterceptor implements NestInterceptor<Promise<any>> {
-    constructor(private readonly logService: LogService) {}
+    private readonly logMethods: Record<
+      EnumLogLevel,
+      (data: ILog) => Promise<Log>
+    >;
+    constructor(private readonly logService: LogService) {
+      this.logMethods = {
+        [EnumLogLevel.Fatal]: (data: ILog) => this.logService.fatal(data),
+        [EnumLogLevel.Debug]: (data: ILog) => this.logService.debug(data),
+        [EnumLogLevel.Warn]: (data: ILog) => this.logService.warn(data),
+        [EnumLogLevel.Info]: (data: ILog) => this.logService.info(data),
+      };
+    }
 
     async intercept(
       context: ExecutionContext,
@@ -40,6 +53,7 @@ export function LogInterceptor(
           correlationId,
           body,
           params,
+          version,
         } = ctx.getRequest<IRequestApp>();
         const responseExpress = ctx.getResponse<Response>();
         return next.handle().pipe(
@@ -53,11 +67,10 @@ export function LogInterceptor(
             const logData = {
               action,
               originalUrl,
+              version,
               description:
                 options?.description ||
-                `${method} ${originalUrl} called, action: ${
-                  action || 'GENERAL'
-                }`,
+                `${method} ${originalUrl} ${version} called, ${action}`,
               user: __user,
               correlationId,
               method: method as EnumRequestMethod,
@@ -69,15 +82,9 @@ export function LogInterceptor(
               tags: options?.tags,
             };
 
-            const logMethods = {
-              [EnumLogLevel.Fatal]: this.logService.fatal,
-              [EnumLogLevel.Debug]: this.logService.debug,
-              [EnumLogLevel.Warn]: this.logService.warn,
-              [EnumLogLevel.Info]: this.logService.info,
-            };
-
-            await (logMethods[options?.level]?.(logData) ||
-              logMethods[EnumLogLevel.Info]?.(logData));
+            await this.logMethods[options?.level || EnumLogLevel.Info]?.(
+              logData,
+            );
           }),
         );
       }

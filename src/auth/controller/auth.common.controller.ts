@@ -21,7 +21,6 @@ import { IResult } from 'ua-parser-js';
 import { User } from '@/user/entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
-import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
 
@@ -39,11 +38,11 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 
 import { ConnectionNames } from '@/database';
-import { EnumLogAction, IReqLogData } from '@/log';
+import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
 import { EnumStatusCodeError, SuccessException } from '@/utils/error';
-import { ReqLogData, RequestUserAgent } from '@/utils/request';
+import { RequestUserAgent } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
 
 import { EnumAuthStatusCodeError } from '../auth.constant';
@@ -59,7 +58,6 @@ export class AuthCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
     private readonly emailService: EmailService,
@@ -68,6 +66,7 @@ export class AuthCommonController {
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
   @LoginGuard()
   @Post('/login')
   async login(
@@ -77,8 +76,6 @@ export class AuthCommonController {
     body: AuthLoginDto,
     @ReqUser()
     user: User,
-    @ReqLogData()
-    logData: IReqLogData,
   ): Promise<IResponse> {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
@@ -134,14 +131,6 @@ export class AuthCommonController {
       });
     }
 
-    await this.logService.info({
-      ...logData,
-      action: EnumLogAction.Login,
-      description: `${user.id} do login`,
-      user: user,
-      tags: ['login', 'withEmail'],
-    });
-
     response.cookie('accessToken', accessToken, {
       secure: isSecureMode,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
@@ -156,6 +145,7 @@ export class AuthCommonController {
 
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
@@ -163,8 +153,6 @@ export class AuthCommonController {
     @Body()
     { email, password, firstName, lastName, phoneNumber }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
-    @ReqLogData()
-    logData: IReqLogData,
   ) {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',

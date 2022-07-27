@@ -36,7 +36,7 @@ export class VersionInterceptor implements NestInterceptor<Promise<any>> {
         url[2].replace(versioningPrefix, ''),
       );
 
-      request.__version = version;
+      request.version = version;
     }
 
     return next.handle();
