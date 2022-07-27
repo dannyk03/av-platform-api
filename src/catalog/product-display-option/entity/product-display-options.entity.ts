@@ -36,7 +36,9 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   })
   keywords!: string[];
 
-  @ManyToOne(() => Product, (product) => product.displayOptions)
+  @ManyToOne(() => Product, (product) => product.displayOptions, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @ManyToOne(() => DisplayLanguage)
@@ -45,8 +47,6 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
 
   @OneToMany(() => ProductImage, (image) => image.productDisplayOption, {
     cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
   })
   images: ProductImage[];
 }

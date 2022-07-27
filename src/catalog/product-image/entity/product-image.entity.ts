@@ -39,6 +39,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
   @ManyToOne(
     () => ProductDisplayOption,
     (displayOption) => displayOption.images,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn()
   productDisplayOption: ProductDisplayOption;

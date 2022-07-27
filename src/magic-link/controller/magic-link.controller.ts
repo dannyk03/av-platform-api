@@ -131,7 +131,7 @@ export class MagicLinkController {
     response.cookie('accessToken', accessToken, {
       secure: isSecureMode,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'lax',
+      sameSite: 'strict',
       httpOnly: true,
     });
 

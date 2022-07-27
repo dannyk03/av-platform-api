@@ -8,7 +8,7 @@ export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLin
   @Index()
   @Column({
     unique: true,
-    length: 16,
+    length: 21,
     update: false,
   })
   code!: string;

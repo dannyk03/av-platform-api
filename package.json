@@ -1,8 +1,8 @@
 {
   "name": "platform",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Platform API",
+  "author": "Avo team",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -75,7 +75,7 @@
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.34",
     "morgan": "^1.10.0",
-    "nanoid": "^3.3.4",
+    "nanoid": "^4.0.0",
     "nest-winston": "^1.7.0",
     "nestjs-command": "^3.1.2",
     "nestjs-i18n": "^9.1.5",

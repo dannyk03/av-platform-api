@@ -17,7 +17,7 @@ export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificat
   @Index()
   @Column({
     unique: true,
-    length: 16,
+    length: 21,
     update: false,
   })
   code!: string;
