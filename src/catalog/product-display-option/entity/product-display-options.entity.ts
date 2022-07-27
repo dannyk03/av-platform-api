@@ -46,6 +46,7 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @OneToMany(() => ProductImage, (image) => image.productDisplayOption, {
     cascade: true,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   images: ProductImage[];
 }

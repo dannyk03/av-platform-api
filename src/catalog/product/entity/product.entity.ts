@@ -30,6 +30,7 @@ export class Product extends BaseEntity<Product> {
     {
       cascade: true,
       onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     },
   )
   displayOptions!: ProductDisplayOption[];

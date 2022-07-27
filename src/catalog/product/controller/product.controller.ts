@@ -76,7 +76,7 @@ export class ProductController {
       keywords,
       languageIsoCode,
     }: ProductCreateDto,
-  ): Promise<void> {
+  ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
@@ -126,7 +126,8 @@ export class ProductController {
       ],
     });
 
-    await this.productService.save(createProduct);
+    const createdProduct = await this.productService.save(createProduct);
+    return await this.productService.serialization(createdProduct);
   }
 
   @ResponsePaging('product.list')
@@ -206,8 +207,7 @@ export class ProductController {
     systemOnly: true,
   })
   @Delete('/:id')
-  async deleteProduct(@Param('id') id: string): Promise<IResponse> {
-    const res = await this.productService.deleteProductBy({ id });
-    return res;
+  async deleteProduct(@Param('id') id: string): Promise<void> {
+    await this.productService.deleteProductBy({ id });
   }
 }

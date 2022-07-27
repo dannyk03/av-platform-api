@@ -11,9 +11,11 @@ import { UploadCloudinaryImage } from '../cloudinary.interface';
 @Injectable()
 export class CloudinaryService {
   private readonly isProduction: boolean;
+  private readonly deleteResources: (publicIds: string[]) => Promise<unknown>;
 
   constructor(private readonly configService: ConfigService) {
     this.isProduction = this.configService.get('app.isProduction');
+    this.deleteResources = util.promisify(v2.api.delete_resources);
   }
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
@@ -21,6 +23,10 @@ export class CloudinaryService {
 
   async ping() {
     return v2.api.ping();
+  }
+
+  async deleteImages({ publicIds }: { publicIds: string[] }) {
+    return this.deleteResources([...new Set(publicIds)]);
   }
 
   async uploadImage({

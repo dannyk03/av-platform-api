@@ -2,6 +2,7 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { plainToInstance } from 'class-transformer';
+import flatMap from 'lodash/flatMap';
 import {
   Brackets,
   DataSource,
@@ -148,26 +149,28 @@ export class ProductService {
   }
 
   async deleteProductBy({ id }: { id: string }): Promise<Product> {
-    return this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        const removeProduct = await transactionalEntityManager.findOne(
-          Product,
-          {
-            where: { id },
-          },
-        );
+    const removeProduct = await this.productRepository.findOne({
+      where: { id },
+      relations: ['displayOptions', 'displayOptions.images'],
+    });
 
-        if (!removeProduct) {
-          throw new UnprocessableEntityException({
-            statusCode: EnumProductStatusCodeError.ProductNotFoundError,
-            message: 'product.error.notFound',
-          });
-        }
+    if (!removeProduct) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
 
-        return transactionalEntityManager.remove(removeProduct);
-      },
+    const imagePublicIds = flatMap(removeProduct.displayOptions, ({ images }) =>
+      flatMap(images, ({ publicId }) => publicId),
     );
+
+    await this.cloudinaryService.deleteImages({ publicIds: imagePublicIds });
+    return this.productRepository.remove(removeProduct);
+  }
+
+  async serialization(data: Product): Promise<ProductListSerialization> {
+    return plainToInstance(ProductListSerialization, data);
   }
 
   async serializationList(
