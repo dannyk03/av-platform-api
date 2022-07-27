@@ -8,8 +8,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
-import { DebuggerService } from '@/debugger/service';
-
 import { RequestControllerGuard } from './guard/request.controller.guard';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { EnumRequestStatusCodeError } from './request.constant';
@@ -32,11 +30,8 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
   providers: [
     {
       provide: APP_PIPE,
-      inject: [DebuggerService, ConfigService],
-      useFactory: (
-        debuggerService: DebuggerService,
-        configService: ConfigService,
-      ) => {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
         return new ValidationPipe({
           forbidUnknownValues: true,
           transform: true,

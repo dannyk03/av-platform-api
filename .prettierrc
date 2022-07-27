@@ -5,13 +5,13 @@
     "<THIRD_PARTY_MODULES>",
     "^@avo/(.*)$",
     "^(.*).module(.*)$",
-    "^(.*).service(.*)$",
     "^(.*).entity(.*)$",
+    "^(.*).service(.*)$",
     "^(.*).serialization(.*)$",
     "^(.*).decorator(.*)$",
     "^(.*).dto(.*)$",
     "^@/(.*)$",
-    "^[..*/]"
+    "^[.*/]"
   ],
   "importOrderSortSpecifiers": true,
   "importOrderGroupNamespaceSpecifiers": true,

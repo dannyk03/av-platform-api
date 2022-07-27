@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MessagingModule } from '@/messaging/messaging.module';
 
-import { OrganizationInviteService, OrganizationService } from './service';
-
 import { Organization, OrganizationInviteLink } from './entity';
+
+import { OrganizationInviteService, OrganizationService } from './service';
 
 import { ConnectionNames } from '@/database';
 

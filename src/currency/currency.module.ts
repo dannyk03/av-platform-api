@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CurrencyService } from './service';
-
 import { Currency } from './entity';
+
+import { CurrencyService } from './service';
 
 import { ConnectionNames } from '@/database';
 

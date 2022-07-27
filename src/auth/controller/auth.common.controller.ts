@@ -5,7 +5,6 @@ import {
   ForbiddenException,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   NotFoundException,
   Patch,
   Post,
@@ -18,12 +17,11 @@ import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { User } from '@/user/entity';
+
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
-import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
-
-import { User } from '@/user/entity';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
@@ -39,11 +37,11 @@ import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 
 import { ConnectionNames } from '@/database';
-import { EnumLoggerAction, IReqLogData } from '@/log';
+import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { EnumStatusCodeError, SuccessException } from '@/utils/error';
-import { ReqLogData, RequestUserAgent } from '@/utils/request';
+import { SuccessException } from '@/utils/error';
+import { RequestUserAgent } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
 
 import { EnumAuthStatusCodeError } from '../auth.constant';
@@ -59,7 +57,6 @@ export class AuthCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly logService: LogService,
     private readonly configService: ConfigService,
     private readonly helperJwtService: HelperJwtService,
     private readonly emailService: EmailService,
@@ -68,6 +65,7 @@ export class AuthCommonController {
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
   @LoginGuard()
   @Post('/login')
   async login(
@@ -77,8 +75,6 @@ export class AuthCommonController {
     body: AuthLoginDto,
     @ReqUser()
     user: User,
-    @ReqLogData()
-    logData: IReqLogData,
   ): Promise<IResponse> {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
@@ -134,18 +130,10 @@ export class AuthCommonController {
       });
     }
 
-    await this.logService.info({
-      ...logData,
-      action: EnumLoggerAction.Login,
-      description: `${user.id} do login`,
-      user: user,
-      tags: ['login', 'withEmail'],
-    });
-
     response.cookie('accessToken', accessToken, {
       secure: isSecureMode,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
+      sameSite: 'lax',
       httpOnly: true,
     });
 
@@ -154,86 +142,9 @@ export class AuthCommonController {
     };
   }
 
-  // @Response('auth.login')
-  // @HttpCode(HttpStatus.OK)
-  // @LoginGuestGuard()
-  // @Post('/login/guest')
-  // async loginMagic(
-  //   @Res({ passthrough: true })
-  //   response: ExpressResponse,
-  //   @Body()
-  //   { email, firstName, lastName }: AuthMagicLoginDto,
-  //   @ReqUser()
-  //   reqUser: User | null,
-  //   @ReqLogData()
-  //   logData: IReqLogData,
-  // ): Promise<IResponse> {
-  //   const isSecureMode: boolean =
-  //     this.configService.get<boolean>('app.isSecureMode');
-
-  //   if (reqUser?.authConfig?.password) {
-  //     throw new ForbiddenException({
-  //       statusCode: EnumAuthStatusCodeError.AuthLoginGuestError,
-  //       message: 'auth.error.guestLogin',
-  //     });
-  //   }
-
-  //   if (!reqUser) {
-  //     const newUser = await this.userService.create({
-  //       email,
-  //       firstName,
-  //       lastName,
-  //       // authConfig: {
-  //       //   loginCode: this.helperHashService.code32char(),
-  //       //   loginCodeExpiredAt: this.helperDateService.forwardInMilliseconds(
-  //       //     ms(
-  //       //       this.configService.get<string>(
-  //       //         'auth.jwt.magicAccessToken.expirationTime',
-  //       //       ),
-  //       //     ),
-  //       //   ),
-  //       // },
-  //     });
-
-  //     reqUser = await this.userService.save(newUser);
-  //   }
-
-  //   const safeData: AuthUserLoginSerialization =
-  //     await this.authService.serializationLogin(reqUser);
-
-  //   // TODO: cache in redis safeData with user role and permission for next api calls
-
-  //   const rememberMe = false;
-  //   const payloadAccessToken: Record<string, any> =
-  //     await this.authService.createPayloadAccessToken(safeData, rememberMe);
-
-  //   const accessToken: string = await this.authService.createAccessToken(
-  //     payloadAccessToken,
-  //     { guest: true },
-  //   );
-
-  //   await this.logService.info({
-  //     ...logData,
-  //     action: EnumLoggerAction.Login,
-  //     description: `${reqUser.email} do login`,
-  //     user: reqUser,
-  //     tags: ['login', 'magic'],
-  //   });
-
-  //   response.cookie('accessToken', accessToken, {
-  //     secure: isSecureMode,
-  //     expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-  //     sameSite: 'strict',
-  //     httpOnly: true,
-  //   });
-
-  //   return {
-  //     accessToken,
-  //   };
-  // }
-
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
@@ -241,9 +152,7 @@ export class AuthCommonController {
     @Body()
     { email, password, firstName, lastName, phoneNumber }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
-    @ReqLogData()
-    logData: IReqLogData,
-  ): Promise<IResponse> {
+  ) {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
@@ -272,7 +181,7 @@ export class AuthCommonController {
       });
     }
 
-    return await this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { salt, passwordHash, passwordExpiredAt } =
@@ -313,15 +222,6 @@ export class AuthCommonController {
           payloadAccessToken,
         );
 
-        await this.logService.info({
-          ...logData,
-          action: EnumLoggerAction.SignUp,
-          description: `${signUpUser.email} do signup`,
-          user: signUpUser,
-          tags: ['signup', 'withEmail'],
-          transactionalEntityManager,
-        });
-
         await this.emailService.sendSignUpEmailVerification({
           email,
           code: signUpEmailVerificationLink.code,
@@ -333,7 +233,7 @@ export class AuthCommonController {
         response.cookie('accessToken', accessToken, {
           secure: isSecureMode,
           expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-          sameSite: 'strict',
+          sameSite: 'lax',
           httpOnly: true,
         });
 
@@ -391,7 +291,7 @@ export class AuthCommonController {
     response.cookie('accessToken', accessToken, {
       secure: isSecureMode,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
+      sameSite: 'lax',
       httpOnly: true,
     });
 
@@ -446,18 +346,8 @@ export class AuthCommonController {
       });
     }
 
-    try {
-      const password = await this.authService.createPassword(body.newPassword);
+    const password = await this.authService.createPassword(body.newPassword);
 
-      await this.userService.updatePassword(user.id, password);
-    } catch (err) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-        cause: err.message,
-      });
-    }
-
-    return;
+    await this.userService.updatePassword(user.id, password);
   }
 }

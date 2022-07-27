@@ -12,11 +12,11 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { DataSource } from 'typeorm';
 
+import { User } from '@/user/entity';
+
 import { GiftSendConfirmationLinkService, GiftService } from '../service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
-
-import { User } from '@/user/entity';
 
 import { GifSendGuard } from '../gift.decorator';
 
@@ -26,7 +26,7 @@ import { ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumMessagingStatusCodeError } from '@/messaging';
 import { EmailService } from '@/messaging/email';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -53,7 +53,7 @@ export class GiftController {
     { sender, recipients, additionalData }: GiftSendDto,
     @ReqJwtUser()
     reqJwtUser: User,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const uniqueRecipients = [...new Set(recipients)];
 
     const maybeSenderUser = await this.userService.findOneBy({
@@ -122,7 +122,5 @@ export class GiftController {
         );
       },
     );
-
-    return;
   }
 }

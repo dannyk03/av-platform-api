@@ -12,9 +12,9 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 
-import { CloudinaryService } from '@/cloudinary/service';
-
 import { Product } from '../entity';
+
+import { CloudinaryService } from '@/cloudinary/service';
 
 import { ProductListSerialization } from '../serialization';
 

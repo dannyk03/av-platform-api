@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { User } from '../entity';
+
 import { UserService } from '../service';
 import { HelperDateService } from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
-
-import { User } from '../entity';
 
 import { ReqUser } from '../user.decorator';
 

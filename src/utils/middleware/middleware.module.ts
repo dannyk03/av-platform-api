@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
@@ -31,8 +36,15 @@ export class MiddlewareModule implements NestModule {
         CustomLanguageMiddleware,
         UserAgentMiddleware,
         ResponseTimeMiddleware,
-        TimestampMiddleware,
       )
+      .forRoutes('*');
+
+    consumer
+      .apply(TimestampMiddleware)
+      .exclude({
+        path: 'health/(.*)',
+        method: RequestMethod.GET,
+      })
       .forRoutes('*');
   }
 }

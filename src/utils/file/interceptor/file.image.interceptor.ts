@@ -46,8 +46,8 @@ export function FileImageInterceptor(
           });
         }
 
-        for (const file of finalFiles) {
-          await this.validate(file);
+        for (const ff of finalFiles) {
+          await this.validate(ff);
         }
       } else {
         await this.validate(finalFiles);

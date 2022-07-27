@@ -77,11 +77,11 @@ spec:
                 secretKeyRef:
                   name: auth-secret
                   key: super-admin-initial-password
-            # - name: AUTH_SYSTEM_ADMIN_EMAIL
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: auth-secret
-            #       key: super-admin-initial-email
+            - name: AUTH_SYSTEM_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: super-admin-initial-email
             - name: AUTH_JWT_ACCESS_TOKEN_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -143,7 +143,7 @@ spec:
             - name: APP_ENV
               value: 'development'
             - name: APP_MODE
-              value: 'simple'
+              value: 'secure'
             - name: APP_LANGUAGE
               value: 'en'
             - name: APP_TZ
@@ -153,8 +153,6 @@ spec:
             - name: APP_PORT
               value: '3000'
             - name: APP_VERSIONING
-              value: 'true'
-            - name: APP_DEBUG
               value: 'true'
             - name: APP_HTTP_ON
               value: 'true'

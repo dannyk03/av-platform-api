@@ -14,10 +14,10 @@ import {
   Repository,
 } from 'typeorm';
 
-import { HelperDateService, HelperHashService } from '@/utils/helper/service';
-
 import { OrganizationInviteLink } from '../entity';
 import { AclRole } from '@acl/role/entity';
+
+import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 
 import { EnumRoleStatusCodeError } from '@/access-control-list/role';
 import { ConnectionNames } from '@/database';
@@ -43,7 +43,7 @@ export class OrganizationInviteService {
   ): Promise<OrganizationInviteLink> {
     return this.organizationInviteRepository.create({
       ...props,
-      code: this.helperHashService.code32char(),
+      code: await this.helperHashService.magicCode(),
     });
   }
 

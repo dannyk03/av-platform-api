@@ -44,12 +44,12 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-"@avo/casl@^0.0.11":
-  version "0.0.11"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.11.tgz#065b4ab6ea8e6e9c6440960b49c91af6f93bd118"
-  integrity sha512-zXVVmJA0fjhEozVDxv1qLFCpUvDPoV954Vftr12mONRZt8RLjvtDMK1uLa5wT0FMQY7cjxdld4WtOH6h1/xvgA==
+"@avo/casl@^0.0.12":
+  version "0.0.12"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.12.tgz#3e5ba4e49ecf00351e41b9867ec8ac5de21e44ae"
+  integrity sha512-qd//59tbw+R6USZy7FEtWSVzg4HdPOMbjUTG3oki8mYO9+DFCCJL6uKnR94RrhdCZZUe8/8ylYxOeA8g9uSEOA==
   dependencies:
-    "@casl/ability" "^5.4.4"
+    "@casl/ability" "^6.0.0"
 
 "@avo/type@^0.0.3":
   version "0.0.3"
@@ -1366,10 +1366,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@casl/ability@^5.4.4":
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-5.4.4.tgz#fbe54340c156248e73804942eed350903b27b9f3"
-  integrity sha512-7+GOnMUq6q4fqtDDesymBXTS9LSDVezYhFiSJ8Rn3f0aQLeRm7qHn66KWbej4niCOvm0XzNj9jzpkK0yz6hUww==
+"@casl/ability@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-6.0.0.tgz#fa740b3d18d3fbea1f6712347be0b7a56708a839"
+  integrity sha512-hrL9+SiWVzi1C7fA96eZjuJ9ZEkkHpsBZTmqJTxcUAGju9VdHRqHwZUBYR2EBGxCkWi7WIUZs5AH4kHyL9CcPA==
   dependencies:
     "@ucast/mongo2js" "^1.3.0"
 
@@ -3596,6 +3596,11 @@ crypto-js@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
   integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
+
+cuid@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
+  integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
 
 currency-codes@^2.1.0:
   version "2.1.0"
@@ -5948,6 +5953,11 @@ mz@^2.4.0:
     any-promise "^1.0.0"
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
+
+nanoid@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
+  integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
 
 natural-compare@^1.4.0:
   version "1.4.0"

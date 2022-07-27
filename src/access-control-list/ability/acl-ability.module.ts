@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AclAbilityService } from './service';
-
 import { AclAbility } from './entity';
+
+import { AclAbilityService } from './service';
 
 import { ConnectionNames } from '@/database';
 

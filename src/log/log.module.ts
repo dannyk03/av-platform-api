@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { LogService } from './service';
-
 import { Log } from './entity';
+
+import { LogService } from './service';
 
 import { ConnectionNames } from '@/database/database.constant';
 

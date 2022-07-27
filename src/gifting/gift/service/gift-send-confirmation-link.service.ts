@@ -8,9 +8,9 @@ import {
   Repository,
 } from 'typeorm';
 
-import { HelperHashService } from '@/utils/helper/service';
-
 import { GiftSendConfirmationLink } from '../entity';
+
+import { HelperHashService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database';
 
@@ -27,7 +27,7 @@ export class GiftSendConfirmationLinkService {
   ): Promise<GiftSendConfirmationLink> {
     return this.giftSendVerificationLink.create({
       ...props,
-      code: this.helperHashService.code32char(),
+      code: await this.helperHashService.magicCode(),
     });
   }
 

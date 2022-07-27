@@ -1,14 +1,17 @@
 import { Request } from 'express';
 import { IResult } from 'ua-parser-js';
 
+import { User } from '@/user/entity';
+
 export interface IRequestApp extends Request {
-  userAgent?: IResult;
-  timezone: string;
-  timestamp: string;
-  customLang: string;
-  user?: Record<string, any>;
-  version?: string;
   correlationId: string;
+  timezone: string;
+  timestamp?: string;
+  user?: Record<string, any>;
+  customLang: string;
+  version?: string;
+  userAgent?: IResult;
+  __user?: User;
   __class: string;
   __function: string;
 }

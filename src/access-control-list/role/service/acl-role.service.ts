@@ -10,12 +10,12 @@ import {
   Repository,
 } from 'typeorm';
 
+import { AclRole } from '../entity';
+
 import { HelperSlugService } from '@/utils/helper/service';
 import { AclAbilityService } from '@acl/ability/service';
 import { AclPolicyService } from '@acl/policy/service';
 import { AclSubjectService } from '@acl/subject/service';
-
-import { AclRole } from '../entity';
 
 import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
 

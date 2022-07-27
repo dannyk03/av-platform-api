@@ -1,25 +1,30 @@
-import { EntityManager } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { AclRole } from '@/access-control-list/role/entity';
 import { User } from '@/user/entity';
 
-import { EnumLoggerAction } from './log.constant';
+import { EnumRequestMethod } from '@/utils/request';
 
-export interface IReqLogData {
-  correlationId: string;
-  originalUrl: string;
-  userAgent: IResult;
-  method: string;
-}
+import { EnumLogAction, EnumLogLevel } from './log.constant';
 
 export interface ILog {
-  transactionalEntityManager?: EntityManager;
-  correlationId: string;
   originalUrl: string;
   description: string;
-  userAgent?: IResult;
-  method?: string;
-  action?: EnumLoggerAction;
-  user?: User;
+  action: EnumLogAction;
+  role?: AclRole;
+  method: EnumRequestMethod;
   tags?: string[];
+  params?: Record<string, any>;
+  bodies?: Record<string, any>;
+  statusCode?: number;
+  user?: User;
+  correlationId: string;
+  userAgent: IResult;
+  version?: string;
+}
+
+export interface ILogOptions {
+  description?: string;
+  tags?: string[];
+  level?: EnumLogLevel;
 }

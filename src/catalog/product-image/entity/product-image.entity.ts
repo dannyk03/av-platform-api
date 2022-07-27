@@ -13,7 +13,8 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @Column({
     unique: true,
-    length: 32,
+    length: 16,
+    update: false,
   })
   assetId!: string;
 

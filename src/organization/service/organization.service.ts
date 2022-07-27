@@ -8,9 +8,9 @@ import {
   Repository,
 } from 'typeorm';
 
-import { HelperSlugService } from '@/utils/helper/service';
-
 import { Organization } from '../entity';
+
+import { HelperSlugService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database';
 

@@ -11,7 +11,6 @@ import {
   Query,
   UploadedFiles,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import compact from 'lodash/compact';
 
@@ -20,7 +19,6 @@ import { Action, Subject } from '@avo/casl';
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { CloudinaryService } from '@/cloudinary/service';
-import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
@@ -47,8 +45,6 @@ import { EnumProductStatusCodeError } from '../product.constant';
 })
 export class ProductController {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly helperDateService: HelperDateService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly productService: ProductService,
     private readonly productImageService: ProductImageService,
@@ -80,7 +76,7 @@ export class ProductController {
       keywords,
       languageIsoCode,
     }: ProductCreateDto,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
@@ -131,8 +127,6 @@ export class ProductController {
     });
 
     await this.productService.save(createProduct);
-
-    return;
   }
 
   @ResponsePaging('product.list')
@@ -201,7 +195,7 @@ export class ProductController {
   }
 
   @Response('product.delete')
-  @RequestParamGuard()
+  @RequestParamGuard(ProductQueryParamIdDto)
   @AclGuard({
     abilities: [
       {

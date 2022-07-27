@@ -13,12 +13,13 @@ import { CloudinaryService } from '@/cloudinary/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
 import { AclGuard, ReqJwtUser } from '@/auth';
+import { EnumLogAction, LogTrace } from '@/log';
 import { ErrorMeta } from '@/utils/error';
 import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
 import { IResponse, Response, ResponseTimeout } from '@/utils/response';
 
-@Throttle(1, 5)
+@Throttle(1, 10)
 @Controller({
   version: VERSION_NEUTRAL,
 })
@@ -30,6 +31,7 @@ export class TestingCommonController {
   ) {}
   @Response('test.ping')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.Test, { tags: ['test'] })
   @Get()
   async hello(
     @RequestUserAgent() userAgent: IResult,
@@ -43,6 +45,7 @@ export class TestingCommonController {
       date: newDate,
       format: this.helperDateService.format(newDate, {
         timezone: timezone,
+        format: EnumHelperDateFormat.FriendlyDateTime,
       }),
       timestamp: this.helperDateService.timestamp({
         date: newDate,

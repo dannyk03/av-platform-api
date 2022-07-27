@@ -32,7 +32,7 @@ import {
   IPaginationFilterStringOptions,
 } from './pagination.interface';
 
-export function PaginationSearch(availableSearch: string[]): any {
+export function PaginationSearch(): any {
   return applyDecorators(
     Expose(),
     IsOptional(),
@@ -127,7 +127,7 @@ export function PaginationSort(
 
       const key = (nestingAliasMap?.[convertField] || convertField)
         .split('.')
-        .map((field) => snakeCase(field))
+        .map((f) => snakeCase(f))
         .join('.');
       return { [key]: convertType };
     }),

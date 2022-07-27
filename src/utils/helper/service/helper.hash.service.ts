@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 import { SHA256, enc } from 'crypto-js';
-import { v4 as uuidV4 } from 'uuid';
+import { nanoid } from 'nanoid/async';
 
 @Injectable()
 export class HelperHashService {
@@ -31,7 +31,11 @@ export class HelperHashService {
     return hashOne === hashTwo;
   }
 
-  code32char(): string {
-    return uuidV4().replaceAll('-', '');
+  async nanoId(length: number): Promise<string> {
+    return nanoid(length);
+  }
+
+  async magicCode(): Promise<string> {
+    return this.nanoId(16);
   }
 }
