@@ -26,7 +26,7 @@ import { ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumMessagingStatusCodeError } from '@/messaging';
 import { EmailService } from '@/messaging/email';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',

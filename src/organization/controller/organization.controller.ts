@@ -4,7 +4,6 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   Post,
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -24,8 +23,7 @@ import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
-import { EnumStatusCodeError } from '@/utils/error';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
 

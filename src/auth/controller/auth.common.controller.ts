@@ -5,7 +5,6 @@ import {
   ForbiddenException,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   NotFoundException,
   Patch,
   Post,
@@ -41,7 +40,7 @@ import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { EnumStatusCodeError, SuccessException } from '@/utils/error';
+import { SuccessException } from '@/utils/error';
 import { RequestUserAgent } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
 

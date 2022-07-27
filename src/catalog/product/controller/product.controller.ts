@@ -26,12 +26,7 @@ import { ProductCreateDto, ProductListDto } from '../dto';
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
-import {
-  IResponse,
-  IResponsePaging,
-  Response,
-  ResponsePaging,
-} from '@/utils/response';
+import { IResponsePaging, Response, ResponsePaging } from '@/utils/response';
 
 import { EnumProductCodeError } from '../product.constant';
 
