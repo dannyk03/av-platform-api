@@ -59,12 +59,9 @@ export class CloudinaryService {
             prefix: folder.path,
             max_results: 500,
           },
-          function (error, res) {
-            console.log(error, res);
-            if (error) {
-              debugger;
-            }
-            if (res?.resources.length) {
+          function (error, res1) {
+            console.log(error, res1);
+            if (res1?.resources.length) {
               v2.api.delete_resources_by_prefix(folder.path, (err, res) => {
                 console.log(err, res);
                 // v2.api.delete_folder(folder.path, (err, res) => {
@@ -73,8 +70,8 @@ export class CloudinaryService {
                 // });
               });
             } else {
-              v2.api.delete_folder(folder.path, (err, res) => {
-                console.log(err, res);
+              v2.api.delete_folder(folder.path, (err, res2) => {
+                console.log(err, res2);
               });
             }
           },

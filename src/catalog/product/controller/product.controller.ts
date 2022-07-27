@@ -72,7 +72,7 @@ export class ProductController {
       keywords,
       languageIsoCode,
     }: ProductCreateDto,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
@@ -123,8 +123,6 @@ export class ProductController {
     });
 
     await this.productService.save(createProduct);
-
-    return;
   }
 
   @ResponsePaging('product.list')

@@ -66,7 +66,7 @@ export class OrganizationInviteController {
     { email, role }: OrganizationInviteDto,
     @ReqOrganizationIdentifierCtx()
     { id, slug }: IReqOrganizationIdentifierCtx,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const organizationCtxFind: Record<string, any> = {
       organization: { id, slug },
     };
@@ -95,7 +95,7 @@ export class OrganizationInviteController {
       });
     }
 
-    return await this.organizationInviteService.invite({
+    await this.organizationInviteService.invite({
       email,
       aclRole: existingRole,
     });

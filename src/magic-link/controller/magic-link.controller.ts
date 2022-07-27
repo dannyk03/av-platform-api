@@ -170,8 +170,6 @@ export class MagicLinkController {
         message: 'organization.error.inviteInvalid',
       });
     }
-
-    return;
   }
 
   @Response('gift.confirm')
@@ -179,7 +177,7 @@ export class MagicLinkController {
   async confirmSendGift(
     @Query()
     { code }: MagicLinkDto,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const existingGiftSendVerificationLink =
       await this.giftSendConfirmationLinkService.findOne({
         where: { code },
@@ -261,7 +259,5 @@ export class MagicLinkController {
         );
       },
     );
-
-    return;
   }
 }

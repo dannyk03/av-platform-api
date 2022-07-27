@@ -25,18 +25,8 @@ export class HelperStringService {
 
   random(length: number, options?: IHelperStringRandomOptions): string {
     const rString = options?.safe
-      ? faker.internet.password(
-          length,
-          true,
-          /[A-Z]/,
-          options?.prefix ? options.prefix : undefined,
-        )
-      : faker.internet.password(
-          length,
-          false,
-          /\w/,
-          options?.prefix ? options.prefix : undefined,
-        );
+      ? faker.internet.password(length, true, /[A-Z]/, options?.prefix)
+      : faker.internet.password(length, false, /\w/, options?.prefix);
 
     return options?.upperCase ? rString.toUpperCase() : rString;
   }
@@ -99,7 +89,7 @@ export class HelperStringService {
   }
 
   checkSafeString(text: string): boolean {
-    const regex = new RegExp('^[A-Za-z0-9_-]+$');
+    const regex = /'^[A-Za-z0-9_-]+$'/;
     return regex.test(text);
   }
 }

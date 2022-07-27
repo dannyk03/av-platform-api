@@ -347,18 +347,8 @@ export class AuthCommonController {
       });
     }
 
-    try {
-      const password = await this.authService.createPassword(body.newPassword);
+    const password = await this.authService.createPassword(body.newPassword);
 
-      await this.userService.updatePassword(user.id, password);
-    } catch (err) {
-      throw new InternalServerErrorException({
-        statusCode: EnumStatusCodeError.UnknownError,
-        message: 'http.serverError.internalServerError',
-        cause: err.message,
-      });
-    }
-
-    return;
+    await this.userService.updatePassword(user.id, password);
   }
 }

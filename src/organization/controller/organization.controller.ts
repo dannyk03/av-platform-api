@@ -71,7 +71,7 @@ export class OrganizationController {
       email: organizationOwnerEmail,
       password: initialOwnerPassword,
     }: OrganizationCreateDto,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const checkOrganizationExist =
       await this.organizationService.checkExistsByName(organizationName);
 
@@ -95,67 +95,57 @@ export class OrganizationController {
 
     const rolePresets = await this.rolePresetService.findAll();
 
-    const result = await this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        try {
-          const organizationRoles =
-            await this.aclRoleService.cloneSaveRolesTree(
-              transactionalEntityManager,
-              rolePresets,
-            );
+        const organizationRoles = await this.aclRoleService.cloneSaveRolesTree(
+          transactionalEntityManager,
+          rolePresets,
+        );
 
-          const organization = await this.organizationService.create({
-            name: organizationName,
-            roles: organizationRoles,
-          });
+        const organization = await this.organizationService.create({
+          name: organizationName,
+          roles: organizationRoles,
+        });
 
-          await transactionalEntityManager.save(organization);
+        await transactionalEntityManager.save(organization);
 
-          const { salt, passwordHash, passwordExpiredAt } =
-            await this.authService.createPassword(initialOwnerPassword);
+        const { salt, passwordHash, passwordExpiredAt } =
+          await this.authService.createPassword(initialOwnerPassword);
 
-          const organizationOwnerRole = organizationRoles.find(
-            (role) => role.name === EnumOrganizationRole.Owner,
-          );
+        const organizationOwnerRole = organizationRoles.find(
+          (role) => role.name === EnumOrganizationRole.Owner,
+        );
 
-          organizationOwnerRole.organization = organization;
+        organizationOwnerRole.organization = organization;
 
-          const organizationOwner = await this.userService.create({
-            email: organizationOwnerEmail,
-            authConfig: {
-              password: passwordHash,
-              salt,
-              passwordExpiredAt,
-            },
-            organization,
-            role: organizationOwnerRole,
-          });
+        const organizationOwner = await this.userService.create({
+          email: organizationOwnerEmail,
+          authConfig: {
+            password: passwordHash,
+            salt,
+            passwordExpiredAt,
+          },
+          organization,
+          role: organizationOwnerRole,
+        });
 
-          await transactionalEntityManager.save(organizationOwner);
+        await transactionalEntityManager.save(organizationOwner);
 
-          const inviteRes = await this.organizationInviteService.invite({
-            transactionalEntityManager,
-            email: organizationOwnerEmail,
-            aclRole: organizationOwnerRole,
-          });
+        const inviteRes = await this.organizationInviteService.invite({
+          transactionalEntityManager,
+          email: organizationOwnerEmail,
+          aclRole: organizationOwnerRole,
+        });
 
-          const organizationCreateResult = {
-            organization: { id: organization.id },
-            owner: { id: organizationOwner.id },
-            invite: inviteRes,
-          };
+        const organizationCreateResult = {
+          organization: { id: organization.id },
+          owner: { id: organizationOwner.id },
+          invite: inviteRes,
+        };
 
-          return organizationCreateResult;
-        } catch (err) {
-          throw new InternalServerErrorException({
-            statusCode: EnumStatusCodeError.UnknownError,
-            message: 'http.serverError.internalServerError',
-          });
-        }
+        return organizationCreateResult;
       },
     );
-
-    return result;
   }
 }

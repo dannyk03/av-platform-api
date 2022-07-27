@@ -127,7 +127,7 @@ export function PaginationSort(
 
       const key = (nestingAliasMap?.[convertField] || convertField)
         .split('.')
-        .map((field) => snakeCase(field))
+        .map((f) => snakeCase(f))
         .join('.');
       return { [key]: convertType };
     }),

@@ -10,7 +10,7 @@ import { EnumRequestStatusCodeError, IRequestApp } from '@/utils/request';
 export class UserAgentMiddleware implements NestMiddleware {
   constructor(private readonly configService: ConfigService) {}
 
-  use(req: IRequestApp, res: Response, next: NextFunction): void {
+  use(req: IRequestApp, _res: Response, next: NextFunction): void {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
 

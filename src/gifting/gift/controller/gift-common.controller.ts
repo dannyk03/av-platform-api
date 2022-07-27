@@ -53,7 +53,7 @@ export class GiftController {
     { sender, recipients, additionalData }: GiftSendDto,
     @ReqJwtUser()
     reqJwtUser: User,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const uniqueRecipients = [...new Set(recipients)];
 
     const maybeSenderUser = await this.userService.findOneBy({
@@ -122,7 +122,5 @@ export class GiftController {
         );
       },
     );
-
-    return;
   }
 }
