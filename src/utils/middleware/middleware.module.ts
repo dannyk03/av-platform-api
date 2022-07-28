@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';

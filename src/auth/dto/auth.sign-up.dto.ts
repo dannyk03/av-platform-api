@@ -5,7 +5,6 @@ import {
   IsString,
   Length,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
 import {

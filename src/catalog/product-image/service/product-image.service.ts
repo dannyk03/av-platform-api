@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import {
   DeepPartial,
   FindOneOptions,
@@ -13,7 +12,6 @@ import { ProductImage } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { UploadCloudinaryImage } from '@/cloudinary';
 import { ConnectionNames } from '@/database';
 
 @Injectable()
