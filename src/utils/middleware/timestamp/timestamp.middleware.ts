@@ -25,7 +25,7 @@ export class TimestampMiddleware implements NestMiddleware {
 
     if (!(isSecureMode || reqTs)) {
       const currentTimestamp: number = this.helperDateService.timestamp();
-      reqTs = `${currentTimestamp}`;
+      reqTs = reqTs || `${currentTimestamp}`;
     }
 
     req.headers['x-timestamp'] = reqTs;

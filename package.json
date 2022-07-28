@@ -65,6 +65,7 @@
     "currency-codes": "^2.1.0",
     "currency-symbol-map": "^5.1.0",
     "customerio-node": "^3.3.3",
+    "dayjs": "^1.11.4",
     "exceljs": "^4.3.0",
     "express-rate-limit": "^6.5.1",
     "geolib": "^3.3.3",

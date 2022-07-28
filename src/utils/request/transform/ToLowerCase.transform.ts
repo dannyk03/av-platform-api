@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Transform } from 'class-transformer';
 
@@ -11,7 +12,9 @@ export function ToLowerCaseTransform(options?: ITransformOptions): any {
     Transform(({ value }) =>
       each && Array.isArray(value)
         ? value.map((v) => v?.toLowerCase())
-        : value?.toLowerCase(),
+        : isString(value)
+        ? value?.toLowerCase()
+        : value,
     ),
   );
 }

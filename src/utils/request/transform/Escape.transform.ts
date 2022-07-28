@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Expose, Transform } from 'class-transformer';
 import escape from 'validator/lib/escape';
@@ -13,7 +14,9 @@ export function Escape(options?: ITransformOptions): any {
     Transform(({ value }) =>
       each && Array.isArray(value)
         ? value.map((v) => escape(v))
-        : escape(value),
+        : isString(value)
+        ? escape(value)
+        : value,
     ),
   );
 }

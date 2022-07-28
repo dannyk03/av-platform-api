@@ -1,3 +1,5 @@
+import { isString } from '@nestjs/common/utils/shared.utils';
+
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -8,7 +10,6 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
-import { isString } from 'lodash';
 
 import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';

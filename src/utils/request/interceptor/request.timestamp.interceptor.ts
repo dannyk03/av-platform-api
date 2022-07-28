@@ -48,9 +48,8 @@ export class RequestTimestampInterceptor
         const toleranceTimeInMs = this.configService.get<number>(
           'middleware.timestamp.toleranceTimeInMs',
         );
-        const check: boolean = this.helperDateService.checkTimestamp(
-          this.helperNumberService.create(reqTs),
-        );
+        const check: boolean = this.helperDateService.check(reqTs);
+
         if (!reqTs || !check) {
           throw new ForbiddenException({
             statusCode: EnumRequestStatusCodeError.RequestTimestampInvalidError,
@@ -58,15 +57,15 @@ export class RequestTimestampInterceptor
           });
         }
 
-        const timestamp = this.helperDateService.create({
-          date: this.helperNumberService.create(reqTs),
+        const date = this.helperDateService.create({
+          date: reqTs,
         });
         const toleranceMin =
           this.helperDateService.backwardInMilliseconds(toleranceTimeInMs);
         const toleranceMax =
           this.helperDateService.forwardInMilliseconds(toleranceTimeInMs);
 
-        if (timestamp < toleranceMin || timestamp > toleranceMax) {
+        if (date < toleranceMin || date > toleranceMax) {
           throw new ForbiddenException({
             statusCode: EnumRequestStatusCodeError.RequestTimestampInvalidError,
             message: 'middleware.error.timestampInvalid',

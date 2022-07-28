@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Expose, Transform } from 'class-transformer';
 import trim from 'validator/lib/trim';
@@ -11,7 +12,11 @@ export function Trim(options?: ITransformOptions): any {
   return applyDecorators(
     Expose(),
     Transform(({ value }) =>
-      each && Array.isArray(value) ? value.map((v) => trim(v)) : trim(value),
+      each && Array.isArray(value)
+        ? value.map((v) => trim(v))
+        : isString(value)
+        ? trim(value)
+        : value,
     ),
   );
 }
