@@ -59,6 +59,6 @@ workflows:
                 - manual-deploy
           repo: ${CIRCLE_PROJECT_REPONAME}
           tag: 'development,${CIRCLE_BRANCH}-${CIRCLE_SHA1}'
-          extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}'
+          extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${secret.JFROG_AUTH_TOKEN}'
           requires:
             - build-lint-test
