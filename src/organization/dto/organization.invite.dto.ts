@@ -1,19 +1,18 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+
+import {
+  NormalizeEmail,
+  NormalizeStringInput,
+} from '@/utils/request/transform';
 
 export class OrganizationInviteDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @IsNotEmpty()
   @IsString()
   @MaxLength(30)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   // Can be role.slug or role.id
   readonly role: string;
 }

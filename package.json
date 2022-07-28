@@ -54,7 +54,6 @@
     "@nestjs/throttler": "^3.0.0",
     "@nestjs/typeorm": "^9.0.0",
     "bcrypt": "^5.0.1",
-    "class-sanitizer": "^1.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cloudinary": "^1.30.1",
@@ -93,6 +92,7 @@
     "typeorm": "^0.3.7",
     "typeorm-extension": "^2.1.5",
     "ua-parser-js": "^1.0.2",
+    "validator": "^13.7.0",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1",
     "yargs": "^17.5.1"
@@ -120,6 +120,7 @@
     "@types/supertest": "^2.0.12",
     "@types/ua-parser-js": "^0.7.36",
     "@types/uuid": "^8.3.4",
+    "@types/validator": "^13.7.4",
     "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",

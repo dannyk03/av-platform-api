@@ -1,4 +1,3 @@
-import { Escape, Trim } from 'class-sanitizer';
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -13,33 +12,30 @@ import { isString } from 'lodash';
 
 import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { NormalizeStringInput } from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
   @Length(3, 30)
   @ProductSKU()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly sku!: string;
 
   @IsString()
   @IsOptional()
   @MaxLength(30)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly brand?: string;
 
   @IsString()
   @MaxLength(30)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly name!: string;
 
   @IsString()
   @MaxLength(200)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly description!: string;
 
   @ProductDisplayLanguage()
@@ -50,8 +46,7 @@ export class ProductCreateDto {
   @Transform(({ value }) => {
     return isString(value) ? JSON.parse(value) : value;
   })
-  @Trim(undefined, { each: true })
-  @Escape({ each: true })
+  @NormalizeStringInput({ each: true })
   keywords?: string[];
 
   @IsBoolean()

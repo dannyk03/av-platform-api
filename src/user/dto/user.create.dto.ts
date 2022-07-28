@@ -1,54 +1,47 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import {
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
-  IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
 
+import {
+  NormalizeEmail,
+  NormalizeStringInput,
+  Trim,
+} from '@/utils/request/transform';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class UserCreateDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly lastName?: string;
 
   @IsOptional()
-  @IsString()
   @IsNotEmpty()
   @MinLength(10)
   @MaxLength(14)
   @IsPhoneNumber()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly phoneNumber?: string;
 
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly role: string;
 
   @IsNotEmpty()
