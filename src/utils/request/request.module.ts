@@ -50,10 +50,10 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
         });
       },
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: RequestTimestampInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: RequestTimestampInterceptor,
+    // },
     {
       provide: APP_GUARD,
       useClass: RequestControllerGuard,

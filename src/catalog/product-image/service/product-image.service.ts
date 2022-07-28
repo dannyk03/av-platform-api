@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import {
   DeepPartial,
   FindOneOptions,
@@ -10,6 +11,9 @@ import {
 
 import { ProductImage } from '../entity';
 
+import { CloudinaryService } from '@/cloudinary/service';
+
+import { UploadCloudinaryImage } from '@/cloudinary';
 import { ConnectionNames } from '@/database';
 
 @Injectable()
@@ -17,6 +21,7 @@ export class ProductImageService {
   constructor(
     @InjectRepository(ProductImage, ConnectionNames.Default)
     private productImageRepository: Repository<ProductImage>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async create(props: DeepPartial<ProductImage>): Promise<ProductImage> {

@@ -5,7 +5,7 @@ import { IsNotEmpty, IsString, Length } from 'class-validator';
 export class MagicLinkDto {
   @IsString()
   @IsNotEmpty()
-  @Length(32, 32)
+  @Length(21, 21)
   @Trim()
   @Escape()
   @Type(() => String)

@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { plainToInstance } from 'class-transformer';
+import flatMap from 'lodash/flatMap';
 import {
   Brackets,
+  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
   SelectQueryBuilder,
+  UpdateResult,
 } from 'typeorm';
 
 import { Product } from '../entity';
@@ -20,11 +23,14 @@ import { ProductListSerialization } from '../serialization';
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
 
+import { EnumProductStatusCodeError } from '../product.constant';
 import { IProductSearch } from '../product.interface';
 
 @Injectable()
 export class ProductService {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     @InjectRepository(Product, ConnectionNames.Default)
     private productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,
@@ -141,6 +147,47 @@ export class ProductService {
     }
 
     return searchBuilder.getMany();
+  }
+
+  async deleteProductBy({ id }: { id: string }): Promise<Product> {
+    const removeProduct = await this.productRepository.findOne({
+      where: { id },
+      relations: ['displayOptions', 'displayOptions.images'],
+    });
+
+    if (!removeProduct) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    const imagePublicIds = flatMap(removeProduct.displayOptions, ({ images }) =>
+      flatMap(images, ({ publicId }) => publicId),
+    );
+
+    await this.cloudinaryService.deleteImages({ publicIds: imagePublicIds });
+    return this.productRepository.remove(removeProduct);
+  }
+
+  async updateProductActiveStatus({
+    id,
+    isActive,
+  }: {
+    id: string;
+    isActive: boolean;
+  }): Promise<UpdateResult> {
+    return this.productRepository
+      .createQueryBuilder()
+      .update(Product)
+      .set({ isActive })
+      .where('id = :id', { id })
+      .andWhere('isActive != :isActive', { isActive })
+      .execute();
+  }
+
+  async serialization(data: Product): Promise<ProductListSerialization> {
+    return plainToInstance(ProductListSerialization, data);
   }
 
   async serializationList(

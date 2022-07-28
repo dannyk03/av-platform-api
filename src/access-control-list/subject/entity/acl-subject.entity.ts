@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
-import { Subject, SubjectType } from '@avo/casl';
+import { SubjectType, Subjects } from '@avo/casl';
 
 import { BaseEntity } from '@/database/entity';
 import { AclAbility } from '@acl/ability/entity';
@@ -10,7 +10,7 @@ import { AclPolicy } from '@acl/policy/entity';
 export class AclSubject extends BaseEntity<AclSubject> {
   @Column({
     type: 'enum',
-    enum: Subject,
+    enum: Subjects,
   })
   type: SubjectType;
 

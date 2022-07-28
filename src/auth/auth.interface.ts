@@ -9,9 +9,6 @@ export interface IAuthPassword {
 export interface IAuthPayloadOptions {
   loginDate: Date;
 }
-export interface IAuthMagicLoginOptions {
-  guest: boolean;
-}
 
 export interface IAuthApiRequestHashedData {
   key: string;

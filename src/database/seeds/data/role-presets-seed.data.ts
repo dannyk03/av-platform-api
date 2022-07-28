@@ -1,7 +1,7 @@
 import { EnumOrganizationRole } from '@acl/role';
 import { DeepPartial } from 'typeorm';
 
-import { AbilityVerb, Action, Subject } from '@avo/casl';
+import { AbilityVerb, Action, Subjects } from '@avo/casl';
 
 import { AclRole } from '@/access-control-list/role/entity';
 
@@ -12,7 +12,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
       policy: {
         subjects: [
           {
-            type: Subject.OrganizationNamespace,
+            type: Subjects.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -21,7 +21,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
             ],
           },
           {
-            type: Subject.Organization,
+            type: Subjects.Organization,
             abilities: [
               {
                 type: AbilityVerb.Cannot,
@@ -41,7 +41,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
       policy: {
         subjects: [
           {
-            type: Subject.OrganizationNamespace,
+            type: Subjects.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -50,7 +50,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
             ],
           },
           {
-            type: Subject.Organization,
+            type: Subjects.Organization,
             abilities: [
               {
                 type: AbilityVerb.Cannot,
@@ -66,7 +66,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
       policy: {
         subjects: [
           {
-            type: Subject.Order,
+            type: Subjects.Order,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -75,7 +75,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
             ],
           },
           {
-            type: Subject.Gift,
+            type: Subjects.Gift,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -84,7 +84,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
             ],
           },
           {
-            type: Subject.Organization,
+            type: Subjects.Organization,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -100,7 +100,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
       policy: {
         subjects: [
           {
-            type: Subject.OrganizationNamespace,
+            type: Subjects.OrganizationNamespace,
             abilities: [
               {
                 type: AbilityVerb.Can,

@@ -75,7 +75,7 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
 
 @Injectable()
 export class HttpDebuggerResponseMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(_req: Request, res: Response, next: NextFunction): void {
     const send: any = res.send;
     const resOld: any = res;
 

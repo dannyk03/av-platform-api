@@ -1,6 +1,6 @@
 ### Description
 
-Jira Ticket: [AVO-X] OR in the title
+Ticket: Have the PR and Commet title match the task name, if you don't have task specify "no ticket" or open one
 
 Please explain the changes you made here.
 Include any breaking changes for example.

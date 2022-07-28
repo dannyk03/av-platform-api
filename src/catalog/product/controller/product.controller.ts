@@ -2,9 +2,12 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -12,7 +15,7 @@ import {
 
 import compact from 'lodash/compact';
 
-import { Action, Subject } from '@avo/casl';
+import { Action, Subjects } from '@avo/casl';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
@@ -22,13 +25,20 @@ import { PaginationService } from '@/utils/pagination/service';
 import { ProductListSerialization } from '../serialization';
 
 import { ProductCreateDto, ProductListDto } from '../dto';
+import { ProductIdQueryParamDto } from '../dto';
 
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
-import { IResponsePaging, Response, ResponsePaging } from '@/utils/response';
+import { RequestParamGuard } from '@/utils/request';
+import {
+  IResponse,
+  IResponsePaging,
+  Response,
+  ResponsePaging,
+} from '@/utils/response';
 
-import { EnumProductCodeError } from '../product.constant';
+import { EnumProductStatusCodeError } from '../product.constant';
 
 @Controller({
   version: '1',
@@ -48,7 +58,7 @@ export class ProductController {
     abilities: [
       {
         action: Action.Create,
-        subject: Subject.Product,
+        subject: Subjects.Product,
       },
     ],
     systemOnly: true,
@@ -67,12 +77,12 @@ export class ProductController {
       keywords,
       languageIsoCode,
     }: ProductCreateDto,
-  ): Promise<void> {
+  ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
       throw new BadRequestException({
-        statusCode: EnumProductCodeError.ProductExistsError,
+        statusCode: EnumProductStatusCodeError.ProductExistsError,
         message: 'product.error.exists',
       });
     }
@@ -117,7 +127,8 @@ export class ProductController {
       ],
     });
 
-    await this.productService.save(createProduct);
+    const createdProduct = await this.productService.save(createProduct);
+    return await this.productService.serialization(createdProduct);
   }
 
   @ResponsePaging('product.list')
@@ -125,7 +136,7 @@ export class ProductController {
     abilities: [
       {
         action: Action.Read,
-        subject: Subject.Product,
+        subject: Subjects.Product,
       },
     ],
     systemOnly: true,
@@ -182,6 +193,68 @@ export class ProductController {
       availableSearch,
       availableSort,
       data,
+    };
+  }
+
+  @Response('product.delete')
+  @RequestParamGuard(ProductIdQueryParamDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Delete,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: string): Promise<void> {
+    await this.productService.deleteProductBy({ id });
+  }
+
+  @Response('product.active')
+  @RequestParamGuard(ProductIdQueryParamDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch('active/:id')
+  async activeProduct(@Param('id') id: string): Promise<IResponse> {
+    const { affected } = await this.productService.updateProductActiveStatus({
+      id,
+      isActive: true,
+    });
+
+    return {
+      affected,
+    };
+  }
+
+  @Response('product.inactive')
+  @RequestParamGuard(ProductIdQueryParamDto)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch('inactive/:id')
+  async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
+    const { affected } = await this.productService.updateProductActiveStatus({
+      id,
+      isActive: false,
+    });
+
+    return {
+      affected,
     };
   }
 }

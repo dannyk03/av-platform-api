@@ -7,7 +7,7 @@ import {
 
 import { ILike } from 'typeorm';
 
-import { Action, Subject } from '@avo/casl';
+import { Action, Subjects } from '@avo/casl';
 
 import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
@@ -41,7 +41,7 @@ export class AclRoleController {
     abilities: [
       {
         action: Action.Read,
-        subject: Subject.Role,
+        subject: Subjects.Role,
       },
     ],
   })
