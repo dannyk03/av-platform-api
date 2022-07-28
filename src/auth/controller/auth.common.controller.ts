@@ -150,7 +150,7 @@ export class AuthCommonController {
     @Res({ passthrough: true })
     response: ExpressResponse,
     @Body()
-    { email, password, firstName, lastName, phoneNumber }: AuthSignUpDto,
+    { email, password, firstName, lastName, phoneNumber, title }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
   ) {
     const expiresInDays = this.configService.get<number>(
@@ -181,7 +181,7 @@ export class AuthCommonController {
       });
     }
 
-    await this.defaultDataSource.transaction(
+    return await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { salt, passwordHash, passwordExpiredAt } =
@@ -191,7 +191,7 @@ export class AuthCommonController {
           isActive: true,
           email,
           phoneNumber,
-          profile: { firstName, lastName },
+          profile: { firstName, lastName, title },
           authConfig: {
             password: passwordHash,
             salt,
@@ -209,18 +209,18 @@ export class AuthCommonController {
             expiresAt: this.helperDateService.forwardInDays(expiresInDays),
           });
 
-        const safeData: AuthUserLoginSerialization =
-          await this.authService.serializationLogin(signUpUser);
+        // const safeData: AuthUserLoginSerialization =
+        //   await this.authService.serializationLogin(signUpUser);
 
         // TODO: cache in redis safeData with user role and permission for next api calls
 
-        const rememberMe = false;
-        const payloadAccessToken: Record<string, any> =
-          await this.authService.createPayloadAccessToken(safeData, rememberMe);
+        // const rememberMe = false;
+        // const payloadAccessToken: Record<string, any> =
+        //   await this.authService.createPayloadAccessToken(safeData, rememberMe);
 
-        const accessToken: string = await this.authService.createAccessToken(
-          payloadAccessToken,
-        );
+        // const accessToken: string = await this.authService.createAccessToken(
+        //   payloadAccessToken,
+        // );
 
         await this.emailService.sendSignUpEmailVerification({
           email,
@@ -230,12 +230,12 @@ export class AuthCommonController {
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
 
-        response.cookie('accessToken', accessToken, {
-          secure: isSecureMode,
-          expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-          sameSite: 'strict',
-          httpOnly: true,
-        });
+        // response.cookie('accessToken', accessToken, {
+        //   secure: isSecureMode,
+        //   expires: this.helperJwtService.getJwtExpiresDate(accessToken),
+        //   sameSite: 'strict',
+        //   httpOnly: true,
+        // });
 
         // For local development/testing
         const isProduction =

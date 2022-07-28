@@ -49,6 +49,14 @@ export class AuthSignUpDto {
   @Type(() => String)
   readonly phoneNumber?: string;
 
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  @MaxLength(40)
+  @Trim()
+  @Escape()
+  readonly title?: string;
+
   @IsNotEmpty()
   @MaxLength(30)
   @IsPasswordStrong()
