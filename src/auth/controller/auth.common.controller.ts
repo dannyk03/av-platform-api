@@ -21,12 +21,13 @@ import { User } from '@/user/entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
 import { UserService } from '@/user/service';
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
 import {
   AuthChangePasswordGuard,
+  AuthLogoutGuard,
   AuthRefreshJwtGuard,
   LoginGuard,
   ReqJwtUser,
@@ -40,7 +41,6 @@ import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { EnumUserStatusCodeError, ReqUser } from '@/user';
-import { SuccessException } from '@/utils/error';
 import { RequestUserAgent } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
 
@@ -58,8 +58,8 @@ export class AuthCommonController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-    private readonly helperJwtService: HelperJwtService,
     private readonly emailService: EmailService,
+    private readonly helperCookieService: HelperCookieService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 
@@ -76,9 +76,6 @@ export class AuthCommonController {
     @ReqUser()
     user: User,
   ): Promise<IResponse> {
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
-
     const rememberMe: boolean = body.rememberMe ? true : false;
 
     const validate: boolean = await this.authService.validateUser(
@@ -114,28 +111,23 @@ export class AuthCommonController {
       rememberMe,
     );
 
-    const now = this.helperDateService.create();
-    const passwordExpiredAt = this.helperDateService.create({
-      date: user.authConfig.passwordExpiredAt,
-    });
+    const checkPasswordExpired: boolean =
+      await this.authService.checkPasswordExpired(
+        user.authConfig.passwordExpiredAt,
+      );
 
-    if (now > passwordExpiredAt) {
-      throw new SuccessException({
-        statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
-        message: 'auth.error.passwordExpired',
-        data: {
-          accessToken,
-          refreshToken,
+    if (checkPasswordExpired) {
+      return {
+        metadata: {
+          statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
+          message: 'auth.error.passwordExpired',
         },
-      });
+        accessToken,
+        refreshToken,
+      };
     }
 
-    response.cookie('accessToken', accessToken, {
-      secure: isSecureMode,
-      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
+    await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       refreshToken,
@@ -209,19 +201,6 @@ export class AuthCommonController {
             expiresAt: this.helperDateService.forwardInDays(expiresInDays),
           });
 
-        // const safeData: AuthUserLoginSerialization =
-        //   await this.authService.serializationLogin(signUpUser);
-
-        // TODO: cache in redis safeData with user role and permission for next api calls
-
-        // const rememberMe = false;
-        // const payloadAccessToken: Record<string, any> =
-        //   await this.authService.createPayloadAccessToken(safeData, rememberMe);
-
-        // const accessToken: string = await this.authService.createAccessToken(
-        //   payloadAccessToken,
-        // );
-
         await this.emailService.sendSignUpEmailVerification({
           email,
           code: signUpEmailVerificationLink.code,
@@ -230,12 +209,7 @@ export class AuthCommonController {
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
 
-        // response.cookie('accessToken', accessToken, {
-        //   secure: isSecureMode,
-        //   expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-        //   sameSite: 'strict',
-        //   httpOnly: true,
-        // });
+        await this.helperCookieService.detachAccessToken(response);
 
         // For local development/testing
         const isProduction =
@@ -260,14 +234,12 @@ export class AuthCommonController {
     { rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
-    const now = this.helperDateService.create();
-    const userPasswordExpiredAt = this.helperDateService.create({
-      date: reqUser.authConfig.passwordExpiredAt,
-    });
+    const checkPasswordExpired: boolean =
+      await this.authService.checkPasswordExpired(
+        reqUser.authConfig.passwordExpiredAt,
+      );
 
-    if (now > userPasswordExpiredAt) {
+    if (checkPasswordExpired) {
       throw new ForbiddenException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
         message: 'auth.error.passwordExpired',
@@ -288,12 +260,7 @@ export class AuthCommonController {
       payloadAccessToken,
     );
 
-    response.cookie('accessToken', accessToken, {
-      secure: isSecureMode,
-      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
+    await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       accessToken,
@@ -349,5 +316,17 @@ export class AuthCommonController {
     const password = await this.authService.createPassword(body.newPassword);
 
     await this.userService.updatePassword(user.id, password);
+  }
+
+  @Response('auth.logout')
+  @HttpCode(HttpStatus.OK)
+  @AuthLogoutGuard()
+  @Post('/logout')
+  async logout(
+    @Res({ passthrough: true })
+    response: ExpressResponse,
+  ) {
+    await this.helperCookieService.detachAccessToken(response);
+    // TODO invalidate/blacklist refresh token
   }
 }

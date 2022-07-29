@@ -12,8 +12,9 @@ import { IResult } from 'ua-parser-js';
 import { CloudinaryService } from '@/cloudinary/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
-import { AclGuard, ReqJwtUser } from '@/auth';
+import { AclGuard } from '@/auth';
 import { EnumLogAction, LogTrace } from '@/log';
+import { ReqUser } from '@/user';
 import { ErrorMeta } from '@/utils/error';
 import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
@@ -56,12 +57,12 @@ export class TestingCommonController {
 
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
-  @AclGuard({ systemOnly: true })
+  @AclGuard()
   @Get('/auth')
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-    @ReqJwtUser() user,
+    @ReqUser() user,
   ): Promise<IResponse> {
     const newDate = this.helperDateService.create({
       timezone: timezone,

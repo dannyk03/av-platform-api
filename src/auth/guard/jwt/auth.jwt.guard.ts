@@ -1,11 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { EnumAuthStatusCodeError } from '@/auth';
+import { AuthUserLoginSerialization, EnumAuthStatusCodeError } from '@/auth';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
-  handleRequest<TUser = any>(err: Record<string, any>, user: TUser): TUser {
+  handleRequest<TUser = AuthUserLoginSerialization>(
+    err: Record<string, any>,
+    user: TUser,
+  ): TUser {
     if (err || !user) {
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtAccessTokenError,

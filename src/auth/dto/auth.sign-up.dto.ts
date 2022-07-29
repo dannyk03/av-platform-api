@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 import {
+  EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInput,
   Trim,
@@ -35,6 +36,7 @@ export class AuthSignUpDto {
 
   @IsString()
   @IsOptional()
+  @EmptyStringToUndefinedTransform()
   @Length(10, 20)
   @IsPhoneNumber()
   @NormalizeStringInput()
@@ -43,7 +45,8 @@ export class AuthSignUpDto {
 
   @IsString()
   @IsOptional()
-  @Length(2, 30)
+  @EmptyStringToUndefinedTransform()
+  @Length(2, 50)
   @NormalizeStringInput()
   @Type(() => String)
   readonly title?: string;
