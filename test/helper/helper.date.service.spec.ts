@@ -182,37 +182,6 @@ describe('HelperDateService', () => {
     });
   });
 
-  describe('checkTimestamp', () => {
-    it('should be called', async () => {
-      const test = jest.spyOn(helperDateService, 'checkTimestamp');
-
-      helperDateService.checkTimestamp(date1.valueOf());
-      expect(test).toHaveBeenCalledWith(date1.valueOf());
-    });
-
-    it('should be success', async () => {
-      const result = helperDateService.checkTimestamp(date1.valueOf());
-      jest
-        .spyOn(helperDateService, 'checkTimestamp')
-        .mockImplementation(() => result);
-
-      expect(helperDateService.checkTimestamp(date1.valueOf())).toBe(result);
-    });
-
-    it('should be success with options timezone', async () => {
-      const result = helperDateService.checkTimestamp(date1.valueOf(), {
-        timezone,
-      });
-      jest
-        .spyOn(helperDateService, 'checkTimestamp')
-        .mockImplementation(() => result);
-
-      expect(
-        helperDateService.checkTimestamp(date1.valueOf(), { timezone }),
-      ).toBe(result);
-    });
-  });
-
   describe('checkTimezone', () => {
     it('should be called', async () => {
       const test = jest.spyOn(helperDateService, 'checkTimezone');
