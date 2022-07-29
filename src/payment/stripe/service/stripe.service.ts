@@ -19,4 +19,18 @@ export class CustomerIOService {
       },
     );
   }
+
+  async createPaymentIntent({ amount, currency, customerID }) {
+    const customerStripeId = customerID; // get the customer stripe id
+
+    const paymentIntent = await this.client.paymentIntents.create(
+      {
+        amount,
+        currency,
+      },
+      { stripeAccount: customerStripeId },
+    );
+
+    console.log(`${paymentIntent} will include the client secret`);
+  }
 }
