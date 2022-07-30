@@ -24,8 +24,9 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
 
-import { ProductCreateDto, ProductListDto } from '../dto';
-import { ProductIdQueryParamDto } from '../dto';
+import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
+import { ProductIdParamDto } from '../dto';
+import { ProductGetDto } from '../dto/product.get.dto';
 
 import { AclGuard } from '@/auth';
 import { CloudinarySubject } from '@/cloudinary';
@@ -75,7 +76,7 @@ export class ProductController {
       brand,
       isActive,
       keywords,
-      languageIsoCode,
+      language,
     }: ProductCreateDto,
   ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
@@ -92,7 +93,7 @@ export class ProductController {
         return this.cloudinaryService.uploadImage({
           subject: CloudinarySubject.Product,
           image,
-          languageIsoCode,
+          languageIsoCode: language,
         });
       }),
     );
@@ -118,7 +119,7 @@ export class ProductController {
       isActive,
       displayOptions: [
         {
-          language: { isoCode: languageIsoCode },
+          language: { isoCode: language },
           keywords: [...new Set(keywords)],
           name,
           description,
@@ -154,7 +155,7 @@ export class ProductController {
       availableSort,
       availableSearch,
       isActive,
-    }: ProductListDto, // : Promise<IResponsePaging>
+    }: ProductListDto,
   ): Promise<IResponsePaging> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
@@ -197,7 +198,6 @@ export class ProductController {
   }
 
   @Response('product.delete')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -207,13 +207,13 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(ProductIdParamDto)
   @Delete('/:id')
   async deleteProduct(@Param('id') id: string): Promise<void> {
     await this.productService.deleteProductBy({ id });
   }
 
   @Response('product.active')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -223,6 +223,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(ProductIdParamDto)
   @Patch('active/:id')
   async activeProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -236,7 +237,6 @@ export class ProductController {
   }
 
   @Response('product.inactive')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -246,6 +246,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(ProductIdParamDto)
   @Patch('inactive/:id')
   async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -256,5 +257,47 @@ export class ProductController {
     return {
       affected,
     };
+  }
+
+  @Response('product.update')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch()
+  async update(
+    @Body()
+    body: ProductUpdateDto,
+  ): Promise<IResponse> {
+    const updateRes = await this.productService.updateProduct(body);
+    return;
+  }
+
+  @Response('product.get')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.Product,
+      },
+    ],
+  })
+  @RequestParamGuard(ProductIdParamDto)
+  @Get('/:id')
+  async get(
+    @Param('id') id: string,
+    @Query()
+    { lang: language }: ProductGetDto,
+  ): Promise<IResponse> {
+    const getProduct = await this.productService.get({ id, language });
+
+    return getProduct
+      ? await this.productService.serialization(getProduct)
+      : null;
   }
 }

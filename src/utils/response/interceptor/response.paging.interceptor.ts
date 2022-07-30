@@ -14,13 +14,13 @@ import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IResponsePagingOptions } from '../response.interface';
+
 import { IMessage } from '@/response-message';
 import {
   EnumPaginationType,
   PAGINATION_DEFAULT_MAX_PAGE,
 } from '@/utils/pagination';
-
-import { IResponsePagingOptions } from '../response.interface';
 
 // This interceptor for restructure response success
 export function ResponsePagingInterceptor(
@@ -70,7 +70,8 @@ export function ResponsePagingInterceptor(
               },
             );
 
-            if (options?.type === EnumPaginationType.Simple) {
+            const listData = Array.isArray(data) ? data : [data];
+            if (options?.type === EnumPaginationType.Full) {
               return {
                 statusCode: newStatusCode,
                 message,
@@ -78,8 +79,10 @@ export function ResponsePagingInterceptor(
                 totalPage,
                 currentPage,
                 perPage,
+                availableSort,
+                availableSearch,
                 metadata,
-                data,
+                data: listData,
               };
             } else if (options?.type === EnumPaginationType.Mini) {
               return {
@@ -87,7 +90,7 @@ export function ResponsePagingInterceptor(
                 message,
                 totalData,
                 metadata,
-                data,
+                data: listData,
               };
             }
 
@@ -98,10 +101,8 @@ export function ResponsePagingInterceptor(
               totalPage,
               currentPage,
               perPage,
-              availableSort,
-              availableSearch,
               metadata,
-              data,
+              data: listData,
             };
           }),
         );

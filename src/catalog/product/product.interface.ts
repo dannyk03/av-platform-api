@@ -9,3 +9,21 @@ export interface IProductSearch {
   options?: IPaginationOptions;
   isActive?: boolean[];
 }
+
+export interface IGetProduct {
+  id: string;
+  language: EnumDisplayLanguage;
+}
+
+export interface IProductUpdate {
+  id: string;
+  sku?: string;
+  brand?: string;
+  isActive?: boolean;
+  display?: {
+    name?: string;
+    description?: string;
+    keywords?: string[];
+    language: EnumDisplayLanguage;
+  };
+}

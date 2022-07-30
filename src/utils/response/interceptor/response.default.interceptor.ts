@@ -14,10 +14,10 @@ import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IResponse } from '../response.interface';
+
 import { IMessage } from '@/response-message';
 import { IRequestApp } from '@/utils/request';
-
-import { IResponse } from '../response.interface';
 
 export function ResponseDefaultInterceptor(
   messagePath: string,
@@ -75,6 +75,7 @@ export function ResponseDefaultInterceptor(
             return {
               statusCode: resStatusCode,
               message: resMessage,
+              data: resData === null ? null : undefined,
             };
           }),
         );

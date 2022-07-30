@@ -6,7 +6,6 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsOptional,
-  IsString,
   Length,
   MaxLength,
 } from 'class-validator';
@@ -23,24 +22,21 @@ export class ProductCreateDto {
   @Type(() => String)
   readonly sku!: string;
 
-  @IsString()
   @IsOptional()
   @MaxLength(30)
   @NormalizeStringInput()
   readonly brand?: string;
 
-  @IsString()
   @MaxLength(30)
   @NormalizeStringInput()
   readonly name!: string;
 
-  @IsString()
   @MaxLength(200)
   @NormalizeStringInput()
   readonly description!: string;
 
   @ProductDisplayLanguage()
-  languageIsoCode: EnumDisplayLanguage;
+  language: EnumDisplayLanguage;
 
   @IsArray()
   @IsOptional()
