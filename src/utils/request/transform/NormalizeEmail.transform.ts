@@ -5,8 +5,9 @@ import { Expose, Transform } from 'class-transformer';
 import { IsEmail, MaxLength } from 'class-validator';
 import normalizeEmail from 'validator/lib/normalizeEmail';
 
-import { NormalizeStringInput } from './NormalizeStringInput.transform';
 import { ITransformOptions } from './transform.interface';
+
+import { NormalizeStringInput } from './NormalizeStringInput.transform';
 
 const emailNormalizeOptions = {
   all_lowercase: true,

@@ -1,10 +1,11 @@
 import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
 
+import { IResponsePagingOptions } from './response.interface';
+
 import { ResponseDefaultInterceptor } from './interceptor/response.default.interceptor';
 import { ResponsePagingInterceptor } from './interceptor/response.paging.interceptor';
 import { ResponseTimeoutInterceptor } from './interceptor/response.timeout.interceptor';
 import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from './response.constant';
-import { IResponsePagingOptions } from './response.interface';
 
 export function Response(messagePath: string): any {
   return applyDecorators(

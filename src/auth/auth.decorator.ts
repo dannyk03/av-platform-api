@@ -8,10 +8,12 @@ import {
 
 import { ABILITY_META_KEY } from '@acl/ability';
 import { AclAbilityGuard } from '@acl/ability/guard';
-import { IReqAclAbility } from '@acl/acl.interface';
 import { ReqUserAclRoleActiveGuard } from '@acl/role/guard';
 
 import { AuthUserLoginSerialization } from './serialization';
+
+import { IAclGuard } from './auth.interface';
+import { IReqAclAbility } from '@acl/acl.interface';
 
 // Guards
 import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
@@ -28,7 +30,6 @@ import {
   UserPutToRequestGuard,
 } from '@/user/guard';
 
-import { IAclGuard } from './auth.interface';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
 import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';

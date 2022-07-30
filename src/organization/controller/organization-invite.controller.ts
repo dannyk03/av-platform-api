@@ -27,12 +27,13 @@ import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
+import { IReqOrganizationIdentifierCtx } from '../organization.interface';
+
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { Response } from '@/utils/response';
 
 import { EnumOrganizationStatusCodeError } from '../organization.constant';
-import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 
 @Controller({
   version: '1',

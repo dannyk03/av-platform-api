@@ -10,6 +10,8 @@ import { ClassConstructor } from 'class-transformer';
 import { DeepPartial } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { IRequestApp } from './request.interface';
+
 import { ILog } from '@/log';
 
 import { RequestParamRawGuard } from './guard/request.param.guard';
@@ -17,7 +19,6 @@ import {
   EnumRequestMethod,
   REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
 } from './request.constant';
-import { IRequestApp } from './request.interface';
 
 export const RequestUserAgent = createParamDecorator(
   (_data: string, ctx: ExecutionContext): IResult => {

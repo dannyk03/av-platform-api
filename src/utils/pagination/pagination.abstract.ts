@@ -1,6 +1,6 @@
-import { EnumDisplayLanguage } from '@/language/display-language';
-
 import { IPaginationSort } from './pagination.interface';
+
+import { EnumDisplayLanguage } from '@/language/display-language';
 
 export abstract class PaginationListAbstract {
   abstract search?: string;

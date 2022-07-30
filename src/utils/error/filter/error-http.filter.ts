@@ -11,10 +11,10 @@ import { Response } from 'express';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IErrorException } from '../error.interface';
+
 import { IMessage } from '@/response-message';
 import { IRequestApp } from '@/utils/request';
-
-import { IErrorException } from '../error.interface';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {

@@ -7,12 +7,12 @@ import {
 
 import { isUUID } from 'class-validator';
 
+import { IReqOrganizationIdentifierCtx } from './organization.interface';
+
 import { PermissionsStatusCodeError } from '@/access-control-list/ability';
 import { SYSTEM_ORGANIZATION_NAME } from '@/system';
 import { slugify } from '@/utils/helper';
 import { EnumRequestStatusCodeError } from '@/utils/request';
-
-import { IReqOrganizationIdentifierCtx } from './organization.interface';
 
 function throwForbiddenExceptionForCorruptedOrganizationCtx() {
   throw new ForbiddenException({

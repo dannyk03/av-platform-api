@@ -12,11 +12,12 @@ import { Observable } from 'rxjs';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
+import { IRequestApp } from '../request.interface';
+
 import {
   EnumRequestStatusCodeError,
   REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
 } from '../request.constant';
-import { IRequestApp } from '../request.interface';
 
 @Injectable()
 export class RequestTimestampInterceptor
