@@ -133,7 +133,7 @@ export class ProductController {
     });
 
     const createdProduct = await this.productService.save(createProduct);
-    return await this.productService.serialization(createdProduct);
+    return this.productService.serialization(createdProduct);
   }
 
   @ResponsePaging('product.list')
