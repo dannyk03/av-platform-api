@@ -24,8 +24,12 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
 
-import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
-import { ProductIdParamDto } from '../dto';
+import {
+  ProductCreateDto,
+  ProductIdParamDto,
+  ProductListDto,
+  ProductUpdateDto,
+} from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
 
 import { AclGuard } from '@/auth';
@@ -297,6 +301,6 @@ export class ProductController {
   ): Promise<IResponse> {
     const getProduct = await this.productService.get({ id, language });
 
-    return await this.productService.serialization(getProduct);
+    return this.productService.serialization(getProduct);
   }
 }

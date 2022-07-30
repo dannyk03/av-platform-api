@@ -61,8 +61,8 @@ export class HelperDateService {
       .isValid();
   }
 
-  checkTimezone(timezone: string): boolean {
-    return dayjs().tz(timezone).isValid();
+  checkTimezone(tz: string): boolean {
+    return dayjs().tz(tz).isValid();
   }
 
   create(options?: IHelperDateOptionsCreate): Date {

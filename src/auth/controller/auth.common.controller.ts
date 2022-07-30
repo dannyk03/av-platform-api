@@ -173,7 +173,7 @@ export class AuthCommonController {
       });
     }
 
-    return await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { salt, passwordHash, passwordExpiredAt } =
