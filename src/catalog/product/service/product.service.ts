@@ -64,13 +64,14 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
-  async get({ id, language }: IGetProduct) {
+  async get({ id, language }: IGetProduct): Promise<Product> {
     const getBuilder = this.productRepository
       .createQueryBuilder('product')
       .setParameters({ language, id })
       .where('product.id = :id')
       .leftJoinAndSelect('product.displayOptions', 'display_options')
       .leftJoinAndSelect('display_options.language', 'language')
+      .leftJoinAndSelect('display_options.images', 'images')
       .andWhere('language.isoCode = :language');
 
     return getBuilder.getOne();
@@ -203,9 +204,25 @@ export class ProductService {
       .execute();
   }
 
-  async updateProduct({ id, sku, brand, isActive, display }: IProductUpdate) {
-    const product = this.get({ id, language: display.language });
-    return {};
+  async updateProduct({
+    id,
+    sku,
+    brand,
+    isActive,
+    display: { language, ...restDisplay },
+  }: IProductUpdate): Promise<any> {
+    const getProduct = await this.get({ id, language: language });
+
+    getProduct.sku = sku;
+    getProduct.brand = brand;
+    getProduct.isActive = isActive;
+
+    getProduct.displayOptions[0] = {
+      ...getProduct.displayOptions[0],
+      ...restDisplay,
+    };
+
+    return this.productRepository.save(getProduct);
   }
 
   async serialization(data: Product): Promise<ProductListSerialization> {

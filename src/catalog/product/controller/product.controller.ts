@@ -273,9 +273,10 @@ export class ProductController {
   async update(
     @Body()
     body: ProductUpdateDto,
-  ): Promise<IResponse> {
+  ): Promise<void> {
     const updateRes = await this.productService.updateProduct(body);
-    return;
+
+    await this.productService.serialization(updateRes);
   }
 
   @Response('product.get')
@@ -296,8 +297,6 @@ export class ProductController {
   ): Promise<IResponse> {
     const getProduct = await this.productService.get({ id, language });
 
-    return getProduct
-      ? await this.productService.serialization(getProduct)
-      : null;
+    return await this.productService.serialization(getProduct);
   }
 }
