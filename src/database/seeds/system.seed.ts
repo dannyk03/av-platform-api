@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumCurrency } from '@avo/type';
+
 import { EnumSystemRole } from '@acl/role';
 import { Command } from 'nestjs-command';
 import { DataSource } from 'typeorm';
-
-import { EnumCurrency } from '@avo/type';
 
 import { AuthService } from '@/auth/service';
 import { CurrencyService } from '@/currency/service';

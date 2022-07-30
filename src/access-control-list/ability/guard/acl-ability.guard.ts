@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { IReqAclAbility } from '@acl/acl.interface';
-
 import { defineAbilities } from '@avo/casl';
+
+import { IReqAclAbility } from '@acl/acl.interface';
 
 import {
   ABILITY_META_KEY,

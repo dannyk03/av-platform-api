@@ -57,6 +57,7 @@ export class MagicLinkController {
         select: {
           user: {
             id: true,
+            email: true,
             isActive: true,
             authConfig: {
               id: true,

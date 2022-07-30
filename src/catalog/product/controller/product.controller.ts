@@ -13,9 +13,9 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 
-import compact from 'lodash/compact';
-
 import { Action, Subjects } from '@avo/casl';
+
+import compact from 'lodash/compact';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';

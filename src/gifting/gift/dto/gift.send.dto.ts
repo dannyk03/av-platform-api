@@ -1,3 +1,5 @@
+import { EnumCurrency, EnumOccasion } from '@avo/type';
+
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -15,8 +17,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { isArray } from 'lodash';
-
-import { EnumCurrency, EnumOccasion } from '@avo/type';
 
 import { MinGreaterThan } from '@/utils/request';
 import {

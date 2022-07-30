@@ -12,7 +12,9 @@ export class UserLoginPutToRequestGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest();
     const { body, user: maybeUser } = request;
 
-    const email = isEmail(body.email) ? body.email.toLowerCase() : null;
+    const email = isEmail(body.email)
+      ? body.email.toLowerCase()
+      : maybeUser.email;
     const requestUser = email
       ? await this.userService.findOne({
           where: { email },
