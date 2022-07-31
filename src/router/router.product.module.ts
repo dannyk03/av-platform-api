@@ -8,10 +8,11 @@ import { UserModule } from '@/user/user.module';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ProductController } from '@/catalog/product/controller';
+import { ProductImageController } from '@/catalog/product-image/controller';
+import { ProductCommonController } from '@/catalog/product/controller';
 
 @Module({
-  controllers: [ProductController],
+  controllers: [ProductCommonController, ProductImageController],
   providers: [CloudinaryService],
   exports: [],
   imports: [

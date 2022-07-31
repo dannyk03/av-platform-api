@@ -25,16 +25,11 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
 
-import {
-  IdParamDto,
-  ProductCreateDto,
-  ProductListDto,
-  ProductUpdateDto,
-} from '../dto';
+import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
+import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
-import { CloudinarySubject } from '@/cloudinary';
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
 import { RequestParamGuard } from '@/utils/request';
 import {
@@ -47,7 +42,7 @@ import {
 @Controller({
   version: '1',
 })
-export class ProductController {
+export class ProductCommonController {
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly productService: ProductService,
@@ -90,30 +85,10 @@ export class ProductController {
       });
     }
 
-    const uploadImages = await Promise.all(
-      images.map(async (image) => {
-        return this.cloudinaryService.uploadImage({
-          subject: CloudinarySubject.Product,
-          image,
-          languageIsoCode: language,
-        });
-      }),
-    );
-
-    const saveImages = await Promise.all(
-      uploadImages.map(async (image) => {
-        if (this.cloudinaryService.isUploadApiResponse(image)) {
-          return this.productImageService.create({
-            fileName: image.original_filename,
-            assetId: image.asset_id,
-            publicId: image.public_id,
-            secureUrl: image.secure_url,
-          });
-        }
-
-        return Promise.resolve(null);
-      }),
-    );
+    const saveImages = await this.productImageService.createImages({
+      images,
+      language,
+    });
 
     const createProduct = await this.productService.create({
       brand,

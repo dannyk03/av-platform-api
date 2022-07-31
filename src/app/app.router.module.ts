@@ -1,7 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
-import { ProductModule } from '@/catalog/product/product.module';
 import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';

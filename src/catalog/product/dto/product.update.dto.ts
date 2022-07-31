@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -9,7 +9,6 @@ import {
   Length,
   MaxLength,
   ValidateNested,
-  isString,
 } from 'class-validator';
 
 import {
@@ -18,7 +17,10 @@ import {
 } from '@/catalog/catalog.decorator';
 
 import { EnumDisplayLanguage } from '@/language/display-language';
-import { NormalizeStringInput } from '@/utils/request/transform';
+import {
+  ArrayTransform,
+  NormalizeStringInput,
+} from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
   @ProductDisplayLanguage()
@@ -35,9 +37,7 @@ export class ProductUpdateDisplayDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) => {
-    return isString(value) ? JSON.parse(value) : value;
-  })
+  @ArrayTransform()
   @NormalizeStringInput({ each: true })
   keywords?: string[];
 }

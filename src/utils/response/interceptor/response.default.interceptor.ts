@@ -40,7 +40,7 @@ export function ResponseDefaultInterceptor(
             const ctx: HttpArgumentsHost = context.switchToHttp();
             const response: Response = ctx.getResponse();
             const { customLang } = ctx.getRequest<IRequestApp>();
-            const customLanguages = customLang ? customLang.split(',') : [];
+            const customLanguages = customLang?.split(',') || [];
             let resStatusCode = response.statusCode;
             let resMessage: string | IMessage =
               await this.responseMessageService.get(messagePath, {

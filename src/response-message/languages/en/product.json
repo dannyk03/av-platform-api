@@ -6,10 +6,12 @@
   "update": "Update product success.",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
-  "image": "Image update success",
+  "imageDelete": "Image delete success",
+  "imageAdd": "Image add success",
   "error": {
     "notFound": "Product not found.",
     "inactive": "Product not active",
-    "exists": "Product exists"
+    "exists": "Product exists",
+    "image": "Image not found"
   }
 }
