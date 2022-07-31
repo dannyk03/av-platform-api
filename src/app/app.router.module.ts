@@ -1,10 +1,12 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
+import { ProductModule } from '@/catalog/product/product.module';
 import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
+import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterTestModule } from '@/router/router.test.module';
 
@@ -22,6 +24,7 @@ export class AppRouterModule {
           RouterPublicModule,
           RouterGiftingModule,
           RouterCatalogModule,
+          RouterProductModule,
           RouterCallbackModule,
           RouterTestModule,
           RouterModule.register([
@@ -36,6 +39,12 @@ export class AppRouterModule {
             {
               path: '/catalog',
               module: RouterCatalogModule,
+              children: [
+                {
+                  path: '/product',
+                  module: RouterProductModule,
+                },
+              ],
             },
             {
               path: '/public',

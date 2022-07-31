@@ -26,8 +26,8 @@ import { PaginationService } from '@/utils/pagination/service';
 import { ProductListSerialization } from '../serialization';
 
 import {
+  IdParamDto,
   ProductCreateDto,
-  ProductIdParamDto,
   ProductListDto,
   ProductUpdateDto,
 } from '../dto';
@@ -46,7 +46,6 @@ import {
 
 @Controller({
   version: '1',
-  path: 'product',
 })
 export class ProductController {
   constructor(
@@ -210,7 +209,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
-  @RequestParamGuard(ProductIdParamDto)
+  @RequestParamGuard(IdParamDto)
   @Delete('/:id')
   async deleteProduct(@Param('id') id: string): Promise<void> {
     await this.productService.deleteProductBy({ id });
@@ -226,7 +225,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
-  @RequestParamGuard(ProductIdParamDto)
+  @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
   async activeProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -249,7 +248,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
-  @RequestParamGuard(ProductIdParamDto)
+  @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
   async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -291,7 +290,7 @@ export class ProductController {
       },
     ],
   })
-  @RequestParamGuard(ProductIdParamDto)
+  @RequestParamGuard(IdParamDto)
   @Get('/:id')
   async get(
     @Param('id') id: string,

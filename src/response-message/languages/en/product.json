@@ -6,6 +6,7 @@
   "update": "Update product success.",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
+  "image": "Image update success",
   "error": {
     "notFound": "Product not found.",
     "inactive": "Product not active",

@@ -38,7 +38,7 @@
     "prestart": "nestjs-command create:db"
   },
   "dependencies": {
-    "@avo/casl": "^0.0.14",
+    "@avo/casl": "^0.0.15",
     "@avo/type": "^0.0.8",
     "@aws-sdk/client-s3": "^3.137.0",
     "@faker-js/faker": "^7.3.0",
