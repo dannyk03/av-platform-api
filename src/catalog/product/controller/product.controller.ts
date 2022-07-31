@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
+import { EnumProductStatusCodeError } from '@avo/type';
 
 import compact from 'lodash/compact';
 
@@ -42,8 +43,6 @@ import {
   Response,
   ResponsePaging,
 } from '@/utils/response';
-
-import { EnumProductStatusCodeError } from '../product.constant';
 
 @Controller({
   version: '1',

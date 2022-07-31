@@ -13,6 +13,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumAuthStatusCodeError, EnumUserStatusCodeError } from '@avo/type';
+
 import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
@@ -40,11 +42,9 @@ import { AuthLoginDto } from '../dto/auth.login.dto';
 import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
-import { EnumUserStatusCodeError, ReqUser } from '@/user';
+import { ReqUser } from '@/user';
 import { RequestUserAgent } from '@/utils/request';
 import { IResponse, Response } from '@/utils/response';
-
-import { EnumAuthStatusCodeError } from '../auth.constant';
 
 @Controller({
   version: '1',

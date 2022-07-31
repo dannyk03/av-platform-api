@@ -1,6 +1,8 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
+import { EnumProductStatusCodeError } from '@avo/type';
+
 import { plainToInstance } from 'class-transformer';
 import flatMap from 'lodash/flatMap';
 import {
@@ -28,8 +30,6 @@ import {
 
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
-
-import { EnumProductStatusCodeError } from '../product.constant';
 
 @Injectable()
 export class ProductService {

@@ -12,13 +12,6 @@ export enum EnumOrganizationRole {
   Observer = 'Observer',
 }
 
-export enum EnumRoleStatusCodeError {
-  RoleNotFoundError = 5500,
-  RoleExistsError = 5501,
-  RoleInactiveError = 5502,
-  RoleUsedError = 5503,
-}
-
 export const ROLE_DEFAULT_SORT = 'name@asc';
 export const ROLE_DEFAULT_PAGE = 1;
 export const ROLE_DEFAULT_PER_PAGE = 10;

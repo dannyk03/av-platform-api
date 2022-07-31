@@ -10,8 +10,11 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
+import {
+  EnumOrganizationStatusCodeError,
+  EnumRoleStatusCodeError,
+} from '@avo/type';
 
-import { EnumRoleStatusCodeError } from '@acl/role';
 import { isUUID } from 'class-validator';
 import { DataSource } from 'typeorm';
 
@@ -32,8 +35,6 @@ import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { Response } from '@/utils/response';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Controller({
   version: '1',

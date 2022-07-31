@@ -2,6 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { EnumCustomerIoStatusCodeError } from '@avo/type';
+
 import { APIClient, SendEmailRequest } from 'customerio-node';
 import { firstValueFrom } from 'rxjs';
 
@@ -12,8 +14,6 @@ import {
   EmailInstance,
   EmailStatus,
 } from '@/messaging/email/email.constant';
-
-import { EnumCustomerIoStatusCodeError } from '../customer-io.constant';
 
 @Injectable()
 export class CustomerIOService {

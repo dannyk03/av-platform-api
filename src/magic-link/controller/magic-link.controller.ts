@@ -9,6 +9,12 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import {
+  EnumGiftStatusCodeError,
+  EnumOrganizationStatusCodeError,
+  EnumUserStatusCodeError,
+} from '@avo/type';
+
 import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource } from 'typeorm';
@@ -22,10 +28,7 @@ import { MagicLinkDto } from '../dto';
 
 import { AuthUserLoginSerialization } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
 import { EmailService } from '@/messaging/email';
-import { EnumOrganizationStatusCodeError } from '@/organization';
-import { EnumUserStatusCodeError } from '@/user';
 import { IResponse, Response } from '@/utils/response';
 
 @Controller({})

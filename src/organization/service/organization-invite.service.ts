@@ -7,6 +7,12 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import {
+  EnumMessagingStatusCodeError,
+  EnumOrganizationStatusCodeError,
+  EnumRoleStatusCodeError,
+} from '@avo/type';
+
+import {
   DeepPartial,
   EntityManager,
   FindOneOptions,
@@ -19,12 +25,8 @@ import { AclRole } from '@acl/role/entity';
 
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 
-import { EnumRoleStatusCodeError } from '@/access-control-list/role';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
-import { EnumMessagingStatusCodeError } from '@/messaging/messaging.constant';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Injectable()
 export class OrganizationInviteService {

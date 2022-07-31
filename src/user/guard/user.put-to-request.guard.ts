@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { UserService } from '../service';
+import { EnumAuthStatusCodeError } from '@avo/type';
 
-import { EnumAuthStatusCodeError } from '@/auth';
+import { UserService } from '../service';
 
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA,

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
+import { EnumOrganizationStatusCodeError } from '@avo/type';
 
 import { ILike } from 'typeorm';
 
@@ -19,7 +20,6 @@ import { AclRoleListDto } from '../dto';
 
 import { AclGuard } from '@/auth';
 import {
-  EnumOrganizationStatusCodeError,
   IReqOrganizationIdentifierCtx,
   ReqOrganizationIdentifierCtx,
 } from '@/organization';

@@ -8,16 +8,15 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
+import { EnumRequestStatusCodeError } from '@avo/type';
+
 import { Observable } from 'rxjs';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
 import { IRequestApp } from '../request.interface';
 
-import {
-  EnumRequestStatusCodeError,
-  REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
-} from '../request.constant';
+import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../request.constant';
 
 @Injectable()
 export class RequestTimestampInterceptor

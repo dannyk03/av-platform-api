@@ -9,6 +9,7 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
+import { EnumOrganizationStatusCodeError } from '@avo/type';
 
 import { EnumOrganizationRole } from '@acl/role';
 import { DataSource } from 'typeorm';
@@ -24,8 +25,6 @@ import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { Response } from '@/utils/response';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Controller({
   version: '1',
