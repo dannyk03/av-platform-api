@@ -3,11 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { EnumAuthStatusCodeError } from '@avo/type';
 
-import { DebuggerService } from '@/debugger/service';
-
 @Injectable()
 export class JwtRefreshGuard extends AuthGuard('jwtRefresh') {
-  constructor(private readonly debuggerService: DebuggerService) {
+  constructor() {
     super();
   }
 
