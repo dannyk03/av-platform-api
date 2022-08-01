@@ -105,9 +105,9 @@ export function AuthRefreshJwtGuard(): any {
       JwtRefreshGuard,
       UserPutToRequestGuard,
       ReqUserActiveGuard,
-      ReqUserVerifiedOnlyGuard,
       ReqUserAclRoleActiveGuard,
       ReqUserOrganizationActiveGuard,
+      ReqUserVerifiedOnlyGuard,
     ),
     SetMetadata(USER_VERIFIED_ONLY_META_KEY, true),
   );
