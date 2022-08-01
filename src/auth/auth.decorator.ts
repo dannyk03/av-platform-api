@@ -100,7 +100,17 @@ export function AclGuard(
 }
 
 export function AuthRefreshJwtGuard(): any {
-  return applyDecorators(UseGuards(JwtRefreshGuard));
+  return applyDecorators(
+    UseGuards(
+      JwtRefreshGuard,
+      UserPutToRequestGuard,
+      ReqUserActiveGuard,
+      ReqUserAclRoleActiveGuard,
+      ReqUserOrganizationActiveGuard,
+      ReqUserVerifiedOnlyGuard,
+    ),
+    SetMetadata(USER_VERIFIED_ONLY_META_KEY, true),
+  );
 }
 
 export const ReqJwtUser = createParamDecorator(
