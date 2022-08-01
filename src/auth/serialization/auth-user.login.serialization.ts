@@ -9,14 +9,10 @@ import { AuthConfigLoginSerialization } from './auth-config.login.serialization'
 import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
 
 export class AuthUserLoginSerialization {
-  readonly email: string;
+  readonly id: string;
   readonly isActive: boolean;
-  readonly passwordExpired: Date;
   readonly loginDate: Date;
   readonly rememberMe: boolean;
-
-  @Exclude()
-  readonly id: string;
 
   @Transform(({ value: organization }) =>
     plainToInstance(OrganizationLoginSerialization, organization),
@@ -34,7 +30,7 @@ export class AuthUserLoginSerialization {
   readonly authConfig: UserAuthConfig;
 
   @Exclude()
-  readonly loginCode: string;
+  readonly email: string;
 
   @Exclude()
   readonly phoneNumber: string;

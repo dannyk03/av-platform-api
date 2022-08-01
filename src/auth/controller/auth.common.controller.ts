@@ -234,18 +234,6 @@ export class AuthCommonController {
     { rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
   ): Promise<IResponse> {
-    const checkPasswordExpired: boolean =
-      await this.authService.checkPasswordExpired(
-        reqUser.authConfig.passwordExpiredAt,
-      );
-
-    if (checkPasswordExpired) {
-      throw new ForbiddenException({
-        statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
-        message: 'auth.error.passwordExpired',
-      });
-    }
-
     const safeData: AuthUserLoginSerialization =
       await this.authService.serializationLogin(reqUser);
 

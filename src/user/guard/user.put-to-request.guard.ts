@@ -47,25 +47,27 @@ export class UserPutToRequestGuard implements CanActivate {
       ...(loadRelations?.length ? loadRelations : defaultRelations),
     ];
 
-    const requestUser = await this.userService.findOne({
-      where: {
-        email: user.email,
-      },
-      relations,
-      select: {
-        organization: {
-          isActive: true,
-          id: true,
-          name: true,
-          slug: true,
+    const requestUser =
+      user.id &&
+      (await this.userService.findOne({
+        where: {
+          id: user.id,
         },
-        authConfig: {
-          password: loadAuthSensitiveData,
-          passwordExpiredAt: true,
-          emailVerifiedAt: true,
+        relations,
+        select: {
+          organization: {
+            isActive: true,
+            id: true,
+            name: true,
+            slug: true,
+          },
+          authConfig: {
+            password: loadAuthSensitiveData,
+            passwordExpiredAt: true,
+            emailVerifiedAt: true,
+          },
         },
-      },
-    });
+      }));
 
     if (!requestUser) {
       throw new UnauthorizedException({
