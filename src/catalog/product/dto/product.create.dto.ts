@@ -12,7 +12,10 @@ import {
 
 import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
-import { NormalizeStringInput } from '@/utils/request/transform';
+import {
+  ArrayTransform,
+  NormalizeStringInput,
+} from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
@@ -40,9 +43,7 @@ export class ProductCreateDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) => {
-    return isString(value) ? JSON.parse(value) : value;
-  })
+  @ArrayTransform()
   @NormalizeStringInput({ each: true })
   keywords?: string[];
 
