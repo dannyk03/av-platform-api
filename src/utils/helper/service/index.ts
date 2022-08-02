@@ -10,3 +10,4 @@ export * from './helper.number.service';
 export * from './helper.service';
 export * from './helper.slug.service';
 export * from './helper.string.service';
+export * from './helper.cookie.service';

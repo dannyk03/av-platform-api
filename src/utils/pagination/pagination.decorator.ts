@@ -13,7 +13,12 @@ import {
 } from 'class-validator';
 import snakeCase from 'lodash/snakeCase';
 
-import { EnumDisplayLanguage } from '@/language/display-language';
+import {
+  IPaginationFilterDateOptions,
+  IPaginationFilterOptions,
+  IPaginationFilterStringOptions,
+} from './pagination.interface';
+
 import { RequestAddDatePipe } from '@/utils/request/pipe';
 
 import { MinGreaterThan, Skip } from '../request/validation';
@@ -26,11 +31,6 @@ import {
   PAGINATION_DEFAULT_PER_PAGE,
   PAGINATION_DEFAULT_SORT,
 } from './pagination.constant';
-import {
-  IPaginationFilterDateOptions,
-  IPaginationFilterOptions,
-  IPaginationFilterStringOptions,
-} from './pagination.interface';
 
 export function PaginationSearch(): any {
   return applyDecorators(
@@ -51,19 +51,6 @@ export function PaginationMultiSearch(): any {
     IsString({ each: true }),
     Transform(({ value }) => {
       return value ? Array.from(new Set(value.split(','))) : undefined;
-    }),
-  );
-}
-
-export function PaginationLanguage(): any {
-  return applyDecorators(
-    Expose(),
-    IsOptional(),
-    IsEnum(EnumDisplayLanguage),
-    Transform(({ value }) => {
-      return Object.values(EnumDisplayLanguage).includes(value)
-        ? value
-        : EnumDisplayLanguage.En;
     }),
   );
 }

@@ -8,8 +8,12 @@ import {
 
 import { ABILITY_META_KEY } from '@acl/ability';
 import { AclAbilityGuard } from '@acl/ability/guard';
-import { IReqAclAbility } from '@acl/acl.interface';
 import { ReqUserAclRoleActiveGuard } from '@acl/role/guard';
+
+import { AuthUserLoginSerialization } from './serialization';
+
+import { IAclGuard } from './auth.interface';
+import { IReqAclAbility } from '@acl/acl.interface';
 
 // Guards
 import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
@@ -26,10 +30,10 @@ import {
   UserPutToRequestGuard,
 } from '@/user/guard';
 
-import { IAclGuard } from './auth.interface';
 import { JwtRefreshGuard } from './guard/jwt-refresh/auth.jwt-refresh.guard';
 import { JwtGuard } from './guard/jwt/auth.jwt.guard';
 import { UserLoginPutToRequestGuard } from './guard/login/login-active.guard';
+import { JwtOptionalGuard } from './guard/optional';
 import { AuthPayloadPasswordExpiredGuard } from './guard/payload/auth.password-expired.guard';
 
 export function IsActiveGuard(): any {
@@ -55,6 +59,9 @@ export function AuthChangePasswordGuard(...abilities: IReqAclAbility[]): any {
     ),
     SetMetadata(ABILITY_META_KEY, abilities),
   );
+}
+export function AuthLogoutGuard(): any {
+  return applyDecorators(UseGuards(JwtGuard, UserPutToRequestGuard));
 }
 
 export function AclGuard(
@@ -98,16 +105,16 @@ export function AuthRefreshJwtGuard(): any {
       JwtRefreshGuard,
       UserPutToRequestGuard,
       ReqUserActiveGuard,
-      ReqUserVerifiedOnlyGuard,
       ReqUserAclRoleActiveGuard,
       ReqUserOrganizationActiveGuard,
+      ReqUserVerifiedOnlyGuard,
     ),
     SetMetadata(USER_VERIFIED_ONLY_META_KEY, true),
   );
 }
 
 export const ReqJwtUser = createParamDecorator(
-  (key: string, ctx: ExecutionContext): Record<string, any> => {
+  (key: string, ctx: ExecutionContext): AuthUserLoginSerialization => {
     const { user } = ctx.switchToHttp().getRequest();
     return key ? user[key] : user;
   },
@@ -116,6 +123,7 @@ export const ReqJwtUser = createParamDecorator(
 export function LoginGuard(): any {
   return applyDecorators(
     UseGuards(
+      JwtOptionalGuard,
       UserLoginPutToRequestGuard,
       ReqUserActiveGuard,
       ReqUserAclRoleActiveGuard,

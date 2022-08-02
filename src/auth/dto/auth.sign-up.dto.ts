@@ -1,53 +1,55 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
 import {
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Length,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
+import {
+  EmptyStringToUndefinedTransform,
+  NormalizeEmail,
+  NormalizeStringInput,
+  Trim,
+} from '@/utils/request/transform';
 import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class AuthSignUpDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email!: string;
 
-  @IsString()
   @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(30)
+  @Length(1, 20)
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly firstName?: string;
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(30)
+  @Length(1, 20)
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly lastName?: string;
 
   @IsString()
   @IsOptional()
-  @MinLength(10)
-  @MaxLength(20)
+  @EmptyStringToUndefinedTransform()
+  @Length(10, 20)
   @IsPhoneNumber()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly phoneNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  @EmptyStringToUndefinedTransform()
+  @Length(2, 50)
+  @NormalizeStringInput()
+  @Type(() => String)
+  readonly title?: string;
 
   @IsNotEmpty()
   @MaxLength(30)

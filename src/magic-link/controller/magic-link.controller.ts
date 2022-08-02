@@ -7,8 +7,13 @@ import {
   Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
+
+import {
+  EnumGiftStatusCodeError,
+  EnumOrganizationStatusCodeError,
+  EnumUserStatusCodeError,
+} from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
@@ -17,16 +22,13 @@ import { DataSource } from 'typeorm';
 import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
 import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
 import { OrganizationInviteService } from '@/organization/service';
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
 import { MagicLinkDto } from '../dto';
 
 import { AuthUserLoginSerialization } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
 import { EmailService } from '@/messaging/email';
-import { EnumOrganizationStatusCodeError } from '@/organization';
-import { EnumUserStatusCodeError } from '@/user';
 import { IResponse, Response } from '@/utils/response';
 
 @Controller({})
@@ -36,12 +38,11 @@ export class MagicLinkController {
     private defaultDataSource: DataSource,
     private readonly authSignUpVerificationService: AuthSignUpVerificationLinkService,
     private readonly helperDateService: HelperDateService,
-    private readonly configService: ConfigService,
+    private readonly helperCookieService: HelperCookieService,
     private readonly organizationInviteService: OrganizationInviteService,
     private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
     private readonly emailService: EmailService,
     private readonly authService: AuthService,
-    private readonly helperJwtService: HelperJwtService,
   ) {}
 
   @Response('user.signUpSuccess')
@@ -59,6 +60,7 @@ export class MagicLinkController {
         select: {
           user: {
             id: true,
+            email: true,
             isActive: true,
             authConfig: {
               id: true,
@@ -75,9 +77,6 @@ export class MagicLinkController {
         message: 'user.error.code',
       });
     }
-
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
 
     const now = this.helperDateService.create();
     const expiresAt =
@@ -128,12 +127,7 @@ export class MagicLinkController {
       false,
     );
 
-    response.cookie('accessToken', accessToken, {
-      secure: isSecureMode,
-      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
+    await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       refreshToken,

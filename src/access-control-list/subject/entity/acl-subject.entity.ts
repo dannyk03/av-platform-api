@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-
 import { SubjectType, Subjects } from '@avo/casl';
+
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { AclAbility } from '@acl/ability/entity';

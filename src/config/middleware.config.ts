@@ -44,7 +44,7 @@ export default registerAs(
       ],
     },
     rateLimit: {
-      resetTime: '0.5', // secs
+      resetTime: '0.25', // secs
       maxRequestPerIp: 1, // max request per reset time
     },
     timestamp: {

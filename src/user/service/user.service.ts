@@ -14,10 +14,10 @@ import { User } from '../entity';
 
 import { UserProfileGetSerialization } from '../serialization';
 
-import { IAuthPassword } from '@/auth/auth.interface';
-import { ConnectionNames } from '@/database';
-
 import { IUserCheckExist } from '../user.interface';
+import { IAuthPassword } from '@/auth/auth.interface';
+
+import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class UserService {

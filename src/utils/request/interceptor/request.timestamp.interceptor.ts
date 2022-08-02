@@ -8,15 +8,15 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
+import { EnumRequestStatusCodeError } from '@avo/type';
+
 import { Observable } from 'rxjs';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
-import {
-  EnumRequestStatusCodeError,
-  REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
-} from '../request.constant';
 import { IRequestApp } from '../request.interface';
+
+import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../request.constant';
 
 @Injectable()
 export class RequestTimestampInterceptor
@@ -48,9 +48,8 @@ export class RequestTimestampInterceptor
         const toleranceTimeInMs = this.configService.get<number>(
           'middleware.timestamp.toleranceTimeInMs',
         );
-        const check: boolean = this.helperDateService.checkTimestamp(
-          this.helperNumberService.create(reqTs),
-        );
+        const check: boolean = this.helperDateService.check(reqTs);
+
         if (!reqTs || !check) {
           throw new ForbiddenException({
             statusCode: EnumRequestStatusCodeError.RequestTimestampInvalidError,
@@ -58,15 +57,15 @@ export class RequestTimestampInterceptor
           });
         }
 
-        const timestamp = this.helperDateService.create({
-          date: this.helperNumberService.create(reqTs),
+        const date = this.helperDateService.create({
+          date: reqTs,
         });
         const toleranceMin =
           this.helperDateService.backwardInMilliseconds(toleranceTimeInMs);
         const toleranceMax =
           this.helperDateService.forwardInMilliseconds(toleranceTimeInMs);
 
-        if (timestamp < toleranceMin || timestamp > toleranceMax) {
+        if (date < toleranceMin || date > toleranceMax) {
           throw new ForbiddenException({
             statusCode: EnumRequestStatusCodeError.RequestTimestampInvalidError,
             message: 'middleware.error.timestampInvalid',

@@ -11,10 +11,10 @@ import { Response } from 'express';
 import { DebuggerService } from '@/debugger/service/debugger.service';
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IErrorException } from '../error.interface';
+
 import { IMessage } from '@/response-message';
 import { IRequestApp } from '@/utils/request';
-
-import { IErrorException } from '../error.interface';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
@@ -29,7 +29,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const request = ctx.getRequest<IRequestApp>();
     const response = exception.getResponse();
     const { customLang } = ctx.getRequest<IRequestApp>();
-    const customLanguages: string[] = customLang.split(',');
+    const customLanguages: string[] = customLang?.split(',');
     const responseExpress: Response = ctx.getResponse<Response>();
 
     // Debugger

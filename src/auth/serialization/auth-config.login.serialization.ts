@@ -4,5 +4,4 @@ import { Exclude, Expose } from 'class-transformer';
 export class AuthConfigLoginSerialization {
   @Expose()
   readonly passwordExpiredAt!: Date;
-  readonly emailVerifiedAt!: Date;
 }

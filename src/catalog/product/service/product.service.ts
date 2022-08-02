@@ -1,6 +1,8 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
+import { EnumProductStatusCodeError } from '@avo/type';
+
 import { plainToInstance } from 'class-transformer';
 import flatMap from 'lodash/flatMap';
 import {
@@ -20,11 +22,14 @@ import { CloudinaryService } from '@/cloudinary/service';
 
 import { ProductListSerialization } from '../serialization';
 
+import {
+  IGetProduct,
+  IProductSearch,
+  IProductUpdate,
+} from '../product.interface';
+
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
-
-import { EnumProductStatusCodeError } from '../product.constant';
-import { IProductSearch } from '../product.interface';
 
 @Injectable()
 export class ProductService {
@@ -59,14 +64,27 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
-  async getSearchBuilder({
+  async get({ id, language }: IGetProduct): Promise<Product> {
+    const getBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .setParameters({ language, id })
+      .where('product.id = :id')
+      .leftJoinAndSelect('product.displayOptions', 'display_options')
+      .leftJoinAndSelect('display_options.language', 'language')
+      .leftJoinAndSelect('display_options.images', 'images')
+      .andWhere('language.isoCode = :language');
+
+    return getBuilder.getOne();
+  }
+
+  async getListSearchBuilder({
     search,
     keywords,
     language,
     isActive,
     loadImages = true,
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
-    const builder = await this.productRepository
+    const builder = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.displayOptions', 'display_options')
       .leftJoinAndSelect('display_options.language', 'language')
@@ -103,7 +121,7 @@ export class ProductService {
     keywords,
     isActive,
   }: IProductSearch): Promise<number> {
-    const searchBuilder = await this.getSearchBuilder({
+    const searchBuilder = await this.getListSearchBuilder({
       loadImages: false,
       language,
       search,
@@ -121,7 +139,7 @@ export class ProductService {
     options,
     isActive,
   }: IProductSearch): Promise<Product[]> {
-    const searchBuilder = await this.getSearchBuilder({
+    const searchBuilder = await this.getListSearchBuilder({
       language,
       search,
       keywords,
@@ -184,6 +202,27 @@ export class ProductService {
       .where('id = :id', { id })
       .andWhere('isActive != :isActive', { isActive })
       .execute();
+  }
+
+  async updateProduct({
+    id,
+    sku,
+    brand,
+    isActive,
+    display: { language, ...restDisplay },
+  }: IProductUpdate): Promise<any> {
+    const getProduct = await this.get({ id, language: language });
+
+    getProduct.sku = sku;
+    getProduct.brand = brand;
+    getProduct.isActive = isActive;
+
+    getProduct.displayOptions[0] = {
+      ...getProduct.displayOptions[0],
+      ...restDisplay,
+    };
+
+    return this.productRepository.save(getProduct);
   }
 
   async serialization(data: Product): Promise<ProductListSerialization> {

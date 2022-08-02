@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
+import { EnumOrganizationStatusCodeError } from '@avo/type';
 
 @Injectable()
 export class ReqUserOrganizationActiveGuard implements CanActivate {

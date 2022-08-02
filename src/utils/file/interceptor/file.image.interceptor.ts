@@ -11,10 +11,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { EnumFileStatusCodeError } from '@avo/type';
+
 import { Observable } from 'rxjs';
 
-import { EnumFileImageMime, EnumFileStatusCodeError } from '../file.constant';
 import { IFile } from '../file.interface';
+
+import { EnumFileImageMime } from '../file.constant';
 
 export function FileImageInterceptor(
   required?: boolean,

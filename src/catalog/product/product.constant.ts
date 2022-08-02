@@ -1,10 +1,3 @@
-export enum EnumProductStatusCodeError {
-  ProductExistsError = 5700,
-  ProductNotFoundError = 5701,
-  ProductInactiveError = 5702,
-  ProductActiveError = 5703,
-}
-
 export const PRODUCT_DEFAULT_PAGE = 1;
 export const PRODUCT_DEFAULT_PER_PAGE = 10;
 export const PRODUCT_DEFAULT_SORT = 'createdAt@asc';

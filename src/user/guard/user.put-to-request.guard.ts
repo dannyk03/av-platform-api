@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { UserService } from '../service';
+import { EnumAuthStatusCodeError } from '@avo/type';
 
-import { EnumAuthStatusCodeError } from '@/auth';
+import { UserService } from '../service';
 
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA,
@@ -47,25 +47,27 @@ export class UserPutToRequestGuard implements CanActivate {
       ...(loadRelations?.length ? loadRelations : defaultRelations),
     ];
 
-    const requestUser = await this.userService.findOne({
-      where: {
-        email: user.email,
-      },
-      relations,
-      select: {
-        organization: {
-          isActive: true,
-          id: true,
-          name: true,
-          slug: true,
+    const requestUser =
+      user.id &&
+      (await this.userService.findOne({
+        where: {
+          id: user.id,
         },
-        authConfig: {
-          password: loadAuthSensitiveData,
-          passwordExpiredAt: true,
-          emailVerifiedAt: true,
+        relations,
+        select: {
+          organization: {
+            isActive: true,
+            id: true,
+            name: true,
+            slug: true,
+          },
+          authConfig: {
+            password: loadAuthSensitiveData,
+            passwordExpiredAt: true,
+            emailVerifiedAt: true,
+          },
         },
-      },
-    });
+      }));
 
     if (!requestUser) {
       throw new UnauthorizedException({

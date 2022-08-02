@@ -1,4 +1,5 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
+import { EnumCurrency, EnumOccasion } from '@avo/type';
+
 import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -10,7 +11,6 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
-  IsString,
   Max,
   MaxLength,
   Min,
@@ -18,65 +18,51 @@ import {
 } from 'class-validator';
 import { isArray } from 'lodash';
 
-import { EnumCurrency, EnumOccasion } from '@avo/type';
-
 import { MinGreaterThan } from '@/utils/request';
-import { EmptyStringToUndefinedTransform } from '@/utils/request/transform';
+import {
+  EmptyStringToUndefinedTransform,
+  NormalizeEmail,
+  NormalizeStringInput,
+} from '@/utils/request/transform';
 
 export class GiftSendRecipientDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @MaxLength(30)
   @IsOptional()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @EmptyStringToUndefinedTransform()
-  @IsString()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @EmptyStringToUndefinedTransform()
-  @IsString()
   readonly lastName?: string;
 }
 export class GiftSendSenderDto {
   @MaxLength(50)
   @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @MaxLength(30)
   @IsOptional()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @EmptyStringToUndefinedTransform()
-  @IsString()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @EmptyStringToUndefinedTransform()
-  @IsString()
   readonly lastName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @EmptyStringToUndefinedTransform()
-  @IsString()
   readonly organizationName?: string;
 }
 
@@ -108,8 +94,6 @@ export class GiftSendDto {
   @ArrayMinSize(1)
   @ArrayMaxSize(1)
   @IsNotEmpty({ each: true })
-  @Trim(undefined, { each: true })
-  @Escape({ each: true })
   @IsObject({ each: true })
   @IsArray()
   @ValidateNested({ each: true })

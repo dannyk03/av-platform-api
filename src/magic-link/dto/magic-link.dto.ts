@@ -1,13 +1,12 @@
-import { Escape, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsNotEmpty, Length } from 'class-validator';
+
+import { NormalizeStringInput } from '@/utils/request/transform';
 
 export class MagicLinkDto {
-  @IsString()
   @IsNotEmpty()
   @Length(21, 21)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly code: string;
 }

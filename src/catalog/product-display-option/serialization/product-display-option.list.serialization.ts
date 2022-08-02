@@ -10,15 +10,13 @@ export class ProductDisplayOptionListSerialization {
   readonly name: string;
   readonly description: string;
   readonly keywords!: string[];
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
 
   @Transform(({ value }) => value.isoCode)
   @Expose()
   readonly language: DisplayLanguage;
 
   @Transform(({ value: images }) =>
-    images.map((image: ProductImage) =>
+    images?.map((image: ProductImage) =>
       plainToInstance(ProductImageListSerialization, image),
     ),
   )
@@ -32,4 +30,10 @@ export class ProductDisplayOptionListSerialization {
 
   @Exclude()
   readonly deletedAt: Date;
+
+  @Exclude()
+  readonly createdAt: Date;
+
+  @Exclude()
+  readonly updatedAt: Date;
 }

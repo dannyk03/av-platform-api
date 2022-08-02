@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumMessagingStatusCodeError } from '@avo/type';
+
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
@@ -24,7 +26,6 @@ import { GiftSendDto } from '../dto/gift.send.dto';
 
 import { ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EnumMessagingStatusCodeError } from '@/messaging';
 import { EmailService } from '@/messaging/email';
 import { Response } from '@/utils/response';
 

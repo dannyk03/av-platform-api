@@ -5,9 +5,9 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { HelperDateService } from '@/utils/helper/service';
+import { EnumAuthStatusCodeError } from '@avo/type';
 
-import { EnumAuthStatusCodeError } from '@/auth';
+import { HelperDateService } from '@/utils/helper/service';
 
 @Injectable()
 export class AuthPayloadPasswordExpiredGuard implements CanActivate {

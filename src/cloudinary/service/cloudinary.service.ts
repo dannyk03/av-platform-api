@@ -5,8 +5,9 @@ import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import { createReadStream } from 'streamifier';
 import util from 'util';
 
-import { CloudinaryFolder } from '../cloudinary.constant';
 import { UploadCloudinaryImage } from '../cloudinary.interface';
+
+import { CloudinaryFolder } from '../cloudinary.constant';
 
 @Injectable()
 export class CloudinaryService {

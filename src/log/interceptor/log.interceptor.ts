@@ -11,14 +11,15 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
 import { EnumRequestMethod } from 'src/utils/request/request.constant';
-import { IRequestApp } from 'src/utils/request/request.interface';
 
 import { Log } from '../entity';
 
 import { LogService } from '../service/log.service';
 
-import { EnumLogAction, EnumLogLevel } from '../log.constant';
 import { ILog, ILogOptions } from '../log.interface';
+import { IRequestApp } from 'src/utils/request/request.interface';
+
+import { EnumLogAction, EnumLogLevel } from '../log.constant';
 
 export function LogInterceptor(
   action: EnumLogAction,

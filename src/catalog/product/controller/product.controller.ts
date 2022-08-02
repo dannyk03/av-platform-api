@@ -13,9 +13,10 @@ import {
   UploadedFiles,
 } from '@nestjs/common';
 
-import compact from 'lodash/compact';
-
 import { Action, Subjects } from '@avo/casl';
+import { EnumProductStatusCodeError } from '@avo/type';
+
+import compact from 'lodash/compact';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
@@ -24,11 +25,11 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
 
-import { ProductCreateDto, ProductListDto } from '../dto';
-import { ProductIdQueryParamDto } from '../dto';
+import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
+import { ProductGetDto } from '../dto/product.get.dto';
+import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
-import { CloudinarySubject } from '@/cloudinary';
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
 import { RequestParamGuard } from '@/utils/request';
 import {
@@ -38,13 +39,10 @@ import {
   ResponsePaging,
 } from '@/utils/response';
 
-import { EnumProductStatusCodeError } from '../product.constant';
-
 @Controller({
   version: '1',
-  path: 'product',
 })
-export class ProductController {
+export class ProductCommonController {
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly productService: ProductService,
@@ -63,7 +61,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', EnumFileType.Image)
+  @UploadFileMultiple('images', EnumFileType.Image, true)
   @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],
@@ -75,7 +73,7 @@ export class ProductController {
       brand,
       isActive,
       keywords,
-      languageIsoCode,
+      language,
     }: ProductCreateDto,
   ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
@@ -87,30 +85,10 @@ export class ProductController {
       });
     }
 
-    const uploadImages = await Promise.all(
-      images.map(async (image) => {
-        return this.cloudinaryService.uploadImage({
-          subject: CloudinarySubject.Product,
-          image,
-          languageIsoCode,
-        });
-      }),
-    );
-
-    const saveImages = await Promise.all(
-      uploadImages.map(async (image) => {
-        if (this.cloudinaryService.isUploadApiResponse(image)) {
-          return this.productImageService.create({
-            fileName: image.original_filename,
-            assetId: image.asset_id,
-            publicId: image.public_id,
-            secureUrl: image.secure_url,
-          });
-        }
-
-        return Promise.resolve(null);
-      }),
-    );
+    const saveImages = await this.productImageService.createImages({
+      images,
+      language,
+    });
 
     const createProduct = await this.productService.create({
       brand,
@@ -118,7 +96,7 @@ export class ProductController {
       isActive,
       displayOptions: [
         {
-          language: { isoCode: languageIsoCode },
+          language: { isoCode: language },
           keywords: [...new Set(keywords)],
           name,
           description,
@@ -128,7 +106,7 @@ export class ProductController {
     });
 
     const createdProduct = await this.productService.save(createProduct);
-    return await this.productService.serialization(createdProduct);
+    return this.productService.serialization(createdProduct);
   }
 
   @ResponsePaging('product.list')
@@ -154,7 +132,7 @@ export class ProductController {
       availableSort,
       availableSearch,
       isActive,
-    }: ProductListDto, // : Promise<IResponsePaging>
+    }: ProductListDto,
   ): Promise<IResponsePaging> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
@@ -197,7 +175,6 @@ export class ProductController {
   }
 
   @Response('product.delete')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -207,13 +184,13 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(IdParamDto)
   @Delete('/:id')
   async deleteProduct(@Param('id') id: string): Promise<void> {
     await this.productService.deleteProductBy({ id });
   }
 
   @Response('product.active')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -223,6 +200,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
   async activeProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -236,7 +214,6 @@ export class ProductController {
   }
 
   @Response('product.inactive')
-  @RequestParamGuard(ProductIdQueryParamDto)
   @AclGuard({
     abilities: [
       {
@@ -246,6 +223,7 @@ export class ProductController {
     ],
     systemOnly: true,
   })
+  @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
   async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
     const { affected } = await this.productService.updateProductActiveStatus({
@@ -256,5 +234,46 @@ export class ProductController {
     return {
       affected,
     };
+  }
+
+  @Response('product.update')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch()
+  async update(
+    @Body()
+    body: ProductUpdateDto,
+  ): Promise<void> {
+    const updateRes = await this.productService.updateProduct(body);
+
+    await this.productService.serialization(updateRes);
+  }
+
+  @Response('product.get')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.Product,
+      },
+    ],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
+  async get(
+    @Param('id') id: string,
+    @Query()
+    { lang: language }: ProductGetDto,
+  ): Promise<IResponse> {
+    const getProduct = await this.productService.get({ id, language });
+
+    return this.productService.serialization(getProduct);
   }
 }
