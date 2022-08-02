@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { Gift } from '../entity';
+import { GiftIntent } from '../entity';
 
 import {
   RecipientAdditionalDataSerialization,
@@ -21,27 +21,27 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class GiftService {
   constructor(
-    @InjectRepository(Gift, ConnectionNames.Default)
-    private GifSendRepository: Repository<Gift>,
+    @InjectRepository(GiftIntent, ConnectionNames.Default)
+    private GifSendRepository: Repository<GiftIntent>,
   ) {}
 
-  async create(props: DeepPartial<Gift>): Promise<Gift> {
+  async create(props: DeepPartial<GiftIntent>): Promise<GiftIntent> {
     return this.GifSendRepository.create(props);
   }
 
-  async save(props: Gift): Promise<Gift> {
+  async save(props: GiftIntent): Promise<GiftIntent> {
     return this.GifSendRepository.save(props);
   }
 
-  async saveBulk(props: Gift[]): Promise<Gift[]> {
+  async saveBulk(props: GiftIntent[]): Promise<GiftIntent[]> {
     return this.GifSendRepository.save(props);
   }
 
-  async findOne(find: FindOneOptions<Gift>): Promise<Gift> {
+  async findOne(find: FindOneOptions<GiftIntent>): Promise<GiftIntent> {
     return this.GifSendRepository.findOne(find);
   }
 
-  async findOneBy(find: FindOptionsWhere<Gift>): Promise<Gift> {
+  async findOneBy(find: FindOptionsWhere<GiftIntent>): Promise<GiftIntent> {
     return this.GifSendRepository.findOneBy(find);
   }
 

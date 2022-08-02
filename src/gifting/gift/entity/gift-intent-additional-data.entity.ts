@@ -2,14 +2,14 @@ import { EnumOccasion } from '@avo/type';
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
-import { Gift } from './gift.entity';
+import { GiftIntent } from './gift-intent.entity';
 import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
-export class GiftAdditionalData extends BaseEntity<GiftAdditionalData> {
-  @OneToOne(() => Gift)
-  gift: Gift;
+export class GiftIntentAdditionalData extends BaseEntity<GiftIntentAdditionalData> {
+  @OneToOne(() => GiftIntent)
+  gift: GiftIntent;
 
   @Column()
   priceMax?: number;

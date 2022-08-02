@@ -1,7 +1,15 @@
-import { BeforeInsert, Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
+import { GiftOption } from '@/gifting/gift/entity/gift-option.entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -32,6 +40,9 @@ export class Product extends BaseEntity<Product> {
     },
   )
   displayOptions!: ProductDisplayOption[];
+
+  @ManyToMany(() => GiftOption, (giftOption) => giftOption.products)
+  giftOptions: GiftOption[];
 
   @BeforeInsert()
   beforeInsert() {
