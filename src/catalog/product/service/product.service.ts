@@ -4,6 +4,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { EnumProductStatusCodeError } from '@avo/type';
 
 import { plainToInstance } from 'class-transformer';
+import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
   Brackets,
@@ -69,9 +70,9 @@ export class ProductService {
       .createQueryBuilder('product')
       .setParameters({ language, id })
       .where('product.id = :id')
-      .leftJoinAndSelect('product.displayOptions', 'display_options')
-      .leftJoinAndSelect('display_options.language', 'language')
-      .leftJoinAndSelect('display_options.images', 'images')
+      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
+      .leftJoinAndSelect('displayOptions.language', 'language')
+      .leftJoinAndSelect('displayOptions.images', 'images')
       .andWhere('language.isoCode = :language');
 
     return getBuilder.getOne();
@@ -86,14 +87,14 @@ export class ProductService {
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.displayOptions', 'display_options')
-      .leftJoinAndSelect('display_options.language', 'language')
+      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
+      .leftJoinAndSelect('displayOptions.language', 'language')
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
 
     if (loadImages) {
-      builder.leftJoinAndSelect('display_options.images', 'images');
+      builder.leftJoinAndSelect('displayOptions.images', 'images');
     }
 
     if (search) {
@@ -102,14 +103,14 @@ export class ProductService {
           builder.setParameters({ search, likeSearch: `%${search}%` });
           qb.where('sku ILIKE :likeSearch')
             .orWhere('brand ILIKE :likeSearch')
-            .orWhere('display_options.name ILIKE :likeSearch')
-            .orWhere('display_options.description ILIKE :likeSearch');
+            .orWhere('displayOptions.name ILIKE :likeSearch')
+            .orWhere('displayOptions.description ILIKE :likeSearch');
         }),
       );
     }
 
     if (keywords) {
-      builder.andWhere('display_options.keywords && :keywords');
+      builder.andWhere('displayOptions.keywords && :keywords');
     }
 
     return builder;
@@ -150,7 +151,7 @@ export class ProductService {
       if (options.order.keywords && keywords) {
         searchBuilder.orderBy(
           `CARDINALITY(ARRAY (
-          SELECT UNNEST(display_options.keywords)
+          SELECT UNNEST(displayOptions.keywords)
           INTERSECT
           SELECT UNNEST(array[:...keywords])))`,
           options.order.keywords,
@@ -160,7 +161,7 @@ export class ProductService {
       }
     }
 
-    if (options.take && options.skip) {
+    if (isNumber(options.take) && isNumber(options.skip)) {
       searchBuilder.take(options.take).skip(options.skip);
     }
 

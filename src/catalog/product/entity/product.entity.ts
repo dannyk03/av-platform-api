@@ -9,7 +9,7 @@ import {
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
-import { GiftOption } from '@/gifting/gift/entity/gift-option.entity';
+import { Gift } from '@/gifting/gift/entity/gift.entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -41,8 +41,8 @@ export class Product extends BaseEntity<Product> {
   )
   displayOptions!: ProductDisplayOption[];
 
-  @ManyToMany(() => GiftOption, (giftOption) => giftOption.products)
-  giftOptions: GiftOption[];
+  @ManyToMany(() => Gift, (giftOption) => giftOption.products)
+  giftOptions: Gift[];
 
   @BeforeInsert()
   beforeInsert() {

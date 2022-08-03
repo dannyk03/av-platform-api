@@ -20,7 +20,6 @@ import compact from 'lodash/compact';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
-import { CloudinaryService } from '@/cloudinary/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
@@ -44,7 +43,6 @@ import {
 })
 export class ProductCommonController {
   constructor(
-    private readonly cloudinaryService: CloudinaryService,
     private readonly productService: ProductService,
     private readonly productImageService: ProductImageService,
     private readonly paginationService: PaginationService,
@@ -110,6 +108,7 @@ export class ProductCommonController {
   }
 
   @ResponsePaging('product.list')
+  @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
       {
@@ -175,6 +174,7 @@ export class ProductCommonController {
   }
 
   @Response('product.delete')
+  @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
       {
@@ -237,6 +237,7 @@ export class ProductCommonController {
   }
 
   @Response('product.update')
+  @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
       {
@@ -257,6 +258,7 @@ export class ProductCommonController {
   }
 
   @Response('product.get')
+  @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
       {

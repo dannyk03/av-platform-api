@@ -112,10 +112,10 @@ export function PaginationSort(
           ? EnumPaginationAvailableSortType.Desc
           : EnumPaginationAvailableSortType.Asc;
 
-      const key = (nestingAliasMap?.[convertField] || convertField)
-        .split('.')
-        .map((f) => snakeCase(f))
-        .join('.');
+      const key = nestingAliasMap?.[convertField] || convertField;
+      // .split('.')
+      // .map((f) => snakeCase(f))
+      // .join('.');
       return { [key]: convertType };
     }),
   );

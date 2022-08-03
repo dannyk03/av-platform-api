@@ -1,15 +1,20 @@
-import { Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 
 import { GiftIntent } from './gift-intent.entity';
-import { GiftOption } from './gift-option.entity';
+import { GiftOrder } from './gift-order.entity';
+import { Product } from '@/catalog/product/entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class Gift extends BaseEntity<Gift> {
+  @ManyToMany(() => Product)
+  products!: Product[];
+
   @ManyToOne(() => GiftIntent, (giftIntent) => giftIntent.giftOptions)
   @JoinColumn()
   giftIntent!: GiftIntent;
 
-  @OneToMany(() => GiftOption, (giftOption) => giftOption.gift)
-  selectedGiftOptions!: GiftOption[];
+  @ManyToOne(() => Gift, (gift) => gift.order)
+  @JoinColumn()
+  order!: GiftOrder;
 }

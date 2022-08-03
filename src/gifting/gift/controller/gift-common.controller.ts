@@ -1,33 +1,40 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { Action, Subjects } from '@avo/casl';
 import { EnumMessagingStatusCodeError } from '@avo/type';
 
+import { lang } from 'moment-timezone';
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
 
-import { GiftSendConfirmationLinkService, GiftService } from '../service';
+import { GiftIntentService, GiftSendConfirmationLinkService } from '../service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
+import { PaginationService } from '@/utils/pagination/service';
 
-import { GifSendGuard } from '../gift.decorator';
+import { ProductListSerialization } from '@/catalog/product/serialization';
 
+import { GiftIntentListDto } from '../dto';
 import { GiftSendDto } from '../dto/gift.send.dto';
 
-import { ReqJwtUser } from '@/auth';
+import { AclGuard, ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
-import { Response } from '@/utils/response';
+import { ReqUser } from '@/user';
+import { IResponsePaging, Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -39,27 +46,25 @@ export class GiftController {
     private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
-    private readonly giftService: GiftService,
+    private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
     private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @Response('gift.send')
   @HttpCode(HttpStatus.OK)
-  @GifSendGuard()
+  // @GifSendGuard()
+  @AclGuard()
   @Throttle(1, 5)
   @Post('/send')
   async sendGiftSurvey(
     @Body()
     { sender, recipients, additionalData }: GiftSendDto,
-    @ReqJwtUser()
-    reqJwtUser: User,
+    @ReqUser()
+    reqUser: User,
   ): Promise<void> {
     const uniqueRecipients = [...new Set(recipients)];
-
-    const maybeSenderUser = await this.userService.findOneBy({
-      email: reqJwtUser?.email || sender.email,
-    });
 
     await this.defaultDataSource.transaction(
       'SERIALIZABLE',
@@ -70,11 +75,11 @@ export class GiftController {
               email: recipient.email,
             });
 
-            return this.giftService.create({
+            return this.giftIntentService.create({
               sender: {
-                user: maybeSenderUser,
+                user: reqUser,
                 additionalData: {
-                  ...(await this.giftService.serializationSenderGiftAdditionalData(
+                  ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
                     sender,
                   )),
                 },
@@ -82,7 +87,7 @@ export class GiftController {
               recipient: {
                 user: maybeRecipientUser,
                 additionalData: {
-                  ...(await this.giftService.serializationRecipientGiftAdditionalData(
+                  ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
                     recipient,
                   )),
                 },
@@ -123,5 +128,62 @@ export class GiftController {
         );
       },
     );
+  }
+
+  @ResponsePaging('gift.intent.list')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.GiftIntent,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Get('/intent/list')
+  async list(
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+    }: GiftIntentListDto,
+  ): Promise<IResponsePaging> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const giftIntents = await this.giftIntentService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+    });
+
+    const totalData = await this.giftIntentService.getTotal({
+      search,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    // const data: ProductListSerialization[] =
+    //   await this.productService.serializationList(products);
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: giftIntents,
+    };
   }
 }

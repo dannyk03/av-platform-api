@@ -9,7 +9,6 @@ import {
 
 import { GiftIntentAdditionalData } from './gift-intent-additional-data.entity';
 import { GiftIntentConfirmationLink } from './gift-intent-confirmation-link.entity';
-import { GiftOption } from './gift-option.entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSender } from './gift-sender.entity';
 import { Gift } from './gift.entity';
@@ -68,12 +67,11 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   @JoinColumn()
   confirmationLink!: GiftIntentConfirmationLink;
 
-  @OneToMany(() => GiftOption, (giftOption) => giftOption.giftIntent, {
+  @OneToMany(() => Gift, (giftOption) => giftOption.giftIntent, {
     nullable: true,
   })
-  giftOptions?: GiftOption[];
+  giftOptions?: Gift[];
 
-  @OneToOne(() => Gift, { nullable: true })
-  @JoinColumn()
-  gift?: Gift;
+  @OneToMany(() => Gift, (gift) => gift.giftIntent, { nullable: true })
+  gifts?: Gift[];
 }
