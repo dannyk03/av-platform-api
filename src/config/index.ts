@@ -10,6 +10,7 @@ import FileConfig from './file.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
+import StripeConfig from './stripe.config';
 import UserConfig from './user.config';
 
 const Configs = [
@@ -24,6 +25,7 @@ const Configs = [
   OrganizationConfig,
   CloudinaryConfig,
   CustomerIoConfig,
+  StripeConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
