@@ -35,4 +35,9 @@ export class StripeService {
 
     return paymentIntent.client_secret;
   }
+
+  async getTaxAmount({ taxCode, recipientZipCode, basePrice }) {
+    // ask stripe what is the tax for this product
+    return 10;
+  }
 }
