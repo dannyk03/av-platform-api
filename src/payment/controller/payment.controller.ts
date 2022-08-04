@@ -25,6 +25,8 @@ import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { Response } from '@/utils/response';
 
+import { StripeService } from '../stripe';
+
 @Controller({
   version: '1',
   path: 'payment',
@@ -33,13 +35,10 @@ export class PaymentController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly userService: UserService,
-    private readonly rolePresetService: AclRolePresetService,
-    private readonly aclRoleService: AclRoleService,
-    private readonly authService: AuthService,
+    private readonly stripeService: StripeService,
   ) {}
 
-  @Response('payment.create')
+  // @Response('payment.create')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CreatePayment, {
     tags: ['payment', 'create'],
@@ -61,8 +60,27 @@ export class PaymentController {
   async pay(
     @Body()
     { orderId: orderId }: PaymentCreateDto,
-  ): Promise<void> {
+  ): Promise<string> {
     console.log(`The order id to create a payment to is: ${orderId}`);
-    return;
+    try {
+      // getting the order details from the db
+      const order = { totalPrice: 100, currency: 'USD' };
+
+      // getting the customer stripe id
+      const customerId = '123';
+
+      const clientSecret = await this.stripeService.createPaymentIntent({
+        amount: order.totalPrice,
+        currency: order.currency,
+        customerID: customerId,
+      });
+
+      return clientSecret;
+    } catch (err) {
+      console.log(
+        `Error occurred during payment intent creation for order: ${orderId}.`,
+        err,
+      );
+    }
   }
 }

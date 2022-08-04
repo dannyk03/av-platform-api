@@ -1,13 +1,12 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
-// import { CustomerIOService } from './customer-io';
-// import { EmailService } from './email';
+import { StripeService } from './stripe';
 
 @Module({
   imports: [HttpModule],
-  // exports: [EmailService, CustomerIOService],
-  // providers: [EmailService, CustomerIOService],
+  exports: [/*EmailService, */ StripeService],
+  providers: [/*EmailService, */ StripeService],
   controllers: [],
 })
 export class PaymentModule {}

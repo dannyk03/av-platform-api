@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 
 @Injectable()
-export class CustomerIOService {
+export class StripeService {
   private readonly client: Stripe;
 
   constructor(
@@ -25,12 +25,14 @@ export class CustomerIOService {
 
     const paymentIntent = await this.client.paymentIntents.create(
       {
-        amount,
+        amount, // in cents
         currency,
       },
-      { stripeAccount: customerStripeId },
+      // { stripeAccount: customerStripeId },
     );
 
-    console.log(`${paymentIntent} will include the client secret`);
+    console.log(`${paymentIntent.client_secret} is the client secret`);
+
+    return paymentIntent.client_secret;
   }
 }
