@@ -70,9 +70,11 @@ export class GiftIntentService {
       builder.andWhere(
         new Brackets((qb) => {
           builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('senderUser.email ILIKE :likeSearch').orWhere(
-            'recipientUser.email ILIKE :likeSearch',
-          );
+          qb.where('senderUser.email ILIKE :likeSearch')
+            .orWhere('recipientUser.email ILIKE :likeSearch')
+            .orWhere('senderUser.email ILIKE :likeSearch')
+            .orWhere(`recipient.additionalData ->> 'email' ILIKE :likeSearch`)
+            .orWhere(`sender.additionalData ->> 'email' ILIKE :likeSearch`);
         }),
       );
     }
