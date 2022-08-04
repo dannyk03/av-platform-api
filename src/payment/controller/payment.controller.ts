@@ -18,7 +18,7 @@ import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
-import { OrganizationCreateDto } from '../../organization/dto/organization.create.dto';
+import { PaymentCreateDto } from '../dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
@@ -57,17 +57,12 @@ export class PaymentController {
     ],
     systemOnly: true,
   })
-  @Post('/create') // create
+  @Post('/create')
   async pay(
     @Body()
-    {
-      name: organizationName,
-      email: organizationOwnerEmail,
-      password: initialOwnerPassword,
-    }: OrganizationCreateDto,
+    { orderId: orderId }: PaymentCreateDto,
   ): Promise<void> {
-    const a = 'b';
-
+    console.log(`The order id to create a payment to is: ${orderId}`);
     return;
   }
 }
