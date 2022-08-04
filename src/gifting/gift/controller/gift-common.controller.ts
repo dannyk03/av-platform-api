@@ -25,6 +25,7 @@ import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { GiftIntentSerialization } from '../serialization';
 import { ProductListSerialization } from '@/catalog/product/serialization';
 
 import { GiftIntentListDto } from '../dto';
@@ -173,8 +174,8 @@ export class GiftController {
       perPage,
     );
 
-    // const data: ProductListSerialization[] =
-    //   await this.productService.serializationList(products);
+    const data: GiftIntentSerialization[] =
+      await this.giftIntentService.serializationGiftIntentList(giftIntents);
 
     return {
       totalData,
@@ -183,7 +184,7 @@ export class GiftController {
       perPage,
       availableSearch,
       availableSort,
-      data: giftIntents,
+      data,
     };
   }
 }

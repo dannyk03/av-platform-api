@@ -15,6 +15,7 @@ import {
 import { GiftIntent } from '../entity';
 
 import {
+  GiftIntentSerialization,
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
@@ -48,13 +49,6 @@ export class GiftIntentService {
 
   async findOneBy(find: FindOptionsWhere<GiftIntent>): Promise<GiftIntent> {
     return this.GifIntentRepository.findOneBy(find);
-  }
-
-  async serializationSenderGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(SenderAdditionalDataSerialization, data);
-  }
-  async serializationRecipientGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(RecipientAdditionalDataSerialization, data);
   }
 
   async getListSearchBuilder({
@@ -107,5 +101,18 @@ export class GiftIntentService {
     });
 
     return searchBuilder.getCount();
+  }
+
+  async serializationSenderGiftAdditionalData(data: any): Promise<any> {
+    return plainToInstance(SenderAdditionalDataSerialization, data);
+  }
+  async serializationRecipientGiftAdditionalData(data: any): Promise<any> {
+    return plainToInstance(RecipientAdditionalDataSerialization, data);
+  }
+
+  async serializationGiftIntentList(
+    data: GiftIntent[],
+  ): Promise<GiftIntentSerialization[]> {
+    return plainToInstance(GiftIntentSerialization, data);
   }
 }
