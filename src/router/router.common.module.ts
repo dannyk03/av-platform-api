@@ -21,6 +21,7 @@ import {
   OrganizationController,
   OrganizationInviteController,
 } from '@/organization/controller';
+import { PaymentController } from '@/payment/controller';
 import { UserController } from '@/user/controller';
 
 @Module({
@@ -30,6 +31,7 @@ import { UserController } from '@/user/controller';
     UserController,
     OrganizationController,
     OrganizationInviteController,
+    PaymentController,
     AclController,
     AclRoleController,
     MagicLinkController,
