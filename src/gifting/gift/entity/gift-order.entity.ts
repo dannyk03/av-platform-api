@@ -5,11 +5,4 @@ import { Gift } from './gift.entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
-export class GiftOrder extends BaseEntity<GiftOrder> {
-  @ManyToOne(() => GiftIntent, (giftIntent) => giftIntent.giftOptions)
-  @JoinColumn()
-  giftIntent!: GiftIntent;
-
-  @OneToMany(() => Gift, (gift) => gift.order)
-  gifts!: Gift[];
-}
+export class GiftOrder extends BaseEntity<GiftOrder> {}

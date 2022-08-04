@@ -153,7 +153,7 @@ export class ProductService {
           `CARDINALITY(ARRAY (
           SELECT UNNEST(displayOptions.keywords)
           INTERSECT
-          SELECT UNNEST(array[:...keywords])))`,
+          SELECT UNNEST(ARRAY[:...keywords])))`,
           options.order.keywords,
         );
       } else {
