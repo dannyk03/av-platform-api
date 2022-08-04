@@ -39,10 +39,10 @@ export class PaymentController {
     private readonly authService: AuthService,
   ) {}
 
-  @Response('payment.pay')
+  @Response('payment.create')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.CreateOrganization, {
-    tags: ['payment', 'pay'],
+  @LogTrace(EnumLogAction.CreatePayment, {
+    tags: ['payment', 'create'],
   })
   @AclGuard({
     abilities: [
@@ -57,7 +57,7 @@ export class PaymentController {
     ],
     systemOnly: true,
   })
-  @Post('/pay') // create
+  @Post('/create') // create
   async pay(
     @Body()
     {
