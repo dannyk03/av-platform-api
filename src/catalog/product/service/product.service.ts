@@ -70,9 +70,9 @@ export class ProductService {
       .createQueryBuilder('product')
       .setParameters({ language, id })
       .where('product.id = :id')
-      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
-      .leftJoinAndSelect('displayOptions.language', 'language')
-      .leftJoinAndSelect('displayOptions.images', 'images')
+      .leftJoinAndSelect('product.display_options', 'display_options')
+      .leftJoinAndSelect('display_options.language', 'language')
+      .leftJoinAndSelect('display_options.images', 'images')
       .andWhere('language.isoCode = :language');
 
     return getBuilder.getOne();
@@ -87,14 +87,14 @@ export class ProductService {
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
-      .leftJoinAndSelect('displayOptions.language', 'language')
+      .leftJoinAndSelect('product.displayOptions', 'display_options')
+      .leftJoinAndSelect('display_options.language', 'language')
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
 
     if (loadImages) {
-      builder.leftJoinAndSelect('displayOptions.images', 'images');
+      builder.leftJoinAndSelect('display_options.images', 'images');
     }
 
     if (search) {
@@ -103,14 +103,14 @@ export class ProductService {
           builder.setParameters({ search, likeSearch: `%${search}%` });
           qb.where('sku ILIKE :likeSearch')
             .orWhere('brand ILIKE :likeSearch')
-            .orWhere('displayOptions.name ILIKE :likeSearch')
-            .orWhere('displayOptions.description ILIKE :likeSearch');
+            .orWhere('display_options.name ILIKE :likeSearch')
+            .orWhere('display_options.description ILIKE :likeSearch');
         }),
       );
     }
 
     if (keywords) {
-      builder.andWhere('displayOptions.keywords && :keywords');
+      builder.andWhere('display_options.keywords && :keywords');
     }
 
     return builder;
@@ -149,13 +149,12 @@ export class ProductService {
 
     if (options.order) {
       if (options.order.keywords && keywords) {
-        searchBuilder.orderBy(
-          `CARDINALITY(ARRAY (
-          SELECT UNNEST(displayOptions.keywords)
-          INTERSECT
-          SELECT UNNEST(ARRAY[:...keywords])))`,
-          options.order.keywords,
-        );
+        searchBuilder
+          .addSelect(
+            'CARDINALITY(ARRAY(SELECT UNNEST(display_options.keywords) INTERSECT (SELECT UNNEST(ARRAY[:...keywords]))))',
+            'keywords_cardinality',
+          )
+          .orderBy('keywords_cardinality', options.order.keywords);
       } else {
         searchBuilder.orderBy(options.order);
       }
@@ -166,13 +165,15 @@ export class ProductService {
     }
 
     console.log(searchBuilder.getQueryAndParameters());
+
+    const xxx = await searchBuilder.getMany();
     return searchBuilder.getMany();
   }
 
   async deleteProductBy({ id }: { id: string }): Promise<Product> {
     const removeProduct = await this.productRepository.findOne({
       where: { id },
-      relations: ['displayOptions', 'displayOptions.images'],
+      relations: ['display_options', 'display_options.images'],
     });
 
     if (!removeProduct) {
