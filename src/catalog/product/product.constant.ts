@@ -21,5 +21,7 @@ export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
 export const ProductNestingAliasMap = {
   name: 'displayOptions.name',
   description: 'displayOptions.description',
+  sku: 'product.sku',
+  brand: 'product.brand',
   createdAt: 'product.createdAt',
 };

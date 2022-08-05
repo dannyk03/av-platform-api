@@ -165,6 +165,7 @@ export class ProductService {
       searchBuilder.take(options.take).skip(options.skip);
     }
 
+    console.log(searchBuilder.getQueryAndParameters());
     return searchBuilder.getMany();
   }
 
