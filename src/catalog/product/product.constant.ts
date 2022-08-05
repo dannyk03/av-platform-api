@@ -18,10 +18,11 @@ export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
   'keywords',
 ];
 
-export const ProductNestingAliasMap = {
+export const ProductOrderByNestingAliasMap = {
   name: 'displayOptions.name',
   description: 'displayOptions.description',
   sku: 'product.sku',
   brand: 'product.brand',
   createdAt: 'product.createdAt',
+  keywords: 'keywords_special_logic',
 };

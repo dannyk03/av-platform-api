@@ -21,7 +21,7 @@ import {
   PRODUCT_DEFAULT_PAGE,
   PRODUCT_DEFAULT_PER_PAGE,
   PRODUCT_DEFAULT_SORT,
-  ProductNestingAliasMap,
+  ProductOrderByNestingAliasMap,
 } from '../product.constant';
 
 export class ProductListDto implements PaginationListAbstract {
@@ -46,7 +46,7 @@ export class ProductListDto implements PaginationListAbstract {
   @PaginationSort(
     PRODUCT_DEFAULT_SORT,
     PRODUCT_DEFAULT_AVAILABLE_SORT,
-    ProductNestingAliasMap,
+    ProductOrderByNestingAliasMap,
   )
   readonly sort: IPaginationSort;
 

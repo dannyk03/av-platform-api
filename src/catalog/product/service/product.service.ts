@@ -148,13 +148,16 @@ export class ProductService {
     });
 
     if (options.order) {
-      if (options.order.keywords && keywords) {
+      if (options.order.keywords_special_logic && keywords) {
         searchBuilder
           .addSelect(
             'CARDINALITY(ARRAY(SELECT UNNEST(display_options.keywords) INTERSECT (SELECT UNNEST(ARRAY[:...keywords]))))',
             'keywords_cardinality',
           )
-          .orderBy('keywords_cardinality', options.order.keywords);
+          .orderBy(
+            'keywords_cardinality',
+            options.order.keywords_special_logic,
+          );
       } else {
         searchBuilder.orderBy(options.order);
       }
@@ -164,9 +167,6 @@ export class ProductService {
       searchBuilder.take(options.take).skip(options.skip);
     }
 
-    console.log(searchBuilder.getQueryAndParameters());
-
-    const xxx = await searchBuilder.getMany();
     return searchBuilder.getMany();
   }
 
