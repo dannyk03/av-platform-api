@@ -55,6 +55,7 @@ export class GiftIntentService {
     search,
   }: IGiftIntentSearch): Promise<SelectQueryBuilder<GiftIntent>> {
     const builder = this.GifIntentRepository.createQueryBuilder('giftIntent')
+      .leftJoinAndSelect('giftIntent.additionalData', 'additionalData')
       .leftJoinAndSelect('giftIntent.recipient', 'recipient')
       .leftJoinAndSelect('giftIntent.sender', 'sender')
       .leftJoinAndSelect('recipient.user', 'recipientUser')

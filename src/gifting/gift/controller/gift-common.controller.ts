@@ -15,7 +15,6 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { Action, Subjects } from '@avo/casl';
 import { EnumMessagingStatusCodeError } from '@avo/type';
 
-import { lang } from 'moment-timezone';
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';

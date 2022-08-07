@@ -1,7 +1,5 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
-import { DisplayLanguage } from '@/language/display-language/entity';
-
 import { ProductDisplayOptionListSerialization } from '@/catalog/product-display-option/serialization';
 
 export class ProductListSerialization {
@@ -19,9 +17,6 @@ export class ProductListSerialization {
   @Type(() => ProductDisplayOptionListSerialization)
   @Expose({ name: 'displayOptions' })
   readonly display: ProductDisplayOptionListSerialization;
-
-  @Exclude()
-  readonly language: DisplayLanguage;
 
   @Exclude()
   readonly deletedAt: Date;
