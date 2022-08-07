@@ -72,6 +72,8 @@ export class ProductCommonController {
       isActive,
       keywords,
       language,
+      price,
+      currency,
     }: ProductCreateDto,
   ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
@@ -131,6 +133,7 @@ export class ProductCommonController {
       availableSort,
       availableSearch,
       isActive,
+      priceRange,
     }: ProductListDto,
   ): Promise<IResponsePaging> {
     const skip: number = await this.paginationService.skip(page, perPage);

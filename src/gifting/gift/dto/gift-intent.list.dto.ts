@@ -16,7 +16,7 @@ import {
   GIFT_INTENT_DEFAULT_PAGE,
   GIFT_INTENT_DEFAULT_PER_PAGE,
   GIFT_INTENT_DEFAULT_SORT,
-  GiftIntentNestingAliasMap,
+  GiftIntentOrderByNestingAliasMap,
 } from '../gift-intent.constant';
 
 export class GiftIntentListDto implements PaginationListAbstract {
@@ -38,7 +38,7 @@ export class GiftIntentListDto implements PaginationListAbstract {
   @PaginationSort(
     GIFT_INTENT_DEFAULT_SORT,
     GIFT_INTENT_DEFAULT_AVAILABLE_SORT,
-    GiftIntentNestingAliasMap,
+    GiftIntentOrderByNestingAliasMap,
   )
   readonly sort: IPaginationSort;
 

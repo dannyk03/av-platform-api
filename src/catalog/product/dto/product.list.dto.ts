@@ -6,6 +6,7 @@ import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterBoolean,
+  PaginationFilterRange,
   PaginationListAbstract,
   PaginationMultiSearch,
   PaginationPage,
@@ -20,6 +21,7 @@ import {
   PRODUCT_DEFAULT_AVAILABLE_SORT,
   PRODUCT_DEFAULT_PAGE,
   PRODUCT_DEFAULT_PER_PAGE,
+  PRODUCT_DEFAULT_PRISE_RANGE,
   PRODUCT_DEFAULT_SORT,
   ProductOrderByNestingAliasMap,
 } from '../product.constant';
@@ -55,4 +57,7 @@ export class ProductListDto implements PaginationListAbstract {
 
   @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
+
+  @PaginationFilterRange(PRODUCT_DEFAULT_PRISE_RANGE)
+  readonly priceRange: [number, number];
 }

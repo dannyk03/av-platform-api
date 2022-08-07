@@ -3,3 +3,4 @@ export * from './gift-recipient.entity';
 export * from './gift-intent-confirmation-link.entity';
 export * from './gift-sender.entity';
 export * from './gift-intent.entity';
+export * from './gift.entity';

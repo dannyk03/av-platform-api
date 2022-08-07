@@ -1,6 +1,7 @@
 export const PRODUCT_DEFAULT_PAGE = 1;
 export const PRODUCT_DEFAULT_PER_PAGE = 10;
 export const PRODUCT_DEFAULT_SORT = 'createdAt@asc';
+export const PRODUCT_DEFAULT_PRISE_RANGE = '0-100';
 export const PRODUCT_DEFAULT_ACTIVE = [true, false];
 export const PRODUCT_DEFAULT_AVAILABLE_SORT = [
   'sku',

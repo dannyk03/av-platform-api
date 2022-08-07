@@ -7,11 +7,11 @@ import {
   IsDate,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateIf,
 } from 'class-validator';
-import snakeCase from 'lodash/snakeCase';
 
 import {
   IPaginationFilterDateOptions,
@@ -102,8 +102,7 @@ export function PaginationSort(
 
       const rSort = value || sort;
       const rAvailableSort = obj._availableSort || availableSort;
-      const field: string = rSort.split('@')[0];
-      const type: string = rSort.split('@')[1];
+      const [field, type]: string = rSort.split('@');
       const convertField: string = rAvailableSort.includes(field)
         ? field
         : bSort;
@@ -146,6 +145,22 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
           ]
         : defaultValue,
     ),
+  );
+}
+
+export function PaginationFilterRange(defaultValue: string): any {
+  return applyDecorators(
+    Expose(),
+    IsNumber(
+      { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 },
+      { each: true },
+    ),
+    Transform(({ value }) => {
+      const range = value || defaultValue;
+      const [min, max]: string = range.split('-');
+
+      return [Number(min), Number(max)];
+    }),
   );
 }
 

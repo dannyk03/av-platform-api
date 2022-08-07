@@ -1,5 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 
+import { EnumCurrency } from '@avo/type';
+
 import { Expose, Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
@@ -12,6 +14,17 @@ export function ProductDisplayLanguage(): any {
     IsOptional(),
     Transform(({ value }) => {
       return value ? value : EnumDisplayLanguage.En;
+    }),
+  );
+}
+
+export function ProductCurrency(): any {
+  return applyDecorators(
+    Expose(),
+    IsEnum(EnumCurrency),
+    IsOptional(),
+    Transform(({ value }) => {
+      return value ? value : EnumCurrency.USD;
     }),
   );
 }
