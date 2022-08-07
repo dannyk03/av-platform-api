@@ -8,6 +8,7 @@ export interface IProductSearch {
   loadImages?: boolean;
   options?: IPaginationOptions;
   isActive?: boolean[];
+  priceRange?: [number, number];
 }
 
 export interface IGetProduct {

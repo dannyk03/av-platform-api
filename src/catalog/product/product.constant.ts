@@ -7,6 +7,7 @@ export const PRODUCT_DEFAULT_AVAILABLE_SORT = [
   'sku',
   'brand',
   'name',
+  'price',
   'description',
   'keywords',
   'createdAt',
@@ -26,4 +27,5 @@ export const ProductOrderByNestingAliasMap = {
   brand: 'product.brand',
   createdAt: 'product.createdAt',
   keywords: 'keywords_special_logic',
+  price: 'product.price',
 };

@@ -144,6 +144,7 @@ export class ProductCommonController {
 
     const products = await this.productService.paginatedSearchBy({
       language: lang,
+      priceRange,
       options: {
         skip: skip,
         take: perPage,

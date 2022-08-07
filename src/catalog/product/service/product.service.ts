@@ -83,6 +83,7 @@ export class ProductService {
     keywords,
     language,
     isActive,
+    priceRange,
     loadImages = true,
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
@@ -92,6 +93,13 @@ export class ProductService {
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
+
+    if (priceRange) {
+      builder.andWhere('product.price BETWEEN :min AND :max', {
+        min: priceRange[0],
+        max: priceRange[1],
+      });
+    }
 
     if (loadImages) {
       builder.leftJoinAndSelect('display_options.images', 'images');
@@ -121,6 +129,7 @@ export class ProductService {
     search,
     keywords,
     isActive,
+    priceRange,
   }: IProductSearch): Promise<number> {
     const searchBuilder = await this.getListSearchBuilder({
       loadImages: false,
@@ -128,6 +137,7 @@ export class ProductService {
       search,
       keywords,
       isActive,
+      priceRange,
     });
 
     return searchBuilder.getCount();
@@ -139,12 +149,14 @@ export class ProductService {
     keywords,
     options,
     isActive,
+    priceRange,
   }: IProductSearch): Promise<Product[]> {
     const searchBuilder = await this.getListSearchBuilder({
       language,
       search,
       keywords,
       isActive,
+      priceRange,
     });
 
     if (options.order) {
