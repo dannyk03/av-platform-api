@@ -42,6 +42,7 @@ export class ProductCreateDto {
   readonly description!: string;
 
   @ProductDisplayLanguage()
+  @IsOptional()
   language!: EnumDisplayLanguage;
 
   @IsArray()
@@ -56,8 +57,10 @@ export class ProductCreateDto {
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
+  @Type(() => Number)
   price!: number;
 
   @ProductCurrency()
-  currency: EnumCurrency;
+  @IsOptional()
+  currency?: EnumCurrency;
 }

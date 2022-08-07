@@ -50,7 +50,7 @@ export class Log {
     type: 'jsonb',
     update: false,
   })
-  bodies?: Record<string, any>;
+  body?: Record<string, any>;
 
   @Column({
     nullable: true,

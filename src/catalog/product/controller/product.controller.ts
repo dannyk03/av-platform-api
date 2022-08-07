@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
-import { EnumProductStatusCodeError } from '@avo/type';
+import { EnumCurrency, EnumProductStatusCodeError } from '@avo/type';
 
 import compact from 'lodash/compact';
 
@@ -93,7 +93,11 @@ export class ProductCommonController {
     const createProduct = await this.productService.create({
       brand,
       sku,
+      price,
       isActive,
+      currency: {
+        code: currency,
+      },
       displayOptions: [
         {
           language: { isoCode: language },

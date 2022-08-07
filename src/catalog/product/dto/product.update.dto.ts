@@ -24,6 +24,7 @@ import {
 
 export class ProductUpdateDisplayDto {
   @ProductDisplayLanguage()
+  @IsOptional()
   language: EnumDisplayLanguage;
 
   @IsOptional()
