@@ -1,9 +1,12 @@
-import { ProductDisplayLanguage } from '../product.decorator';
-
-import { EnumDisplayLanguage } from '@/language/display-language';
 import {
+  EnumDisplayLanguage,
   IPaginationList,
   IPaginationSort,
+} from '@avo/type';
+
+import { ProductDisplayLanguage } from '../product.decorator';
+
+import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterBoolean,

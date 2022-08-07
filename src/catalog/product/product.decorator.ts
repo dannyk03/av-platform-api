@@ -1,9 +1,9 @@
 import { applyDecorators } from '@nestjs/common';
 
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { Expose, Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
-
-import { EnumDisplayLanguage } from '@/language/display-language';
 
 export function ProductDisplayLanguage(): any {
   return applyDecorators(

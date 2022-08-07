@@ -1,3 +1,5 @@
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -16,7 +18,6 @@ import {
   ProductSKU,
 } from '@/catalog/catalog.decorator';
 
-import { EnumDisplayLanguage } from '@/language/display-language';
 import {
   ArrayTransform,
   NormalizeStringInput,

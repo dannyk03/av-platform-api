@@ -1,6 +1,6 @@
+import { IPaginationList, IPaginationSort } from '@avo/type';
+
 import {
-  IPaginationList,
-  IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationMultiSearch,

@@ -1,4 +1,5 @@
-import { EnumDisplayLanguage } from '@/language/display-language';
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { IPaginationOptions } from '@/utils/pagination';
 
 export interface IProductSearch {

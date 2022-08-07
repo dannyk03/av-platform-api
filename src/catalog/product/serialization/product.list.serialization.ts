@@ -8,6 +8,9 @@ export class ProductListSerialization {
   readonly id: string;
   readonly sku: string;
   readonly brand: string;
+  readonly price: number;
+  readonly shippingCost: number;
+  readonly taxCode: string;
   readonly isActive: boolean;
   readonly createdAt: Date;
   readonly updatedAt: Date;

@@ -48,6 +48,9 @@ export class Product extends BaseEntity<Product> {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  shippingCost!: number;
+
   @ManyToOne(() => Vendor, (vendor) => vendor.products)
   @JoinColumn()
   vendor: Vendor;
@@ -55,6 +58,11 @@ export class Product extends BaseEntity<Product> {
   @ManyToOne(() => Currency)
   @JoinColumn()
   currency: Currency;
+
+  @Column({
+    length: 30,
+  })
+  taxCode!: string;
 
   @ManyToMany(() => Gift, (giftOption) => giftOption.products)
   giftOptions: Gift[];

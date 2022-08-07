@@ -74,6 +74,8 @@ export class ProductCommonController {
       language,
       price,
       currency,
+      taxCode,
+      shippingCost,
     }: ProductCreateDto,
   ): Promise<IResponse> {
     const productExists = await this.productService.findOneBy({ sku });
@@ -95,6 +97,8 @@ export class ProductCommonController {
       sku,
       price,
       isActive,
+      taxCode,
+      shippingCost,
       currency: {
         code: currency,
       },

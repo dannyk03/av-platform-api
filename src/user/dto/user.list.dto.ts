@@ -1,4 +1,4 @@
-import { IPaginationSort } from '@/utils/pagination/pagination.interface';
+import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
   PaginationAvailableSearch,
@@ -8,7 +8,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-import { IPaginationList } from '@/utils/pagination';
 
 import {
   USER_DEFAULT_AVAILABLE_SEARCH,

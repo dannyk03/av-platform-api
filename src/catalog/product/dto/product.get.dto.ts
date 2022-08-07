@@ -1,8 +1,8 @@
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { IsOptional } from 'class-validator';
 
 import { ProductDisplayLanguage } from '../product.decorator';
-
-import { EnumDisplayLanguage } from '@/language/display-language';
 
 export class ProductGetDto {
   @ProductDisplayLanguage()
