@@ -1,8 +1,8 @@
 import {
+  IPaginationList,
   IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
-  PaginationListAbstract,
   PaginationMultiSearch,
   PaginationPage,
   PaginationPerPage,
@@ -19,7 +19,7 @@ import {
   GiftIntentOrderByNestingAliasMap,
 } from '../gift-intent.constant';
 
-export class GiftIntentListDto implements PaginationListAbstract {
+export class GiftIntentListDto implements IPaginationList {
   @PaginationSearch()
   readonly search: string;
 

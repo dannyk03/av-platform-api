@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
-import { EnumCurrency, EnumProductStatusCodeError } from '@avo/type';
+import { EnumProductStatusCodeError } from '@avo/type';
 
 import compact from 'lodash/compact';
 

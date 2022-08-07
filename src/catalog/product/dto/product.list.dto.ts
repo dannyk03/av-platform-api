@@ -2,12 +2,12 @@ import { ProductDisplayLanguage } from '../product.decorator';
 
 import { EnumDisplayLanguage } from '@/language/display-language';
 import {
+  IPaginationList,
   IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterBoolean,
   PaginationFilterRange,
-  PaginationListAbstract,
   PaginationMultiSearch,
   PaginationPage,
   PaginationPerPage,
@@ -26,7 +26,7 @@ import {
   ProductOrderByNestingAliasMap,
 } from '../product.constant';
 
-export class ProductListDto implements PaginationListAbstract {
+export class ProductListDto implements IPaginationList {
   @ProductDisplayLanguage()
   lang: EnumDisplayLanguage;
 

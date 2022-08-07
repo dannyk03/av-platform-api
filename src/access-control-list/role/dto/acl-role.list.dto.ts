@@ -1,8 +1,8 @@
 import {
+  IPaginationList,
   IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
-  PaginationListAbstract,
   PaginationPage,
   PaginationPerPage,
   PaginationSearch,
@@ -17,7 +17,7 @@ import {
   ROLE_DEFAULT_SORT,
 } from '../acl-role.constant';
 
-export class AclRoleListDto implements PaginationListAbstract {
+export class AclRoleListDto implements IPaginationList {
   @PaginationSearch()
   readonly search: string;
 

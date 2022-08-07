@@ -1,6 +1,8 @@
 import { EnumPaginationType } from '../pagination';
 
-export type IResponse = Record<string, any>;
+export interface IResponse {
+  [key: string]: any;
+}
 
 export interface IResponsePaging {
   totalData: number;

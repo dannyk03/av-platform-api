@@ -8,7 +8,7 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-import { PaginationListAbstract } from '@/utils/pagination/pagination.abstract';
+import { IPaginationList } from '@/utils/pagination';
 
 import {
   USER_DEFAULT_AVAILABLE_SEARCH,
@@ -18,7 +18,7 @@ import {
   USER_DEFAULT_SORT,
 } from '../user.constant';
 
-export class UserListDto implements PaginationListAbstract {
+export class UserListDto implements IPaginationList {
   @PaginationSearch()
   readonly search: string;
 

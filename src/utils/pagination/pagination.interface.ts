@@ -1,4 +1,16 @@
+import { EnumDisplayLanguage } from '@/language/display-language';
+
 import { EnumPaginationAvailableSortType } from './pagination.constant';
+
+export interface IPaginationList {
+  search?: string;
+  lang?: EnumDisplayLanguage;
+  availableSearch: string[];
+  page: number;
+  perPage: number;
+  sort: IPaginationSort;
+  availableSort: string[];
+}
 
 export interface IPaginationOptions {
   take?: number;
