@@ -32,5 +32,6 @@
   "ValidateNested": "{property} invalid nested objects data",
   "arrayMaxSize": "{property} array has more elements than the maximum allowed.",
   "arrayMinSize": "{property} array has less elements than the minimum allowed.",
-  "MinGreaterThanConstraint": "{property} invalid, should be bigger number"
+  "MinGreaterThanConstraint": "{property} invalid, should be bigger number",
+  "RangeTupleConstraint": "{property} range is invalid"
 }

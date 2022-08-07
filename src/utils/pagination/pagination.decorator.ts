@@ -21,7 +21,7 @@ import {
 
 import { RequestAddDatePipe } from '@/utils/request/pipe';
 
-import { MinGreaterThan, Skip } from '../request/validation';
+import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
   EnumPaginationAvailableSortType,
   PAGINATION_DEFAULT_AVAILABLE_SORT,
@@ -155,9 +155,13 @@ export function PaginationFilterRange(defaultValue: string): any {
       { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 },
       { each: true },
     ),
+    RangeTuple(),
     Transform(({ value }) => {
       const range = value || defaultValue;
       const [min, max]: string = range.split('-');
+
+      if (min > max) {
+      }
 
       return [Number(min), Number(max)];
     }),
