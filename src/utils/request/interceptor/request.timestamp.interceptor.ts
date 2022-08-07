@@ -37,28 +37,41 @@ export class RequestTimestampInterceptor
       const request: IRequestApp = context.switchToHttp().getRequest();
       const { headers } = request;
       const mode: string = this.configService.get<string>('app.mode');
-      const reqTs: string = headers['x-timestamp'] as string;
+      const xTimestamp: string = headers['x-timestamp'] as string;
       const currentTimestamp: number = this.helperDateService.timestamp();
       const excludeTimestamp = this.reflector.getAllAndOverride<boolean>(
         REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
         [context.getHandler(), context.getClass()],
       );
+      let ts = xTimestamp;
 
       if (!excludeTimestamp && mode === 'secure') {
         const toleranceTimeInMs = this.configService.get<number>(
           'middleware.timestamp.toleranceTimeInMs',
         );
-        const check: boolean = this.helperDateService.check(reqTs);
+        const check: boolean = this.helperDateService.check(xTimestamp);
 
-        if (!reqTs || !check) {
+        if (!xTimestamp || !check) {
           throw new ForbiddenException({
             statusCode: EnumRequestStatusCodeError.RequestTimestampInvalidError,
             message: 'middleware.error.timestampInvalid',
           });
         }
 
+        if (xTimestamp.length === 13) {
+          try {
+            ts = Math.floor(parseInt(xTimestamp, 10) / 1000).toString();
+          } catch (error) {
+            throw new ForbiddenException({
+              statusCode:
+                EnumRequestStatusCodeError.RequestTimestampInvalidError,
+              message: 'middleware.error.timestampInvalid',
+            });
+          }
+        }
+
         const date = this.helperDateService.create({
-          date: reqTs,
+          date: ts,
         });
         const toleranceMin =
           this.helperDateService.backwardInMilliseconds(toleranceTimeInMs);
@@ -72,7 +85,7 @@ export class RequestTimestampInterceptor
           });
         }
       } else {
-        const newTimestamp = reqTs || `${currentTimestamp}`;
+        const newTimestamp = xTimestamp || currentTimestamp.toString();
         request.headers['x-timestamp'] = newTimestamp;
         request.timestamp = newTimestamp;
       }
