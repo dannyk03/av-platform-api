@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -65,7 +64,7 @@ export class AuthCommonController {
 
   @Response('auth.login')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
+  // @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
   @LoginGuard()
   @Post('/login')
   async login(
@@ -136,7 +135,7 @@ export class AuthCommonController {
 
   @Response('auth.signUp')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
+  // @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
