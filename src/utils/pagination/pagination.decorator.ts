@@ -1,5 +1,7 @@
 import { UsePipes, applyDecorators } from '@nestjs/common';
 
+import { EnumPaginationSortType } from '@avo/type';
+
 import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -23,7 +25,6 @@ import { RequestAddDatePipe } from '@/utils/request/pipe';
 
 import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
-  EnumPaginationAvailableSortType,
   PAGINATION_DEFAULT_AVAILABLE_SORT,
   PAGINATION_DEFAULT_MAX_PAGE,
   PAGINATION_DEFAULT_MAX_PER_PAGE,
@@ -108,8 +109,8 @@ export function PaginationSort(
         : bSort;
       const convertType =
         type === 'desc' || type === '-1'
-          ? EnumPaginationAvailableSortType.Desc
-          : EnumPaginationAvailableSortType.Asc;
+          ? EnumPaginationSortType.Desc
+          : EnumPaginationSortType.Asc;
 
       const key = nestingAliasMap?.[convertField] || convertField;
       // .split('.')

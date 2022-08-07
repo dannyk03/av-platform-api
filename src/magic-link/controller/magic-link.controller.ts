@@ -13,6 +13,7 @@ import {
   EnumGiftStatusCodeError,
   EnumOrganizationStatusCodeError,
   EnumUserStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
@@ -29,7 +30,7 @@ import { MagicLinkDto } from '../dto';
 import { AuthUserLoginSerialization } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({})
 export class MagicLinkController {
@@ -52,7 +53,7 @@ export class MagicLinkController {
     { code }: MagicLinkDto,
     @Res({ passthrough: true })
     response: ExpressResponse,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
         where: { code },

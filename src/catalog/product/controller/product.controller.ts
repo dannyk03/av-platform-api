@@ -14,7 +14,11 @@ import {
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
-import { EnumProductStatusCodeError } from '@avo/type';
+import {
+  EnumProductStatusCodeError,
+  IResponseData,
+  IResponsePagingData,
+} from '@avo/type';
 
 import compact from 'lodash/compact';
 
@@ -31,12 +35,7 @@ import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 import { AclGuard } from '@/auth';
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
 import { RequestParamGuard } from '@/utils/request';
-import {
-  IResponse,
-  IResponsePaging,
-  Response,
-  ResponsePaging,
-} from '@/utils/response';
+import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -77,7 +76,7 @@ export class ProductCommonController {
       taxCode,
       shippingCost,
     }: ProductCreateDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const productExists = await this.productService.findOneBy({ sku });
 
     if (productExists) {
@@ -143,7 +142,7 @@ export class ProductCommonController {
       isActive,
       priceRange,
     }: ProductListDto,
-  ): Promise<IResponsePaging> {
+  ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
     const products = await this.productService.paginatedSearchBy({
@@ -214,7 +213,7 @@ export class ProductCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
-  async activeProduct(@Param('id') id: string): Promise<IResponse> {
+  async activeProduct(@Param('id') id: string): Promise<IResponseData> {
     const { affected } = await this.productService.updateProductActiveStatus({
       id,
       isActive: true,
@@ -237,7 +236,7 @@ export class ProductCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
-  async inactiveProduct(@Param('id') id: string): Promise<IResponse> {
+  async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
     const { affected } = await this.productService.updateProductActiveStatus({
       id,
       isActive: false,
@@ -285,7 +284,7 @@ export class ProductCommonController {
     @Param('id') id: string,
     @Query()
     { lang: language }: ProductGetDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const getProduct = await this.productService.get({ id, language });
 
     return this.productService.serialization(getProduct);

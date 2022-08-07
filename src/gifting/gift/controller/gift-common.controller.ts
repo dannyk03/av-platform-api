@@ -13,7 +13,13 @@ import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
-import { EnumMessagingStatusCodeError } from '@avo/type';
+import {
+  EnumMessagingStatusCodeError,
+  IResponse,
+  IResponseData,
+  IResponsePaging,
+  IResponsePagingData,
+} from '@avo/type';
 
 import { DataSource } from 'typeorm';
 
@@ -34,7 +40,7 @@ import { AclGuard, ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
-import { IResponsePaging, Response, ResponsePaging } from '@/utils/response';
+import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -152,7 +158,7 @@ export class GiftController {
       availableSort,
       availableSearch,
     }: GiftIntentListDto,
-  ): Promise<IResponsePaging> {
+  ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
     const giftIntents = await this.giftIntentService.paginatedSearchBy({
@@ -185,5 +191,15 @@ export class GiftController {
       availableSort,
       data,
     };
+  }
+
+  @Response('gift.addGiftOption')
+  @HttpCode(HttpStatus.OK)
+  // @GifSendGuard()
+  @AclGuard()
+  @Throttle(1, 5)
+  @Post('/send')
+  async addGiftOption(): Promise<IResponseData> {
+    return {};
   }
 }
