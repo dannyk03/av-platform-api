@@ -8,6 +8,7 @@
     "senders": "Senders limit invalid"
   },
   "intent": {
-    "list": "List gift-intent success."
+    "list": "List gift-intent success",
+    "addGiftOption": "Gift-intent add option success"
   }
 }

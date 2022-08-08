@@ -193,12 +193,11 @@ export class GiftController {
     };
   }
 
-  @Response('gift.addGiftOption')
+  @Response('gift.intent.addGiftOption')
   @HttpCode(HttpStatus.OK)
-  // @GifSendGuard()
   @AclGuard()
   @Throttle(1, 5)
-  @Post('/send')
+  @Post('/intent/options')
   async addGiftOption(): Promise<IResponseData> {
     return {};
   }

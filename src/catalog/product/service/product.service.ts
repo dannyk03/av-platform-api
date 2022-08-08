@@ -70,7 +70,7 @@ export class ProductService {
       .createQueryBuilder('product')
       .setParameters({ language, id })
       .where('product.id = :id')
-      .leftJoinAndSelect('product.display_options', 'display_options')
+      .leftJoinAndSelect('product.displayOptions', 'display_options')
       .leftJoinAndSelect('display_options.language', 'language')
       .leftJoinAndSelect('display_options.images', 'images')
       .andWhere('language.isoCode = :language');
