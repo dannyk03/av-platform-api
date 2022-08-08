@@ -57,7 +57,7 @@ export class PaymentController {
     systemOnly: true,
   })
   @Post('/create')
-  async pay(
+  async create(
     @Body()
     { orderId: orderId }: PaymentCreateDto,
   ): Promise<string> {
