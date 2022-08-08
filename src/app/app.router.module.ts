@@ -25,6 +25,7 @@ export class AppRouterModule {
           RouterGiftingModule,
           RouterCatalogModule,
           RouterProductModule,
+          RouterVendorModule,
           RouterCallbackModule,
           RouterTestModule,
           RouterModule.register([

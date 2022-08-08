@@ -1,10 +1,9 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumProductStatusCodeError } from '@avo/type';
 
 import {
-  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -25,8 +24,6 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class ProductImageService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(ProductImage, ConnectionNames.Default)
     private productImageRepository: Repository<ProductImage>,
     private readonly productDisplayOptionService: ProductDisplayOptionService,

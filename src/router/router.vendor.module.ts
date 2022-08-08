@@ -16,12 +16,12 @@ import { VendorCommonController } from '@/catalog/vendor/controller';
 
 @Module({
   controllers: [VendorCommonController],
-  providers: [],
+  providers: [CloudinaryService],
   exports: [],
   imports: [
     UserModule,
     VendorModule,
-    // ProductModule,
+    ProductModule,
     // ProductImageModule,
     // DisplayLanguageModule,
     // ProductDisplayOptionModule,

@@ -1,10 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
-import {
-  EnumProductStatusCodeError,
-  EnumVendorStatusCodeError,
-} from '@avo/type';
+import { EnumVendorStatusCodeError } from '@avo/type';
 
 import {
   DataSource,
@@ -16,15 +13,16 @@ import {
 
 import { Vendor } from '../entity';
 
+import { VendorLogoService } from './vendor-logo.service';
+
 import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class VendorService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(Vendor, ConnectionNames.Default)
-    private vendorRepository: Repository<Vendor>,
+    private readonly vendorRepository: Repository<Vendor>,
+    private readonly vendorLogoService: VendorLogoService,
   ) {}
 
   async create(props: DeepPartial<Omit<Vendor, 'slug'>>): Promise<Vendor> {

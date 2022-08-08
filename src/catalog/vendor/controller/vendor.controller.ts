@@ -10,19 +10,22 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
 import {
   EnumProductStatusCodeError,
+  EnumVendorStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
 
 import compact from 'lodash/compact';
 
-import { VendorService } from '../service';
+import { Vendor } from '../entity';
+
+import { VendorLogoService, VendorService } from '../service';
 import { ProductService } from '@/catalog/product/service';
 import { PaginationService } from '@/utils/pagination/service';
 
@@ -30,7 +33,13 @@ import { VendorCreateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
-import { EnumFileType, UploadFileMultiple } from '@/utils/file';
+import { CloudinarySubject } from '@/cloudinary';
+import {
+  EnumFileType,
+  UploadFileMultiple,
+  UploadFileSingle,
+} from '@/utils/file';
+import { slugify } from '@/utils/helper';
 import { RequestParamGuard } from '@/utils/request';
 import { Response, ResponsePaging } from '@/utils/response';
 
@@ -40,66 +49,56 @@ import { Response, ResponsePaging } from '@/utils/response';
 export class VendorCommonController {
   constructor(
     private readonly vendorService: VendorService,
+    private readonly vendorLogoService: VendorLogoService,
     private readonly productService: ProductService,
     private readonly paginationService: PaginationService,
   ) {}
 
-  // @Response('vendor.create')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Create,
-  //       subject: Subjects.Vendor,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @UploadFileMultiple('logo', EnumFileType.IMAGE, true)
-  // @Post()
-  // async create(
-  //   @UploadedFiles() logo: Express.Multer.File[],
-  //   @Body()
-  //   { name, description, isActive }: VendorCreateDto,
-  // ): Promise<IResponseData> {
-  //   const productExists = await this.productService.findOneBy({ sku });
+  @Response('vendor.create')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Create,
+        subject: Subjects.Vendor,
+      },
+    ],
+    systemOnly: true,
+  })
+  @UploadFileSingle('logo', { type: EnumFileType.IMAGE, required: false })
+  @Post()
+  async create(
+    @UploadedFile() logo: Express.Multer.File,
+    @Body()
+    { name, description, isActive }: VendorCreateDto,
+  ): Promise<Vendor> {
+    const vendorExists = await this.vendorService.findOneBy({
+      slug: slugify(name),
+    });
 
-  //   if (productExists) {
-  //     throw new BadRequestException({
-  //       statusCode: EnumProductStatusCodeError.ProductExistsError,
-  //       message: 'product.error.exists',
-  //     });
-  //   }
+    if (vendorExists) {
+      throw new BadRequestException({
+        statusCode: EnumVendorStatusCodeError.VendorExistsError,
+        message: 'vendor.error.exists',
+      });
+    }
 
-  //   const saveImages = await this.productImageService.createImages({
-  //     images,
-  //     language,
-  //   });
+    const saveLogo = await this.vendorLogoService.createLogo({
+      logo,
+      subFolder: slugify(name),
+    });
 
-  //   const createProduct = await this.productService.create({
-  //     brand,
-  //     sku,
-  //     price,
-  //     isActive,
-  //     taxCode,
-  //     shippingCost,
-  //     currency: {
-  //       code: currency,
-  //     },
-  //     displayOptions: [
-  //       {
-  //         language: { isoCode: language },
-  //         keywords: [...new Set(keywords)],
-  //         name,
-  //         description,
-  //         images: compact(saveImages),
-  //       },
-  //     ],
-  //   });
+    const createVendor = await this.vendorService.create({
+      name,
+      isActive,
+      description,
+      logo: saveLogo,
+    });
 
-  //   const createdProduct = await this.productService.save(createProduct);
-  //   return this.productService.serialization(createdProduct);
-  // }
+    const saveVendor = await this.vendorService.save(createVendor);
+
+    return saveVendor;
+  }
 
   // @ResponsePaging('product.list')
   // @HttpCode(HttpStatus.OK)

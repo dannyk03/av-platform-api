@@ -7,8 +7,8 @@
   "inactive": "Inactive succeed",
   "active": "Active succeed",
   "error": {
-    "notFound": "vendor not found.",
-    "inactive": "vendor not active",
-    "exists": "vendor exists"
+    "notFound": "Vendor not found.",
+    "inactive": "Vendor not active",
+    "exists": "Vendor exists"
   }
 }

@@ -1,5 +1,14 @@
-import { BeforeInsert, Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
+import { VendorLogo } from './vendor-logo.entity';
 import { Product } from '@/catalog/product/entity';
 import { BaseEntity } from '@/database/entity';
 
@@ -21,6 +30,13 @@ export class Vendor extends BaseEntity<Vendor> {
   })
   slug!: string;
 
+  @Index()
+  @Column({
+    length: 100,
+    unique: true,
+  })
+  description!: string;
+
   @Column({
     default: true,
   })
@@ -28,6 +44,13 @@ export class Vendor extends BaseEntity<Vendor> {
 
   @OneToMany(() => Product, (product) => product.vendor, { cascade: true })
   products: Product[];
+
+  @OneToOne(() => VendorLogo, (logo) => logo.vendor, {
+    cascade: true,
+    nullable: true,
+  })
+  @JoinColumn()
+  logo: VendorLogo;
 
   @BeforeInsert()
   beforeInsert() {

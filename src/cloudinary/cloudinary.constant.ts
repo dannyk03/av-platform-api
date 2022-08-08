@@ -10,12 +10,14 @@ export enum CloudinarySubject {
 }
 
 export const CloudinarySubjectFolderPath = Object.freeze({
+  global: {
+    [CloudinarySubject.Vendor]: `${ROOT_FOLDER}/global/${pluralize(
+      CloudinarySubject.Vendor,
+    )}`,
+  },
   en: {
     [CloudinarySubject.Product]: `${ROOT_FOLDER}/en/${pluralize(
       CloudinarySubject.Product,
-    )}`,
-    [CloudinarySubject.Vendor]: `${ROOT_FOLDER}/en/${pluralize(
-      CloudinarySubject.Vendor,
     )}`,
   },
 });
