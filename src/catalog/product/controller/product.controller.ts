@@ -58,7 +58,7 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', EnumFileType.Image, true)
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
   @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],

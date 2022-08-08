@@ -58,7 +58,7 @@ export class ProductImageController {
     systemOnly: true,
   })
   @RequestParamGuard(IdParamDto)
-  @UploadFileMultiple('images', EnumFileType.Image, true)
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
   @Post('/:id')
   async imageAdd(
     @Param('id') productId: string,

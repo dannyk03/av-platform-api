@@ -9,7 +9,11 @@ import {
   IMessageOptions,
   IMessageSetOptions,
 } from '../response-message.interface';
-import { IErrors } from '@/utils/error/error.interface';
+import {
+  IErrors,
+  IErrorsImport,
+  IValidationErrorImport,
+} from 'src/utils/error/error.interface';
 
 import { EnumMessageLanguage } from '../response-message.constant';
 
@@ -106,6 +110,25 @@ export class ResponseMessageService {
     });
   }
 
+  async getImportErrorsMessage(
+    errors: IValidationErrorImport[],
+    customLanguages?: string[],
+  ): Promise<IErrorsImport[]> {
+    const newErrors: IErrorsImport[] = [];
+    for (const error of errors) {
+      newErrors.push({
+        row: error.row,
+        file: error.file,
+        errors: await this.getRequestErrorsMessage(
+          error.errors,
+          customLanguages,
+        ),
+      });
+    }
+
+    return newErrors;
+  }
+
   private setMessage(
     lang: string,
     key: string,
@@ -113,7 +136,7 @@ export class ResponseMessageService {
   ): any {
     return this.i18n.translate(key, {
       lang: lang || this.defaultLanguage,
-      args: options.properties,
+      args: options && options.properties ? options.properties : undefined,
     });
   }
 

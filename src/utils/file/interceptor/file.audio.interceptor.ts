@@ -16,12 +16,12 @@ import { EnumFileStatusCodeError } from '@avo/type';
 
 import { Observable } from 'rxjs';
 
-import { IFile, IFileImageOptions } from '../file.interface';
+import { IFile, IFileAudioOptions } from '../file.interface';
 
-import { EnumFileImageMime } from '../file.constant';
+import { EnumFileAudioMime } from '../file.constant';
 
-export function FileImageInterceptor(
-  options?: IFileImageOptions,
+export function FileAudioInterceptor(
+  options?: IFileAudioOptions,
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinFileImageInterceptor implements NestInterceptor<Promise<any>> {
@@ -39,7 +39,7 @@ export function FileImageInterceptor(
 
         if (Array.isArray(finalFiles)) {
           const maxFiles = this.configService.get<number>(
-            'file.image.maxFiles',
+            'file.audio.maxFiles',
           );
 
           if (options && options.required && finalFiles.length === 0) {
@@ -75,10 +75,10 @@ export function FileImageInterceptor(
         const { size, mimetype } = file;
 
         const maxSize = this.configService.get<number>(
-          'file.image.maxFileSize',
+          'file.audio.maxFileSize',
         );
         if (
-          !Object.values(EnumFileImageMime).find(
+          !Object.values(EnumFileAudioMime).find(
             (val) => val === mimetype.toLowerCase(),
           )
         ) {
@@ -88,7 +88,7 @@ export function FileImageInterceptor(
           });
         } else if (size > maxSize) {
           throw new PayloadTooLargeException({
-            statusCode: EnumFileStatusCodeError.FileExtensionError,
+            statusCode: EnumFileStatusCodeError.FileMaxSizeError,
             message: 'file.error.maxSize',
           });
         }
