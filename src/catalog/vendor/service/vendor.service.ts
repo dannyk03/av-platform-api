@@ -17,8 +17,6 @@ import {
 
 import { Vendor } from '../entity';
 
-import { VendorLogoService } from './vendor-logo.service';
-
 import { VendorListSerialization } from '../serialization';
 
 import { IVendorSearch } from '../vendor.interface';
@@ -30,7 +28,6 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor, ConnectionNames.Default)
     private readonly vendorRepository: Repository<Vendor>,
-    private readonly vendorLogoService: VendorLogoService,
   ) {}
 
   async create(props: DeepPartial<Omit<Vendor, 'slug'>>): Promise<Vendor> {
@@ -51,6 +48,17 @@ export class VendorService {
 
   async findOne(find: FindOneOptions<Vendor>): Promise<Vendor> {
     return this.vendorRepository.findOne(find);
+  }
+
+  async checkExistsBy(find: FindOptionsWhere<Vendor>) {
+    const existsVendor = await this.vendorRepository.findOne({
+      where: find,
+      select: {
+        id: true,
+      },
+    });
+
+    return Boolean(existsVendor);
   }
 
   async deleteById(id: string) {

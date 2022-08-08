@@ -62,6 +62,17 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
+  async checkExistsBy(find: FindOptionsWhere<Product>) {
+    const existsVendor = await this.productRepository.findOne({
+      where: find,
+      select: {
+        id: true,
+      },
+    });
+
+    return Boolean(existsVendor);
+  }
+
   async get({ id, language }: IGetProduct): Promise<Product> {
     const getBuilder = this.productRepository
       .createQueryBuilder('product')
@@ -85,6 +96,7 @@ export class ProductService {
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
       .createQueryBuilder('product')
+      .leftJoinAndSelect('product.vendor', 'vendor')
       .leftJoinAndSelect('product.displayOptions', 'display_options')
       .leftJoinAndSelect('display_options.language', 'language')
       .setParameters({ keywords, language })

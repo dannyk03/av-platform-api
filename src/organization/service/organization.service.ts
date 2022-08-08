@@ -45,6 +45,9 @@ export class OrganizationService {
   async checkExistsByName(name: string): Promise<boolean> {
     const exists = await this.organizationRepository.findOne({
       where: { slug: this.slugService.slugify(name) },
+      select: {
+        id: true,
+      },
     });
 
     return Boolean(exists);

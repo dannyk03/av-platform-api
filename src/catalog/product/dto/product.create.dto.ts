@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsUUID,
   Length,
   MaxLength,
 } from 'class-validator';
@@ -69,4 +70,9 @@ export class ProductCreateDto {
   @ProductCurrency()
   @IsOptional()
   currency?: EnumCurrency;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @Type(() => String)
+  vendorId!: string;
 }
