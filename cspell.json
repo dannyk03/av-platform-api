@@ -18,7 +18,13 @@
     "dbdata",
     "deadcode",
     "superadmin",
-    "prestart"
+    "prestart",
+    "datas",
+    "ilike",
+    "unnest",
+    "customerio",
+    "trivago",
+    "casl"
   ],
   "ignorePaths": [
     "node_modules/**",
@@ -28,6 +34,8 @@
     ".github/**",
     "dist/**",
     "logs/**",
-    "src/database/json/**"
+    "src/database/json/**",
+    "yarn.lock",
+    "src/database/migrations/**"
   ]
 }
