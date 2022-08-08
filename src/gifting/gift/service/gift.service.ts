@@ -59,7 +59,9 @@ export class GiftIntentService {
       .leftJoinAndSelect('giftIntent.recipient', 'recipient')
       .leftJoinAndSelect('giftIntent.sender', 'sender')
       .leftJoinAndSelect('recipient.user', 'recipientUser')
-      .leftJoinAndSelect('sender.user', 'senderUser');
+      .leftJoinAndSelect('sender.user', 'senderUser')
+      .leftJoinAndSelect('giftIntent.gifts', 'gifts')
+      .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions');
 
     if (search) {
       builder.andWhere(
@@ -67,7 +69,6 @@ export class GiftIntentService {
           builder.setParameters({ search, likeSearch: `%${search}%` });
           qb.where('senderUser.email ILIKE :likeSearch')
             .orWhere('recipientUser.email ILIKE :likeSearch')
-            .orWhere('senderUser.email ILIKE :likeSearch')
             .orWhere(`recipient.additionalData ->> 'email' ILIKE :likeSearch`)
             .orWhere(`sender.additionalData ->> 'email' ILIKE :likeSearch`);
         }),

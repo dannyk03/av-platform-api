@@ -90,7 +90,7 @@ export class ProductCommonController {
       });
     }
 
-    const checkVendorExists = this.vendorService.checkExistsBy({
+    const checkVendorExists = await this.vendorService.checkExistsBy({
       id: vendorId,
     });
 
