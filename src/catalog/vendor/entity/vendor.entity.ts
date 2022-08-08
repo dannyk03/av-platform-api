@@ -21,7 +21,12 @@ export class Vendor extends BaseEntity<Vendor> {
   })
   slug!: string;
 
-  @OneToMany(() => Product, (product) => product.vendor)
+  @Column({
+    default: true,
+  })
+  isActive!: boolean;
+
+  @OneToMany(() => Product, (product) => product.vendor, { cascade: true })
   products: Product[];
 
   @BeforeInsert()

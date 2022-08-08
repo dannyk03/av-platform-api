@@ -51,7 +51,9 @@ export class Product extends BaseEntity<Product> {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   shippingCost!: number;
 
-  @ManyToOne(() => Vendor, (vendor) => vendor.products)
+  @ManyToOne(() => Vendor, (vendor) => vendor.products, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   vendor: Vendor;
 

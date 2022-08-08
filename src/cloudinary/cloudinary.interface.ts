@@ -6,4 +6,5 @@ export interface UploadCloudinaryImage {
   image: Express.Multer.File;
   subject: CloudinarySubject;
   languageIsoCode: EnumDisplayLanguage;
+  subFolder?: string;
 }

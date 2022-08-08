@@ -7,7 +7,7 @@ import util from 'util';
 
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 
-import { CloudinaryFolder } from '../cloudinary.constant';
+import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
 
 @Injectable()
 export class CloudinaryService {
@@ -34,11 +34,16 @@ export class CloudinaryService {
     image,
     subject,
     languageIsoCode,
+    subFolder,
   }: UploadCloudinaryImage): Promise<
     UploadApiResponse | UploadApiErrorResponse
   > {
-    const productionPath = CloudinaryFolder[languageIsoCode][subject];
+    const productionPath = `${
+      CloudinarySubjectFolderPath[languageIsoCode][subject]
+    }${subFolder ? `/${subFolder}` : ''}`;
+
     const developmentPath = `development/${productionPath}`;
+
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {

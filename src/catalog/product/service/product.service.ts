@@ -8,7 +8,6 @@ import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
   Brackets,
-  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -35,8 +34,6 @@ import { IPaginationOptions } from '@/utils/pagination';
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(Product, ConnectionNames.Default)
     private productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,

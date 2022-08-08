@@ -96,11 +96,13 @@ export class ProductImageService {
   async createImages({
     images,
     language,
+    subFolder,
   }: ICreateImages): Promise<ProductImage[]> {
     const uploadImages = await Promise.all(
       images.map(async (image) => {
         return this.cloudinaryService.uploadImage({
           subject: CloudinarySubject.Product,
+          subFolder,
           image,
           languageIsoCode: language,
         });
@@ -124,13 +126,17 @@ export class ProductImageService {
   }
 
   async saveImages({ id, images, language }: ISaveImages) {
-    const productImages = await this.createImages({ images, language });
-
     const displayOption =
       await this.productDisplayOptionService.findByProductIdAndLanguage({
         id,
         language,
       });
+
+    const productImages = await this.createImages({
+      images,
+      language,
+      subFolder: displayOption.product.sku,
+    });
 
     productImages.forEach(
       (image) => (image.productDisplayOption = displayOption),

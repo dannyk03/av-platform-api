@@ -89,6 +89,7 @@ export class ProductCommonController {
     const saveImages = await this.productImageService.createImages({
       images,
       language,
+      subFolder: sku,
     });
 
     const createProduct = await this.productService.create({

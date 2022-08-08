@@ -22,12 +22,14 @@ export class OrganizationService {
     private readonly slugService: HelperSlugService,
   ) {}
 
-  async create(props: DeepPartial<Organization>): Promise<Organization> {
+  async create(
+    props: DeepPartial<Omit<Organization, 'slug'>>,
+  ): Promise<Organization> {
     return this.organizationRepository.create(props);
   }
 
   async createMany(
-    props: DeepPartial<Organization>[],
+    props: DeepPartial<Omit<Organization, 'slug'>>[],
   ): Promise<Organization[]> {
     return this.organizationRepository.create(props);
   }
