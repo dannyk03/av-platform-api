@@ -1,4 +1,5 @@
-import { EnumDisplayLanguage } from '@/language/display-language';
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { IPaginationOptions } from '@/utils/pagination';
 
 export interface IProductSearch {
@@ -8,6 +9,7 @@ export interface IProductSearch {
   loadImages?: boolean;
   options?: IPaginationOptions;
   isActive?: boolean[];
+  priceRange?: [number, number];
 }
 
 export interface IGetProduct {

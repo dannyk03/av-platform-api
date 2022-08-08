@@ -1,12 +1,14 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 
+import { IResponseData } from '@avo/type';
+
 import { User } from '@/user/entity';
 
 import { AclPolicyService } from '../policy/service';
 
 import { AclGuard } from '@/auth';
 import { ReqUser } from '@/user';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -22,7 +24,7 @@ export class AclController {
   async create(
     @ReqUser()
     reqUser: User,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     return (
       reqUser.role &&
       this.aclPolicyService.serializationUserAcl(reqUser.role.policy)

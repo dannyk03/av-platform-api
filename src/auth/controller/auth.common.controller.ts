@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -13,7 +12,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
-import { EnumAuthStatusCodeError, EnumUserStatusCodeError } from '@avo/type';
+import {
+  EnumAuthStatusCodeError,
+  EnumUserStatusCodeError,
+  IResponseData,
+} from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
 import { DataSource } from 'typeorm';
@@ -44,7 +47,7 @@ import { EnumLogAction, LogTrace } from '@/log';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
 import { RequestUserAgent } from '@/utils/request';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -75,7 +78,7 @@ export class AuthCommonController {
     body: AuthLoginDto,
     @ReqUser()
     user: User,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const rememberMe: boolean = body.rememberMe ? true : false;
 
     const validate: boolean = await this.authService.validateUser(
@@ -233,7 +236,7 @@ export class AuthCommonController {
     @ReqJwtUser()
     { rememberMe, loginDate }: Record<string, any>,
     @Token() refreshToken: string,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const safeData: AuthUserLoginSerialization =
       await this.authService.serializationLogin(reqUser);
 

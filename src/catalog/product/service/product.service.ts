@@ -4,6 +4,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { EnumProductStatusCodeError } from '@avo/type';
 
 import { plainToInstance } from 'class-transformer';
+import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
   Brackets,
@@ -82,6 +83,7 @@ export class ProductService {
     keywords,
     language,
     isActive,
+    priceRange,
     loadImages = true,
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
@@ -91,6 +93,13 @@ export class ProductService {
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
+
+    if (priceRange) {
+      builder.andWhere('product.price BETWEEN :min AND :max', {
+        min: priceRange[0],
+        max: priceRange[1],
+      });
+    }
 
     if (loadImages) {
       builder.leftJoinAndSelect('display_options.images', 'images');
@@ -120,6 +129,7 @@ export class ProductService {
     search,
     keywords,
     isActive,
+    priceRange,
   }: IProductSearch): Promise<number> {
     const searchBuilder = await this.getListSearchBuilder({
       loadImages: false,
@@ -127,6 +137,7 @@ export class ProductService {
       search,
       keywords,
       isActive,
+      priceRange,
     });
 
     return searchBuilder.getCount();
@@ -138,29 +149,33 @@ export class ProductService {
     keywords,
     options,
     isActive,
+    priceRange,
   }: IProductSearch): Promise<Product[]> {
     const searchBuilder = await this.getListSearchBuilder({
       language,
       search,
       keywords,
       isActive,
+      priceRange,
     });
 
     if (options.order) {
-      if (options.order.keywords && keywords) {
-        searchBuilder.orderBy(
-          `CARDINALITY(ARRAY (
-          SELECT UNNEST(display_options.keywords)
-          INTERSECT
-          SELECT UNNEST(array[:...keywords])))`,
-          options.order.keywords,
-        );
+      if (options.order.keywords_special_logic && keywords) {
+        searchBuilder
+          .addSelect(
+            'CARDINALITY(ARRAY(SELECT UNNEST(display_options.keywords) INTERSECT (SELECT UNNEST(ARRAY[:...keywords]))))',
+            'keywords_cardinality',
+          )
+          .orderBy(
+            'keywords_cardinality',
+            options.order.keywords_special_logic,
+          );
       } else {
         searchBuilder.orderBy(options.order);
       }
     }
 
-    if (options.take && options.skip) {
+    if (isNumber(options.take) && isNumber(options.skip)) {
       searchBuilder.take(options.take).skip(options.skip);
     }
 
@@ -170,7 +185,7 @@ export class ProductService {
   async deleteProductBy({ id }: { id: string }): Promise<Product> {
     const removeProduct = await this.productRepository.findOne({
       where: { id },
-      relations: ['displayOptions', 'displayOptions.images'],
+      relations: ['display_options', 'display_options.images'],
     });
 
     if (!removeProduct) {

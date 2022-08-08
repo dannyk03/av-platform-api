@@ -1,5 +1,7 @@
 import { UsePipes, applyDecorators } from '@nestjs/common';
 
+import { EnumPaginationSortType } from '@avo/type';
+
 import { Expose, Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -7,11 +9,11 @@ import {
   IsDate,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateIf,
 } from 'class-validator';
-import snakeCase from 'lodash/snakeCase';
 
 import {
   IPaginationFilterDateOptions,
@@ -21,9 +23,8 @@ import {
 
 import { RequestAddDatePipe } from '@/utils/request/pipe';
 
-import { MinGreaterThan, Skip } from '../request/validation';
+import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
-  EnumPaginationAvailableSortType,
   PAGINATION_DEFAULT_AVAILABLE_SORT,
   PAGINATION_DEFAULT_MAX_PAGE,
   PAGINATION_DEFAULT_MAX_PER_PAGE,
@@ -102,20 +103,19 @@ export function PaginationSort(
 
       const rSort = value || sort;
       const rAvailableSort = obj._availableSort || availableSort;
-      const field: string = rSort.split('@')[0];
-      const type: string = rSort.split('@')[1];
+      const [field, type]: string = rSort.split('@');
       const convertField: string = rAvailableSort.includes(field)
         ? field
         : bSort;
       const convertType =
         type === 'desc' || type === '-1'
-          ? EnumPaginationAvailableSortType.Desc
-          : EnumPaginationAvailableSortType.Asc;
+          ? EnumPaginationSortType.Desc
+          : EnumPaginationSortType.Asc;
 
-      const key = (nestingAliasMap?.[convertField] || convertField)
-        .split('.')
-        .map((f) => snakeCase(f))
-        .join('.');
+      const key = nestingAliasMap?.[convertField] || convertField;
+      // .split('.')
+      // .map((f) => snakeCase(f))
+      // .join('.');
       return { [key]: convertType };
     }),
   );
@@ -146,6 +146,26 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
           ]
         : defaultValue,
     ),
+  );
+}
+
+export function PaginationFilterRange(defaultValue: string): any {
+  return applyDecorators(
+    Expose(),
+    IsNumber(
+      { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 },
+      { each: true },
+    ),
+    RangeTuple(),
+    Transform(({ value }) => {
+      const range = value || defaultValue;
+      const [min, max]: string = range.split('-');
+
+      if (min > max) {
+      }
+
+      return [Number(min), Number(max)];
+    }),
   );
 }
 

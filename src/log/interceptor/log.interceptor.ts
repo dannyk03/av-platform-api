@@ -77,7 +77,7 @@ export function LogInterceptor(
               method: method as EnumRequestMethod,
               role: __user?.role,
               params,
-              bodies: body,
+              body,
               statusCode,
               userAgent,
               tags: options?.tags,

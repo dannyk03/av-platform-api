@@ -15,7 +15,7 @@ export interface ILog {
   method: EnumRequestMethod;
   tags?: string[];
   params?: Record<string, any>;
-  bodies?: Record<string, any>;
+  body?: Record<string, any>;
   statusCode?: number;
   user?: User;
   correlationId: string;

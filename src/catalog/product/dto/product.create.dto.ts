@@ -1,17 +1,19 @@
 import { isString } from '@nestjs/common/utils/shared.utils';
 
-import { Transform, Type } from 'class-transformer';
+import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
+
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   Length,
   MaxLength,
 } from 'class-validator';
 
-import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
   NormalizeStringInput,
@@ -39,7 +41,8 @@ export class ProductCreateDto {
   readonly description!: string;
 
   @ProductDisplayLanguage()
-  language: EnumDisplayLanguage;
+  @IsOptional()
+  language!: EnumDisplayLanguage;
 
   @IsArray()
   @IsOptional()
@@ -50,4 +53,22 @@ export class ProductCreateDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @Type(() => Number)
+  price!: number;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @Type(() => Number)
+  shippingCost!: number;
+
+  @MaxLength(200)
+  @NormalizeStringInput()
+  readonly taxCode!: string;
+
+  @ProductCurrency()
+  @IsOptional()
+  currency?: EnumCurrency;
 }

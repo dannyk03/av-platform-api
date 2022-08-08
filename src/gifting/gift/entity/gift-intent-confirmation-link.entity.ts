@@ -1,10 +1,10 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
-import { Gift } from './gift.entity';
+import { GiftIntent } from './gift-intent.entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
-export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLink> {
+export class GiftIntentConfirmationLink extends BaseEntity<GiftIntentConfirmationLink> {
   @Index()
   @Column({
     unique: true,
@@ -19,6 +19,6 @@ export class GiftSendConfirmationLink extends BaseEntity<GiftSendConfirmationLin
   @Column({ nullable: true })
   expiresAt?: Date;
 
-  @OneToMany(() => Gift, (gift) => gift.confirmationLink)
-  gifts!: Gift[];
+  @OneToMany(() => GiftIntent, (gift) => gift.confirmationLink)
+  gifts!: GiftIntent[];
 }

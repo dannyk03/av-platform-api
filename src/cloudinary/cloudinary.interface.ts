@@ -1,4 +1,4 @@
-import { EnumDisplayLanguage } from '@/language/display-language';
+import { EnumDisplayLanguage } from '@avo/type';
 
 import { CloudinarySubject } from './cloudinary.constant';
 

@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { GiftSendConfirmationLink } from '../entity';
+import { GiftIntentConfirmationLink } from '../entity';
 
 import { HelperHashService } from '@/utils/helper/service';
 
@@ -17,14 +17,14 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class GiftSendConfirmationLinkService {
   constructor(
-    @InjectRepository(GiftSendConfirmationLink, ConnectionNames.Default)
-    private giftSendVerificationLink: Repository<GiftSendConfirmationLink>,
+    @InjectRepository(GiftIntentConfirmationLink, ConnectionNames.Default)
+    private giftSendVerificationLink: Repository<GiftIntentConfirmationLink>,
     private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
-    props: DeepPartial<Omit<GiftSendConfirmationLink, 'code'>>,
-  ): Promise<GiftSendConfirmationLink> {
+    props: DeepPartial<Omit<GiftIntentConfirmationLink, 'code'>>,
+  ): Promise<GiftIntentConfirmationLink> {
     return this.giftSendVerificationLink.create({
       ...props,
       code: await this.helperHashService.magicCode(),
@@ -32,20 +32,20 @@ export class GiftSendConfirmationLinkService {
   }
 
   async save(
-    data: GiftSendConfirmationLink,
-  ): Promise<GiftSendConfirmationLink> {
-    return this.giftSendVerificationLink.save<GiftSendConfirmationLink>(data);
+    data: GiftIntentConfirmationLink,
+  ): Promise<GiftIntentConfirmationLink> {
+    return this.giftSendVerificationLink.save<GiftIntentConfirmationLink>(data);
   }
 
   async findOneBy(
-    find: FindOptionsWhere<GiftSendConfirmationLink>,
-  ): Promise<GiftSendConfirmationLink> {
+    find: FindOptionsWhere<GiftIntentConfirmationLink>,
+  ): Promise<GiftIntentConfirmationLink> {
     return this.giftSendVerificationLink.findOneBy(find);
   }
 
   async findOne(
-    find: FindOneOptions<GiftSendConfirmationLink>,
-  ): Promise<GiftSendConfirmationLink> {
+    find: FindOneOptions<GiftIntentConfirmationLink>,
+  ): Promise<GiftIntentConfirmationLink> {
     return this.giftSendVerificationLink.findOne(find);
   }
 }
