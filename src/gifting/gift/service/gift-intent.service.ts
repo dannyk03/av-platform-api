@@ -53,6 +53,7 @@ export class GiftIntentService {
 
   async getListSearchBuilder({
     search,
+    loadExtra = true,
   }: IGiftIntentSearch): Promise<SelectQueryBuilder<GiftIntent>> {
     const builder = this.gifIntentRepository
       .createQueryBuilder('giftIntent')
@@ -60,9 +61,13 @@ export class GiftIntentService {
       .leftJoinAndSelect('giftIntent.recipient', 'recipient')
       .leftJoinAndSelect('giftIntent.sender', 'sender')
       .leftJoinAndSelect('recipient.user', 'recipientUser')
-      .leftJoinAndSelect('sender.user', 'senderUser')
-      .leftJoinAndSelect('giftIntent.gifts', 'gifts')
-      .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions');
+      .leftJoinAndSelect('sender.user', 'senderUser');
+
+    if (loadExtra) {
+      builder
+        .leftJoinAndSelect('giftIntent.giftOrder', 'giftOrder')
+        .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions');
+    }
 
     if (search) {
       builder.andWhere(
@@ -101,6 +106,7 @@ export class GiftIntentService {
   async getTotal({ search }: IGiftIntentSearch): Promise<number> {
     const searchBuilder = await this.getListSearchBuilder({
       search,
+      loadExtra: false,
     });
 
     return searchBuilder.getCount();

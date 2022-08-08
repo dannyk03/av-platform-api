@@ -184,7 +184,7 @@ export class ProductService {
             'keywords_cardinality',
             options.order.keywords_special_logic,
           );
-      } else {
+      } else if (!options.order.keywords_special_logic) {
         searchBuilder.orderBy(options.order);
       }
     }

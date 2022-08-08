@@ -27,7 +27,7 @@ export class Gift extends BaseEntity<Gift> {
   @JoinColumn()
   giftIntent!: GiftIntent;
 
-  @ManyToOne(() => Gift, (gift) => gift.order)
+  @ManyToOne(() => Gift, (gift) => gift.order, { nullable: true })
   @JoinColumn()
-  order!: GiftOrder;
+  order?: GiftOrder;
 }

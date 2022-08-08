@@ -9,6 +9,7 @@ import {
 
 import { GiftIntentAdditionalData } from './gift-intent-additional-data.entity';
 import { GiftIntentConfirmationLink } from './gift-intent-confirmation-link.entity';
+import { GiftOrder } from './gift-order.entity';
 import { GiftRecipient } from './gift-recipient.entity';
 import { GiftSender } from './gift-sender.entity';
 import { Gift } from './gift.entity';
@@ -73,6 +74,9 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   })
   giftOptions?: Gift[];
 
-  @OneToMany(() => Gift, (gift) => gift.giftIntent, { nullable: true })
-  gifts?: Gift[];
+  @OneToOne(() => GiftOrder, (giftOrder) => giftOrder.giftIntent, {
+    nullable: true,
+    cascade: true,
+  })
+  giftOrder?: GiftOrder[];
 }
