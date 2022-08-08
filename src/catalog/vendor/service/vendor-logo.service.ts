@@ -57,7 +57,7 @@ export class VendorLogoService {
         message: 'product.error.image',
       });
     }
-    await this.cloudinaryService.deleteImages({
+    await this.cloudinaryService.deleteResources({
       publicIds: [deleteLogo.publicId],
     });
 

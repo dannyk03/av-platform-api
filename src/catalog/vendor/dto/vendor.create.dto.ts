@@ -1,30 +1,16 @@
-import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
+import { IsBoolean, IsOptional, Length } from 'class-validator';
 
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  Length,
-  MaxLength,
-} from 'class-validator';
-
-import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
-import {
-  ArrayTransform,
-  NormalizeStringInput,
-} from '@/utils/request/transform';
+import { NormalizeStringInput } from '@/utils/request/transform';
 
 export class VendorCreateDto {
-  @MaxLength(30)
+  @Length(3, 30)
   @NormalizeStringInput()
   readonly name!: string;
 
-  @MaxLength(200)
+  @Length(3, 200)
+  @IsOptional()
   @NormalizeStringInput()
-  readonly description!: string;
+  readonly description?: string;
 
   @IsBoolean()
   @IsOptional()

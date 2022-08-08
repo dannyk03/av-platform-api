@@ -33,8 +33,9 @@ export class Vendor extends BaseEntity<Vendor> {
   @Index()
   @Column({
     length: 200,
+    nullable: true,
   })
-  description!: string;
+  description?: string;
 
   @Column({
     default: true,
@@ -48,7 +49,6 @@ export class Vendor extends BaseEntity<Vendor> {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn()
   logo: VendorLogo;
 
   @BeforeInsert()

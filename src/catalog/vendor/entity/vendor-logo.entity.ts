@@ -1,4 +1,4 @@
-import { Column, Entity, Index, OneToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 
 import { Vendor } from './vendor.entity';
 import { BaseEntity } from '@/database/entity';
@@ -31,5 +31,6 @@ export class VendorLogo extends BaseEntity<VendorLogo> {
   secureUrl!: string;
 
   @OneToOne(() => Vendor, (vendor) => vendor.logo, { onDelete: 'CASCADE' })
+  @JoinColumn()
   vendor: Vendor;
 }

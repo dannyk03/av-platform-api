@@ -35,7 +35,7 @@ import { IPaginationOptions } from '@/utils/pagination';
 export class ProductService {
   constructor(
     @InjectRepository(Product, ConnectionNames.Default)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -208,7 +208,7 @@ export class ProductService {
       flatMap(images, ({ publicId }) => publicId),
     );
 
-    await this.cloudinaryService.deleteImages({ publicIds: imagePublicIds });
+    await this.cloudinaryService.deleteResources({ publicIds: imagePublicIds });
     return this.productRepository.remove(removeProduct);
   }
 
@@ -228,7 +228,7 @@ export class ProductService {
       .execute();
   }
 
-  async updateProduct({
+  async update({
     id,
     sku,
     brand,

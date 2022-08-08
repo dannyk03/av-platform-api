@@ -282,7 +282,7 @@ export class ProductCommonController {
     @Body()
     body: ProductUpdateDto,
   ): Promise<void> {
-    const updateRes = await this.productService.updateProduct(body);
+    const updateRes = await this.productService.update(body);
 
     await this.productService.serialization(updateRes);
   }

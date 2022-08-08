@@ -15,32 +15,21 @@ import {
 
 import { Action, Subjects } from '@avo/casl';
 import {
-  EnumProductStatusCodeError,
   EnumVendorStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
 
-import compact from 'lodash/compact';
-
-import { Vendor } from '../entity';
-
 import { VendorLogoService, VendorService } from '../service';
-import { ProductService } from '@/catalog/product/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { VendorListSerialization } from '../serialization';
 
-import { VendorCreateDto, VendorListDto } from '../dto';
+import { VendorCreateDto, VendorListDto, VendorUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
-import { CloudinarySubject } from '@/cloudinary';
-import {
-  EnumFileType,
-  UploadFileMultiple,
-  UploadFileSingle,
-} from '@/utils/file';
+import { EnumFileType, UploadFileSingle } from '@/utils/file';
 import { slugify } from '@/utils/helper';
 import { RequestParamGuard } from '@/utils/request';
 import { Response, ResponsePaging } from '@/utils/response';
@@ -127,7 +116,7 @@ export class VendorCommonController {
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const products = await this.vendorService.paginatedSearchBy({
+    const vendors = await this.vendorService.paginatedSearchBy({
       options: {
         skip: skip,
         take: perPage,
@@ -148,7 +137,7 @@ export class VendorCommonController {
     );
 
     const data: VendorListSerialization[] =
-      await this.vendorService.serializationList(products);
+      await this.vendorService.serializationList(vendors);
 
     return {
       totalData,
@@ -174,23 +163,23 @@ export class VendorCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Delete('/:id')
-  async deleteProduct(@Param('id') id: string): Promise<void> {
-    await this.vendorService.deleteById(id);
+  async delete(@Param('id') id: string): Promise<void> {
+    await this.vendorService.deleteBy({ id });
   }
 
-  @Response('product.active')
+  @Response('vendor.active')
   @AclGuard({
     abilities: [
       {
         action: Action.Update,
-        subject: Subjects.Product,
+        subject: Subjects.Vendor,
       },
     ],
     systemOnly: true,
   })
   @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
-  async activeProduct(@Param('id') id: string): Promise<IResponseData> {
+  async active(@Param('id') id: string): Promise<IResponseData> {
     const { affected } = await this.vendorService.updateVendorActiveStatus({
       id,
       isActive: true,
@@ -213,7 +202,7 @@ export class VendorCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
-  async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
+  async inactive(@Param('id') id: string): Promise<IResponseData> {
     const { affected } = await this.vendorService.updateVendorActiveStatus({
       id,
       isActive: false,
@@ -224,26 +213,26 @@ export class VendorCommonController {
     };
   }
 
-  // @Response('product.update')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Update,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @Patch()
-  // async update(
-  //   @Body()
-  //   body: ProductUpdateDto,
-  // ): Promise<void> {
-  //   const updateRes = await this.productService.updateProduct(body);
+  @Response('vendor.update')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Vendor,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Patch()
+  async update(
+    @Body()
+    body: VendorUpdateDto,
+  ): Promise<void> {
+    const updateRes = await this.vendorService.update(body);
 
-  //   await this.productService.serialization(updateRes);
-  // }
+    await this.vendorService.serialization(updateRes);
+  }
 
   @Response('vendor.get')
   @HttpCode(HttpStatus.OK)
@@ -260,7 +249,6 @@ export class VendorCommonController {
   async get(@Param('id') id: string): Promise<IResponseData> {
     const getVendor = await this.vendorService.get({ id });
 
-    // return getVendor;
     return this.vendorService.serialization(getVendor);
   }
 }

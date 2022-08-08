@@ -64,7 +64,7 @@ export class ProductImageService {
         message: 'product.error.image',
       });
     }
-    await this.cloudinaryService.deleteImages({
+    await this.cloudinaryService.deleteResources({
       publicIds: [deleteImage.publicId],
     });
 
@@ -83,7 +83,7 @@ export class ProductImageService {
         message: 'product.error.image',
       });
     }
-    await this.cloudinaryService.deleteImages({
+    await this.cloudinaryService.deleteResources({
       publicIds: deleteImages.map((image) => image?.publicId),
     });
 

@@ -17,9 +17,11 @@ import {
 
 import { Vendor } from '../entity';
 
+import { CloudinaryService } from '@/cloudinary/service';
+
 import { VendorListSerialization } from '../serialization';
 
-import { IVendorSearch } from '../vendor.interface';
+import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
 
 import { ConnectionNames } from '@/database';
 
@@ -28,6 +30,7 @@ export class VendorService {
   constructor(
     @InjectRepository(Vendor, ConnectionNames.Default)
     private readonly vendorRepository: Repository<Vendor>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(props: DeepPartial<Omit<Vendor, 'slug'>>): Promise<Vendor> {
@@ -61,13 +64,28 @@ export class VendorService {
     return Boolean(existsVendor);
   }
 
-  async deleteById(id: string) {
-    const deleteVendor = await this.vendorRepository.findOneBy({ id });
+  async deleteBy(find: FindOptionsWhere<Vendor>) {
+    const deleteVendor = await this.vendorRepository.findOne({
+      where: find,
+      relations: ['logo'],
+      select: {
+        id: true,
+        logo: {
+          publicId: true,
+        },
+      },
+    });
 
     if (!deleteVendor) {
       throw new UnprocessableEntityException({
         statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
         message: 'vendor.error.notFound',
+      });
+    }
+
+    if (deleteVendor?.logo) {
+      await this.cloudinaryService.deleteResources({
+        publicIds: [deleteVendor.logo.publicId],
       });
     }
 
@@ -82,6 +100,15 @@ export class VendorService {
       .leftJoinAndSelect('vendor.logo', 'logo');
 
     return getBuilder.getOne();
+  }
+
+  async update({ id, description, isActive }: IVendorUpdate): Promise<any> {
+    const getVendor = await this.get({ id });
+
+    getVendor.description = description;
+    getVendor.isActive = isActive;
+
+    return this.vendorRepository.save(getVendor);
   }
 
   async updateVendorActiveStatus({

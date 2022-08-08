@@ -1,13 +1,13 @@
 {
-  "list": "List vendor success.",
-  "get": "Get vendor success.",
-  "create": "Create vendor success.",
-  "delete": "Delete vendor success.",
-  "update": "Update vendor success.",
+  "list": "List vendor success",
+  "get": "Get vendor success",
+  "create": "Create vendor success",
+  "delete": "Delete vendor success",
+  "update": "Update vendor success",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
   "error": {
-    "notFound": "Vendor not found.",
+    "notFound": "Vendor not found",
     "inactive": "Vendor not active",
     "exists": "Vendor exists"
   }

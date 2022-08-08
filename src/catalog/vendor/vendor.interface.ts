@@ -11,3 +11,9 @@ export interface IVendorSearch {
   loadLogos?: boolean;
   options?: IPaginationOptions;
 }
+
+export interface IVendorUpdate {
+  id: string;
+  description?: string;
+  isActive?: boolean;
+}
