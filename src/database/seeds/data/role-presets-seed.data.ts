@@ -75,7 +75,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
             ],
           },
           {
-            type: Subjects.Gift,
+            type: Subjects.GiftingNamespace,
             abilities: [
               {
                 type: AbilityVerb.Can,

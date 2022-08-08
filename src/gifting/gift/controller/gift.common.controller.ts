@@ -5,8 +5,10 @@ import {
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
+  Param,
   Post,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
@@ -14,7 +16,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
+  EnumFileStatusCodeError,
+  EnumGiftIntentStatusCodeError,
   EnumMessagingStatusCodeError,
+  EnumProductStatusCodeError,
   IResponse,
   IResponseData,
   IResponsePaging,
@@ -25,7 +30,12 @@ import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
 
-import { GiftIntentService, GiftSendConfirmationLinkService } from '../service';
+import {
+  GiftIntentService,
+  GiftSendConfirmationLinkService,
+  GiftService,
+} from '../service';
+import { ProductService } from '@/catalog/product/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -33,13 +43,15 @@ import { PaginationService } from '@/utils/pagination/service';
 import { GiftIntentSerialization } from '../serialization';
 import { ProductListSerialization } from '@/catalog/product/serialization';
 
-import { GiftIntentListDto } from '../dto';
+import { GiftIntentListDto, GiftOptionCreateDto } from '../dto';
 import { GiftSendDto } from '../dto/gift.send.dto';
+import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard, ReqJwtUser } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
+import { RequestParamGuard } from '@/utils/request';
 import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
@@ -52,10 +64,12 @@ export class GiftController {
     private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
+    private readonly giftService: GiftService,
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
     private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
     private readonly paginationService: PaginationService,
+    private readonly productService: ProductService,
   ) {}
 
   @Response('gift.send')
@@ -195,10 +209,47 @@ export class GiftController {
 
   @Response('gift.intent.addGiftOption')
   @HttpCode(HttpStatus.OK)
-  @AclGuard()
-  @Throttle(1, 5)
-  @Post('/intent/options')
-  async addGiftOption(): Promise<IResponseData> {
-    return {};
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Create,
+        subject: Subjects.GiftOption,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Post('/intent/:id')
+  async addGiftOption(
+    @Param('id') giftIntentId: string,
+    @Body() { productIds }: GiftOptionCreateDto,
+  ): Promise<void> {
+    const giftIntent = await this.giftIntentService.findOne({
+      where: { id: giftIntentId },
+      relations: ['giftOptions'],
+    });
+
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentNotFoundError,
+        message: 'gift.intent.error.notFound',
+      });
+    }
+    const products = await this.productService.findAllByIds(productIds);
+
+    if (!products || products.length !== productIds?.length) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    const createGift = await this.giftService.create({
+      products,
+    });
+
+    giftIntent.giftOptions = [...giftIntent.giftOptions, createGift];
+
+    this.giftIntentService.save(giftIntent);
   }
 }

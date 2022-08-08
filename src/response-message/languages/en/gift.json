@@ -9,6 +9,9 @@
   },
   "intent": {
     "list": "List gift-intent success",
-    "addGiftOption": "Gift-intent add option success"
+    "addGiftOption": "Gift-intent add option success",
+    "error": {
+      "notFound": "Gift intent not found"
+    }
   }
 }

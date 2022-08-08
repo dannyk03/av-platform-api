@@ -11,6 +11,7 @@ import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
+  In,
   Repository,
   SelectQueryBuilder,
   UpdateResult,
@@ -60,6 +61,10 @@ export class ProductService {
     options?: IPaginationOptions,
   ): Promise<Product[]> {
     return this.productRepository.find({ where: find, ...options });
+  }
+
+  async findAllByIds(ids?: string[]): Promise<Product[]> {
+    return this.productRepository.find({ where: { id: In(ids) } });
   }
 
   async checkExistsBy(find: FindOptionsWhere<Product>) {
