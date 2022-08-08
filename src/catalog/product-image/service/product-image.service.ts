@@ -1,10 +1,9 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumProductStatusCodeError } from '@avo/type';
 
 import {
-  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -25,8 +24,6 @@ import { ConnectionNames } from '@/database';
 @Injectable()
 export class ProductImageService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(ProductImage, ConnectionNames.Default)
     private productImageRepository: Repository<ProductImage>,
     private readonly productDisplayOptionService: ProductDisplayOptionService,
@@ -67,7 +64,7 @@ export class ProductImageService {
         message: 'product.error.image',
       });
     }
-    await this.cloudinaryService.deleteImages({
+    await this.cloudinaryService.deleteResources({
       publicIds: [deleteImage.publicId],
     });
 
@@ -86,7 +83,7 @@ export class ProductImageService {
         message: 'product.error.image',
       });
     }
-    await this.cloudinaryService.deleteImages({
+    await this.cloudinaryService.deleteResources({
       publicIds: deleteImages.map((image) => image?.publicId),
     });
 
@@ -96,11 +93,13 @@ export class ProductImageService {
   async createImages({
     images,
     language,
+    subFolder,
   }: ICreateImages): Promise<ProductImage[]> {
     const uploadImages = await Promise.all(
       images.map(async (image) => {
         return this.cloudinaryService.uploadImage({
           subject: CloudinarySubject.Product,
+          subFolder,
           image,
           languageIsoCode: language,
         });
@@ -124,13 +123,17 @@ export class ProductImageService {
   }
 
   async saveImages({ id, images, language }: ISaveImages) {
-    const productImages = await this.createImages({ images, language });
-
     const displayOption =
       await this.productDisplayOptionService.findByProductIdAndLanguage({
         id,
         language,
       });
+
+    const productImages = await this.createImages({
+      images,
+      language,
+      subFolder: displayOption.product.sku,
+    });
 
     productImages.forEach(
       (image) => (image.productDisplayOption = displayOption),

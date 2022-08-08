@@ -1,5 +1,5 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumProductStatusCodeError } from '@avo/type';
 
@@ -8,10 +8,10 @@ import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
   Brackets,
-  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
+  In,
   Repository,
   SelectQueryBuilder,
   UpdateResult,
@@ -35,10 +35,8 @@ import { IPaginationOptions } from '@/utils/pagination';
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     @InjectRepository(Product, ConnectionNames.Default)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -65,14 +63,29 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
+  async findAllByIds(ids?: string[]): Promise<Product[]> {
+    return this.productRepository.find({ where: { id: In(ids) } });
+  }
+
+  async checkExistsBy(find: FindOptionsWhere<Product>) {
+    const existsVendor = await this.productRepository.findOne({
+      where: find,
+      select: {
+        id: true,
+      },
+    });
+
+    return Boolean(existsVendor);
+  }
+
   async get({ id, language }: IGetProduct): Promise<Product> {
     const getBuilder = this.productRepository
       .createQueryBuilder('product')
       .setParameters({ language, id })
       .where('product.id = :id')
-      .leftJoinAndSelect('product.displayOptions', 'display_options')
-      .leftJoinAndSelect('display_options.language', 'language')
-      .leftJoinAndSelect('display_options.images', 'images')
+      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
+      .leftJoinAndSelect('displayOptions.language', 'language')
+      .leftJoinAndSelect('displayOptions.images', 'images')
       .andWhere('language.isoCode = :language');
 
     return getBuilder.getOne();
@@ -88,8 +101,9 @@ export class ProductService {
   }: IProductSearch): Promise<SelectQueryBuilder<Product>> {
     const builder = this.productRepository
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.displayOptions', 'display_options')
-      .leftJoinAndSelect('display_options.language', 'language')
+      .leftJoinAndSelect('product.vendor', 'vendor')
+      .leftJoinAndSelect('product.displayOptions', 'displayOptions')
+      .leftJoinAndSelect('displayOptions.language', 'language')
       .setParameters({ keywords, language })
       .where('product.isActive = ANY(:isActive)', { isActive })
       .andWhere('language.isoCode = :language');
@@ -102,23 +116,23 @@ export class ProductService {
     }
 
     if (loadImages) {
-      builder.leftJoinAndSelect('display_options.images', 'images');
+      builder.leftJoinAndSelect('displayOptions.images', 'images');
     }
 
     if (search) {
       builder.andWhere(
         new Brackets((qb) => {
           builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('sku ILIKE :likeSearch')
-            .orWhere('brand ILIKE :likeSearch')
-            .orWhere('display_options.name ILIKE :likeSearch')
-            .orWhere('display_options.description ILIKE :likeSearch');
+          qb.where('product.sku ILIKE :likeSearch')
+            .orWhere('product.brand ILIKE :likeSearch')
+            .orWhere('displayOptions.name ILIKE :likeSearch')
+            .orWhere('displayOptions.description ILIKE :likeSearch');
         }),
       );
     }
 
     if (keywords) {
-      builder.andWhere('display_options.keywords && :keywords');
+      builder.andWhere('displayOptions.keywords && :keywords');
     }
 
     return builder;
@@ -163,7 +177,7 @@ export class ProductService {
       if (options.order.keywords_special_logic && keywords) {
         searchBuilder
           .addSelect(
-            'CARDINALITY(ARRAY(SELECT UNNEST(display_options.keywords) INTERSECT (SELECT UNNEST(ARRAY[:...keywords]))))',
+            'CARDINALITY(ARRAY(SELECT UNNEST(displayOptions.keywords) INTERSECT (SELECT UNNEST(ARRAY[:...keywords]))))',
             'keywords_cardinality',
           )
           .orderBy(
@@ -185,7 +199,7 @@ export class ProductService {
   async deleteProductBy({ id }: { id: string }): Promise<Product> {
     const removeProduct = await this.productRepository.findOne({
       where: { id },
-      relations: ['display_options', 'display_options.images'],
+      relations: ['displayOptions', 'displayOptions.images'],
     });
 
     if (!removeProduct) {
@@ -199,7 +213,7 @@ export class ProductService {
       flatMap(images, ({ publicId }) => publicId),
     );
 
-    await this.cloudinaryService.deleteImages({ publicIds: imagePublicIds });
+    await this.cloudinaryService.deleteResources({ publicIds: imagePublicIds });
     return this.productRepository.remove(removeProduct);
   }
 
@@ -219,7 +233,7 @@ export class ProductService {
       .execute();
   }
 
-  async updateProduct({
+  async update({
     id,
     sku,
     brand,

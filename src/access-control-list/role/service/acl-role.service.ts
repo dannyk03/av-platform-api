@@ -33,11 +33,13 @@ export class AclRoleService {
     private readonly helperSlugService: HelperSlugService,
   ) {}
 
-  async create(props: DeepPartial<AclRole>): Promise<AclRole> {
+  async create(props: DeepPartial<Omit<AclRole, 'slug'>>): Promise<AclRole> {
     return this.aclRoleRepository.create(props);
   }
 
-  async createMany(props: DeepPartial<AclRole>[]): Promise<AclRole[]> {
+  async createMany(
+    props: DeepPartial<Omit<AclRole, 'slug'>>[],
+  ): Promise<AclRole[]> {
     return this.aclRoleRepository.create(props);
   }
 

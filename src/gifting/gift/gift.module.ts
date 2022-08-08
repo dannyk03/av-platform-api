@@ -17,6 +17,7 @@ import {
   GiftIntentService,
   GiftSendConfirmationLinkService,
   GiftSenderService,
+  GiftService,
 } from './service';
 import { GiftRecipientService } from './service/gift-recipient.service';
 
@@ -40,12 +41,14 @@ import { EmailService } from '@/messaging/email';
     MessagingModule,
   ],
   exports: [
+    GiftService,
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
     GiftSendConfirmationLinkService,
   ],
   providers: [
+    GiftService,
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,

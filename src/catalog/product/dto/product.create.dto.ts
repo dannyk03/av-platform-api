@@ -1,5 +1,3 @@
-import { isString } from '@nestjs/common/utils/shared.utils';
-
 import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
 
 import { Type } from 'class-transformer';
@@ -9,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsUUID,
   Length,
   MaxLength,
 } from 'class-validator';
@@ -71,4 +70,9 @@ export class ProductCreateDto {
   @ProductCurrency()
   @IsOptional()
   currency?: EnumCurrency;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @Type(() => String)
+  vendorId!: string;
 }
