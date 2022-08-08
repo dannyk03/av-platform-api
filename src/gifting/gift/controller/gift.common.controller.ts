@@ -83,13 +83,13 @@ export class GiftCommonController {
     { sender, recipients, additionalData }: GiftSendDto,
     @ReqUser()
     reqUser: User,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const uniqueRecipients = [...new Set(recipients)];
 
-    await this.defaultDataSource.transaction(
+    const giftIntents = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        const giftSends = await Promise.all(
+        const giftIntents = await Promise.all(
           uniqueRecipients.map(async (recipient) => {
             const maybeRecipientUser = await this.userService.findOneBy({
               email: recipient.email,
@@ -97,7 +97,9 @@ export class GiftCommonController {
 
             return this.giftIntentService.create({
               sender: {
-                user: reqUser,
+                user: {
+                  id: reqUser.id,
+                },
                 additionalData: {
                   ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
                     sender,
@@ -105,7 +107,7 @@ export class GiftCommonController {
                 },
               },
               recipient: {
-                user: maybeRecipientUser,
+                user: maybeRecipientUser ? { id: maybeRecipientUser.id } : null,
                 additionalData: {
                   ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
                     recipient,
@@ -124,30 +126,34 @@ export class GiftCommonController {
 
         const confirmationLink =
           await this.giftSendConfirmationLinkService.create({
-            gifts: giftSends,
+            gifts: giftIntents,
           });
 
         await transactionalEntityManager.save(confirmationLink);
 
-        await Promise.all(
-          giftSends.map(async (giftSend) => {
+        return await Promise.all(
+          giftIntents.map(async (giftIntent) => {
             const emailSent = await this.emailService.sendGiftConfirm({
-              email: giftSend.sender.user?.email,
+              email: giftIntent.sender.user?.email,
               code: confirmationLink.code,
             });
             if (!emailSent) {
               throw new InternalServerErrorException({
                 statusCode:
                   EnumMessagingStatusCodeError.MessagingEmailSendError,
-                message: 'http.serverError.internalServerError',
+                message: 'messaging.error.email.send',
               });
             }
-            giftSend.confirmationLink = confirmationLink;
-            return transactionalEntityManager.save(giftSend);
+            giftIntent.confirmationLink = confirmationLink;
+            return transactionalEntityManager.save(giftIntent);
           }),
         );
       },
     );
+
+    return {
+      giftIntents: giftIntents ? giftIntents.map(({ id }) => id) : null,
+    };
   }
 
   @ResponsePaging('gift.intent.list')
