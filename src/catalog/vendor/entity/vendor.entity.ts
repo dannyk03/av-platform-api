@@ -32,8 +32,7 @@ export class Vendor extends BaseEntity<Vendor> {
 
   @Index()
   @Column({
-    length: 100,
-    unique: true,
+    length: 200,
   })
   description!: string;
 

@@ -106,8 +106,8 @@ export class ProductService {
       builder.andWhere(
         new Brackets((qb) => {
           builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('sku ILIKE :likeSearch')
-            .orWhere('brand ILIKE :likeSearch')
+          qb.where('product.sku ILIKE :likeSearch')
+            .orWhere('product.brand ILIKE :likeSearch')
             .orWhere('display_options.name ILIKE :likeSearch')
             .orWhere('display_options.description ILIKE :likeSearch');
         }),

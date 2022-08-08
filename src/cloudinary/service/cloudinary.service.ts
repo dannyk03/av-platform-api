@@ -44,6 +44,10 @@ export class CloudinaryService {
 
     const developmentPath = `development/${productionPath}`;
 
+    if (!image) {
+      return Promise.resolve(null);
+    }
+
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {

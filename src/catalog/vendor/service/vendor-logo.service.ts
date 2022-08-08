@@ -65,14 +65,14 @@ export class VendorLogoService {
   }
 
   async createLogo({ logo, subFolder }: ICreateLogo): Promise<VendorLogo> {
-    const uploadLogo = this.cloudinaryService.uploadImage({
+    const uploadLogo = await this.cloudinaryService.uploadImage({
       subject: CloudinarySubject.Vendor,
       subFolder,
       image: logo,
       languageIsoCode: 'global',
     });
 
-    if (this.cloudinaryService.isUploadApiResponse(uploadLogo)) {
+    if (uploadLogo && this.cloudinaryService.isUploadApiResponse(uploadLogo)) {
       return this.create({
         fileName: uploadLogo.original_filename,
         assetId: uploadLogo.asset_id,

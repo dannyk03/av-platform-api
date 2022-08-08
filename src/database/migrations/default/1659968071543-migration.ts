@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1659966906183 implements MigrationInterface {
-  name = 'migration1659966906183';
+export class migration1659968071543 implements MigrationInterface {
+  name = 'migration1659968071543';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -28,11 +28,7 @@ export class migration1659966906183 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "vendors"
-            ADD "description" character varying(100) NOT NULL
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "vendors"
-            ADD CONSTRAINT "uq_vendors_description" UNIQUE ("description")
+            ADD "description" character varying(200) NOT NULL
         `);
     await queryRunner.query(`
             ALTER TABLE "vendors"
@@ -156,9 +152,6 @@ export class migration1659966906183 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "vendors" DROP COLUMN "is_active"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "vendors" DROP CONSTRAINT "uq_vendors_description"
         `);
     await queryRunner.query(`
             ALTER TABLE "vendors" DROP COLUMN "description"

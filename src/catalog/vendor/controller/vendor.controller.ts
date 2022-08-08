@@ -29,7 +29,9 @@ import { VendorLogoService, VendorService } from '../service';
 import { ProductService } from '@/catalog/product/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { VendorCreateDto } from '../dto';
+import { VendorListSerialization } from '../serialization';
+
+import { VendorCreateDto, VendorListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
@@ -50,7 +52,6 @@ export class VendorCommonController {
   constructor(
     private readonly vendorService: VendorService,
     private readonly vendorLogoService: VendorLogoService,
-    private readonly productService: ProductService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -71,7 +72,7 @@ export class VendorCommonController {
     @UploadedFile() logo: Express.Multer.File,
     @Body()
     { name, description, isActive }: VendorCreateDto,
-  ): Promise<Vendor> {
+  ): Promise<IResponseData> {
     const vendorExists = await this.vendorService.findOneBy({
       slug: slugify(name),
     });
@@ -97,139 +98,131 @@ export class VendorCommonController {
 
     const saveVendor = await this.vendorService.save(createVendor);
 
-    return saveVendor;
+    return this.vendorService.serialization(saveVendor);
   }
 
-  // @ResponsePaging('product.list')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Read,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @Get('/list')
-  // async list(
-  //   @Query()
-  //   {
-  //     lang,
-  //     page,
-  //     perPage,
-  //     sort,
-  //     search,
-  //     keywords,
-  //     availableSort,
-  //     availableSearch,
-  //     isActive,
-  //     priceRange,
-  //   }: ProductListDto,
-  // ): Promise<IResponsePagingData> {
-  //   const skip: number = await this.paginationService.skip(page, perPage);
+  @ResponsePaging('vendor.list')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.Vendor,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Get('/list')
+  async list(
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      isActive,
+    }: VendorListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
 
-  //   const products = await this.productService.paginatedSearchBy({
-  //     language: lang,
-  //     priceRange,
-  //     options: {
-  //       skip: skip,
-  //       take: perPage,
-  //       order: sort,
-  //     },
-  //     search,
-  //     keywords,
-  //     isActive,
-  //   });
+    const products = await this.vendorService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+      isActive,
+    });
 
-  //   const totalData = await this.productService.getTotal({
-  //     language: lang,
-  //     search,
-  //     keywords,
-  //     isActive,
-  //   });
+    const totalData = await this.vendorService.getTotal({
+      search,
+      isActive,
+    });
 
-  //   const totalPage: number = await this.paginationService.totalPage(
-  //     totalData,
-  //     perPage,
-  //   );
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
 
-  //   const data: ProductListSerialization[] =
-  //     await this.productService.serializationList(products);
+    const data: VendorListSerialization[] =
+      await this.vendorService.serializationList(products);
 
-  //   return {
-  //     totalData,
-  //     totalPage,
-  //     currentPage: page,
-  //     perPage,
-  //     availableSearch,
-  //     availableSort,
-  //     data,
-  //   };
-  // }
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data,
+    };
+  }
 
-  // @Response('product.delete')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Delete,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @RequestParamGuard(IdParamDto)
-  // @Delete('/:id')
-  // async deleteProduct(@Param('id') id: string): Promise<void> {
-  //   await this.productService.deleteProductBy({ id });
-  // }
+  @Response('vendor.delete')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Delete,
+        subject: Subjects.Vendor,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: string): Promise<void> {
+    await this.vendorService.deleteById(id);
+  }
 
-  // @Response('product.active')
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Update,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @RequestParamGuard(IdParamDto)
-  // @Patch('active/:id')
-  // async activeProduct(@Param('id') id: string): Promise<IResponseData> {
-  //   const { affected } = await this.productService.updateProductActiveStatus({
-  //     id,
-  //     isActive: true,
-  //   });
+  @Response('product.active')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Product,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('active/:id')
+  async activeProduct(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.vendorService.updateVendorActiveStatus({
+      id,
+      isActive: true,
+    });
 
-  //   return {
-  //     affected,
-  //   };
-  // }
+    return {
+      affected,
+    };
+  }
 
-  // @Response('product.inactive')
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Update,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @RequestParamGuard(IdParamDto)
-  // @Patch('inactive/:id')
-  // async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
-  //   const { affected } = await this.productService.updateProductActiveStatus({
-  //     id,
-  //     isActive: false,
-  //   });
+  @Response('vendor.inactive')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.Vendor,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('inactive/:id')
+  async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.vendorService.updateVendorActiveStatus({
+      id,
+      isActive: false,
+    });
 
-  //   return {
-  //     affected,
-  //   };
-  // }
+    return {
+      affected,
+    };
+  }
 
   // @Response('product.update')
   // @HttpCode(HttpStatus.OK)
@@ -252,25 +245,22 @@ export class VendorCommonController {
   //   await this.productService.serialization(updateRes);
   // }
 
-  // @Response('product.get')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Read,
-  //       subject: Subjects.Product,
-  //     },
-  //   ],
-  // })
-  // @RequestParamGuard(IdParamDto)
-  // @Get('/:id')
-  // async get(
-  //   @Param('id') id: string,
-  //   @Query()
-  //   { lang: language }: ProductGetDto,
-  // ): Promise<IResponseData> {
-  //   const getProduct = await this.productService.get({ id, language });
+  @Response('vendor.get')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.Vendor,
+      },
+    ],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
+  async get(@Param('id') id: string): Promise<IResponseData> {
+    const getVendor = await this.vendorService.get({ id });
 
-  //   return this.productService.serialization(getProduct);
-  // }
+    // return getVendor;
+    return this.vendorService.serialization(getVendor);
+  }
 }
