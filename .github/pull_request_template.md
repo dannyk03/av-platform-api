@@ -4,7 +4,7 @@
 
 ### Description
 
-Ticket: Have the PR and Commit title match the task name, if you don't have task specify "no ticket" or open one
+Ticket: Have the PR and Commit title match the task name, if you don't have please open one, Please add task-id starting with hush to the PR name
 
 Please explain the changes you made here.
 Include any breaking changes for example.
