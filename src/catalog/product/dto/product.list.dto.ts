@@ -1,12 +1,16 @@
+import {
+  EnumDisplayLanguage,
+  IPaginationList,
+  IPaginationSort,
+} from '@avo/type';
+
 import { ProductDisplayLanguage } from '../product.decorator';
 
-import { EnumDisplayLanguage } from '@/language/display-language';
 import {
-  IPaginationSort,
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterBoolean,
-  PaginationListAbstract,
+  PaginationFilterRange,
   PaginationMultiSearch,
   PaginationPage,
   PaginationPerPage,
@@ -20,11 +24,12 @@ import {
   PRODUCT_DEFAULT_AVAILABLE_SORT,
   PRODUCT_DEFAULT_PAGE,
   PRODUCT_DEFAULT_PER_PAGE,
+  PRODUCT_DEFAULT_PRISE_RANGE,
   PRODUCT_DEFAULT_SORT,
-  ProductNestingAliasMap,
+  ProductOrderByNestingAliasMap,
 } from '../product.constant';
 
-export class ProductListDto implements PaginationListAbstract {
+export class ProductListDto implements IPaginationList {
   @ProductDisplayLanguage()
   lang: EnumDisplayLanguage;
 
@@ -46,7 +51,7 @@ export class ProductListDto implements PaginationListAbstract {
   @PaginationSort(
     PRODUCT_DEFAULT_SORT,
     PRODUCT_DEFAULT_AVAILABLE_SORT,
-    ProductNestingAliasMap,
+    ProductOrderByNestingAliasMap,
   )
   readonly sort: IPaginationSort;
 
@@ -55,4 +60,7 @@ export class ProductListDto implements PaginationListAbstract {
 
   @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
+
+  @PaginationFilterRange(PRODUCT_DEFAULT_PRISE_RANGE)
+  readonly priceRange: [number, number];
 }

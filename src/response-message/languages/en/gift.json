@@ -6,5 +6,9 @@
     "code": "Invalid confirmation code",
     "verificationLink": "Invalid confirmation link",
     "senders": "Senders limit invalid"
+  },
+  "intent": {
+    "list": "List gift-intent success",
+    "addGiftOption": "Gift-intent add option success"
   }
 }

@@ -9,9 +9,9 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
-import { DataSource } from 'typeorm';
+import { IResponseData } from '@avo/type';
 
-import { IResponse } from '@/utils/response/response.interface';
+import { DataSource } from 'typeorm';
 
 import { ConnectionNames } from '@/database';
 import { RequestExcludeTimestamp } from '@/utils/request';
@@ -72,35 +72,35 @@ export class HealthController {
   @Response('health.check')
   @HealthCheck()
   @Get('/database')
-  async healthCheckDatabase(): Promise<IResponse> {
+  async healthCheckDatabase(): Promise<IResponseData> {
     return this.healthService.check([this.checkDatabase]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/memory-heap')
-  async healthCheckMemoryHeap(): Promise<IResponse> {
+  async healthCheckMemoryHeap(): Promise<IResponseData> {
     return this.healthService.check([this.checkMemoryHeap]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/memory-rss')
-  async healthCheckMemoryRss(): Promise<IResponse> {
+  async healthCheckMemoryRss(): Promise<IResponseData> {
     return this.healthService.check([this.checkMemoryRss]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/storage')
-  async healthCheckStorage(): Promise<IResponse> {
+  async healthCheckStorage(): Promise<IResponseData> {
     return this.healthService.check([this.checkStorage]);
   }
 
   @Response('health.check')
   @HealthCheck()
   @Get('/cloudinary')
-  async healthCheckCloudinary(): Promise<IResponse> {
+  async healthCheckCloudinary(): Promise<IResponseData> {
     return this.healthService.check([this.checkCloudinary]);
   }
 }

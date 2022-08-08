@@ -1,7 +1,19 @@
-import { BeforeInsert, Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
+import { Vendor } from '@/catalog/vendor/entity';
+import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
+import { Gift } from '@/gifting/gift/entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -32,6 +44,28 @@ export class Product extends BaseEntity<Product> {
     },
   )
   displayOptions!: ProductDisplayOption[];
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  shippingCost!: number;
+
+  @ManyToOne(() => Vendor, (vendor) => vendor.products)
+  @JoinColumn()
+  vendor: Vendor;
+
+  @ManyToOne(() => Currency)
+  @JoinColumn()
+  currency: Currency;
+
+  @Column({
+    length: 30,
+  })
+  taxCode!: string;
+
+  @ManyToMany(() => Gift, (giftOption) => giftOption.products)
+  giftOptions: Gift[];
 
   @BeforeInsert()
   beforeInsert() {

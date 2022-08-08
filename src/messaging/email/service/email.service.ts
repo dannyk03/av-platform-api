@@ -7,10 +7,13 @@ import { EmailStatus, EmailTemplate } from '../email.constant';
 
 @Injectable()
 export class EmailService {
+  private readonly isProduction: boolean;
   constructor(
     private readonly configService: ConfigService,
     private readonly customerIOService: CustomerIOService,
-  ) {}
+  ) {
+    this.isProduction = this.configService.get<boolean>('app.isProduction');
+  }
 
   async sendOrganizationInvite({
     email,
@@ -47,9 +50,8 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
-    const isProduction = this.configService.get<boolean>('app.isProduction');
     // Temporary for local development
-    if (!isProduction) {
+    if (!this.isProduction) {
       return true;
     }
     // TODO: Verify template parameters
@@ -96,6 +98,9 @@ export class EmailService {
     code: string;
     path?: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftConfirm.toString(),

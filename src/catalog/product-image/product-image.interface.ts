@@ -1,4 +1,4 @@
-import { EnumDisplayLanguage } from '@/language/display-language';
+import { EnumDisplayLanguage } from '@avo/type';
 
 export interface ICreateImages {
   images: Express.Multer.File[];

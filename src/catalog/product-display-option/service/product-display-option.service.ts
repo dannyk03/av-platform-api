@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { EnumDisplayLanguage } from '@avo/type';
+
 import {
   DeepPartial,
   FindOneOptions,
@@ -11,7 +13,6 @@ import {
 import { ProductDisplayOption } from '../entity';
 
 import { ConnectionNames } from '@/database';
-import { EnumDisplayLanguage } from '@/language/display-language';
 
 @Injectable()
 export class ProductDisplayOptionService {

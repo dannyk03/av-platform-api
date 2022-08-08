@@ -71,7 +71,7 @@ export function ResponsePagingInterceptor(
             );
 
             const listData = Array.isArray(data) ? data : [data];
-            if (options?.type === EnumPaginationType.Full) {
+            if (options?.type === EnumPaginationType.Simple) {
               return {
                 statusCode: newStatusCode,
                 message,
@@ -79,12 +79,12 @@ export function ResponsePagingInterceptor(
                 totalPage,
                 currentPage,
                 perPage,
-                availableSort,
-                availableSearch,
                 metadata,
                 data: listData,
               };
-            } else if (options?.type === EnumPaginationType.Mini) {
+            }
+
+            if (options?.type === EnumPaginationType.Mini) {
               return {
                 statusCode: newStatusCode,
                 message,
@@ -101,6 +101,8 @@ export function ResponsePagingInterceptor(
               totalPage,
               currentPage,
               perPage,
+              availableSort,
+              availableSearch,
               metadata,
               data: listData,
             };

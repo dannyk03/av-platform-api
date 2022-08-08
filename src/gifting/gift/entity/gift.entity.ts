@@ -1,61 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 
-import { GiftAdditionalData } from './gift-additional-data.entity';
-import { GiftRecipient } from './gift-recipient.entity';
-import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
-import { GiftSender } from './gift-sender.entity';
+import { GiftIntent } from './gift-intent.entity';
+import { GiftOrder } from './gift-order.entity';
+import { Product } from '@/catalog/product/entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class Gift extends BaseEntity<Gift> {
-  @OneToOne(() => GiftRecipient, {
-    cascade: ['insert'],
-  })
+  @ManyToMany(() => Product)
+  products!: Product[];
+
+  @ManyToOne(() => GiftIntent, (giftIntent) => giftIntent.giftOptions)
   @JoinColumn()
-  recipient: GiftRecipient;
+  giftIntent!: GiftIntent;
 
-  @OneToOne(() => GiftSender, {
-    cascade: ['insert'],
-  })
+  @ManyToOne(() => Gift, (gift) => gift.order)
   @JoinColumn()
-  sender!: GiftSender;
-
-  @OneToOne(() => GiftAdditionalData, {
-    nullable: true,
-    cascade: ['insert'],
-  })
-  @JoinColumn()
-  additionalData?: GiftAdditionalData;
-
-  @Column({
-    nullable: true,
-  })
-  sentAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  acceptedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  approvedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  shippedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  deliveredAt?: Date;
-
-  @ManyToOne(
-    () => GiftSendConfirmationLink,
-    (verificationLink) => verificationLink.gifts,
-  )
-  @JoinColumn()
-  confirmationLink!: GiftSendConfirmationLink;
+  order!: GiftOrder;
 }

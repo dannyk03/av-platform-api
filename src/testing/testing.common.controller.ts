@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 
+import { IResponseData } from '@avo/type';
+
 import { IResult } from 'ua-parser-js';
 
 import { CloudinaryService } from '@/cloudinary/service';
@@ -18,7 +20,7 @@ import { ReqUser } from '@/user';
 import { ErrorMeta } from '@/utils/error';
 import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
-import { IResponse, Response, ResponseTimeout } from '@/utils/response';
+import { Response, ResponseTimeout } from '@/utils/response';
 
 @Throttle(1, 10)
 @Controller({
@@ -37,7 +39,7 @@ export class TestingCommonController {
   async hello(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone: timezone,
     });
@@ -63,7 +65,7 @@ export class TestingCommonController {
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
     @ReqUser() user,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone: timezone,
     });
@@ -103,7 +105,7 @@ export class TestingCommonController {
   @ResponseTimeout('2s')
   @ErrorMeta(TestingCommonController.name, 'helloTimeoutCustom')
   @Get('/timeout')
-  async timeout(): Promise<IResponse> {
+  async timeout(): Promise<IResponseData> {
     await this.helperService.delay(5000);
     return;
   }

@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { IResponseData } from '@avo/type';
+
 import { User } from '../entity';
 
 import { UserService } from '../service';
@@ -10,7 +12,7 @@ import { AclRoleService } from '@acl/role/service';
 import { ReqUser } from '../user.decorator';
 
 import { AclGuard } from '@/auth';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -32,7 +34,7 @@ export class UserController {
   async getProfile(
     @ReqUser()
     reqUser: User,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     return this.userService.serializationUserProfile(reqUser);
   }
 }

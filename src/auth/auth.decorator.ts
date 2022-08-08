@@ -19,7 +19,7 @@ import { IReqAclAbility } from '@acl/acl.interface';
 import { ReqUserOrganizationActiveGuard } from '@/organization/guard';
 import { SYSTEM_ONLY_META_KEY } from '@/system';
 import {
-  USER_LOAD_AUTH_SENSITIVE_DATA,
+  USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY,
   USER_RELATIONS_META_KEY,
   USER_VERIFIED_ONLY_META_KEY,
 } from '@/user';
@@ -95,7 +95,7 @@ export function AclGuard(
     SetMetadata(SYSTEM_ONLY_META_KEY, systemOnly),
     SetMetadata(USER_VERIFIED_ONLY_META_KEY, verifiedOnly),
     SetMetadata(USER_RELATIONS_META_KEY, relations),
-    SetMetadata(USER_LOAD_AUTH_SENSITIVE_DATA, loadSensitiveAuthData),
+    SetMetadata(USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY, loadSensitiveAuthData),
   );
 }
 

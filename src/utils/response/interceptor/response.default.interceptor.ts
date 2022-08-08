@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
+import { IResponse } from '@avo/type';
+
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
-
-import { IResponse } from '../response.interface';
 
 import { IMessage } from '@/response-message';
 import { IRequestApp } from '@/utils/request';
