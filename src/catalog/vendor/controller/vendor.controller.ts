@@ -62,8 +62,9 @@ export class VendorCommonController {
     @Body()
     { name, description, isActive }: VendorCreateDto,
   ): Promise<IResponseData> {
+    const vendorSlug = slugify(name);
     const vendorExists = await this.vendorService.findOneBy({
-      slug: slugify(name),
+      slug: vendorSlug,
     });
 
     if (vendorExists) {
@@ -72,6 +73,9 @@ export class VendorCommonController {
         message: 'vendor.error.exists',
       });
     }
+
+    // Rename
+    logo.originalname = `${vendorSlug}_logo.${logo.originalname.split('.')[1]}`;
 
     const saveLogo = await this.vendorLogoService.createLogo({
       logo,
