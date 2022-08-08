@@ -10,6 +10,7 @@ import { GiftModule } from '@/gifting/gift/gift.module';
 import { HealthModule } from '@/health/health.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { OrganizationModule } from '@/organization/organization.module';
+import { PaymentModule } from '@/payment/payment.module';
 import { UserModule } from '@/user/user.module';
 import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
@@ -21,6 +22,7 @@ import {
   OrganizationController,
   OrganizationInviteController,
 } from '@/organization/controller';
+import { PaymentController } from '@/payment/controller';
 import { UserController } from '@/user/controller';
 
 @Module({
@@ -30,6 +32,7 @@ import { UserController } from '@/user/controller';
     UserController,
     OrganizationController,
     OrganizationInviteController,
+    PaymentController,
     AclController,
     AclRoleController,
     MagicLinkController,
@@ -47,6 +50,7 @@ import { UserController } from '@/user/controller';
     AclRoleModule,
     AclPolicyModule,
     OrganizationModule,
+    PaymentModule,
     MessagingModule,
     GiftModule,
   ],
