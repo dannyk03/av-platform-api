@@ -2093,10 +2093,15 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@^18.6.3":
+"@types/node@*":
   version "18.6.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.4.tgz#fd26723a8a3f8f46729812a7f9b4fc2d1608ed39"
   integrity sha512-I4BD3L+6AWiUobfxZ49DlU43gtI+FTHSv9pE2Zekg6KjMpre4ByusaljW3vYSLJrvQ1ck1hUaeVu8HVlY3vzHg==
+
+"@types/node@>=8.1.0", "@types/node@^18.6.4":
+  version "18.6.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.5.tgz#06caea822caf9e59d5034b695186ee74154d2802"
+  integrity sha512-Xjt5ZGUa5WusGZJ4WJPbOT8QOqp6nDynVFRKcUt32bOgvXEoc6o085WNkYTMO7ifAj2isEfQQ2cseE+wT6jsRw==
 
 "@types/node@^14.0.1":
   version "14.18.23"
@@ -6389,10 +6394,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier-plugin-organize-imports@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.0.2.tgz#104f9c9f238569e2a9fbdf2ec5eb6b8e95fdbe68"
-  integrity sha512-cA+Hh8EPNQSLG4hrAzcCwM2PmTjxbWNP3ZRT/Cub7cMHNH1lVaUyNLIHqtiqit6l0T1a0ugjYoRdXa9qpJFYuw==
+prettier-plugin-organize-imports@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-organize-imports/-/prettier-plugin-organize-imports-3.0.3.tgz#de6fed664b34d42bf6c7ce3f306ceec4ea3c4fb7"
+  integrity sha512-eu8PhJR39UZamhRdLEBJhUKG/sg0s+bnjwnN5Lc1TByZUHBtMuS9tBstnyaKGTSiMLhhftRPr0yIWG+PmJ13MA==
 
 prettier@^2.7.1:
   version "2.7.1"
@@ -7467,10 +7472,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typeorm-extension@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-2.1.5.tgz#67f56dbfc104077ee35a96dc3ffe5eaa28a3aed0"
-  integrity sha512-Dyj19I027KsOmsmVbeozW3O9fpmYpoSMTXPAFKp/UOfsuF5T/pM4qYjD+0ncJi4eNlqOXiIpX0E9UaKof4ILtg==
+typeorm-extension@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-2.1.7.tgz#61aa2ac520a056ba202357fb64ad141bfbf36ec2"
+  integrity sha512-q44fJ9UMgEUJqU3RjMOIIxeWDFD+/Jw+K6yT1RgNm4eCKqI1A9tFjiAm7/B5cswy4fPIPRX+30O5opZ0bTBbnQ==
   dependencies:
     "@faker-js/faker" "^7.3.0"
     locter "^0.1.2"

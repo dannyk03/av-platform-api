@@ -57,7 +57,7 @@ import { Response, ResponsePaging } from '@/utils/response';
 @Controller({
   version: '1',
 })
-export class GiftController {
+export class GiftCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
