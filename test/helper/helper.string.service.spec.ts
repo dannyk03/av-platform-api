@@ -29,7 +29,7 @@ describe('HelperStringService', () => {
       const test = jest.spyOn(helperStringService, 'checkEmail');
 
       helperStringService.checkEmail('111');
-      expect(test).toHaveBeenCalledWith('111');
+      expect(test).toHaveBeenCalledWith('1');
     });
 
     it('should be success', async () => {
