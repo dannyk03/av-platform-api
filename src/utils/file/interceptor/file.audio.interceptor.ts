@@ -54,9 +54,7 @@ export function FileAudioInterceptor(
             });
           }
 
-          for (const file of finalFiles) {
-            await this.validate(file);
-          }
+          await Promise.all(finalFiles.map(this.validate));
         } else {
           await this.validate(finalFiles);
         }

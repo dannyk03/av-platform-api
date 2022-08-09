@@ -64,9 +64,7 @@ export function FileExcelInterceptor(
             });
           }
 
-          for (const file of finalFiles) {
-            await this.validate(file);
-          }
+          await Promise.all(finalFiles.map(this.validate));
 
           if (options?.extract) {
             let extractFiles = [];
