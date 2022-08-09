@@ -71,16 +71,16 @@ export function FileExcelInterceptor(
             let rawExtractFiles = [];
             let errors: IValidationErrorImport[] = [];
 
-            for (const file of finalFiles) {
+            for (const singleFile of finalFiles) {
               const extract = await this.helperFileService.readExcel(
-                file.buffer,
+                singleFile.buffer,
               );
               rawExtractFiles = [...rawExtractFiles, ...extract];
 
               try {
                 const serialization = await this.excelValidate(
                   extract,
-                  file.originalname,
+                  singleFile.originalname,
                 );
                 extractFiles = [...extractFiles, ...serialization];
               } catch (err: any) {
