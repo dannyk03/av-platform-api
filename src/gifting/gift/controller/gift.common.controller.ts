@@ -31,8 +31,8 @@ import { DataSource } from 'typeorm';
 import { User } from '@/user/entity';
 
 import {
+  GiftIntentConfirmationLinkService,
   GiftIntentService,
-  GiftSendConfirmationLinkService,
   GiftService,
 } from '../service';
 import { ProductService } from '@/catalog/product/service';
@@ -67,7 +67,7 @@ export class GiftCommonController {
     private readonly giftService: GiftService,
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
-    private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
+    private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
     private readonly productService: ProductService,
   ) {}
@@ -126,7 +126,7 @@ export class GiftCommonController {
 
         const confirmationLink =
           await this.giftSendConfirmationLinkService.create({
-            gifts: giftIntents,
+            giftIntents,
           });
 
         await transactionalEntityManager.save(confirmationLink);
