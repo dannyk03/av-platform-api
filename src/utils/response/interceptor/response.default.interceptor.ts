@@ -68,7 +68,7 @@ export function ResponseDefaultInterceptor(
                 message: resMessage,
                 metadata:
                   Object.keys(resMetadata).length > 0 ? resMetadata : undefined,
-                data,
+                result: data,
               };
             }
 
