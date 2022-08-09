@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -26,7 +27,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 import { User } from '@/user/entity';
 
@@ -43,7 +44,11 @@ import { PaginationService } from '@/utils/pagination/service';
 import { GiftIntentSerialization } from '../serialization';
 import { ProductListSerialization } from '@/catalog/product/serialization';
 
-import { GiftIntentListDto, GiftOptionCreateDto } from '../dto';
+import {
+  GiftIntentListDto,
+  GiftOptionCreateDto,
+  GiftOptionDeleteDto,
+} from '../dto';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
@@ -239,7 +244,7 @@ export class GiftCommonController {
   async addGiftOption(
     @Param('id') giftIntentId: string,
     @Body() { productIds }: GiftOptionCreateDto,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: { id: giftIntentId },
       relations: ['giftOptions'],
@@ -260,12 +265,47 @@ export class GiftCommonController {
       });
     }
 
-    const createGift = await this.giftService.create({
-      products,
+    return await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const createGift = await this.giftService.create({
+          products,
+        });
+
+        const saveGift = await transactionalEntityManager.save(createGift);
+
+        giftIntent.giftOptions = [...giftIntent.giftOptions, saveGift];
+
+        await transactionalEntityManager.save(giftIntent);
+
+        return saveGift;
+      },
+    );
+  }
+
+  @Response('gift.intent.deleteGiftOption')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Delete,
+        subject: Subjects.GiftOption,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Delete('/intent/:id')
+  async deleteGiftOption(
+    @Param('id') giftIntentId: string,
+    @Body() { giftOptionIds }: GiftOptionDeleteDto,
+  ): Promise<IResponseData> {
+    const deleteResult = await this.giftService.deleteOneBy({
+      id: In(giftOptionIds),
+      giftIntent: { id: giftIntentId },
     });
-
-    giftIntent.giftOptions = [...giftIntent.giftOptions, createGift];
-
-    this.giftIntentService.save(giftIntent);
+    return {
+      affected: deleteResult.affected,
+    };
   }
 }

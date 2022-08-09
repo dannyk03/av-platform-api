@@ -6,7 +6,7 @@ import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class GiftSubmit extends BaseEntity<GiftSubmit> {
-  @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.giftSelect, {
+  @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.giftSubmit, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()

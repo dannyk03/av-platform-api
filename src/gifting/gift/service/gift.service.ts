@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import {
   DeepPartial,
+  DeleteResult,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -37,5 +38,9 @@ export class GiftService {
 
   async findOneBy(find: FindOptionsWhere<Gift>): Promise<Gift> {
     return this.giftRepository.findOneBy(find);
+  }
+
+  async deleteOneBy(find: FindOptionsWhere<Gift>): Promise<DeleteResult> {
+    return this.giftRepository.delete(find);
   }
 }

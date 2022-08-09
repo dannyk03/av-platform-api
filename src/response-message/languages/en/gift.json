@@ -10,6 +10,7 @@
   "intent": {
     "list": "List gift-intent success",
     "addGiftOption": "Gift-intent add option success",
+    "deleteGiftOption": "Gift-intent delete option success",
     "error": {
       "notFound": "Gift intent not found"
     }

@@ -75,11 +75,13 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
 
   @OneToMany(() => Gift, (giftOption) => giftOption.giftIntent, {
     nullable: true,
+    cascade: true,
   })
   giftOptions?: Gift[];
 
   @OneToOne(() => GiftSubmit, (giftSubmit) => giftSubmit.giftIntent, {
     nullable: true,
+    cascade: true,
   })
-  giftSelect?: GiftSubmit[];
+  giftSubmit?: GiftSubmit[];
 }
