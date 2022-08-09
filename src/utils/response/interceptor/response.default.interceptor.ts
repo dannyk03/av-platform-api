@@ -49,7 +49,7 @@ export function ResponseDefaultInterceptor(
                 await this.responseMessageService.get(messagePath, {
                   customLanguages,
                 });
-              const resData = (await responseData) as IResponseData;
+              const resData = await responseData;
               if (resData) {
                 const { metadata, ...data } = resData;
 

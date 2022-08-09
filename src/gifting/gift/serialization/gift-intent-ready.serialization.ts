@@ -9,15 +9,10 @@ import {
 } from 'class-transformer';
 
 import { Gift } from '../entity';
-import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 import { Product } from '@/catalog/product/entity';
 
 import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
-import {
-  ProductListSerialization,
-  VendorSerialization,
-} from '@/catalog/product/serialization';
 
 @Exclude()
 class GiftUserSerialization {

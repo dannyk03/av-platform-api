@@ -12,7 +12,6 @@ import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
-  EnumDisplayLanguage,
   EnumGiftIntentStatusCodeError,
   EnumGiftStatusCodeError,
   EnumMessagingStatusCodeError,
