@@ -242,14 +242,21 @@ export class MagicLinkController {
         ]);
 
         await Promise.all(
-          existingGiftSendConfirmationLink.giftIntents.map(async (gift) =>
-            this.emailService.sendGiftSurvey({
-              senderEmail:
-                gift.sender.user?.email || gift.sender.additionalData['email'],
-              recipientEmail:
-                gift.recipient.user?.email ||
-                gift.recipient.additionalData['email'],
-            }),
+          existingGiftSendConfirmationLink.giftIntents.map(
+            async (giftIntent) => {
+              const sent = this.emailService.sendGiftSurvey({
+                senderEmail:
+                  giftIntent.sender.user?.email ||
+                  giftIntent.sender.additionalData['email'],
+                recipientEmail:
+                  giftIntent.recipient.user?.email ||
+                  giftIntent.recipient.additionalData['email'],
+              });
+
+              if (sent) {
+                console.log('first');
+              }
+            },
           ),
         );
       },
