@@ -11,10 +11,10 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   ValidateIf,
 } from 'class-validator';
-import { snakeCase } from 'lodash';
 
 import {
   IPaginationFilterDateOptions,
@@ -67,6 +67,7 @@ export function PaginationAvailableSearch(availableSearch: string[]): any {
 export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
   return applyDecorators(
     Expose(),
+    IsPositive(),
     Type(() => Number),
     Transform(({ value }) =>
       !value
@@ -81,6 +82,7 @@ export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
 export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
   return applyDecorators(
     Expose(),
+    IsPositive(),
     Type(() => Number),
     Transform(({ value }) =>
       !value
