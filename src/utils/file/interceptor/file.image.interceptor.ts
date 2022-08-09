@@ -42,7 +42,7 @@ export function FileImageInterceptor(
             'file.image.maxFiles',
           );
 
-          if (options && options.required && finalFiles.length === 0) {
+          if (options?.required && finalFiles.length === 0) {
             throw new UnprocessableEntityException({
               statusCode: EnumFileStatusCodeError.FileNeededError,
               message: 'file.error.notFound',
@@ -66,7 +66,7 @@ export function FileImageInterceptor(
     }
 
     async validate(file: IFile): Promise<void> {
-      if (options && options.required && !file) {
+      if (options?.required && !file) {
         throw new UnprocessableEntityException({
           statusCode: EnumFileStatusCodeError.FileNeededError,
           message: 'file.error.notFound',

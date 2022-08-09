@@ -24,7 +24,7 @@ import { IFile, IFileExcelOptions } from '../file.interface';
 
 import { IValidationErrorImport } from '@/utils/error';
 
-import { EnumFileExcelMime, EnumFileImageMime } from '../file.constant';
+import { EnumFileExcelMime } from '../file.constant';
 
 export function FileExcelInterceptor(
   options?: IFileExcelOptions,
@@ -52,7 +52,7 @@ export function FileExcelInterceptor(
             'file.excel.maxFiles',
           );
 
-          if (options && options.required && finalFiles.length === 0) {
+          if (options?.required && finalFiles.length === 0) {
             throw new UnprocessableEntityException({
               statusCode: EnumFileStatusCodeError.FileNeededError,
               message: 'file.error.notFound',
@@ -68,7 +68,7 @@ export function FileExcelInterceptor(
             await this.validate(file);
           }
 
-          if (options && options.extract) {
+          if (options?.extract) {
             let extractFiles = [];
             let rawExtractFiles = [];
             let errors: IValidationErrorImport[] = [];
@@ -105,7 +105,7 @@ export function FileExcelInterceptor(
         } else {
           await this.validate(finalFiles);
 
-          if (options && options.extract) {
+          if (options?.extract) {
             const extract = await this.helperFileService.readExcel(file.buffer);
 
             try {
@@ -129,7 +129,7 @@ export function FileExcelInterceptor(
     }
 
     async validate(file: IFile): Promise<void> {
-      if (options && options.required && !file) {
+      if (options?.required && !file) {
         throw new UnprocessableEntityException({
           statusCode: EnumFileStatusCodeError.FileNeededError,
           message: 'file.error.notFound',
@@ -162,7 +162,7 @@ export function FileExcelInterceptor(
       extract: Record<string, any>[],
       fileName: string,
     ): Promise<Record<string, any>[]> {
-      if (options && options.dto) {
+      if (options?.dto) {
         const data: Record<string, any>[] = [];
         const errors: IValidationErrorImport[] = [];
 
