@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
-import { IResponse } from '@avo/type';
+import { IResponse, IResponseData } from '@avo/type';
 
 import { Response } from 'express';
 import { Observable } from 'rxjs';
@@ -33,51 +33,59 @@ export function ResponseDefaultInterceptor(
     async intercept(
       context: ExecutionContext,
       next: CallHandler,
-    ): Promise<Observable<Promise<any> | string>> {
+    ): Promise<Observable<Promise<IResponse> | string>> {
       if (context.getType() === 'http') {
         return next.handle().pipe(
-          map(async (responseData: Promise<Record<string, any>>) => {
-            const ctx: HttpArgumentsHost = context.switchToHttp();
-            const response: Response = ctx.getResponse();
-            const { customLang } = ctx.getRequest<IRequestApp>();
-            const customLanguages = customLang?.split(',') || [];
-            let resStatusCode = response.statusCode;
-            let resMessage: string | IMessage =
-              await this.responseMessageService.get(messagePath, {
-                customLanguages,
-              });
-            const resData = (await responseData) as IResponse;
-            if (resData) {
-              const { metadata, ...data } = resData;
+          map(
+            async (
+              responseData: Promise<IResponseData>,
+            ): Promise<IResponse> => {
+              const ctx: HttpArgumentsHost = context.switchToHttp();
+              const response: Response = ctx.getResponse();
+              const { customLang } = ctx.getRequest<IRequestApp>();
+              const customLanguages = customLang?.split(',') || [];
+              let resStatusCode = response.statusCode;
+              let resMessage: string | IMessage =
+                await this.responseMessageService.get(messagePath, {
+                  customLanguages,
+                });
+              const resData = (await responseData) as IResponseData;
+              if (resData) {
+                const { metadata, ...data } = resData;
 
-              // metadata
-              let resMetadata = {};
-              if (metadata) {
-                const { statusCode, message, ...metadataOthers } = metadata;
-                resStatusCode = statusCode || resStatusCode;
-                resMessage = message
-                  ? await this.responseMessageService.get(message, {
-                      customLanguages,
-                    })
-                  : resMessage;
-                resMetadata = metadataOthers;
+                // metadata
+                let resMetadata = {};
+                if (metadata) {
+                  const { statusCode, message, ...metadataOthers } = metadata;
+                  resStatusCode = statusCode || resStatusCode;
+                  resMessage = message
+                    ? await this.responseMessageService.get(message, {
+                        customLanguages,
+                      })
+                    : resMessage;
+                  resMetadata = metadataOthers;
+                }
+
+                return {
+                  statusCode: resStatusCode,
+                  message: resMessage,
+                  data: {
+                    meta:
+                      Object.keys(resMetadata).length > 0
+                        ? resMetadata
+                        : undefined,
+                    result: data,
+                  },
+                };
               }
 
               return {
                 statusCode: resStatusCode,
                 message: resMessage,
-                metadata:
-                  Object.keys(resMetadata).length > 0 ? resMetadata : undefined,
-                result: data,
+                data: resData === null ? null : undefined,
               };
-            }
-
-            return {
-              statusCode: resStatusCode,
-              message: resMessage,
-              data: resData === null ? null : undefined,
-            };
-          }),
+            },
+          ),
         );
       }
 

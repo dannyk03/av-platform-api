@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
+import { IResponsePaging } from '@avo/type';
+
 import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -34,44 +36,77 @@ export function ResponsePagingInterceptor(
     async intercept(
       context: ExecutionContext,
       next: CallHandler,
-    ): Promise<Observable<Promise<any> | string>> {
+    ): Promise<Observable<Promise<IResponsePaging> | string>> {
       if (context.getType() === 'http') {
         const statusCode: number = options?.statusCode;
 
         return next.handle().pipe(
-          map(async (response: Promise<Record<string, any>>) => {
-            const ctx: HttpArgumentsHost = context.switchToHttp();
-            const responseExpress: Response = ctx.getResponse();
-            const { headers } = ctx.getRequest();
-            const customLanguages = headers['x-custom-lang'];
+          map(
+            async (
+              responseData: Promise<Record<string, any>>,
+            ): Promise<IResponsePaging> => {
+              const ctx: HttpArgumentsHost = context.switchToHttp();
+              const responseExpress: Response = ctx.getResponse();
+              const { headers } = ctx.getRequest();
+              const customLanguages = headers['x-custom-lang'];
 
-            const newStatusCode = statusCode || responseExpress.statusCode;
-            const responseData: Record<string, any> = await response;
-            const {
-              totalData,
-              currentPage,
-              perPage,
-              data,
-              metadata,
-              availableSort,
-              availableSearch,
-            } = responseData;
+              const newStatusCode = statusCode || responseExpress.statusCode;
+              const resData: Record<string, any> = await responseData;
+              const {
+                totalData,
+                currentPage,
+                perPage,
+                data,
+                metadata,
+                availableSort,
+                availableSearch,
+              } = resData;
 
-            let { totalPage } = responseData;
-            totalPage =
-              totalPage > PAGINATION_DEFAULT_MAX_PAGE
-                ? PAGINATION_DEFAULT_MAX_PAGE
-                : totalPage;
+              let { totalPage } = resData;
+              totalPage =
+                totalPage > PAGINATION_DEFAULT_MAX_PAGE
+                  ? PAGINATION_DEFAULT_MAX_PAGE
+                  : totalPage;
 
-            const message: string | IMessage = await this.messageService.get(
-              messagePath,
-              {
-                customLanguages,
-              },
-            );
+              const message: string | IMessage = await this.messageService.get(
+                messagePath,
+                {
+                  customLanguages,
+                },
+              );
 
-            const listData = Array.isArray(data) ? data : [data];
-            if (options?.type === EnumPaginationType.Simple) {
+              const listData = Array.isArray(data) ? data : [data];
+              if (options?.type === EnumPaginationType.Simple) {
+                return {
+                  statusCode: newStatusCode,
+                  message,
+                  data: {
+                    meta: {
+                      totalData,
+                      totalPage,
+                      currentPage,
+                      perPage,
+                      ...metadata,
+                    },
+                    results: listData,
+                  },
+                };
+              }
+
+              if (options?.type === EnumPaginationType.Mini) {
+                return {
+                  statusCode: newStatusCode,
+                  message,
+                  data: {
+                    meta: {
+                      totalData,
+                      ...metadata,
+                    },
+                    results: listData,
+                  },
+                };
+              }
+
               return {
                 statusCode: newStatusCode,
                 message,
@@ -81,44 +116,15 @@ export function ResponsePagingInterceptor(
                     totalPage,
                     currentPage,
                     perPage,
+                    availableSort,
+                    availableSearch,
                     ...metadata,
                   },
                   results: listData,
                 },
               };
-            }
-
-            if (options?.type === EnumPaginationType.Mini) {
-              return {
-                statusCode: newStatusCode,
-                message,
-                data: {
-                  meta: {
-                    totalData,
-                    ...metadata,
-                  },
-                  results: listData,
-                },
-              };
-            }
-
-            return {
-              statusCode: newStatusCode,
-              message,
-              data: {
-                meta: {
-                  totalData,
-                  totalPage,
-                  currentPage,
-                  perPage,
-                  availableSort,
-                  availableSearch,
-                  ...metadata,
-                },
-                results: listData,
-              },
-            };
-          }),
+            },
+          ),
         );
       }
 
