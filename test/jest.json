@@ -11,7 +11,7 @@
     "./src/config/service/**",
     "./src/database/service/**",
     "./src/debugger/service/**",
-    "./src/message/service/**",
+    "./src/response-message/service/**",
     "./src/utils/helper/service/**",
     "./src/utils/pagination/service/**"
   ],
