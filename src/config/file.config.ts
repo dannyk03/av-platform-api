@@ -7,11 +7,11 @@ export default registerAs(
   (): Record<string, any> => ({
     image: {
       maxFileSize: bytes('100kb'), // 100 KB
-      maxFiles: 2, // 2 files
+      maxFiles: 3,
     },
     excel: {
       maxFileSize: bytes('1mb'), // 100 KB
-      maxFiles: 2, // 2 files
+      maxFiles: 3,
     },
   }),
 );
