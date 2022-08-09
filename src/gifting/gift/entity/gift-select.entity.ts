@@ -5,13 +5,13 @@ import { Gift } from './gift.entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
-export class GiftOrder extends BaseEntity<GiftOrder> {
-  @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.giftOrder, {
+export class GiftSelect extends BaseEntity<GiftSelect> {
+  @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.giftSelect, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
   giftIntent!: GiftIntent;
 
-  @OneToMany(() => Gift, (gift) => gift.order)
+  @OneToMany(() => Gift, (gift) => gift.giftSelect)
   gifts!: Gift[];
 }

@@ -1,7 +1,7 @@
 import { Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 import { GiftIntent } from './gift-intent.entity';
-import { GiftOrder } from './gift-order.entity';
+import { GiftSelect } from './gift-select.entity';
 import { Product } from '@/catalog/product/entity';
 import { BaseEntity } from '@/database/entity';
 
@@ -27,7 +27,9 @@ export class Gift extends BaseEntity<Gift> {
   @JoinColumn()
   giftIntent!: GiftIntent;
 
-  @ManyToOne(() => Gift, (gift) => gift.order, { nullable: true })
+  @ManyToOne(() => GiftSelect, (giftSelect) => giftSelect.gifts, {
+    nullable: true,
+  })
   @JoinColumn()
-  order?: GiftOrder;
+  giftSelect?: GiftSelect;
 }
