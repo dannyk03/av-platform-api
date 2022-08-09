@@ -52,7 +52,7 @@ export function FileExcelInterceptor(
             'file.excel.maxFiles',
           );
 
-          if (options?.required && finalFiles.length === 0) {
+          if (options?.required && !finalFiles?.length) {
             throw new UnprocessableEntityException({
               statusCode: EnumFileStatusCodeError.FileNeededError,
               message: 'file.error.notFound',
