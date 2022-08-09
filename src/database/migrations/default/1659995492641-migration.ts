@@ -23,7 +23,7 @@ export class migration1659995492641 implements MigrationInterface {
             ALTER TABLE "gift_options" DROP CONSTRAINT "fk_gift_options_gift_intent_id"
     `);
     await queryRunner.query(`
-            DROP TABLE "gift_options"
+            DROP TABLE IF EXISTS "gift_options"
         `);
   }
 

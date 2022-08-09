@@ -10,8 +10,8 @@ import {
 import { GiftIntentAdditionalData } from './gift-intent-additional-data.entity';
 import { GiftIntentConfirmationLink } from './gift-intent-confirmation-link.entity';
 import { GiftRecipient } from './gift-recipient.entity';
-import { GiftSelect } from './gift-select.entity';
 import { GiftSender } from './gift-sender.entity';
+import { GiftSubmit } from './gift-submit.entity';
 import { Gift } from './gift.entity';
 import { BaseEntity } from '@/database/entity';
 
@@ -49,7 +49,12 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   @Column({
     nullable: true,
   })
-  approvedAt?: Date;
+  readyAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  submittedAt?: Date;
 
   @Column({
     nullable: true,
@@ -73,8 +78,8 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   })
   giftOptions?: Gift[];
 
-  @OneToOne(() => GiftSelect, (giftSelect) => giftSelect.giftIntent, {
+  @OneToOne(() => GiftSubmit, (giftSubmit) => giftSubmit.giftIntent, {
     nullable: true,
   })
-  giftSelect?: GiftSelect[];
+  giftSelect?: GiftSubmit[];
 }
