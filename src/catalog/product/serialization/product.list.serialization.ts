@@ -44,10 +44,7 @@ export class ProductListSerialization {
   readonly description: string;
 
   @Expose()
-  @Transform(({ obj }) => {
-    debugger;
-    return obj.displayOptions[0]?.keywords;
-  })
+  @Transform(({ obj }) => obj.displayOptions[0]?.keywords)
   readonly keywords!: string[];
 
   @Expose()

@@ -86,7 +86,7 @@ export class GiftCommonController {
   ): Promise<IResponseData> {
     const uniqueRecipients = [...new Set(recipients)];
 
-    const giftIntents = await this.defaultDataSource.transaction(
+    const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const giftIntents = await Promise.all(
@@ -131,7 +131,7 @@ export class GiftCommonController {
 
         await transactionalEntityManager.save(confirmationLink);
 
-        return await Promise.all(
+        const saveGiftIntents = await Promise.all(
           giftIntents.map(async (giftIntent) => {
             const emailSent = await this.emailService.sendGiftConfirm({
               email: giftIntent.sender.user?.email,
@@ -148,12 +148,22 @@ export class GiftCommonController {
             return transactionalEntityManager.save(giftIntent);
           }),
         );
+
+        return {
+          code: confirmationLink.code,
+          giftIntents: saveGiftIntents
+            ? saveGiftIntents.map(({ id }) => id)
+            : null,
+        };
       },
     );
 
-    return {
-      giftIntents: giftIntents ? giftIntents.map(({ id }) => id) : null,
-    };
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
+    }
   }
 
   @ResponsePaging('gift.intent.list')
