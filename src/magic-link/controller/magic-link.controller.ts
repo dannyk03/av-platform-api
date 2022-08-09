@@ -2,6 +2,7 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Query,
   Res,
@@ -11,6 +12,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumGiftStatusCodeError,
+  EnumMessagingStatusCodeError,
   EnumOrganizationStatusCodeError,
   EnumUserStatusCodeError,
   IResponseData,
@@ -254,7 +256,14 @@ export class MagicLinkController {
               });
 
               if (sent) {
-                console.log('first');
+                giftIntent.sentAt = this.helperDateService.create();
+                transactionalEntityManager.save(giftIntent);
+              } else {
+                throw new InternalServerErrorException({
+                  statusCode:
+                    EnumMessagingStatusCodeError.MessagingEmailSendError,
+                  message: 'messaging.error.email.send',
+                });
               }
             },
           ),
