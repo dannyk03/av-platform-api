@@ -10,13 +10,14 @@ import {
   GiftRecipient,
   GiftSender,
 } from './entity';
-import { GiftOrder } from './entity/gift-order.entity';
+import { GiftSelect } from './entity/gift-select.entity';
 import { Gift } from './entity/gift.entity';
 
 import {
   GiftIntentService,
   GiftSendConfirmationLinkService,
   GiftSenderService,
+  GiftService,
 } from './service';
 import { GiftRecipientService } from './service/gift-recipient.service';
 
@@ -28,7 +29,7 @@ import { EmailService } from '@/messaging/email';
     TypeOrmModule.forFeature(
       [
         Gift,
-        GiftOrder,
+        GiftSelect,
         GiftIntent,
         GiftSender,
         GiftRecipient,
@@ -40,12 +41,14 @@ import { EmailService } from '@/messaging/email';
     MessagingModule,
   ],
   exports: [
+    GiftService,
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
     GiftSendConfirmationLinkService,
   ],
   providers: [
+    GiftService,
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,

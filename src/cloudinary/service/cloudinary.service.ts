@@ -1,22 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
+import {
+  AdminAndResourceOptions,
+  AdminApiOptions,
+  UploadApiErrorResponse,
+  UploadApiResponse,
+  v2,
+} from 'cloudinary';
 import { createReadStream } from 'streamifier';
 import util from 'util';
 
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 
-import { CloudinaryFolder } from '../cloudinary.constant';
+import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
 
 @Injectable()
 export class CloudinaryService {
   private readonly isProduction: boolean;
-  private readonly deleteResources: (publicIds: string[]) => Promise<unknown>;
+  private readonly cloudinaryDeleteResources: (
+    publicIds: string[],
+  ) => Promise<any>;
+  private readonly cloudinaryDeleteFolder: (
+    path: string,
+    options?: AdminApiOptions,
+  ) => Promise<any>;
+  private readonly cloudinaryDeleteResourcesByPrefix: (
+    prefix: string,
+    options?: AdminAndResourceOptions,
+  ) => Promise<any>;
 
   constructor(private readonly configService: ConfigService) {
     this.isProduction = this.configService.get('app.isProduction');
-    this.deleteResources = util.promisify(v2.api.delete_resources);
+    this.cloudinaryDeleteResources = util.promisify(v2.api.delete_resources);
+    this.cloudinaryDeleteFolder = util.promisify(v2.api.delete_folder);
+    this.cloudinaryDeleteResourcesByPrefix = util.promisify(
+      v2.api.delete_resources_by_prefix,
+    );
   }
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
@@ -26,19 +46,34 @@ export class CloudinaryService {
     return v2.api.ping();
   }
 
-  async deleteImages({ publicIds }: { publicIds: string[] }) {
-    return this.deleteResources([...new Set(publicIds)]);
+  async deleteResources({ publicIds }: { publicIds: string[] }) {
+    return this.cloudinaryDeleteResources([...new Set(publicIds)]);
+  }
+
+  async deleteFolder({ path }: { path: string }) {
+    // TODO Shitty cloudinary API, doesn't work (WIP)
+    await this.cloudinaryDeleteResourcesByPrefix(path);
+    return this.cloudinaryDeleteFolder(path);
   }
 
   async uploadImage({
     image,
     subject,
     languageIsoCode,
+    subFolder,
   }: UploadCloudinaryImage): Promise<
     UploadApiResponse | UploadApiErrorResponse
   > {
-    const productionPath = CloudinaryFolder[languageIsoCode][subject];
+    const productionPath = `${
+      CloudinarySubjectFolderPath[languageIsoCode][subject]
+    }${subFolder ? `/${subFolder}` : ''}`;
+
     const developmentPath = `development/${productionPath}`;
+
+    if (!image) {
+      return Promise.resolve(null);
+    }
+
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {

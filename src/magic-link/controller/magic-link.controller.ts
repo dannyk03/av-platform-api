@@ -173,7 +173,7 @@ export class MagicLinkController {
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {
-    const existingGiftSendVerificationLink =
+    const existingGiftSendConfirmationLink =
       await this.giftSendConfirmationLinkService.findOne({
         where: { code },
         relations: [
@@ -186,23 +186,23 @@ export class MagicLinkController {
         ],
       });
 
-    if (!existingGiftSendVerificationLink) {
+    if (!existingGiftSendConfirmationLink) {
       throw new NotFoundException({
-        statusCode: EnumGiftStatusCodeError.GiftVerificationNotFoundError,
+        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkNotFoundError,
         message: 'gift.error.code',
       });
     }
 
     const now = this.helperDateService.create();
     const expiresAt =
-      existingGiftSendVerificationLink.expiresAt &&
+      existingGiftSendConfirmationLink.expiresAt &&
       this.helperDateService.create({
-        date: existingGiftSendVerificationLink.expiresAt,
+        date: existingGiftSendConfirmationLink.expiresAt,
       });
 
     if (
       (expiresAt && now > expiresAt) ||
-      existingGiftSendVerificationLink.usedAt
+      existingGiftSendConfirmationLink.usedAt
     ) {
       throw new ForbiddenException({
         statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpired,
@@ -211,7 +211,7 @@ export class MagicLinkController {
     }
 
     const uniqueSenders = uniqBy(
-      existingGiftSendVerificationLink.gifts.map((gift) => gift.sender),
+      existingGiftSendConfirmationLink.gifts.map((gift) => gift.sender),
       'id',
     );
 
@@ -225,9 +225,9 @@ export class MagicLinkController {
     await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        existingGiftSendVerificationLink.usedAt =
+        existingGiftSendConfirmationLink.usedAt =
           this.helperDateService.create();
-        await transactionalEntityManager.save(existingGiftSendVerificationLink);
+        await transactionalEntityManager.save(existingGiftSendConfirmationLink);
 
         await Promise.all([
           uniqueSenders.map(async (sender) => {
@@ -242,7 +242,7 @@ export class MagicLinkController {
         ]);
 
         await Promise.all(
-          existingGiftSendVerificationLink.gifts.map(async (gift) =>
+          existingGiftSendConfirmationLink.gifts.map(async (gift) =>
             this.emailService.sendGiftSurvey({
               senderEmail:
                 gift.sender.user?.email || gift.sender.additionalData['email'],

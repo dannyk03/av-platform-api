@@ -10,4 +10,5 @@ export enum EnumLogAction {
   Login = 'LOGIN',
   SignUp = 'SIGNUP',
   CreateOrganization = 'CREATE_ORGANIZATION',
+  CreatePayment = 'CREATE_PAYMENT',
 }

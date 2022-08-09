@@ -1,3 +1,5 @@
+import { ValidationError } from 'class-validator';
+
 import { IMessage, IMessageOptionsProperties } from '@/response-message';
 
 export interface IErrors {
@@ -5,10 +7,24 @@ export interface IErrors {
   readonly property: string;
 }
 
+export interface IErrorsImport {
+  row: number;
+  file?: string;
+  errors: IErrors[];
+}
+
+export interface IValidationErrorImport {
+  row: number;
+  file?: string;
+  errors: ValidationError[];
+}
+
 export interface IErrorException {
   statusCode: number;
   message: string;
-  errors?: IErrors[];
+  cause?: string;
+  errors?: ValidationError[] | IValidationErrorImport[];
+  errorFromImport?: boolean;
   data?: Record<string, any>;
   properties?: IMessageOptionsProperties;
 }

@@ -16,6 +16,7 @@ import {
 import { Action, Subjects } from '@avo/casl';
 import {
   EnumProductStatusCodeError,
+  EnumVendorStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
@@ -24,6 +25,7 @@ import compact from 'lodash/compact';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
+import { VendorService } from '@/catalog/vendor/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { ProductListSerialization } from '../serialization';
@@ -43,6 +45,7 @@ import { Response, ResponsePaging } from '@/utils/response';
 export class ProductCommonController {
   constructor(
     private readonly productService: ProductService,
+    private readonly vendorService: VendorService,
     private readonly productImageService: ProductImageService,
     private readonly paginationService: PaginationService,
   ) {}
@@ -58,7 +61,7 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', EnumFileType.Image, true)
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
   @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],
@@ -75,20 +78,33 @@ export class ProductCommonController {
       currency,
       taxCode,
       shippingCost,
+      vendorId,
     }: ProductCreateDto,
   ): Promise<IResponseData> {
-    const productExists = await this.productService.findOneBy({ sku });
+    const checkProductExists = await this.productService.checkExistsBy({ sku });
 
-    if (productExists) {
+    if (checkProductExists) {
       throw new BadRequestException({
         statusCode: EnumProductStatusCodeError.ProductExistsError,
         message: 'product.error.exists',
       });
     }
 
+    const checkVendorExists = await this.vendorService.checkExistsBy({
+      id: vendorId,
+    });
+
+    if (!checkVendorExists) {
+      throw new BadRequestException({
+        statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+        message: 'vendor.error.notFound',
+      });
+    }
+
     const saveImages = await this.productImageService.createImages({
       images,
       language,
+      subFolder: sku,
     });
 
     const createProduct = await this.productService.create({
@@ -98,6 +114,9 @@ export class ProductCommonController {
       isActive,
       taxCode,
       shippingCost,
+      vendor: {
+        id: vendorId,
+      },
       currency: {
         code: currency,
       },
@@ -263,7 +282,7 @@ export class ProductCommonController {
     @Body()
     body: ProductUpdateDto,
   ): Promise<void> {
-    const updateRes = await this.productService.updateProduct(body);
+    const updateRes = await this.productService.update(body);
 
     await this.productService.serialization(updateRes);
   }

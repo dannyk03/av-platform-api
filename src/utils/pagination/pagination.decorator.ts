@@ -14,6 +14,7 @@ import {
   IsString,
   ValidateIf,
 } from 'class-validator';
+import { snakeCase } from 'lodash';
 
 import {
   IPaginationFilterDateOptions,
@@ -108,7 +109,7 @@ export function PaginationSort(
         ? field
         : bSort;
       const convertType =
-        type === 'desc' || type === '-1'
+        type?.toLocaleLowerCase() === 'desc' || type === '-1'
           ? EnumPaginationSortType.Desc
           : EnumPaginationSortType.Asc;
 

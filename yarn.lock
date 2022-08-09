@@ -44,17 +44,17 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-"@avo/casl@^0.0.19":
-  version "0.0.19"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.19.tgz#989d2ed061ae45b519569aa4ac0061ddb35af467"
-  integrity sha512-zbEve/ZOatVLK3G+w4stOZX8qSDcgog6LxsgNZphUvBmbQegiOy6sA9Nbz9IA4qRjutx0Al75uvvvBMItI6s8A==
+"@avo/casl@^0.0.20":
+  version "0.0.20"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.20.tgz#802cb2a8aaa1380622bc36cd70da29522a8b1c24"
+  integrity sha512-R8BTeVHZhTXMNT0S7/HyWS4wOc20mKfmXNd+qlESHrLX2YQB+k8sfYJEFHsvA0WnOToM/9imrmukFNDcKXWmRg==
   dependencies:
     "@casl/ability" "^6.0.0"
 
-"@avo/type@^0.0.17":
-  version "0.0.17"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.17.tgz#e62efb5022b77dcfa9234c16c93b3234eb80f0a7"
-  integrity sha512-ZRT9TTFPe+sqHtVGN4xGqLCM7qMq49qaMtfsznpn+UrWaMP5lL19jitTC21xV7Vzvi5CR7uv7I+MeN3blN0Uwg==
+"@avo/type@^0.0.18":
+  version "0.0.18"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.18.tgz#4f660b7ecae6ef271c7995e861d20a76e0f8f38a"
+  integrity sha512-eKxc6W0EgUT1gM5rDr+yb6keRan9xSmLHH8xDbi5Bl9GXvLCpwnnghmUJpFstCRjM+bjU7ZAxb3eDZ5eJG/Bbg==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -1939,6 +1939,11 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/bytes@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@types/bytes/-/bytes-3.1.1.tgz#67a876422e660dc4c10a27f3e5bcfbd5455f01d0"
+  integrity sha512-lOGyCnw+2JVPKU3wIV0srU0NyALwTBJlVSx5DfMQOFuuohA8y9S8orImpuIQikZ0uIQ8gehrRjxgQC1rLRi11w==
+
 "@types/connect@*":
   version "3.4.35"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.35.tgz#5fcf6ae445e4021d1fc2219a4873cc73a3bb2ad1"
@@ -2093,7 +2098,7 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@^18.6.5":
+"@types/node@*", "@types/node@>=8.1.0", "@types/node@^18.6.5":
   version "18.6.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.5.tgz#06caea822caf9e59d5034b695186ee74154d2802"
   integrity sha512-Xjt5ZGUa5WusGZJ4WJPbOT8QOqp6nDynVFRKcUt32bOgvXEoc6o085WNkYTMO7ifAj2isEfQQ2cseE+wT6jsRw==
@@ -2984,7 +2989,7 @@ bytes@3.0.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
   integrity sha512-pMhOfFDPiv9t5jjIXkHosWmkSyQbvsgEVNkz0ERHbuLh2T/7j4Mqqpz523Fe8MVY89KC6Sh/QfS2sM+SjgFDcw==
 
-bytes@3.1.2:
+bytes@3.1.2, bytes@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
@@ -3678,9 +3683,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.202:
-  version "1.4.211"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.211.tgz#afaa8b58313807501312d598d99b953568d60f91"
-  integrity sha512-BZSbMpyFQU0KBJ1JG26XGeFI3i4op+qOYGxftmZXFZoHkhLgsSv4DHDJfl8ogII3hIuzGt51PaZ195OVu0yJ9A==
+  version "1.4.212"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.212.tgz#20cd48e88288fd2428138c108804edb1961bf559"
+  integrity sha512-LjQUg1SpLj2GfyaPDVBUHdhmlDU1vDB4f0mJWSGkISoXQrn5/lH3ECPCuo2Bkvf6Y30wO+b69te+rZK/llZmjg==
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -7088,6 +7093,14 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+stripe@^9.16.0:
+  version "9.16.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-9.16.0.tgz#94c24549c91fced457b9e3259e8a1a1bdb6dbd0e"
+  integrity sha512-Dn8K+jSoQcXjxCobRI4HXUdHjOXsiF/KszK49fJnkbeCFjZ3EZxLG2JiM/CX+Hcq27NBDtv/Sxhvy+HhTmvyaQ==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.10.3"
 
 superagent@^8.0.0:
   version "8.0.0"

@@ -58,16 +58,16 @@ export class ProductImageController {
     systemOnly: true,
   })
   @RequestParamGuard(IdParamDto)
-  @UploadFileMultiple('images', EnumFileType.Image, true)
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
   @Post('/:id')
   async imageAdd(
-    @Param('id') id: string,
+    @Param('id') productId: string,
     @UploadedFiles() images: Express.Multer.File[],
     @Query()
     { lang: language }: ProductGetDto,
   ): Promise<void> {
     await this.productImageService.saveImages({
-      id,
+      id: productId,
       images,
       language,
     });

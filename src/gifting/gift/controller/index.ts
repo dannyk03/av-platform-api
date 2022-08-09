@@ -1,1 +1,1 @@
-export * from './gift-common.controller';
+export * from './gift.common.controller';
