@@ -54,7 +54,7 @@ export function FileImageInterceptor(
             });
           }
 
-          await Promise.all(finalFiles.map(this.validate));
+          await Promise.all(finalFiles.map(this.validate.bind(this)));
         } else {
           await this.validate(finalFiles);
         }
