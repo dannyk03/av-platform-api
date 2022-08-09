@@ -15,11 +15,11 @@ import {
 import { GiftIntent } from '../entity';
 
 import {
-  GiftIntentReadySerialization,
   GiftIntentSerialization,
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
+import { GiftIntentReadySerialization } from '../serialization/gift-intent-ready.serialization';
 
 import { IGiftIntentSearch } from '../gift-intent.interface';
 
