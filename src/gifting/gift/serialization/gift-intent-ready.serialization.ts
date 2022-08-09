@@ -9,9 +9,15 @@ import {
 } from 'class-transformer';
 
 import { Gift } from '../entity';
+import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
+import { ProductImage } from '@/catalog/product-image/entity';
 import { Product } from '@/catalog/product/entity';
 
-import { ProductListSerialization } from '@/catalog/product/serialization';
+import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
+import {
+  ProductListSerialization,
+  VendorSerialization,
+} from '@/catalog/product/serialization';
 
 @Exclude()
 class GiftUserSerialization {
@@ -38,6 +44,34 @@ class GiftIntentAdditionalDataSerialization {
 }
 
 @Exclude()
+export class ProductListReadySerialization {
+  @Expose()
+  readonly brand: string;
+
+  @Expose()
+  readonly price: number;
+
+  @Expose()
+  readonly shippingCost: number;
+
+  @Expose()
+  @Transform(({ obj }) => obj.displayOptions?.[0]?.name)
+  readonly name: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.displayOptions?.[0]?.description)
+  readonly description: string;
+
+  @Expose()
+  @Transform(({ obj }) =>
+    obj.displayOptions?.[0]?.images.map((image: ProductImage) =>
+      plainToInstance(ProductImageListSerialization, image),
+    ),
+  )
+  readonly images: ProductImageListSerialization;
+}
+
+@Exclude()
 class GiftUserAdditionalDataSerialization {
   @Expose()
   readonly email: string;
@@ -56,10 +90,10 @@ class GiftOptionSerialization {
   @Expose()
   @Transform(({ value: products }) =>
     products?.map((product: Product) =>
-      plainToInstance(ProductListSerialization, product),
+      plainToInstance(ProductListReadySerialization, product),
     ),
   )
-  products: ProductListSerialization;
+  products: ProductListReadySerialization;
 }
 
 @Exclude()
@@ -84,23 +118,25 @@ class GiftSenderSerialization {
   additionalData: GiftUserAdditionalDataSerialization;
 }
 
-export class GiftIntentSerialization {
+@Exclude()
+export class GiftIntentReadySerialization {
+  @Expose()
   @Type(() => GiftRecipientSerialization)
   readonly recipient: GiftRecipientSerialization;
 
+  @Expose()
   @Type(() => GiftSenderSerialization)
   readonly sender: GiftSenderSerialization;
 
+  @Expose()
   @Type(() => GiftIntentAdditionalDataSerialization)
   readonly additionalData: GiftIntentAdditionalDataSerialization;
 
+  @Expose()
   @Transform(({ value: giftOptions }) =>
     giftOptions.map((giftOption: Gift) =>
       plainToInstance(GiftOptionSerialization, giftOption),
     ),
   )
   readonly giftOptions: GiftOptionSerialization;
-
-  @Exclude()
-  readonly deletedAt: Date;
 }

@@ -44,6 +44,7 @@ async function bootstrap() {
       { path: 'confirm', method: RequestMethod.GET },
       { path: 'signup', method: RequestMethod.GET },
       { path: 'join', method: RequestMethod.GET },
+      { path: 'ready', method: RequestMethod.GET },
     ],
   });
 

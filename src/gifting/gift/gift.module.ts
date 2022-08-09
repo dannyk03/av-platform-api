@@ -7,6 +7,7 @@ import {
   GiftIntent,
   GiftIntentAdditionalData,
   GiftIntentConfirmationLink,
+  GiftIntentReadyLink,
   GiftRecipient,
   GiftSender,
 } from './entity';
@@ -15,6 +16,7 @@ import { Gift } from './entity/gift.entity';
 
 import {
   GiftIntentConfirmationLinkService,
+  GiftIntentReadyLinkService,
   GiftIntentService,
   GiftSenderService,
   GiftService,
@@ -33,6 +35,7 @@ import { EmailService } from '@/messaging/email';
         GiftIntent,
         GiftSender,
         GiftRecipient,
+        GiftIntentReadyLink,
         GiftIntentAdditionalData,
         GiftIntentConfirmationLink,
       ],
@@ -45,6 +48,7 @@ import { EmailService } from '@/messaging/email';
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
+    GiftIntentReadyLinkService,
     GiftIntentConfirmationLinkService,
   ],
   providers: [
@@ -52,6 +56,7 @@ import { EmailService } from '@/messaging/email';
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
+    GiftIntentReadyLinkService,
     GiftIntentConfirmationLinkService,
     EmailService,
   ],

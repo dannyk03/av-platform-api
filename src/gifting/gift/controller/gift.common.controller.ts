@@ -17,22 +17,20 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
-  EnumFileStatusCodeError,
   EnumGiftIntentStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumProductStatusCodeError,
-  IResponse,
   IResponseData,
-  IResponsePaging,
   IResponsePagingData,
 } from '@avo/type';
 
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, IsNull } from 'typeorm';
 
 import { User } from '@/user/entity';
 
 import {
   GiftIntentConfirmationLinkService,
+  GiftIntentReadyLinkService,
   GiftIntentService,
   GiftService,
 } from '../service';
@@ -42,7 +40,6 @@ import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { GiftIntentSerialization } from '../serialization';
-import { ProductListSerialization } from '@/catalog/product/serialization';
 
 import {
   GiftIntentListDto,
@@ -52,7 +49,7 @@ import {
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
-import { AclGuard, ReqJwtUser } from '@/auth';
+import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
@@ -73,6 +70,7 @@ export class GiftCommonController {
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
     private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
+    private readonly giftIntentReadyLinkService: GiftIntentReadyLinkService,
     private readonly paginationService: PaginationService,
     private readonly productService: ProductService,
   ) {}
@@ -156,7 +154,7 @@ export class GiftCommonController {
 
         return {
           code: confirmationLink.code,
-          giftIntents: saveGiftIntents
+          giftIntentIds: saveGiftIntents
             ? saveGiftIntents.map(({ id }) => id)
             : null,
         };
@@ -300,12 +298,96 @@ export class GiftCommonController {
     @Param('id') giftIntentId: string,
     @Body() { giftOptionIds }: GiftOptionDeleteDto,
   ): Promise<IResponseData> {
-    const deleteResult = await this.giftService.deleteOneBy({
+    const { affected } = await this.giftService.deleteOneBy({
       id: In(giftOptionIds),
       giftIntent: { id: giftIntentId },
     });
+
     return {
-      affected: deleteResult.affected,
+      affected,
     };
+  }
+
+  @Response('gift.intent.ready')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftIntent,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Post('/intent/ready/:id')
+  async giftIntentReady(@Param('id') giftIntentId: string): Promise<any> {
+    const giftIntent = await this.giftIntentService.findOne({
+      where: { id: giftIntentId, readyAt: IsNull() },
+      relations: [
+        'giftOptions',
+        'additionalData',
+        'recipient',
+        'sender',
+        'recipient.user',
+        'sender.user',
+      ],
+    });
+
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    if (!giftIntent?.giftOptions?.length) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionsEmptyError,
+        message: 'gift.intent.error.empty',
+      });
+    }
+
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const readyLink = await this.giftIntentReadyLinkService.create({
+          giftIntent,
+        });
+
+        const saveReadyLink = await transactionalEntityManager.save(readyLink);
+
+        const emailSent = await this.emailService.sendGiftReady({
+          email:
+            giftIntent.recipient?.user?.email ||
+            giftIntent.recipient?.additionalData['email'],
+          code: readyLink.code,
+        });
+
+        if (!emailSent) {
+          throw new InternalServerErrorException({
+            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+            message: 'messaging.error.email.send',
+          });
+        }
+        giftIntent.readyAt = this.helperDateService.create();
+
+        const saveGiftIntent = await transactionalEntityManager.save(
+          giftIntent,
+        );
+
+        return {
+          code: saveReadyLink.code,
+          giftIntentId: saveGiftIntent?.id,
+        };
+      },
+    );
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
+    }
   }
 }

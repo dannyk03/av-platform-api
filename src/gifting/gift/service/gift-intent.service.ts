@@ -15,6 +15,7 @@ import {
 import { GiftIntent } from '../entity';
 
 import {
+  GiftIntentReadySerialization,
   GiftIntentSerialization,
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
@@ -123,5 +124,17 @@ export class GiftIntentService {
     data: GiftIntent[],
   ): Promise<GiftIntentSerialization[]> {
     return plainToInstance(GiftIntentSerialization, data);
+  }
+
+  async serializationGiftIntent(
+    data: GiftIntent,
+  ): Promise<GiftIntentSerialization> {
+    return plainToInstance(GiftIntentSerialization, data);
+  }
+
+  async serializationGiftIntentReady(
+    data: GiftIntent,
+  ): Promise<GiftIntentReadySerialization> {
+    return plainToInstance(GiftIntentReadySerialization, data);
   }
 }

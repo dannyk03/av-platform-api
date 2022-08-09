@@ -11,8 +11,13 @@
     "list": "List gift-intent success",
     "addGiftOption": "Gift-intent add option success",
     "deleteGiftOption": "Gift-intent delete option success",
+    "ready": "Gift-intent ready success",
     "error": {
-      "notFound": "Gift intent not found"
+      "unprocessable": "Unprocessable gift-intent",
+      "notFound": "Gift intent not found",
+      "empty": "Gift intent options are empty",
+      "readyLinkInvalid": "Invalid gift-intent ready link",
+      "readyLinkNotFound": "Gift-intent ready link not found"
     }
   }
 }

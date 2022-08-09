@@ -1,6 +1,9 @@
-import { Type } from 'class-transformer';
-import { IsNotEmpty, Length } from 'class-validator';
+import { EnumDisplayLanguage } from '@avo/type';
 
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+
+import { ProductDisplayLanguage } from '@/catalog';
 import { NormalizeStringInput } from '@/utils/request/transform';
 
 export class MagicLinkDto {
@@ -9,4 +12,8 @@ export class MagicLinkDto {
   @NormalizeStringInput()
   @Type(() => String)
   readonly code: string;
+
+  @ProductDisplayLanguage()
+  @IsOptional()
+  lang: EnumDisplayLanguage;
 }

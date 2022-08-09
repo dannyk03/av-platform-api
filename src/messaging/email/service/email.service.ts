@@ -58,7 +58,7 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: { path, code },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
@@ -105,7 +105,34 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftConfirm.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: { path, code },
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
+      code,
+    });
+    return Boolean(sendResult.status == EmailStatus.success);
+  }
+
+  async sendGiftReady({
+    email,
+    code,
+    path = '/ready',
+  }: {
+    email: string;
+    code: string;
+    path?: string;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftReady.toString(),
+      to: [email],
+      emailTemplatePayload: { path, code },
       identifier: { id: email },
     });
     console.log({

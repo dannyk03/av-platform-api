@@ -9,7 +9,7 @@ export class AclSubjectSerialization {
       plainToInstance(AclAbilitySerialization, ability),
     ),
   )
-  readonly abilities: AclAbility[];
+  readonly abilities: AclAbilitySerialization[];
 
   @Exclude()
   readonly id: string;

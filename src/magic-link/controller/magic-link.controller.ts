@@ -8,9 +8,12 @@ import {
   Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
+  EnumDisplayLanguage,
+  EnumGiftIntentStatusCodeError,
   EnumGiftStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumOrganizationStatusCodeError,
@@ -20,10 +23,14 @@ import {
 
 import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
-import { GiftIntentConfirmationLinkService } from '@/gifting/gift/service';
+import {
+  GiftIntentConfirmationLinkService,
+  GiftIntentReadyLinkService,
+  GiftIntentService,
+} from '@/gifting/gift/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
@@ -43,7 +50,9 @@ export class MagicLinkController {
     private readonly helperDateService: HelperDateService,
     private readonly helperCookieService: HelperCookieService,
     private readonly organizationInviteService: OrganizationInviteService,
-    private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
+    private readonly giftIntentConfirmationLinkService: GiftIntentConfirmationLinkService,
+    private readonly giftIntentReadyLinkService: GiftIntentReadyLinkService,
+    private readonly giftIntentService: GiftIntentService,
     private readonly emailService: EmailService,
     private readonly authService: AuthService,
   ) {}
@@ -142,7 +151,7 @@ export class MagicLinkController {
   async joinValidate(
     @Query()
     { code }: MagicLinkDto,
-  ) {
+  ): Promise<void> {
     const existingInvite = await this.organizationInviteService.findOneBy({
       code,
     });
@@ -176,7 +185,7 @@ export class MagicLinkController {
     { code }: MagicLinkDto,
   ): Promise<void> {
     const existingGiftSendConfirmationLink =
-      await this.giftSendConfirmationLinkService.findOne({
+      await this.giftIntentConfirmationLinkService.findOne({
         where: { code },
         relations: [
           'giftIntents',
@@ -207,7 +216,7 @@ export class MagicLinkController {
       existingGiftSendConfirmationLink.usedAt
     ) {
       throw new ForbiddenException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpired,
+        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpiredError,
         message: 'gift.error.verificationLink',
       });
     }
@@ -269,6 +278,54 @@ export class MagicLinkController {
           ),
         );
       },
+    );
+  }
+
+  @Response('gift.intent.ready')
+  @Throttle(1, 5)
+  @Get('/ready')
+  async giftIntentReadyValidate(
+    @Query()
+    { code, lang }: MagicLinkDto,
+  ): Promise<IResponseData> {
+    const existingReadyLink = await this.giftIntentReadyLinkService.findOne({
+      where: {
+        code,
+        usedAt: IsNull(),
+        giftIntent: {
+          submittedAt: IsNull(),
+          giftOptions: {
+            products: {
+              displayOptions: {
+                language: {
+                  isoCode: lang,
+                },
+              },
+            },
+          },
+        },
+      },
+      relations: [
+        'giftIntent',
+        'giftIntent.additionalData',
+        'giftIntent.recipient',
+        'giftIntent.recipient.user',
+        'giftIntent.giftOptions',
+        'giftIntent.giftOptions.products',
+        'giftIntent.giftOptions.products.displayOptions',
+        'giftIntent.giftOptions.products.displayOptions.images',
+      ],
+    });
+
+    if (!existingReadyLink) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    return this.giftIntentService.serializationGiftIntentReady(
+      existingReadyLink.giftIntent,
     );
   }
 }

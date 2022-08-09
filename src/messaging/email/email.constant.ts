@@ -3,6 +3,7 @@ export enum EmailTemplate {
   SendSignUpEmailVerification = 'Email Verification',
   SendGiftSurvey = 'Survey Confirmation',
   SendGiftConfirm = 'SendGiftConfirm',
+  SendGiftReady = 'SendGiftReady',
 }
 
 export enum EmailStatus {

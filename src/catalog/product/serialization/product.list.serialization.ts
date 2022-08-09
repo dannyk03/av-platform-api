@@ -9,7 +9,6 @@ import {
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 
-import { ProductDisplayOptionListSerialization } from '@/catalog/product-display-option/serialization';
 import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
 
 @Exclude()
@@ -36,20 +35,20 @@ export class ProductListSerialization {
   readonly updatedAt: Date;
 
   @Expose()
-  @Transform(({ obj }) => obj.displayOptions[0]?.name)
+  @Transform(({ obj }) => obj.displayOptions?.[0]?.name)
   readonly name: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.displayOptions[0]?.description)
+  @Transform(({ obj }) => obj.displayOptions?.[0]?.description)
   readonly description: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.displayOptions[0]?.keywords)
+  @Transform(({ obj }) => obj.displayOptions?.[0]?.keywords)
   readonly keywords!: string[];
 
   @Expose()
   @Transform(({ obj }) =>
-    obj.displayOptions[0]?.images.map((image: ProductImage) =>
+    obj.displayOptions?.[0]?.images.map((image: ProductImage) =>
       plainToInstance(ProductImageListSerialization, image),
     ),
   )
