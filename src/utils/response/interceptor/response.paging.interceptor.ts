@@ -75,12 +75,14 @@ export function ResponsePagingInterceptor(
               return {
                 statusCode: newStatusCode,
                 message,
-                totalData,
-                totalPage,
-                currentPage,
-                perPage,
-                metadata,
-                data: listData,
+                meta: {
+                  totalData,
+                  totalPage,
+                  currentPage,
+                  perPage,
+                  ...metadata,
+                },
+                results: listData,
               };
             }
 
@@ -88,23 +90,27 @@ export function ResponsePagingInterceptor(
               return {
                 statusCode: newStatusCode,
                 message,
-                totalData,
-                metadata,
-                data: listData,
+                meta: {
+                  totalData,
+                  ...metadata,
+                },
+                results: listData,
               };
             }
 
             return {
               statusCode: newStatusCode,
               message,
-              totalData,
-              totalPage,
-              currentPage,
-              perPage,
-              availableSort,
-              availableSearch,
-              metadata,
-              data: listData,
+              meta: {
+                totalData,
+                totalPage,
+                currentPage,
+                perPage,
+                availableSort,
+                availableSearch,
+                ...metadata,
+              },
+              results: listData,
             };
           }),
         );

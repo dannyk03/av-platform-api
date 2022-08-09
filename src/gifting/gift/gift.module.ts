@@ -10,7 +10,7 @@ import {
   GiftRecipient,
   GiftSender,
 } from './entity';
-import { GiftSelect } from './entity/gift-select.entity';
+import { GiftSubmit } from './entity/gift-submit.entity';
 import { Gift } from './entity/gift.entity';
 
 import {
@@ -29,7 +29,7 @@ import { EmailService } from '@/messaging/email';
     TypeOrmModule.forFeature(
       [
         Gift,
-        GiftSelect,
+        GiftSubmit,
         GiftIntent,
         GiftSender,
         GiftRecipient,
