@@ -14,8 +14,8 @@ import { GiftSubmit } from './entity/gift-submit.entity';
 import { Gift } from './entity/gift.entity';
 
 import {
+  GiftIntentConfirmationLinkService,
   GiftIntentService,
-  GiftSendConfirmationLinkService,
   GiftSenderService,
   GiftService,
 } from './service';
@@ -45,14 +45,14 @@ import { EmailService } from '@/messaging/email';
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendConfirmationLinkService,
+    GiftIntentConfirmationLinkService,
   ],
   providers: [
     GiftService,
     GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendConfirmationLinkService,
+    GiftIntentConfirmationLinkService,
     EmailService,
   ],
   controllers: [],

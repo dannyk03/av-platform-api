@@ -15,17 +15,17 @@ import { HelperHashService } from '@/utils/helper/service';
 import { ConnectionNames } from '@/database';
 
 @Injectable()
-export class GiftSendConfirmationLinkService {
+export class GiftIntentConfirmationLinkService {
   constructor(
     @InjectRepository(GiftIntentConfirmationLink, ConnectionNames.Default)
-    private giftSendVerificationLink: Repository<GiftIntentConfirmationLink>,
+    private giftIntentVerificationLink: Repository<GiftIntentConfirmationLink>,
     private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
     props: DeepPartial<Omit<GiftIntentConfirmationLink, 'code'>>,
   ): Promise<GiftIntentConfirmationLink> {
-    return this.giftSendVerificationLink.create({
+    return this.giftIntentVerificationLink.create({
       ...props,
       code: await this.helperHashService.magicCode(),
     });
@@ -34,18 +34,20 @@ export class GiftSendConfirmationLinkService {
   async save(
     data: GiftIntentConfirmationLink,
   ): Promise<GiftIntentConfirmationLink> {
-    return this.giftSendVerificationLink.save<GiftIntentConfirmationLink>(data);
+    return this.giftIntentVerificationLink.save<GiftIntentConfirmationLink>(
+      data,
+    );
   }
 
   async findOneBy(
     find: FindOptionsWhere<GiftIntentConfirmationLink>,
   ): Promise<GiftIntentConfirmationLink> {
-    return this.giftSendVerificationLink.findOneBy(find);
+    return this.giftIntentVerificationLink.findOneBy(find);
   }
 
   async findOne(
     find: FindOneOptions<GiftIntentConfirmationLink>,
   ): Promise<GiftIntentConfirmationLink> {
-    return this.giftSendVerificationLink.findOne(find);
+    return this.giftIntentVerificationLink.findOne(find);
   }
 }

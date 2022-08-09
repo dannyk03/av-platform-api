@@ -21,7 +21,7 @@ import uniqBy from 'lodash/uniqBy';
 import { DataSource } from 'typeorm';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
-import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
+import { GiftIntentConfirmationLinkService } from '@/gifting/gift/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
@@ -41,7 +41,7 @@ export class MagicLinkController {
     private readonly helperDateService: HelperDateService,
     private readonly helperCookieService: HelperCookieService,
     private readonly organizationInviteService: OrganizationInviteService,
-    private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
+    private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly emailService: EmailService,
     private readonly authService: AuthService,
   ) {}
@@ -177,12 +177,12 @@ export class MagicLinkController {
       await this.giftSendConfirmationLinkService.findOne({
         where: { code },
         relations: [
-          'gifts',
-          'gifts.sender',
-          'gifts.recipient',
-          'gifts.recipient.user',
-          'gifts.sender.user',
-          'gifts.sender.user.authConfig',
+          'giftIntents',
+          'giftIntents.sender',
+          'giftIntents.recipient',
+          'giftIntents.recipient.user',
+          'giftIntents.sender.user',
+          'giftIntents.sender.user.authConfig',
         ],
       });
 
@@ -211,7 +211,7 @@ export class MagicLinkController {
     }
 
     const uniqueSenders = uniqBy(
-      existingGiftSendConfirmationLink.gifts.map((gift) => gift.sender),
+      existingGiftSendConfirmationLink.giftIntents.map((gift) => gift.sender),
       'id',
     );
 
@@ -242,7 +242,7 @@ export class MagicLinkController {
         ]);
 
         await Promise.all(
-          existingGiftSendConfirmationLink.gifts.map(async (gift) =>
+          existingGiftSendConfirmationLink.giftIntents.map(async (gift) =>
             this.emailService.sendGiftSurvey({
               senderEmail:
                 gift.sender.user?.email || gift.sender.additionalData['email'],

@@ -68,7 +68,7 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
 
   @ManyToOne(
     () => GiftIntentConfirmationLink,
-    (verificationLink) => verificationLink.gifts,
+    (verificationLink) => verificationLink.giftIntents,
   )
   @JoinColumn()
   confirmationLink!: GiftIntentConfirmationLink;

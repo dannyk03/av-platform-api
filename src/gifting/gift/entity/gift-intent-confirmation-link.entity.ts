@@ -20,5 +20,5 @@ export class GiftIntentConfirmationLink extends BaseEntity<GiftIntentConfirmatio
   expiresAt?: Date;
 
   @OneToMany(() => GiftIntent, (gift) => gift.confirmationLink)
-  gifts!: GiftIntent[];
+  giftIntents!: GiftIntent[];
 }
