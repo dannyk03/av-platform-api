@@ -61,9 +61,7 @@ export function LogInterceptor(
           tap(async (response: Promise<Record<string, any>>) => {
             const responseData: Record<string, any> = await response;
             const responseStatus: number = responseExpress?.statusCode;
-            const statusCode = responseData?.statusCode
-              ? responseData.statusCode
-              : responseStatus;
+            const statusCode = responseData?.statusCode || responseStatus;
 
             const logData = {
               action,
