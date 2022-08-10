@@ -148,7 +148,7 @@ export function PaginationFilterBoolean(defaultValue: boolean[]): any {
   );
 }
 
-export function PaginationFilterRange(defaultValue: string): any {
+export function PaginationFilterRange(): any {
   return applyDecorators(
     Expose(),
     IsNumber(
@@ -157,13 +157,9 @@ export function PaginationFilterRange(defaultValue: string): any {
     ),
     RangeTuple(),
     Transform(({ value }) => {
-      const range = value || defaultValue;
-      const [min, max]: string = range.split('-');
+      const split: [string, string] = value?.split('-');
 
-      if (min > max) {
-      }
-
-      return [Number(min), Number(max)];
+      return split && [Number(split[0]), Number(split[1])];
     }),
   );
 }

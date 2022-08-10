@@ -4,6 +4,8 @@ import {
   IPaginationSort,
 } from '@avo/type';
 
+import { IsOptional } from 'class-validator';
+
 import { ProductDisplayLanguage } from '../product.decorator';
 
 import {
@@ -24,7 +26,6 @@ import {
   PRODUCT_DEFAULT_AVAILABLE_SORT,
   PRODUCT_DEFAULT_PAGE,
   PRODUCT_DEFAULT_PER_PAGE,
-  PRODUCT_DEFAULT_PRISE_RANGE,
   PRODUCT_DEFAULT_SORT,
   ProductOrderByNestingAliasMap,
 } from '../product.constant';
@@ -61,6 +62,7 @@ export class ProductListDto implements IPaginationList {
   @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
 
-  @PaginationFilterRange(PRODUCT_DEFAULT_PRISE_RANGE)
-  readonly priceRange: [number, number];
+  @IsOptional()
+  @PaginationFilterRange()
+  readonly priceRange?: [number, number];
 }

@@ -12,6 +12,7 @@
     "addGiftOption": "Gift-intent add option success",
     "deleteGiftOption": "Gift-intent delete option success",
     "ready": "Gift-intent ready success",
+    "submit": "Gift-intent submit success",
     "error": {
       "unprocessableSubmit": "Unprocessable gift submit",
       "unprocessable": "Unprocessable gift-intent",

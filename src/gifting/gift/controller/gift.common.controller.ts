@@ -394,36 +394,36 @@ export class GiftCommonController {
     }
   }
 
-  // @Response('gift.intent.ready')
-  // @HttpCode(HttpStatus.OK)
-  // @Throttle(1, 5)
-  // @AclGuard()
-  // @RequestParamGuard(IdParamDto)
-  // @Post('/intent/submit/:id')
-  // async giftIntentSubmit(
-  //   @Body() { giftOptionIds }: GiftOptionSubmitDto,
-  //   @ReqUser()
-  //   reqUser: User,
-  //   @Param('id') giftIntentId: string,
-  // ): Promise<any> {
-  //   const giftIntent = await this.giftIntentService.findOne({
-  //     where: { id: giftIntentId, giftOptions: { id: In(giftOptionIds) } },
-  //     relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
-  //   });
+  @Response('gift.intent.submit')
+  @HttpCode(HttpStatus.OK)
+  @Throttle(1, 5)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Post('/intent/submit/:id')
+  async giftIntentSubmit(
+    @Body() { giftOptionIds }: GiftOptionSubmitDto,
+    @ReqUser()
+    reqUser: User,
+    @Param('id') giftIntentId: string,
+  ): Promise<any> {
+    const giftIntent = await this.giftIntentService.findOne({
+      where: { id: giftIntentId, giftOptions: { id: In(giftOptionIds) } },
+      relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
+    });
 
-  //   if (!giftIntent) {
-  //     throw new UnprocessableEntityException({
-  //       statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
-  //       message: 'gift.intent.error.unprocessable',
-  //     });
-  //   }
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
 
-  //   if (giftIntent?.giftOptions?.length === giftIntentId.length) {
-  //     throw new UnprocessableEntityException({
-  //       statusCode:
-  //         EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,
-  //       message: 'gift.intent.error.unprocessableSubmit',
-  //     });
-  //   }
-  // }
+    if (giftIntent?.giftOptions?.length === giftIntentId.length) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,
+        message: 'gift.intent.error.unprocessableSubmit',
+      });
+    }
+  }
 }
