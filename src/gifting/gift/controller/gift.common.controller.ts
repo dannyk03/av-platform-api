@@ -24,7 +24,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { DataSource, In, IsNull } from 'typeorm';
+import { DataSource, In, IsNull, Not } from 'typeorm';
 
 import { User } from '@/user/entity';
 
@@ -410,6 +410,8 @@ export class GiftCommonController {
       where: {
         id: giftIntentId,
         giftOptions: { id: In(giftOptionIds) },
+        sentAt: Not(IsNull()),
+        // acceptedAt: Not(IsNull()),
         submittedAt: IsNull(),
       },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
@@ -422,7 +424,7 @@ export class GiftCommonController {
       });
     }
 
-    if (giftIntent?.giftOptions?.length === giftOptionIds.length) {
+    if (giftIntent?.giftOptions?.length !== giftOptionIds.length) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,

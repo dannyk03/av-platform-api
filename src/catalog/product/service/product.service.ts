@@ -105,8 +105,11 @@ export class ProductService {
       .leftJoinAndSelect('product.displayOptions', 'displayOptions')
       .leftJoinAndSelect('displayOptions.language', 'language')
       .setParameters({ keywords, language })
-      .where('product.isActive = ANY(:isActive)', { isActive })
-      .andWhere('language.isoCode = :language');
+      .where('language.isoCode = :language');
+
+    if (isActive?.length) {
+      builder.where('product.isActive = ANY(:isActive)', { isActive });
+    }
 
     if (priceRange) {
       builder.andWhere('product.price BETWEEN :min AND :max', {
