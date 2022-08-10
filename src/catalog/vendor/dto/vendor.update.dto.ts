@@ -2,17 +2,10 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsNotEmpty,
-  IsObject,
   IsOptional,
   IsUUID,
   Length,
-  MaxLength,
-  ValidateNested,
 } from 'class-validator';
-
-import { ProductSKU } from '@/catalog/catalog.decorator';
-
-import { ProductUpdateDisplayDto } from '@/catalog/product/dto';
 
 import { NormalizeStringInput } from '@/utils/request/transform';
 

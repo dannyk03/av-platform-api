@@ -69,20 +69,18 @@ export function ResponseDefaultInterceptor(
                 return {
                   statusCode: resStatusCode,
                   message: resMessage,
-                  data: {
-                    meta:
-                      Object.keys(resMetadata).length > 0
-                        ? resMetadata
-                        : undefined,
-                    result: data,
-                  },
+                  meta:
+                    Object.keys(resMetadata).length > 0
+                      ? resMetadata
+                      : undefined,
+                  result: data,
                 };
               }
 
               return {
                 statusCode: resStatusCode,
                 message: resMessage,
-                data: resData === null ? null : undefined,
+                result: resData === null ? null : undefined,
               };
             },
           ),
