@@ -31,7 +31,9 @@ export function ResponsePagingInterceptor(
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinResponseInterceptor implements NestInterceptor<Promise<any>> {
-    constructor(private readonly messageService: ResponseMessageService) {}
+    constructor(
+      private readonly responseMessageService: ResponseMessageService,
+    ) {}
 
     async intercept(
       context: ExecutionContext,
@@ -63,17 +65,12 @@ export function ResponsePagingInterceptor(
               } = resData;
 
               let { totalPage } = resData;
-              totalPage =
-                totalPage > PAGINATION_DEFAULT_MAX_PAGE
-                  ? PAGINATION_DEFAULT_MAX_PAGE
-                  : totalPage;
+              totalPage = Math.min(totalPage, PAGINATION_DEFAULT_MAX_PAGE);
 
-              const message: string | IMessage = await this.messageService.get(
-                messagePath,
-                {
+              const message: string | IMessage =
+                await this.responseMessageService.get(messagePath, {
                   customLanguages,
-                },
-              );
+                });
 
               const listData = Array.isArray(data) ? data : [data];
               if (options?.type === EnumPaginationType.Simple) {
@@ -106,18 +103,16 @@ export function ResponsePagingInterceptor(
               return {
                 statusCode: newStatusCode,
                 message,
-                data: {
-                  meta: {
-                    totalData,
-                    totalPage,
-                    currentPage,
-                    perPage,
-                    availableSort,
-                    availableSearch,
-                    ...metadata,
-                  },
-                  results: listData,
+                meta: {
+                  totalData,
+                  totalPage,
+                  currentPage,
+                  perPage,
+                  availableSort,
+                  availableSearch,
+                  ...metadata,
                 },
+                results: listData,
               };
             },
           ),
