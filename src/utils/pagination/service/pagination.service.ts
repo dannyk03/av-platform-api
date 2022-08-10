@@ -8,13 +8,10 @@ import {
 @Injectable()
 export class PaginationService {
   async skip(page: number, perPage: number): Promise<number> {
-    page =
-      page > PAGINATION_DEFAULT_MAX_PAGE ? PAGINATION_DEFAULT_MAX_PAGE : page;
-    perPage =
-      perPage > PAGINATION_DEFAULT_MAX_PER_PAGE
-        ? PAGINATION_DEFAULT_MAX_PER_PAGE
-        : perPage;
+    page = Math.min(PAGINATION_DEFAULT_MAX_PAGE, page);
+    perPage = Math.min(PAGINATION_DEFAULT_MAX_PER_PAGE, page);
     const skip: number = (page - 1) * perPage;
+
     return skip;
   }
 

@@ -85,11 +85,7 @@ export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
     IsPositive(),
     Type(() => Number),
     Transform(({ value }) =>
-      !value
-        ? perPage
-        : value > PAGINATION_DEFAULT_MAX_PER_PAGE
-        ? PAGINATION_DEFAULT_MAX_PER_PAGE
-        : value,
+      !value ? perPage : Math.min(value, PAGINATION_DEFAULT_MAX_PER_PAGE),
     ),
   );
 }

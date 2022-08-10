@@ -45,6 +45,7 @@ import {
   GiftIntentListDto,
   GiftOptionCreateDto,
   GiftOptionDeleteDto,
+  GiftOptionSubmitDto,
 } from '../dto';
 import { GiftSendDto } from '../dto/gift.send.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
@@ -321,7 +322,9 @@ export class GiftCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Post('/intent/ready/:id')
-  async giftIntentReady(@Param('id') giftIntentId: string): Promise<any> {
+  async giftIntentReady(
+    @Param('id') giftIntentId: string,
+  ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: { id: giftIntentId, readyAt: IsNull() },
       relations: [
@@ -390,4 +393,37 @@ export class GiftCommonController {
       return result;
     }
   }
+
+  // @Response('gift.intent.ready')
+  // @HttpCode(HttpStatus.OK)
+  // @Throttle(1, 5)
+  // @AclGuard()
+  // @RequestParamGuard(IdParamDto)
+  // @Post('/intent/submit/:id')
+  // async giftIntentSubmit(
+  //   @Body() { giftOptionIds }: GiftOptionSubmitDto,
+  //   @ReqUser()
+  //   reqUser: User,
+  //   @Param('id') giftIntentId: string,
+  // ): Promise<any> {
+  //   const giftIntent = await this.giftIntentService.findOne({
+  //     where: { id: giftIntentId, giftOptions: { id: In(giftOptionIds) } },
+  //     relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
+  //   });
+
+  //   if (!giftIntent) {
+  //     throw new UnprocessableEntityException({
+  //       statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+  //       message: 'gift.intent.error.unprocessable',
+  //     });
+  //   }
+
+  //   if (giftIntent?.giftOptions?.length === giftIntentId.length) {
+  //     throw new UnprocessableEntityException({
+  //       statusCode:
+  //         EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,
+  //       message: 'gift.intent.error.unprocessableSubmit',
+  //     });
+  //   }
+  // }
 }

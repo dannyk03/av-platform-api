@@ -13,6 +13,7 @@
     "deleteGiftOption": "Gift-intent delete option success",
     "ready": "Gift-intent ready success",
     "error": {
+      "unprocessableSubmit": "Unprocessable gift submit",
       "unprocessable": "Unprocessable gift-intent",
       "notFound": "Gift intent not found",
       "empty": "Gift intent options are empty",
