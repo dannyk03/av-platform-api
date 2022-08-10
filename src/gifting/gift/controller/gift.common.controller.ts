@@ -263,7 +263,7 @@ export class GiftCommonController {
       });
     }
 
-    return await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const createGift = await this.giftService.create({
