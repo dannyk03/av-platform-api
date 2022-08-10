@@ -69,10 +69,13 @@ export function ResponseDefaultInterceptor(
                 return {
                   statusCode: resStatusCode,
                   message: resMessage,
-                  meta:
-                    Object.keys(resMetadata).length > 0
-                      ? resMetadata
-                      : undefined,
+
+                  ...(Object.keys(resMetadata).length && {
+                    meta: {
+                      ...resMetadata,
+                    },
+                  }),
+
                   result: data,
                 };
               }
