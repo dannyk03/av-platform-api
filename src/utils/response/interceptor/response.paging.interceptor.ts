@@ -80,16 +80,14 @@ export function ResponsePagingInterceptor(
                 return {
                   statusCode: newStatusCode,
                   message,
-                  data: {
-                    meta: {
-                      totalData,
-                      totalPage,
-                      currentPage,
-                      perPage,
-                      ...metadata,
-                    },
-                    results: listData,
+                  meta: {
+                    totalData,
+                    totalPage,
+                    currentPage,
+                    perPage,
+                    ...metadata,
                   },
+                  results: listData,
                 };
               }
 
@@ -97,13 +95,11 @@ export function ResponsePagingInterceptor(
                 return {
                   statusCode: newStatusCode,
                   message,
-                  data: {
-                    meta: {
-                      totalData,
-                      ...metadata,
-                    },
-                    results: listData,
+                  meta: {
+                    totalData,
+                    ...metadata,
                   },
+                  results: listData,
                 };
               }
 

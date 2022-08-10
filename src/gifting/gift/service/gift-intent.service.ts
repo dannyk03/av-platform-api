@@ -67,7 +67,8 @@ export class GiftIntentService {
     if (loadExtra) {
       builder
         .leftJoinAndSelect('giftIntent.giftSubmit', 'giftSubmit')
-        .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions');
+        .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions')
+        .leftJoinAndSelect('giftOptions.products', 'giftProducts');
     }
 
     if (search) {
