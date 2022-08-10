@@ -407,7 +407,11 @@ export class GiftCommonController {
     @Param('id') giftIntentId: string,
   ): Promise<any> {
     const giftIntent = await this.giftIntentService.findOne({
-      where: { id: giftIntentId, giftOptions: { id: In(giftOptionIds) } },
+      where: {
+        id: giftIntentId,
+        giftOptions: { id: In(giftOptionIds) },
+        submittedAt: IsNull(),
+      },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
     });
 
@@ -418,7 +422,7 @@ export class GiftCommonController {
       });
     }
 
-    if (giftIntent?.giftOptions?.length === giftIntentId.length) {
+    if (giftIntent?.giftOptions?.length === giftOptionIds.length) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,

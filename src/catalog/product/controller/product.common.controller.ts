@@ -182,6 +182,7 @@ export class ProductCommonController {
       search,
       keywords,
       isActive,
+      priceRange,
     });
 
     const totalPage: number = await this.paginationService.totalPage(
