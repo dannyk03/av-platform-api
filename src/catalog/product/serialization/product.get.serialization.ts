@@ -14,7 +14,7 @@ import {
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 
-import { ProductImageGetSerialization } from '@/catalog/product-image/serialization';
+import { ProductImageGetSerialization } from '@/catalog/product-image/serialization/product-image.get.serialization';
 
 @Exclude()
 export class VendorGetSerialization implements IProductVendorGetSerialization {

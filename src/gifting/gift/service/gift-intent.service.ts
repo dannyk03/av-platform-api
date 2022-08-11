@@ -66,10 +66,9 @@ export class GiftIntentService {
       .leftJoinAndSelect('recipient.user', 'recipientUser')
       .leftJoinAndSelect('sender.user', 'senderUser');
 
-    // TODO
-    // if (isSearchUUID) {
-    //   builder.where('giftIntent');
-    // }
+    if (isSearchUUID) {
+      builder.where('giftIntent.id::text ILIKE aaaa');
+    }
 
     if (loadExtra) {
       builder
