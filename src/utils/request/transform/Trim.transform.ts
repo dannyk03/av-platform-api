@@ -13,7 +13,7 @@ export function Trim(options?: ITransformOptions): any {
     Expose(),
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => trim(v))
+        ? value.map((v) => (isString(v) ? trim(v) : v))
         : isString(value)
         ? trim(value)
         : value,

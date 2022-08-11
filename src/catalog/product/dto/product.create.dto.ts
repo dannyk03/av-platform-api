@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   IsUUID,
   Length,
   MaxLength,
@@ -15,8 +16,8 @@ import {
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
-  LowerCaseArray,
   NormalizeStringInput,
+  ToLowerCaseTransform,
 } from '@/utils/request/transform';
 
 export class ProductCreateDto {
@@ -47,8 +48,9 @@ export class ProductCreateDto {
 
   @IsArray()
   @IsOptional()
+  @IsString({ each: true })
   @ArrayTransform()
-  @LowerCaseArray()
+  @ToLowerCaseTransform({ each: true })
   @NormalizeStringInput({ each: true })
   keywords?: string[];
 

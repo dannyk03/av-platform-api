@@ -5,12 +5,10 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  IsObject,
   IsOptional,
-  IsUUID,
+  IsString,
   Length,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 
 import {
@@ -20,8 +18,8 @@ import {
 
 import {
   ArrayTransform,
-  LowerCaseArray,
   NormalizeStringInput,
+  ToLowerCaseTransform,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -78,8 +76,9 @@ export class ProductUpdateDto {
 
   @IsArray()
   @IsOptional()
-  @LowerCaseArray()
+  @IsString({ each: true })
   @ArrayTransform()
   @NormalizeStringInput({ each: true })
+  @ToLowerCaseTransform({ each: true })
   readonly keywords?: string[];
 }

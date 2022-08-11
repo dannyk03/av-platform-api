@@ -13,7 +13,7 @@ export function Escape(options?: ITransformOptions): any {
     Expose(),
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => escape(v))
+        ? value.map((v) => (isString(v) ? escape(v) : v))
         : isString(value)
         ? escape(value)
         : value,
