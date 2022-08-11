@@ -4,6 +4,15 @@ orbs:
   node: circleci/node@5.0.2
   aws-ecr: circleci/aws-ecr@7.3.0
 
+aliases:
+  - &filter_only_branch
+    filters:
+      branches:
+        only:
+          - master
+          - main
+          - circleci-config-update-tag-build
+
 jobs:
   build-lint-test:
     docker:
@@ -65,9 +74,4 @@ workflows:
             - jfrog-platform
           requires:
             - build-lint-test
-          filters:
-            branches:
-              only:
-                - development
-                - master
-                - circleci-config-update-tag-build
+          <<: *filter_only_branch
