@@ -19,6 +19,7 @@ import {
   NormalizeStringInput,
   ToLowerCaseTransform,
 } from '@/utils/request/transform';
+import { UniqueArray } from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
@@ -49,6 +50,7 @@ export class ProductCreateDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
+  @UniqueArray()
   @ArrayTransform()
   @ToLowerCaseTransform({ each: true })
   @NormalizeStringInput({ each: true })

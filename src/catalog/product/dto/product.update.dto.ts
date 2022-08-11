@@ -20,6 +20,7 @@ import {
   ArrayTransform,
   NormalizeStringInput,
   ToLowerCaseTransform,
+  UniqueArray,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -78,6 +79,7 @@ export class ProductUpdateDto {
   @IsOptional()
   @IsString({ each: true })
   @ArrayTransform()
+  @UniqueArray()
   @NormalizeStringInput({ each: true })
   @ToLowerCaseTransform({ each: true })
   readonly keywords?: string[];
