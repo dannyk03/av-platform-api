@@ -20,6 +20,7 @@ import {
 
 import {
   ArrayTransform,
+  LowerCaseArray,
   NormalizeStringInput,
 } from '@/utils/request/transform';
 
@@ -41,15 +42,10 @@ export class ProductUpdateDisplayDto {
   @IsOptional()
   @ArrayTransform()
   @NormalizeStringInput({ each: true })
-  keywords?: string[];
+  readonly keywords?: string[];
 }
 
 export class ProductUpdateDto {
-  @IsNotEmpty()
-  @IsUUID()
-  @Type(() => String)
-  readonly id: string;
-
   @Length(3, 30)
   @ProductSKU()
   @IsOptional()
@@ -67,9 +63,23 @@ export class ProductUpdateDto {
   @IsOptional()
   isActive?: boolean;
 
-  @IsObject()
+  @ProductDisplayLanguage()
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ProductUpdateDisplayDto)
-  readonly display: ProductUpdateDisplayDto;
+  language: EnumDisplayLanguage;
+
+  @IsOptional()
+  @MaxLength(30)
+  @NormalizeStringInput()
+  readonly name?: string;
+
+  @MaxLength(200)
+  @NormalizeStringInput()
+  readonly description!: string;
+
+  @IsArray()
+  @IsOptional()
+  @LowerCaseArray()
+  @ArrayTransform()
+  @NormalizeStringInput({ each: true })
+  readonly keywords?: string[];
 }

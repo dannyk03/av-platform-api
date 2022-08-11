@@ -28,7 +28,7 @@ import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ProductListSerialization } from '../serialization';
+import { ProductGetSerialization } from '../serialization';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
@@ -131,8 +131,8 @@ export class ProductCommonController {
       ],
     });
 
-    const createdProduct = await this.productService.save(createProduct);
-    return this.productService.serialization(createdProduct);
+    const saveProduct = await this.productService.save(createProduct);
+    return this.productService.serialization(saveProduct);
   }
 
   @ResponsePaging('product.list')
@@ -190,7 +190,7 @@ export class ProductCommonController {
       perPage,
     );
 
-    const data: ProductListSerialization[] =
+    const data: ProductGetSerialization[] =
       await this.productService.serializationList(products);
 
     return {
@@ -278,26 +278,24 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @Patch()
+  @RequestParamGuard(IdParamDto)
+  @Patch('/:id')
   async update(
+    @Param('id') id: string,
     @Body()
     body: ProductUpdateDto,
-  ): Promise<void> {
-    const updateRes = await this.productService.update(body);
+  ): Promise<IResponseData> {
+    const updateProduct = await this.productService.update({
+      id,
+      ...body,
+    });
 
-    await this.productService.serialization(updateRes);
+    return this.productService.serialization(updateProduct);
   }
 
   @Response('product.get')
   @HttpCode(HttpStatus.OK)
-  @AclGuard({
-    abilities: [
-      {
-        action: Action.Read,
-        subject: Subjects.Product,
-      },
-    ],
-  })
+  @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id')
   async get(

@@ -19,7 +19,7 @@ import { Vendor } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { VendorListSerialization } from '../serialization';
+import { VendorGetSerialization } from '../serialization';
 
 import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
 
@@ -185,11 +185,11 @@ export class VendorService {
     return searchBuilder.getMany();
   }
 
-  async serialization(data: Vendor): Promise<VendorListSerialization> {
-    return plainToInstance(VendorListSerialization, data);
+  async serialization(data: Vendor): Promise<VendorGetSerialization> {
+    return plainToInstance(VendorGetSerialization, data);
   }
 
-  async serializationList(data: Vendor[]): Promise<VendorListSerialization[]> {
-    return plainToInstance(VendorListSerialization, data);
+  async serializationList(data: Vendor[]): Promise<VendorGetSerialization[]> {
+    return plainToInstance(VendorGetSerialization, data);
   }
 }

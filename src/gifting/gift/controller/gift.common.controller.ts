@@ -33,6 +33,7 @@ import {
   GiftIntentReadyLinkService,
   GiftIntentService,
   GiftService,
+  GiftSubmitService,
 } from '../service';
 import { ProductService } from '@/catalog/product/service';
 import { UserService } from '@/user/service';
@@ -68,6 +69,7 @@ export class GiftCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
     private readonly giftService: GiftService,
+    private readonly giftSubmitService: GiftSubmitService,
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
     private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
@@ -431,5 +433,10 @@ export class GiftCommonController {
         message: 'gift.intent.error.unprocessableSubmit',
       });
     }
+
+    // const createGiftSubmit = await this.giftSubmitService.create({
+    //   giftIntent,
+    //   gifts:
+    // })
   }
 }

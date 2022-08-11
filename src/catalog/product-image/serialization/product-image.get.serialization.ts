@@ -1,7 +1,11 @@
+import { IProductImageGetSerialization } from '@avo/type';
+
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class ProductImageListSerialization {
+export class ProductImageGetSerialization
+  implements IProductImageGetSerialization
+{
   @Expose()
   readonly id: string;
 

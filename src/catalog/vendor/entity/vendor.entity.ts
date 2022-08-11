@@ -48,7 +48,7 @@ export class Vendor extends BaseEntity<Vendor> {
     cascade: true,
     nullable: true,
   })
-  logo: VendorLogo;
+  logo?: VendorLogo;
 
   @BeforeInsert()
   beforeInsert() {

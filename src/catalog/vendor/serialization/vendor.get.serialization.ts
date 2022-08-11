@@ -1,7 +1,11 @@
+import { IVendorLogoGetListSerialization } from '@avo/type';
+
 import { Exclude, Expose, Type } from 'class-transformer';
 
 @Exclude()
-export class VendorLogoListSerialization {
+export class VendorLogoListSerialization
+  implements IVendorLogoGetListSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -12,7 +16,7 @@ export class VendorLogoListSerialization {
   readonly fileName: string;
 }
 
-export class VendorListSerialization {
+export class VendorGetSerialization {
   readonly id: string;
   readonly name: string;
   readonly description: string;

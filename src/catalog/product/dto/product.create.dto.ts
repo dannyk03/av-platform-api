@@ -15,6 +15,7 @@ import {
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
+  LowerCaseArray,
   NormalizeStringInput,
 } from '@/utils/request/transform';
 
@@ -35,6 +36,7 @@ export class ProductCreateDto {
   @NormalizeStringInput()
   readonly name!: string;
 
+  @IsOptional()
   @MaxLength(200)
   @NormalizeStringInput()
   readonly description!: string;
@@ -46,6 +48,7 @@ export class ProductCreateDto {
   @IsArray()
   @IsOptional()
   @ArrayTransform()
+  @LowerCaseArray()
   @NormalizeStringInput({ each: true })
   keywords?: string[];
 

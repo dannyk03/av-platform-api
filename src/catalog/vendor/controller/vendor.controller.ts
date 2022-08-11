@@ -23,7 +23,7 @@ import {
 import { VendorLogoService, VendorService } from '../service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { VendorListSerialization } from '../serialization';
+import { VendorGetSerialization } from '../serialization';
 
 import { VendorCreateDto, VendorListDto, VendorUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
@@ -140,7 +140,7 @@ export class VendorCommonController {
       perPage,
     );
 
-    const data: VendorListSerialization[] =
+    const data: VendorGetSerialization[] =
       await this.vendorService.serializationList(vendors);
 
     return {

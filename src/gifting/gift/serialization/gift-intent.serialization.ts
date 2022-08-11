@@ -11,7 +11,7 @@ import {
 import { Gift } from '../entity';
 import { Product } from '@/catalog/product/entity';
 
-import { ProductListSerialization } from '@/catalog/product/serialization';
+import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 @Exclude()
 class GiftUserSerialization {
@@ -56,10 +56,10 @@ class GiftOptionSerialization {
   @Expose()
   @Transform(({ value: products }) =>
     products?.map((product: Product) =>
-      plainToInstance(ProductListSerialization, product),
+      plainToInstance(ProductGetSerialization, product),
     ),
   )
-  products: ProductListSerialization;
+  products: ProductGetSerialization;
 }
 
 @Exclude()

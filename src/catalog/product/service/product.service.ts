@@ -21,7 +21,7 @@ import { Product } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ProductListSerialization } from '../serialization';
+import { ProductGetSerialization } from '../serialization';
 
 import {
   IGetProduct,
@@ -241,7 +241,10 @@ export class ProductService {
     sku,
     brand,
     isActive,
-    display: { language, ...restDisplay },
+    language,
+    name,
+    description,
+    keywords,
   }: IProductUpdate): Promise<any> {
     const getProduct = await this.get({ id, language: language });
 
@@ -251,19 +254,19 @@ export class ProductService {
 
     getProduct.displayOptions[0] = {
       ...getProduct.displayOptions[0],
-      ...restDisplay,
+      name,
+      description,
+      keywords,
     };
 
     return this.productRepository.save(getProduct);
   }
 
-  async serialization(data: Product): Promise<ProductListSerialization> {
-    return plainToInstance(ProductListSerialization, data);
+  async serialization(data: Product): Promise<ProductGetSerialization> {
+    return plainToInstance(ProductGetSerialization, data);
   }
 
-  async serializationList(
-    data: Product[],
-  ): Promise<ProductListSerialization[]> {
-    return plainToInstance(ProductListSerialization, data);
+  async serializationList(data: Product[]): Promise<ProductGetSerialization[]> {
+    return plainToInstance(ProductGetSerialization, data);
   }
 }
