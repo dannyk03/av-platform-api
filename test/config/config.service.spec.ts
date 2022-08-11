@@ -23,7 +23,7 @@ describe('ConfigService', () => {
       const test = jest.spyOn(configService, 'get');
 
       configService.get('auth.env');
-      expect(test).toHaveBeenCalledWith('auth.env1');
+      expect(test).toHaveBeenCalledWith('auth.env');
     });
 
     it('should be success', async () => {
