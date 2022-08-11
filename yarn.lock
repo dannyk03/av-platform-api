@@ -1760,10 +1760,10 @@
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
 
-"@nestjs/terminus@^9.1.0":
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-9.1.0.tgz#ef62a5eab17a34bcf14c58cee7d4fac8159bc185"
-  integrity sha512-4z1qneqZ7X/EjHw0YWVFuuHjGNCTW5SeFl8FQZIIJw0AyqNr3+KpTwKum4PY531AjTzRcYZblN9aWQ5I67oDFQ==
+"@nestjs/terminus@^9.1.1":
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-9.1.1.tgz#fd346d7d574d3635c1472768aa16c90c66b7dc36"
+  integrity sha512-8XrXOTseUO8eQZYm/JZbRnznpyS1sVvMkHLW8BOi02s7Bzxw3UPiFOOF34ueKp4ONUjUCoKq36BmwY00dpjofA==
   dependencies:
     boxen "5.1.2"
     check-disk-space "3.3.1"
@@ -1782,10 +1782,10 @@
   dependencies:
     md5 "^2.2.1"
 
-"@nestjs/typeorm@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/typeorm/-/typeorm-9.0.0.tgz#dea9e5ba006dc06911712660d8aa0787b7791652"
-  integrity sha512-pTH9ZlngObaPlt7//CY2lSb+3ouFczUQJln1ctXIpGwZdY3QBrwsxF3hnJXsCYNa+IPfz27qJUeoAQmp65kGZw==
+"@nestjs/typeorm@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/typeorm/-/typeorm-9.0.1.tgz#f78bfc00e71731ea860288e4a03830107daf3d9c"
+  integrity sha512-A2BgLIPsMtmMI0bPKEf4bmzgFPsnvHqNBx3KkvaJ7hJrBQy0OqYOb+Rr06ifblKWDWS2tUPNrAFQbZjtk3PI+g==
   dependencies:
     uuid "8.3.2"
 
@@ -2098,10 +2098,10 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node@*", "@types/node@>=8.1.0", "@types/node@^18.6.5":
-  version "18.6.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.6.5.tgz#06caea822caf9e59d5034b695186ee74154d2802"
-  integrity sha512-Xjt5ZGUa5WusGZJ4WJPbOT8QOqp6nDynVFRKcUt32bOgvXEoc6o085WNkYTMO7ifAj2isEfQQ2cseE+wT6jsRw==
+"@types/node@*", "@types/node@>=8.1.0", "@types/node@^18.7.1":
+  version "18.7.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.1.tgz#352bee64f93117d867d05f7406642a52685cbca6"
+  integrity sha512-GKX1Qnqxo4S+Z/+Z8KKPLpH282LD7jLHWJcVryOflnsnH+BtSDfieR6ObwBMwpnNws0bUK8GI7z0unQf9bARNQ==
 
 "@types/node@^14.0.1":
   version "14.18.23"
@@ -5374,10 +5374,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libphonenumber-js@^1.10.11, libphonenumber-js@^1.9.43:
-  version "1.10.11"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.11.tgz#0078756857bcc5c9dfe097123c6e04ea930e309b"
-  integrity sha512-ehoihx4HpRXO6FH/uJ0EnaEV4dVU+FDny+jv0S6k9JPyPsAIr0eXDAFvGRMBKE1daCtyHAaFSKCiuCxrOjVAzQ==
+libphonenumber-js@^1.10.12, libphonenumber-js@^1.9.43:
+  version "1.10.12"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.12.tgz#75ebe2f1887d12bbf45af5655fdb63f55f4ee05b"
+  integrity sha512-xTFBs3ipFQNmjCUkDj6ZzRJvs97IyazFHBKWtrQrLiYs0Zk0GANob1hkMRlQUQXbJrpQGwnI+/yU4oyD4ohvpw==
 
 lie@~3.3.0:
   version "3.3.0"
