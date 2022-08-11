@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-
 import { AbilityVerb, Action } from '@avo/casl';
+
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { AclSubject } from '@acl/subject/entity';

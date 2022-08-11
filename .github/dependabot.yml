@@ -1,6 +1,10 @@
-# version: 2
-# updates:
-#   - package-ecosystem: "npm"
-#     directory: "/"
-#     schedule:
-#       interval: "weekly"
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    ignore:
+      - dependency-name: 'nanoid'
+        # For nanoid, ignore all updates for major version (in v4 no support for cjs, only esm)
+        update-types: ['version-update:semver-major']

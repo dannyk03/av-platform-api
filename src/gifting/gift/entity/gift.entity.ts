@@ -1,61 +1,35 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
-import { GiftAdditionalData } from './gift-additional-data.entity';
-import { GiftRecipient } from './gift-recipient.entity';
-import { GiftSendConfirmationLink } from './gift-send-confirmation-link.entity';
-import { GiftSender } from './gift-sender.entity';
+import { GiftIntent } from './gift-intent.entity';
+import { GiftSubmit } from './gift-submit.entity';
+import { Product } from '@/catalog/product/entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class Gift extends BaseEntity<Gift> {
-  @OneToOne(() => GiftRecipient, {
-    cascade: ['insert'],
+  @ManyToMany(() => Product, (product) => product.giftOptions)
+  @JoinTable({
+    name: 'gifts_products',
+    joinColumn: {
+      name: 'gift_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+  })
+  products!: Product[];
+
+  @ManyToOne(() => GiftIntent, (giftIntent) => giftIntent.giftOptions, {
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
-  recipient: GiftRecipient;
+  giftIntent!: GiftIntent;
 
-  @OneToOne(() => GiftSender, {
-    cascade: ['insert'],
+  @ManyToOne(() => GiftSubmit, (giftSubmit) => giftSubmit.gifts, {
+    nullable: true,
   })
   @JoinColumn()
-  sender!: GiftSender;
-
-  @OneToOne(() => GiftAdditionalData, {
-    nullable: true,
-    cascade: ['insert'],
-  })
-  @JoinColumn()
-  additionalData?: GiftAdditionalData;
-
-  @Column({
-    nullable: true,
-  })
-  sentAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  acceptedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  approvedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  shippedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  deliveredAt?: Date;
-
-  @ManyToOne(
-    () => GiftSendConfirmationLink,
-    (verificationLink) => verificationLink.gifts,
-  )
-  @JoinColumn()
-  confirmationLink!: GiftSendConfirmationLink;
+  giftSubmit?: GiftSubmit;
 }

@@ -7,10 +7,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import {
-  EnumUserStatusCodeError,
-  USER_VERIFIED_ONLY_META_KEY,
-} from '../user.constant';
+import { EnumUserStatusCodeError } from '@avo/type';
+
+import { USER_VERIFIED_ONLY_META_KEY } from '../user.constant';
 
 @Injectable()
 export class ReqUserVerifiedOnlyGuard implements CanActivate {

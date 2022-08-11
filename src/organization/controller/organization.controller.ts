@@ -8,10 +8,11 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { Action, Subjects } from '@avo/casl';
+import { EnumOrganizationStatusCodeError } from '@avo/type';
+
 import { EnumOrganizationRole } from '@acl/role';
 import { DataSource } from 'typeorm';
-
-import { Action, Subject } from '@avo/casl';
 
 import { OrganizationInviteService, OrganizationService } from '../service';
 import { AuthService } from '@/auth/service';
@@ -24,8 +25,6 @@ import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
 import { Response } from '@/utils/response';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Controller({
   version: '1',
@@ -52,11 +51,11 @@ export class OrganizationController {
     abilities: [
       {
         action: Action.Create,
-        subject: Subject.Organization,
+        subject: Subjects.Organization,
       },
       {
         action: Action.Create,
-        subject: Subject.User,
+        subject: Subjects.User,
       },
     ],
     systemOnly: true,

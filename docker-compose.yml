@@ -30,7 +30,7 @@ services:
     depends_on:
       - postgres
     command: >
-      sh -c "yarn start:debug"
+      sh -c "yarn start:dev"
 
   postgres:
     container_name: postgres

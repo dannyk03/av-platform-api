@@ -5,9 +5,9 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { DebuggerService } from '@/debugger/service';
+import { EnumRoleStatusCodeError } from '@avo/type';
 
-import { EnumRoleStatusCodeError } from '../acl-role.constant';
+import { DebuggerService } from '@/debugger/service';
 
 @Injectable()
 export class ReqUserAclRoleActiveGuard implements CanActivate {

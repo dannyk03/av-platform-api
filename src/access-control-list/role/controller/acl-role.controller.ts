@@ -5,9 +5,13 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 
-import { ILike } from 'typeorm';
+import { Action, Subjects } from '@avo/casl';
+import {
+  EnumOrganizationStatusCodeError,
+  IResponsePagingData,
+} from '@avo/type';
 
-import { Action, Subject } from '@avo/casl';
+import { ILike } from 'typeorm';
 
 import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
@@ -19,11 +23,10 @@ import { AclRoleListDto } from '../dto';
 
 import { AclGuard } from '@/auth';
 import {
-  EnumOrganizationStatusCodeError,
   IReqOrganizationIdentifierCtx,
   ReqOrganizationIdentifierCtx,
 } from '@/organization';
-import { IResponsePaging, ResponsePaging } from '@/utils/response';
+import { ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -41,7 +44,7 @@ export class AclRoleController {
     abilities: [
       {
         action: Action.Read,
-        subject: Subject.Role,
+        subject: Subjects.Role,
       },
     ],
   })
@@ -58,7 +61,7 @@ export class AclRoleController {
     }: AclRoleListDto,
     @ReqOrganizationIdentifierCtx()
     { id, slug }: IReqOrganizationIdentifierCtx,
-  ): Promise<IResponsePaging> {
+  ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
     const organizationCtxFind: Record<string, any> = {
       organization: { id, slug },

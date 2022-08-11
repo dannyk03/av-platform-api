@@ -7,10 +7,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { EnumOrganizationStatusCodeError } from '@/organization';
-import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
+import {
+  EnumOrganizationStatusCodeError,
+  EnumUserStatusCodeError,
+} from '@avo/type';
 
-import { EnumUserStatusCodeError } from '../user.constant';
+import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
 
 @Injectable()
 export class ReqUserSystemOnlyGuard implements CanActivate {

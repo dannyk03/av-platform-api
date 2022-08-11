@@ -2,32 +2,43 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Query,
   Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
+
+import {
+  EnumGiftIntentStatusCodeError,
+  EnumGiftStatusCodeError,
+  EnumMessagingStatusCodeError,
+  EnumOrganizationStatusCodeError,
+  EnumUserStatusCodeError,
+  IResponseData,
+} from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
 import uniqBy from 'lodash/uniqBy';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
-import { GiftSendConfirmationLinkService } from '@/gifting/gift/service';
+import {
+  GiftIntentConfirmationLinkService,
+  GiftIntentReadyLinkService,
+  GiftIntentService,
+} from '@/gifting/gift/service';
 import { OrganizationInviteService } from '@/organization/service';
-import { HelperDateService, HelperJwtService } from '@/utils/helper/service';
+import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
 import { MagicLinkDto } from '../dto';
 
 import { AuthUserLoginSerialization } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EnumGiftStatusCodeError } from '@/gifting/gift';
 import { EmailService } from '@/messaging/email';
-import { EnumOrganizationStatusCodeError } from '@/organization';
-import { EnumUserStatusCodeError } from '@/user';
-import { IResponse, Response } from '@/utils/response';
+import { Response } from '@/utils/response';
 
 @Controller({})
 export class MagicLinkController {
@@ -36,12 +47,13 @@ export class MagicLinkController {
     private defaultDataSource: DataSource,
     private readonly authSignUpVerificationService: AuthSignUpVerificationLinkService,
     private readonly helperDateService: HelperDateService,
-    private readonly configService: ConfigService,
+    private readonly helperCookieService: HelperCookieService,
     private readonly organizationInviteService: OrganizationInviteService,
-    private readonly giftSendConfirmationLinkService: GiftSendConfirmationLinkService,
+    private readonly giftIntentConfirmationLinkService: GiftIntentConfirmationLinkService,
+    private readonly giftIntentReadyLinkService: GiftIntentReadyLinkService,
+    private readonly giftIntentService: GiftIntentService,
     private readonly emailService: EmailService,
     private readonly authService: AuthService,
-    private readonly helperJwtService: HelperJwtService,
   ) {}
 
   @Response('user.signUpSuccess')
@@ -51,7 +63,7 @@ export class MagicLinkController {
     { code }: MagicLinkDto,
     @Res({ passthrough: true })
     response: ExpressResponse,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
         where: { code },
@@ -59,6 +71,7 @@ export class MagicLinkController {
         select: {
           user: {
             id: true,
+            email: true,
             isActive: true,
             authConfig: {
               id: true,
@@ -75,9 +88,6 @@ export class MagicLinkController {
         message: 'user.error.code',
       });
     }
-
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
 
     const now = this.helperDateService.create();
     const expiresAt =
@@ -128,12 +138,7 @@ export class MagicLinkController {
       false,
     );
 
-    response.cookie('accessToken', accessToken, {
-      secure: isSecureMode,
-      expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'lax',
-      httpOnly: true,
-    });
+    await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       refreshToken,
@@ -145,7 +150,7 @@ export class MagicLinkController {
   async joinValidate(
     @Query()
     { code }: MagicLinkDto,
-  ) {
+  ): Promise<void> {
     const existingInvite = await this.organizationInviteService.findOneBy({
       code,
     });
@@ -178,45 +183,45 @@ export class MagicLinkController {
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {
-    const existingGiftSendVerificationLink =
-      await this.giftSendConfirmationLinkService.findOne({
+    const existingGiftSendConfirmationLink =
+      await this.giftIntentConfirmationLinkService.findOne({
         where: { code },
         relations: [
-          'gifts',
-          'gifts.sender',
-          'gifts.recipient',
-          'gifts.recipient.user',
-          'gifts.sender.user',
-          'gifts.sender.user.authConfig',
+          'giftIntents',
+          'giftIntents.sender',
+          'giftIntents.recipient',
+          'giftIntents.recipient.user',
+          'giftIntents.sender.user',
+          'giftIntents.sender.user.authConfig',
         ],
       });
 
-    if (!existingGiftSendVerificationLink) {
+    if (!existingGiftSendConfirmationLink) {
       throw new NotFoundException({
-        statusCode: EnumGiftStatusCodeError.GiftVerificationNotFoundError,
+        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkNotFoundError,
         message: 'gift.error.code',
       });
     }
 
     const now = this.helperDateService.create();
     const expiresAt =
-      existingGiftSendVerificationLink.expiresAt &&
+      existingGiftSendConfirmationLink.expiresAt &&
       this.helperDateService.create({
-        date: existingGiftSendVerificationLink.expiresAt,
+        date: existingGiftSendConfirmationLink.expiresAt,
       });
 
     if (
       (expiresAt && now > expiresAt) ||
-      existingGiftSendVerificationLink.usedAt
+      existingGiftSendConfirmationLink.usedAt
     ) {
       throw new ForbiddenException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpired,
+        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpiredError,
         message: 'gift.error.verificationLink',
       });
     }
 
     const uniqueSenders = uniqBy(
-      existingGiftSendVerificationLink.gifts.map((gift) => gift.sender),
+      existingGiftSendConfirmationLink.giftIntents.map((gift) => gift.sender),
       'id',
     );
 
@@ -230,9 +235,9 @@ export class MagicLinkController {
     await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        existingGiftSendVerificationLink.usedAt =
+        existingGiftSendConfirmationLink.usedAt =
           this.helperDateService.create();
-        await transactionalEntityManager.save(existingGiftSendVerificationLink);
+        await transactionalEntityManager.save(existingGiftSendConfirmationLink);
 
         await Promise.all([
           uniqueSenders.map(async (sender) => {
@@ -247,17 +252,79 @@ export class MagicLinkController {
         ]);
 
         await Promise.all(
-          existingGiftSendVerificationLink.gifts.map(async (gift) =>
-            this.emailService.sendGiftSurvey({
-              senderEmail:
-                gift.sender.user?.email || gift.sender.additionalData['email'],
-              recipientEmail:
-                gift.recipient.user?.email ||
-                gift.recipient.additionalData['email'],
-            }),
+          existingGiftSendConfirmationLink.giftIntents.map(
+            async (giftIntent) => {
+              const sent = this.emailService.sendGiftSurvey({
+                senderEmail:
+                  giftIntent.sender.user?.email ||
+                  giftIntent.sender.additionalData['email'],
+                recipientEmail:
+                  giftIntent.recipient.user?.email ||
+                  giftIntent.recipient.additionalData['email'],
+              });
+
+              if (sent) {
+                giftIntent.sentAt = this.helperDateService.create();
+                transactionalEntityManager.save(giftIntent);
+              } else {
+                throw new InternalServerErrorException({
+                  statusCode:
+                    EnumMessagingStatusCodeError.MessagingEmailSendError,
+                  message: 'messaging.error.email.send',
+                });
+              }
+            },
           ),
         );
       },
+    );
+  }
+
+  @Response('gift.intent.ready')
+  @Throttle(1, 5)
+  @Get('/ready')
+  async giftIntentReadyValidate(
+    @Query()
+    { code, lang }: MagicLinkDto,
+  ): Promise<IResponseData> {
+    const existingReadyLink = await this.giftIntentReadyLinkService.findOne({
+      where: {
+        code,
+        usedAt: IsNull(),
+        giftIntent: {
+          submittedAt: IsNull(),
+          giftOptions: {
+            products: {
+              displayOptions: {
+                language: {
+                  isoCode: lang,
+                },
+              },
+            },
+          },
+        },
+      },
+      relations: [
+        'giftIntent',
+        'giftIntent.additionalData',
+        'giftIntent.recipient',
+        'giftIntent.recipient.user',
+        'giftIntent.giftOptions',
+        'giftIntent.giftOptions.products',
+        'giftIntent.giftOptions.products.displayOptions',
+        'giftIntent.giftOptions.products.displayOptions.images',
+      ],
+    });
+
+    if (!existingReadyLink) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    return this.giftIntentService.serializationGiftIntentReady(
+      existingReadyLink.giftIntent,
     );
   }
 }

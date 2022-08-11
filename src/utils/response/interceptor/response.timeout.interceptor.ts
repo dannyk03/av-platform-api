@@ -10,11 +10,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
+import { EnumStatusCodeError } from '@avo/type';
+
 import ms from 'ms';
 import { Observable, TimeoutError, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
-
-import { EnumStatusCodeError } from '@/utils/error/error.constant';
 
 import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from '../response.constant';
 

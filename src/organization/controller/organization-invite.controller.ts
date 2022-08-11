@@ -9,11 +9,14 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
-import { EnumRoleStatusCodeError } from '@acl/role';
+import { Action, Subjects } from '@avo/casl';
+import {
+  EnumOrganizationStatusCodeError,
+  EnumRoleStatusCodeError,
+} from '@avo/type';
+
 import { isUUID } from 'class-validator';
 import { DataSource } from 'typeorm';
-
-import { Action, Subject } from '@avo/casl';
 
 import { OrganizationInviteService } from '../service';
 import { AuthService } from '@/auth/service';
@@ -27,12 +30,11 @@ import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
+import { IReqOrganizationIdentifierCtx } from '../organization.interface';
+
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { Response } from '@/utils/response';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
-import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 
 @Controller({
   version: '1',
@@ -56,7 +58,7 @@ export class OrganizationInviteController {
     abilities: [
       {
         action: Action.Create,
-        subject: Subject.OrganizationInvite,
+        subject: Subjects.OrganizationInvite,
       },
     ],
   })

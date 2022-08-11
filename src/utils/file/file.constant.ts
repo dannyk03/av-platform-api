@@ -1,16 +1,24 @@
 export enum EnumFileImageMime {
-  Jpg = 'image/jpg',
-  Jpeg = 'image/jpeg',
-  Png = 'image/png',
+  JPG = 'image/jpg',
+  JPEG = 'image/jpeg',
+  PNG = 'image/png',
 }
 
 export enum EnumFileType {
-  Image = 'IMAGE',
+  IMAGE = 'IMAGE',
+  EXCEL = 'EXCEL',
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
 }
 
-export enum EnumFileStatusCodeError {
-  FileNeededError = 5950,
-  FileMaxSizeError = 5951,
-  FileExtensionError = 5952,
-  FileMaxError = 5953,
+export enum EnumFileExcelMime {
+  XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+}
+
+export enum EnumFileAudioMime {
+  MP3 = 'audio/mpeg',
+}
+
+export enum EnumFileVideoMime {
+  MP4 = 'video/mp4',
 }

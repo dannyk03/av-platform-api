@@ -8,14 +8,15 @@ import { createStream } from 'rotating-file-stream';
 import { HelperDateService } from '@/utils/helper/service';
 
 import {
-  DEBUGGER_HTTP_FORMAT,
-  DEBUGGER_HTTP_NAME,
-} from './http-debugger.constant';
-import {
   ICustomResponse,
   IHttpDebuggerConfig,
   IHttpDebuggerConfigOptions,
 } from './http-debugger.interface';
+
+import {
+  DEBUGGER_HTTP_FORMAT,
+  DEBUGGER_HTTP_NAME,
+} from './http-debugger.constant';
 
 @Injectable()
 export class HttpDebuggerMiddleware implements NestMiddleware {
@@ -75,7 +76,7 @@ export class HttpDebuggerMiddleware implements NestMiddleware {
 
 @Injectable()
 export class HttpDebuggerResponseMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(_req: Request, res: Response, next: NextFunction): void {
     const send: any = res.send;
     const resOld: any = res;
 

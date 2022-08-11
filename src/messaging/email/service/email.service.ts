@@ -7,10 +7,13 @@ import { EmailStatus, EmailTemplate } from '../email.constant';
 
 @Injectable()
 export class EmailService {
+  private readonly isProduction: boolean;
   constructor(
     private readonly configService: ConfigService,
     private readonly customerIOService: CustomerIOService,
-  ) {}
+  ) {
+    this.isProduction = this.configService.get<boolean>('app.isProduction');
+  }
 
   async sendOrganizationInvite({
     email,
@@ -47,16 +50,15 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
-    const isProduction = this.configService.get<boolean>('app.isProduction');
     // Temporary for local development
-    if (!isProduction) {
+    if (!this.isProduction) {
       return true;
     }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: { path, code },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
@@ -96,11 +98,41 @@ export class EmailService {
     code: string;
     path?: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftConfirm.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: { path, code },
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
+      code,
+    });
+    return Boolean(sendResult.status == EmailStatus.success);
+  }
+
+  async sendGiftReady({
+    email,
+    code,
+    path = '/ready',
+  }: {
+    email: string;
+    code: string;
+    path?: string;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftReady.toString(),
+      to: [email],
+      emailTemplatePayload: { path, code },
       identifier: { id: email },
     });
     console.log({

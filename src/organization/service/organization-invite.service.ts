@@ -7,6 +7,12 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import {
+  EnumMessagingStatusCodeError,
+  EnumOrganizationStatusCodeError,
+  EnumRoleStatusCodeError,
+} from '@avo/type';
+
+import {
   DeepPartial,
   EntityManager,
   FindOneOptions,
@@ -19,13 +25,8 @@ import { AclRole } from '@acl/role/entity';
 
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 
-import { EnumRoleStatusCodeError } from '@/access-control-list/role';
 import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
-import { EnumMessagingStatusCodeError } from '@/messaging/messaging.constant';
-import { SuccessException } from '@/utils/error';
-
-import { EnumOrganizationStatusCodeError } from '../organization.constant';
 
 @Injectable()
 export class OrganizationInviteService {
@@ -174,17 +175,18 @@ export class OrganizationInviteService {
           });
         }
       } else {
-        throw new SuccessException({
-          statusCode:
-            EnumOrganizationStatusCodeError.OrganizationUserAlreadyInvited,
-          message: 'organization.error.alreadyInvited',
-
+        return {
+          metadata: {
+            statusCode:
+              EnumOrganizationStatusCodeError.OrganizationUserAlreadyInvited,
+            message: 'organization.error.alreadyInvited',
+          },
           ...(!alreadyExistingOrganizationInvite.usedAt && {
             data: {
               code: alreadyExistingOrganizationInvite.code,
             },
           }),
-        });
+        };
       }
     }
   }

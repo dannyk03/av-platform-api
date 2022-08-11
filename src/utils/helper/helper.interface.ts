@@ -1,3 +1,5 @@
+import { ConfigType } from 'dayjs';
+
 import { EnumHelperDateDiff, EnumHelperDateFormat } from './helper.constant';
 
 export interface IHelperJwtOptions {
@@ -34,7 +36,7 @@ export interface IHelperDateOptionsDiff extends IHelperDateOptions {
 }
 
 export interface IHelperDateOptionsCreate extends IHelperDateOptions {
-  date?: string | number | Date;
+  date?: ConfigType;
 }
 
 export interface IHelperDateOptionsFormat extends IHelperDateOptions {
@@ -50,3 +52,5 @@ export type IHelperDateOptionsBackward = IHelperDateOptionsForward;
 export interface IHelperDateOptionsMonth extends IHelperDateOptions {
   year?: number;
 }
+
+export type IHelperFileExcelRows = Record<string, string | number>;

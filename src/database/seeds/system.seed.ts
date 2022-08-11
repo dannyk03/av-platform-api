@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
+
 import { EnumSystemRole } from '@acl/role';
 import { Command } from 'nestjs-command';
 import { DataSource } from 'typeorm';
-
-import { EnumCurrency } from '@avo/type';
 
 import { AuthService } from '@/auth/service';
 import { CurrencyService } from '@/currency/service';
@@ -14,8 +14,6 @@ import { OrganizationService } from '@/organization/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
-
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
 
 import { ConnectionNames } from '../database.constant';
 import { systemSeedData } from './data';

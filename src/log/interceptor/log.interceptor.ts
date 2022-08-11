@@ -11,14 +11,15 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
 import { EnumRequestMethod } from 'src/utils/request/request.constant';
-import { IRequestApp } from 'src/utils/request/request.interface';
 
 import { Log } from '../entity';
 
 import { LogService } from '../service/log.service';
 
-import { EnumLogAction, EnumLogLevel } from '../log.constant';
 import { ILog, ILogOptions } from '../log.interface';
+import { IRequestApp } from 'src/utils/request/request.interface';
+
+import { EnumLogAction, EnumLogLevel } from '../log.constant';
 
 export function LogInterceptor(
   action: EnumLogAction,
@@ -60,9 +61,7 @@ export function LogInterceptor(
           tap(async (response: Promise<Record<string, any>>) => {
             const responseData: Record<string, any> = await response;
             const responseStatus: number = responseExpress?.statusCode;
-            const statusCode = responseData?.statusCode
-              ? responseData.statusCode
-              : responseStatus;
+            const statusCode = responseData?.statusCode || responseStatus;
 
             const logData = {
               action,
@@ -76,7 +75,7 @@ export function LogInterceptor(
               method: method as EnumRequestMethod,
               role: __user?.role,
               params,
-              bodies: body,
+              body,
               statusCode,
               userAgent,
               tags: options?.tags,

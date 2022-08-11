@@ -1,14 +1,14 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.7
+  node: circleci/node@5.0.2
   aws-ecr: circleci/aws-ecr@7.3.0
 
 jobs:
   build-lint-test:
     docker:
-      - image: cimg/node:16.10
-      - image: circleci/postgres:11.9
+      - image: cimg/node:17.9
+      - image: cimg/postgres:14.4
         environment:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
           POSTGRES_USER: ${POSTGRES_USERNAME}
@@ -36,6 +36,20 @@ jobs:
       - run:
           name: Yarn Build
           command: yarn build
+  build-and-push-image:
+    docker:
+      - image: cimg/base:2022.02
+    steps:
+      - run:
+          name: 'Setup custom environment variables'
+          command: |
+            echo 'export CUSTOM_IMAGE_TAG="${CIRCLE_BRANCH//\//-}_${CIRCLE_SHA1:0:7}_$(git log -1 --format=%ct)"' >> $BASH_ENV
+      - aws-ecr/build-and-push-image:
+          remote-docker-layer-caching: true
+          setup-remote-docker: true
+          repo: ${CIRCLE_PROJECT_REPONAME}
+          tag: ${CUSTOM_IMAGE_TAG}
+          extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}'
 
 workflows:
   workflow:
@@ -45,20 +59,15 @@ workflows:
             - ci-migrations-job
             - jfrog-platform
             - cloudinary
-      - aws-ecr/build-and-push-image:
-          name: build and push image to admin-eu ecr
-          remote-docker-layer-caching: true
+      - build-and-push-image:
           context:
             - eu-ecr
             - jfrog-platform
+          requires:
+            - build-lint-test
           filters:
             branches:
               only:
                 - development
                 - master
-                - manual-deploy
-          repo: ${CIRCLE_PROJECT_REPONAME}
-          tag: 'development,${CIRCLE_BRANCH}-${CIRCLE_SHA1}'
-          extra-build-args: '--build-arg JFROG_AUTH_TOKEN=${JFROG_AUTH_TOKEN}'
-          requires:
-            - build-lint-test
+                - circleci-config-update-tag-build

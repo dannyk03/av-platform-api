@@ -8,9 +8,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
+import { EnumRequestStatusCodeError } from '@avo/type';
+
 import { RequestControllerGuard } from './guard/request.controller.guard';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
-import { EnumRequestStatusCodeError } from './request.constant';
+import { RangeTupleConstraint } from './validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
 import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';
 import { IsPasswordStrongConstraint } from './validation/request.is-password-strong.validation';
@@ -71,6 +73,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
     SafeStringConstraint,
     IsOnlyDigitsConstraint,
     IsPhoneNumberConstraint,
+    RangeTupleConstraint,
   ],
   imports: [],
 })

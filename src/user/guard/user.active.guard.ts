@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { EnumUserStatusCodeError } from '../user.constant';
+import { EnumUserStatusCodeError } from '@avo/type';
 
 @Injectable()
 export class ReqUserActiveGuard implements CanActivate {

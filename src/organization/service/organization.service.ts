@@ -22,12 +22,14 @@ export class OrganizationService {
     private readonly slugService: HelperSlugService,
   ) {}
 
-  async create(props: DeepPartial<Organization>): Promise<Organization> {
+  async create(
+    props: DeepPartial<Omit<Organization, 'slug'>>,
+  ): Promise<Organization> {
     return this.organizationRepository.create(props);
   }
 
   async createMany(
-    props: DeepPartial<Organization>[],
+    props: DeepPartial<Omit<Organization, 'slug'>>[],
   ): Promise<Organization[]> {
     return this.organizationRepository.create(props);
   }
@@ -43,6 +45,9 @@ export class OrganizationService {
   async checkExistsByName(name: string): Promise<boolean> {
     const exists = await this.organizationRepository.findOne({
       where: { slug: this.slugService.slugify(name) },
+      select: {
+        id: true,
+      },
     });
 
     return Boolean(exists);

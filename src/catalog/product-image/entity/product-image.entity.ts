@@ -13,7 +13,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @Column({
     unique: true,
-    length: 16,
+    length: 32,
     update: false,
   })
   assetId!: string;
@@ -39,6 +39,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
   @ManyToOne(
     () => ProductDisplayOption,
     (displayOption) => displayOption.images,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn()
   productDisplayOption: ProductDisplayOption;

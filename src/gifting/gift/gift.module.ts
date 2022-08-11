@@ -4,14 +4,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessagingModule } from '@/messaging/messaging.module';
 
 import {
-  Gift,
+  GiftIntent,
+  GiftIntentAdditionalData,
+  GiftIntentConfirmationLink,
+  GiftIntentReadyLink,
   GiftRecipient,
-  GiftSendConfirmationLink,
   GiftSender,
 } from './entity';
+import { GiftSubmit } from './entity/gift-submit.entity';
+import { Gift } from './entity/gift.entity';
 
 import {
-  GiftSendConfirmationLinkService,
+  GiftIntentConfirmationLinkService,
+  GiftIntentReadyLinkService,
+  GiftIntentService,
   GiftSenderService,
   GiftService,
 } from './service';
@@ -23,22 +29,35 @@ import { EmailService } from '@/messaging/email';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Gift, GiftRecipient, GiftSender, GiftSendConfirmationLink],
+      [
+        Gift,
+        GiftSubmit,
+        GiftIntent,
+        GiftSender,
+        GiftRecipient,
+        GiftIntentReadyLink,
+        GiftIntentAdditionalData,
+        GiftIntentConfirmationLink,
+      ],
       ConnectionNames.Default,
     ),
     MessagingModule,
   ],
   exports: [
     GiftService,
+    GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendConfirmationLinkService,
+    GiftIntentReadyLinkService,
+    GiftIntentConfirmationLinkService,
   ],
   providers: [
     GiftService,
+    GiftIntentService,
     GiftRecipientService,
     GiftSenderService,
-    GiftSendConfirmationLinkService,
+    GiftIntentReadyLinkService,
+    GiftIntentConfirmationLinkService,
     EmailService,
   ],
   controllers: [],

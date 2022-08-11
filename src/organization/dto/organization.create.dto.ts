@@ -1,15 +1,15 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
-import { IsEmail, Length, MaxLength } from 'class-validator';
+import { Length, MaxLength } from 'class-validator';
 
+import {
+  NormalizeEmail,
+  NormalizeStringInput,
+  Trim,
+} from '@/utils/request/transform';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class OrganizationCreateDto {
-  @IsEmail()
-  @MaxLength(50)
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email!: string;
 
   @MaxLength(30)
@@ -19,8 +19,7 @@ export class OrganizationCreateDto {
   readonly password!: string;
 
   @Length(2, 30)
-  @Escape()
-  @Trim()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly name!: string;
 }

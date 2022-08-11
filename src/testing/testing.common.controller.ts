@@ -7,17 +7,20 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 
+import { IResponseData } from '@avo/type';
+
 import { IResult } from 'ua-parser-js';
 
 import { CloudinaryService } from '@/cloudinary/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
-import { AclGuard, ReqJwtUser } from '@/auth';
+import { AclGuard } from '@/auth';
 import { EnumLogAction, LogTrace } from '@/log';
+import { ReqUser } from '@/user';
 import { ErrorMeta } from '@/utils/error';
 import { EnumHelperDateFormat } from '@/utils/helper';
 import { RequestTimezone, RequestUserAgent } from '@/utils/request';
-import { IResponse, Response, ResponseTimeout } from '@/utils/response';
+import { Response, ResponseTimeout } from '@/utils/response';
 
 @Throttle(1, 10)
 @Controller({
@@ -36,7 +39,7 @@ export class TestingCommonController {
   async hello(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-  ): Promise<IResponse> {
+  ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone: timezone,
     });
@@ -56,13 +59,13 @@ export class TestingCommonController {
 
   @Response('test.auth')
   @HttpCode(HttpStatus.OK)
-  @AclGuard({ systemOnly: true })
+  @AclGuard()
   @Get('/auth')
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-    @ReqJwtUser() user,
-  ): Promise<IResponse> {
+    @ReqUser() user,
+  ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone: timezone,
     });
@@ -102,7 +105,7 @@ export class TestingCommonController {
   @ResponseTimeout('2s')
   @ErrorMeta(TestingCommonController.name, 'helloTimeoutCustom')
   @Get('/timeout')
-  async timeout(): Promise<IResponse> {
+  async timeout(): Promise<IResponseData> {
     await this.helperService.delay(5000);
     return;
   }

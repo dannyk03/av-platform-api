@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
+  DeleteResult,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -11,44 +11,36 @@ import {
 
 import { Gift } from '../entity';
 
-import {
-  RecipientAdditionalDataSerialization,
-  SenderAdditionalDataSerialization,
-} from '../serialization';
-
 import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class GiftService {
   constructor(
     @InjectRepository(Gift, ConnectionNames.Default)
-    private GifSendRepository: Repository<Gift>,
+    private giftRepository: Repository<Gift>,
   ) {}
 
   async create(props: DeepPartial<Gift>): Promise<Gift> {
-    return this.GifSendRepository.create(props);
+    return this.giftRepository.create(props);
   }
 
   async save(props: Gift): Promise<Gift> {
-    return this.GifSendRepository.save(props);
+    return this.giftRepository.save(props);
   }
 
   async saveBulk(props: Gift[]): Promise<Gift[]> {
-    return this.GifSendRepository.save(props);
+    return this.giftRepository.save(props);
   }
 
   async findOne(find: FindOneOptions<Gift>): Promise<Gift> {
-    return this.GifSendRepository.findOne(find);
+    return this.giftRepository.findOne(find);
   }
 
   async findOneBy(find: FindOptionsWhere<Gift>): Promise<Gift> {
-    return this.GifSendRepository.findOneBy(find);
+    return this.giftRepository.findOneBy(find);
   }
 
-  async serializationSenderGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(SenderAdditionalDataSerialization, data);
-  }
-  async serializationRecipientGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(RecipientAdditionalDataSerialization, data);
+  async deleteOneBy(find: FindOptionsWhere<Gift>): Promise<DeleteResult> {
+    return this.giftRepository.delete(find);
   }
 }

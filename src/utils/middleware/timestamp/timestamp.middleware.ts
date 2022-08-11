@@ -19,13 +19,13 @@ export class TimestampMiddleware implements NestMiddleware {
     _res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const mode: string = this.configService.get<string>('app.mode');
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
     let reqTs: string = req.headers['x-timestamp'] as string;
 
-    const currentTimestamp: number = this.helperDateService.timestamp();
-
-    if (mode !== 'secure' && !reqTs) {
-      reqTs = `${currentTimestamp}`;
+    if (!(isSecureMode || reqTs)) {
+      const currentTimestamp: number = this.helperDateService.timestamp();
+      reqTs = reqTs || `${currentTimestamp}`;
     }
 
     req.headers['x-timestamp'] = reqTs;

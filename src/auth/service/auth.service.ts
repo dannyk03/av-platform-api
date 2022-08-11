@@ -13,11 +13,7 @@ import {
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
-import {
-  IAuthMagicLoginOptions,
-  IAuthPassword,
-  IAuthPayloadOptions,
-} from '../auth.interface';
+import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -66,15 +62,10 @@ export class AuthService {
     );
   }
 
-  async createAccessToken(
-    payload: Record<string, any>,
-    options?: IAuthMagicLoginOptions,
-  ): Promise<string> {
+  async createAccessToken(payload: Record<string, any>): Promise<string> {
     return this.helperEncryptionService.jwtEncrypt(payload, {
       secretKey: this.accessTokenSecretToken,
-      expiredIn: options?.guest
-        ? this.guestAccessTokenExpirationTime
-        : this.accessTokenExpirationTime,
+      expiredIn: this.accessTokenExpirationTime,
       notBefore: this.accessTokenNotBeforeExpirationTime,
     });
   }

@@ -7,10 +7,10 @@ import {
   mixin,
 } from '@nestjs/common';
 
+import { EnumRequestStatusCodeError } from '@avo/type';
+
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
-
-import { EnumRequestStatusCodeError } from '../request.constant';
 
 export function RequestParamRawGuard(
   classValidation: ClassConstructor<any>[],

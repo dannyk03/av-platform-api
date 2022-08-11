@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+import { EnumAuthStatusCodeError } from '@avo/type';
+
 import { UserService } from '../service';
 
-import { EnumAuthStatusCodeError } from '@/auth';
-
 import {
-  USER_LOAD_AUTH_SENSITIVE_DATA,
+  USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY,
   USER_RELATIONS_META_KEY,
 } from '../user.constant';
 
@@ -26,7 +26,7 @@ export class UserPutToRequestGuard implements CanActivate {
     const request = ctx.switchToHttp().getRequest();
     const { user } = request;
     const loadAuthSensitiveData = this.reflector.getAllAndOverride<boolean>(
-      USER_LOAD_AUTH_SENSITIVE_DATA,
+      USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY,
       [ctx.getHandler(), ctx.getClass()],
     );
     const loadRelations = this.reflector.getAllAndOverride<string[]>(
@@ -47,25 +47,27 @@ export class UserPutToRequestGuard implements CanActivate {
       ...(loadRelations?.length ? loadRelations : defaultRelations),
     ];
 
-    const requestUser = await this.userService.findOne({
-      where: {
-        email: user.email,
-      },
-      relations,
-      select: {
-        organization: {
-          isActive: true,
-          id: true,
-          name: true,
-          slug: true,
+    const requestUser =
+      user.id &&
+      (await this.userService.findOne({
+        where: {
+          id: user.id,
         },
-        authConfig: {
-          password: loadAuthSensitiveData,
-          passwordExpiredAt: true,
-          emailVerifiedAt: true,
+        relations,
+        select: {
+          organization: {
+            isActive: true,
+            id: true,
+            name: true,
+            slug: true,
+          },
+          authConfig: {
+            password: loadAuthSensitiveData,
+            passwordExpiredAt: true,
+            emailVerifiedAt: true,
+          },
         },
-      },
-    });
+      }));
 
     if (!requestUser) {
       throw new UnauthorizedException({

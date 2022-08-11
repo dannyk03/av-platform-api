@@ -1,7 +1,7 @@
+import { AbilityVerb, Action, Subjects } from '@avo/casl';
+
 import { EnumSystemRole } from '@acl/role';
 import { DeepPartial } from 'typeorm';
-
-import { AbilityVerb, Action, Subject } from '@avo/casl';
 
 import { AclRole } from '@/access-control-list/role/entity';
 import { Organization } from '@/organization/entity';
@@ -29,7 +29,7 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: Subject.System,
+            type: Subjects.System,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -45,7 +45,7 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: Subject.Order,
+            type: Subjects.Order,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -54,7 +54,7 @@ export const systemSeedData: {
             ],
           },
           {
-            type: Subject.System,
+            type: Subjects.System,
             abilities: [
               {
                 type: AbilityVerb.Can,
@@ -70,7 +70,7 @@ export const systemSeedData: {
       policy: {
         subjects: [
           {
-            type: Subject.System,
+            type: Subjects.System,
             abilities: [
               {
                 type: AbilityVerb.Can,

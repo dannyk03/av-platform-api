@@ -36,7 +36,9 @@ export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   })
   keywords!: string[];
 
-  @ManyToOne(() => Product, (product) => product.displayOptions)
+  @ManyToOne(() => Product, (product) => product.displayOptions, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @ManyToOne(() => DisplayLanguage)

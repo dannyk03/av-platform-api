@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import excelJs from 'exceljs';
+import excelJs, { CellValue } from 'exceljs';
+
+import { IHelperFileExcelRows } from '../helper.interface';
 
 @Injectable()
 export class HelperFileService {
@@ -44,5 +46,31 @@ export class HelperFileService {
     worksheet.addRows(rows);
 
     return (await workbook.xlsx.writeBuffer()) as Buffer;
+  }
+
+  async readExcel(file: Buffer): Promise<IHelperFileExcelRows[]> {
+    const workbook = new excelJs.Workbook();
+    await workbook.xlsx.load(file);
+
+    const worksheet = workbook.getWorksheet(1);
+
+    const headers: string[] = worksheet.getRow(1).values as string[];
+    headers.shift();
+
+    const rows: any[] = worksheet
+      .getRows(2, worksheet.lastRow.number - 1)
+      .map((val) => {
+        const row: CellValue[] = val.values as CellValue[];
+        row.shift();
+
+        const newRow = {};
+        row.forEach((l, i) => {
+          newRow[headers[i]] = l;
+        });
+
+        return newRow;
+      });
+
+    return rows;
   }
 }

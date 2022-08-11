@@ -1,19 +1,14 @@
-import { Escape, NormalizeEmail, Trim } from 'class-sanitizer';
 import { Type } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+
 import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  MaxLength,
-} from 'class-validator';
+  NormalizeEmail,
+  NormalizeStringInput,
+  Trim,
+} from '@/utils/request/transform';
 
 export class AuthLoginDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @IsOptional()
@@ -28,26 +23,20 @@ export class AuthLoginDto {
 }
 
 export class AuthMagicLoginDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail(true)
-  @Trim()
-  @Escape()
+  @NormalizeEmail()
   readonly email: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly lastName?: string;
 }

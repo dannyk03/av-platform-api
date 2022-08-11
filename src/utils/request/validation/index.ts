@@ -11,3 +11,4 @@ export * from './request.safe-string.validation';
 export * from './request.skip.validation';
 export * from './request.string-or-number-or-boolean.validation';
 export * from './request.is-mobile-number.validation';
+export * from './request.range.validation';

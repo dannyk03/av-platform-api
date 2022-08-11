@@ -1,60 +1,78 @@
-import { Escape, Trim } from 'class-sanitizer';
-import { Transform, Type } from 'class-transformer';
+import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
+
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
-  IsString,
+  IsUUID,
   Length,
   MaxLength,
 } from 'class-validator';
-import { isString } from 'lodash';
 
-import { ProductDisplayLanguage, ProductSKU } from '@/catalog';
-import { EnumDisplayLanguage } from '@/language/display-language/display-language.constant';
+import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
+import {
+  ArrayTransform,
+  NormalizeStringInput,
+} from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
   @Length(3, 30)
   @ProductSKU()
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   @Type(() => String)
   readonly sku!: string;
 
-  @IsString()
   @IsOptional()
   @MaxLength(30)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly brand?: string;
 
-  @IsString()
   @MaxLength(30)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly name!: string;
 
-  @IsString()
   @MaxLength(200)
-  @Trim()
-  @Escape()
+  @NormalizeStringInput()
   readonly description!: string;
 
   @ProductDisplayLanguage()
-  languageIsoCode: EnumDisplayLanguage;
+  @IsOptional()
+  language!: EnumDisplayLanguage;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) => {
-    return isString(value) ? JSON.parse(value) : value;
-  })
-  @Trim(undefined, { each: true })
-  @Escape({ each: true })
+  @ArrayTransform()
+  @NormalizeStringInput({ each: true })
   keywords?: string[];
 
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @Type(() => Number)
+  price!: number;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @Type(() => Number)
+  shippingCost!: number;
+
+  @MaxLength(200)
+  @NormalizeStringInput()
+  readonly taxCode!: string;
+
+  @ProductCurrency()
+  @IsOptional()
+  currency?: EnumCurrency;
+
+  @IsNotEmpty()
+  @IsUUID()
+  @Type(() => String)
+  vendorId!: string;
 }
