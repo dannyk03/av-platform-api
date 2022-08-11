@@ -5,7 +5,7 @@ orbs:
   aws-ecr: circleci/aws-ecr@7.3.0
 
 aliases:
-  - &filter_only_branch
+  - &filter_deploy_only_branch
     filters:
       branches:
         only:
@@ -74,4 +74,4 @@ workflows:
             - jfrog-platform
           requires:
             - build-lint-test
-          <<: *filter_only_branch
+          <<: *filter_deploy_only_branch
