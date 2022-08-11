@@ -13,6 +13,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  Min,
   ValidateIf,
 } from 'class-validator';
 
@@ -27,7 +28,6 @@ import { RequestAddDatePipe } from '@/utils/request/pipe';
 import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
   PAGINATION_DEFAULT_AVAILABLE_SORT,
-  PAGINATION_DEFAULT_MAX_PAGE,
   PAGINATION_DEFAULT_MAX_PER_PAGE,
   PAGINATION_DEFAULT_PAGE,
   PAGINATION_DEFAULT_PER_PAGE,
@@ -67,26 +67,20 @@ export function PaginationAvailableSearch(availableSearch: string[]): any {
 export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
   return applyDecorators(
     Expose(),
+    Min(1),
     IsPositive(),
     Type(() => Number),
-    Transform(({ value }) =>
-      !value
-        ? page
-        : value > PAGINATION_DEFAULT_MAX_PAGE
-        ? PAGINATION_DEFAULT_MAX_PAGE
-        : value,
-    ),
+    Transform(({ value }) => (Number.isInteger(value) ? value : page)),
   );
 }
 
 export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
   return applyDecorators(
     Expose(),
+    Min(1),
     IsPositive(),
     Type(() => Number),
-    Transform(({ value }) =>
-      !value ? perPage : Math.min(value, PAGINATION_DEFAULT_MAX_PER_PAGE),
-    ),
+    Transform(({ value }) => (Number.isInteger(value) ? value : perPage)),
   );
 }
 

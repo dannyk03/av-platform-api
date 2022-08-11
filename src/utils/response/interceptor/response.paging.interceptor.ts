@@ -19,10 +19,7 @@ import { ResponseMessageService } from '@/response-message/service';
 import { IResponsePagingOptions } from '../response.interface';
 
 import { IMessage } from '@/response-message';
-import {
-  EnumPaginationType,
-  PAGINATION_DEFAULT_MAX_PAGE,
-} from '@/utils/pagination';
+import { EnumPaginationType } from '@/utils/pagination';
 
 // This interceptor for restructure response success
 export function ResponsePagingInterceptor(
@@ -64,8 +61,7 @@ export function ResponsePagingInterceptor(
                 availableSearch,
               } = resData;
 
-              let { totalPage } = resData;
-              totalPage = Math.min(totalPage, PAGINATION_DEFAULT_MAX_PAGE);
+              const { totalPage } = resData;
 
               const message: string | IMessage =
                 await this.responseMessageService.get(messagePath, {
