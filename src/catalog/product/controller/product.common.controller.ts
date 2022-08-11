@@ -200,7 +200,7 @@ export class ProductCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data: [data.length],
+      data,
     };
   }
 
