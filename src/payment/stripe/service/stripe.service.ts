@@ -15,7 +15,7 @@ export class StripeService {
     this.client = new Stripe(
       this.configService.get<string>('stripe.secretKey'),
       {
-        apiVersion: '2020-08-27',
+        apiVersion: '2022-08-01',
       },
     );
   }
