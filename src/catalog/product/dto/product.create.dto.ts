@@ -16,31 +16,31 @@ import {
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
   ToLowerCaseTransform,
 } from '@/utils/request/transform';
-import { UniqueArray } from '@/utils/request/transform';
+import { UniqueArrayTransform } from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
   @Length(3, 30)
   @ProductSKU()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly sku!: string;
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly brand?: string;
 
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name!: string;
 
   @IsOptional()
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @ProductDisplayLanguage()
@@ -50,10 +50,10 @@ export class ProductCreateDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  @UniqueArray()
+  @UniqueArrayTransform()
   @ArrayTransform()
   @ToLowerCaseTransform({ each: true })
-  @NormalizeStringInput({ each: true })
+  @NormalizeStringInputTransform({ each: true })
   keywords?: string[];
 
   @IsBoolean()
@@ -71,7 +71,7 @@ export class ProductCreateDto {
   shippingCost!: number;
 
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly taxCode!: string;
 
   @ProductCurrency()

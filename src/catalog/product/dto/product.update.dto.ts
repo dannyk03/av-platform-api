@@ -18,9 +18,9 @@ import {
 
 import {
   ArrayTransform,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
   ToLowerCaseTransform,
-  UniqueArray,
+  UniqueArrayTransform,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -30,17 +30,17 @@ export class ProductUpdateDisplayDto {
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @IsArray()
   @IsOptional()
   @ArrayTransform()
-  @NormalizeStringInput({ each: true })
+  @NormalizeStringInputTransform({ each: true })
   readonly keywords?: string[];
 }
 
@@ -49,13 +49,13 @@ export class ProductUpdateDto {
   @ProductSKU()
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly sku?: string;
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly brand?: string;
 
   @IsBoolean()
@@ -68,19 +68,19 @@ export class ProductUpdateDto {
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
   @ArrayTransform()
-  @UniqueArray()
-  @NormalizeStringInput({ each: true })
+  @UniqueArrayTransform()
+  @NormalizeStringInputTransform({ each: true })
   @ToLowerCaseTransform({ each: true })
   readonly keywords?: string[];
 }

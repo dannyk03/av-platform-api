@@ -9,8 +9,8 @@ import {
 
 import {
   NormalizeEmail,
-  NormalizeStringInput,
-  Trim,
+  NormalizeStringInputTransform,
+  TrimTransform,
 } from '@/utils/request/transform';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
@@ -21,14 +21,14 @@ export class UserCreateDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
 
@@ -37,16 +37,16 @@ export class UserCreateDto {
   @MinLength(10)
   @MaxLength(14)
   @IsPhoneNumber()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly phoneNumber?: string;
 
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly role: string;
 
   @IsNotEmpty()
   @IsPasswordStrong()
-  @Trim()
+  @TrimTransform()
   @Type(() => String)
   readonly password: string;
 }

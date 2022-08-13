@@ -6,7 +6,7 @@ import trim from 'validator/lib/trim';
 
 import { ITransformOptions } from './transform.interface';
 
-export function Trim(options?: ITransformOptions): any {
+export function TrimTransform(options?: ITransformOptions): any {
   const each = options?.each;
 
   return applyDecorators(

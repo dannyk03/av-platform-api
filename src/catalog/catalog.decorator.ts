@@ -10,7 +10,7 @@ export function ProductDisplayLanguage(): any {
     Expose(),
     IsEnum(EnumDisplayLanguage),
     Transform(({ value }) => {
-      return value ? value : EnumDisplayLanguage.En;
+      return value ?? EnumDisplayLanguage.En;
     }),
   );
 }
@@ -20,7 +20,7 @@ export function ProductCurrency(): any {
     Expose(),
     IsEnum(EnumCurrency),
     Transform(({ value }) => {
-      return value ? value : EnumCurrency.USD;
+      return value ?? EnumCurrency.USD;
     }),
   );
 }
@@ -30,7 +30,7 @@ export function ProductSKU(): any {
     Expose(),
     IsString(),
     Transform(({ value }) => {
-      return value ? value.toUpperCase() : undefined;
+      return value?.toUpperCase() ?? undefined;
     }),
   );
 }
