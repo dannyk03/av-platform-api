@@ -1,20 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { EnumUserStatusCodeError } from '@avo/type';
+
 import { plainToInstance } from 'class-transformer';
+import { isNumber } from 'class-validator';
 import {
+  Brackets,
   DeepPartial,
+  DeleteResult,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  SelectQueryBuilder,
+  UpdateResult,
 } from 'typeorm';
 
 import { User } from '../entity';
 
-import { UserProfileGetSerialization } from '../serialization';
+import {
+  UserGetSerialization,
+  UserProfileGetSerialization,
+} from '../serialization';
 
-import { IUserCheckExist } from '../user.interface';
+import { IUserCheckExist, IUserSearch } from '../user.interface';
 import { IAuthPassword } from '@/auth/auth.interface';
 
 import { ConnectionNames } from '@/database';
@@ -93,9 +103,126 @@ export class UserService {
     };
   }
 
+  async getListSearchBuilder({
+    search,
+    isActive,
+  }: IUserSearch): Promise<SelectQueryBuilder<User>> {
+    const builder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('user.organization', 'organization')
+      .leftJoinAndSelect('user.role', 'role')
+      .leftJoinAndSelect('user.authConfig', 'authConfig');
+
+    if (isActive?.length) {
+      builder.where('user.isActive = ANY(:isActive)', { isActive });
+    }
+
+    if (search) {
+      builder.andWhere(
+        new Brackets((qb) => {
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+          qb.where('user.email ILIKE :likeSearch')
+            .orWhere('user.phoneNumber ILIKE :likeSearch')
+            .orWhere('profile.firstName ILIKE :likeSearch')
+            .orWhere('profile.lastName ILIKE :likeSearch')
+            .orWhere('profile.title ILIKE :likeSearch');
+        }),
+      );
+    }
+
+    return builder;
+  }
+
+  async getTotal({ search, isActive }: IUserSearch): Promise<number> {
+    const searchBuilder = await this.getListSearchBuilder({
+      search,
+      isActive,
+    });
+
+    return searchBuilder.getCount();
+  }
+
+  async paginatedSearchBy({
+    search,
+    options,
+    isActive,
+  }: IUserSearch): Promise<User[]> {
+    const searchBuilder = await this.getListSearchBuilder({
+      search,
+      isActive,
+    });
+
+    if (options.order) {
+      searchBuilder.orderBy(options.order);
+    }
+
+    if (isNumber(options.take) && isNumber(options.skip)) {
+      searchBuilder.take(options.take).skip(options.skip);
+    }
+
+    return searchBuilder.getMany();
+  }
+
+  async removeUserBy(find: FindOptionsWhere<User>): Promise<User> {
+    const findUser = await this.userRepository.findOne({
+      where: find,
+    });
+
+    if (!findUser) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
+        message: 'user.error.notFound',
+      });
+    }
+
+    // TODO remove profile image, when available
+
+    return this.userRepository.remove(findUser);
+  }
+
+  async deleteUserBy(find: FindOptionsWhere<User>): Promise<DeleteResult> {
+    const findUser = await this.userRepository.findOne({
+      where: find,
+    });
+
+    if (!findUser) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
+        message: 'user.error.notFound',
+      });
+    }
+
+    return this.userRepository.delete({ id: findUser.id });
+  }
+
+  async updateUserActiveStatus({
+    id,
+    isActive,
+  }: {
+    id: string;
+    isActive: boolean;
+  }): Promise<UpdateResult> {
+    return this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({ isActive })
+      .where('id = :id', { id })
+      .andWhere('isActive != :isActive', { isActive })
+      .execute();
+  }
+
   async serializationUserProfile(
     data: User,
   ): Promise<UserProfileGetSerialization> {
     return plainToInstance(UserProfileGetSerialization, data);
+  }
+
+  async serialization(data: User): Promise<UserGetSerialization> {
+    return plainToInstance(UserGetSerialization, data);
+  }
+
+  async serializationList(data: User[]): Promise<UserGetSerialization[]> {
+    return plainToInstance(UserGetSerialization, data);
   }
 }

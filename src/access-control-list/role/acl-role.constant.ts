@@ -15,5 +15,5 @@ export enum EnumOrganizationRole {
 export const ROLE_DEFAULT_SORT = 'name@asc';
 export const ROLE_DEFAULT_PAGE = 1;
 export const ROLE_DEFAULT_PER_PAGE = 10;
-export const ROLE_DEFAULT_AVAILABLE_SORT = ['name', 'slug', 'createdAt'];
-export const ROLE_DEFAULT_AVAILABLE_SEARCH = ['name', 'slug'];
+export const ROLE_DEFAULT_AVAILABLE_SORT = ['name', 'createdAt'];
+export const ROLE_DEFAULT_AVAILABLE_SEARCH = ['name'];

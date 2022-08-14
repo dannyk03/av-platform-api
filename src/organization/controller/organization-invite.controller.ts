@@ -38,7 +38,7 @@ import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
-  path: 'organization',
+  path: 'org',
 })
 export class OrganizationInviteController {
   constructor(

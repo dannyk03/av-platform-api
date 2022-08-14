@@ -3,6 +3,7 @@
   "get": "Get user success",
   "create": "Create user success",
   "delete": "Delete user success",
+  "remove": "Remove user success",
   "update": "Update user success",
   "profile": "User profile success",
   "upload": "Upload success",

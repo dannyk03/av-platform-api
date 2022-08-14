@@ -39,6 +39,7 @@ export class User extends BaseEntity<User> {
   @OneToOne(() => UserAuthConfig, {
     cascade: true,
     nullable: true,
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   authConfig?: UserAuthConfig;
