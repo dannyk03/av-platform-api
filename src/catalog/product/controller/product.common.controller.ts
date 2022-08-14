@@ -22,6 +22,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
+import { flatMap } from 'lodash';
 import compact from 'lodash/compact';
 
 import { ProductService } from '../service';
@@ -62,7 +63,7 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
   @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],
@@ -102,11 +103,13 @@ export class ProductCommonController {
       });
     }
 
-    const saveImages = await this.productImageService.createImages({
-      images,
-      language,
-      subFolder: sku,
-    });
+    const saveImages =
+      images &&
+      (await this.productImageService.createImages({
+        images,
+        language,
+        subFolder: sku,
+      }));
 
     const createProduct = await this.productService.create({
       brand,
@@ -127,7 +130,7 @@ export class ProductCommonController {
           keywords: [...new Set(keywords)],
           name,
           description,
-          images: compact(saveImages),
+          images: saveImages ? compact(saveImages) : null,
         },
       ],
     });
@@ -279,17 +282,102 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
   async update(
+    @UploadedFiles() images: Express.Multer.File[],
     @Param('id') id: string,
     @Body()
-    body: ProductUpdateDto,
+    { vendorId, deleteImageIds, language, ...restBody }: ProductUpdateDto,
   ): Promise<IResponseData> {
-    const updateProduct = await this.productService.update({
-      id,
-      ...body,
+    const existingProduct = await this.productService.findOne({
+      where: {
+        id,
+        displayOptions: {
+          language: {
+            isoCode: language,
+          },
+        },
+      },
+      relations: [
+        'displayOptions',
+        'displayOptions.images',
+        'displayOptions.language',
+      ],
     });
+
+    if (!existingProduct) {
+      throw new BadRequestException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    const existingVendor =
+      vendorId &&
+      (await this.vendorService.findOne({
+        where: { id: vendorId },
+        select: {
+          id: true,
+        },
+      }));
+
+    if (vendorId && !existingVendor) {
+      throw new BadRequestException({
+        statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+        message: 'vendor.error.notFound',
+      });
+    }
+
+    const displayOptionByLang = existingProduct.displayOptions.find(
+      (opt) => opt?.language?.isoCode === language,
+    );
+
+    existingProduct.brand = restBody.brand;
+    existingProduct.isActive = restBody.isActive;
+    displayOptionByLang.description = restBody.description;
+    displayOptionByLang.name = restBody.name;
+    displayOptionByLang.keywords = restBody.keywords;
+
+    const existingImagesIdsOld = flatMap(displayOptionByLang.images, 'id');
+    if (deleteImageIds) {
+      displayOptionByLang.images = displayOptionByLang.images.filter(
+        (img) => !deleteImageIds?.includes(img.id),
+      );
+    }
+
+    const saveImages =
+      images &&
+      (await this.productImageService.createImages({
+        images,
+        language,
+        subFolder: existingProduct.sku,
+      }));
+
+    if (saveImages) {
+      displayOptionByLang.images = [
+        ...displayOptionByLang.images,
+        ...compact(saveImages),
+      ];
+    }
+
+    // Assign new vendor
+    if (existingVendor) {
+      existingProduct.vendor = existingVendor;
+    }
+
+    // Delete images from Cloudinary
+    const idsToDeleteFromCloudinary = deleteImageIds.filter((id) =>
+      existingImagesIdsOld.includes(id),
+    );
+
+    if (idsToDeleteFromCloudinary.length) {
+      await this.productImageService.deleteBulkById(idsToDeleteFromCloudinary);
+    }
+
+    // Save Updated
+    const updateProduct = await this.productService.save(existingProduct);
 
     return this.productService.serialization(updateProduct);
   }

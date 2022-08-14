@@ -74,6 +74,7 @@ export class ProductImageService {
 
     return this.productImageRepository.remove(deleteImage);
   }
+
   async deleteBulkById(ids: string[]) {
     const deleteImages = await this.productImageRepository.find({
       where: {

@@ -44,7 +44,7 @@ export class ProductImage extends BaseEntity<ProductImage> {
   @ManyToOne(
     () => ProductDisplayOption,
     (displayOption) => displayOption.images,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'CASCADE', orphanedRowAction: 'delete' },
   )
   @JoinColumn()
   productDisplayOption: ProductDisplayOption;
