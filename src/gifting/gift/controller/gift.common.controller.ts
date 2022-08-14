@@ -24,6 +24,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
+import flatMap from 'lodash/flatMap';
 import { DataSource, In, IsNull, Not } from 'typeorm';
 
 import { User } from '@/user/entity';
@@ -33,6 +34,7 @@ import {
   GiftIntentReadyLinkService,
   GiftIntentService,
   GiftService,
+  GiftSubmitService,
 } from '../service';
 import { ProductService } from '@/catalog/product/service';
 import { UserService } from '@/user/service';
@@ -68,6 +70,7 @@ export class GiftCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly emailService: EmailService,
     private readonly giftService: GiftService,
+    private readonly giftSubmitService: GiftSubmitService,
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
     private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
@@ -225,6 +228,39 @@ export class GiftCommonController {
       availableSort,
       data,
     };
+  }
+
+  @Response('gift.intent.get')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.GiftIntent,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/intent/:id')
+  async get(@Param('id') giftIntentId: string) {
+    const getGiftIntent = await this.giftIntentService.findOne({
+      where: { id: giftIntentId },
+      relations: [
+        'additionalData',
+        'recipient',
+        'sender',
+        'recipient.user',
+        'sender.user',
+        'giftOptions',
+        'giftOptions.products',
+        'giftSubmit',
+        'giftSubmit.gifts',
+        'giftSubmit.gifts.products',
+      ],
+    });
+
+    return this.giftIntentService.serializationGiftIntent(getGiftIntent);
   }
 
   @Response('gift.intent.addGiftOption')
@@ -405,10 +441,15 @@ export class GiftCommonController {
     @ReqUser()
     reqUser: User,
     @Param('id') giftIntentId: string,
-  ): Promise<any> {
+  ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
+        sender: {
+          user: {
+            id: reqUser.id,
+          },
+        },
         giftOptions: { id: In(giftOptionIds) },
         sentAt: Not(IsNull()),
         // acceptedAt: Not(IsNull()),
@@ -424,12 +465,47 @@ export class GiftCommonController {
       });
     }
 
-    if (giftIntent?.giftOptions?.length !== giftOptionIds.length) {
+    const giftIntentOptionsIds = flatMap(giftIntent.giftOptions, 'id');
+
+    if (!giftOptionIds.every((id) => giftIntentOptionsIds.includes(id))) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumGiftIntentStatusCodeError.GiftIntentUnprocessableSubmitError,
         message: 'gift.intent.error.unprocessableSubmit',
       });
+    }
+
+    const result = this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const createGiftSubmit = await this.giftSubmitService.create({
+          giftIntent,
+          gifts: giftIntent.giftOptions.filter(({ id }) =>
+            giftOptionIds.includes(id),
+          ),
+        });
+
+        giftIntent.submittedAt = this.helperDateService.create();
+
+        const saveGiftSubmit = await transactionalEntityManager.save(
+          createGiftSubmit,
+        );
+        const saveGiftIntent = await transactionalEntityManager.save(
+          giftIntent,
+        );
+
+        return {
+          giftIntentId: saveGiftIntent?.id,
+          giftSubmitId: saveGiftSubmit?.id,
+        };
+      },
+    );
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
     }
   }
 }

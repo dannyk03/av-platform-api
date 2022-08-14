@@ -1,4 +1,9 @@
 import {
+  IProductGetSerialization,
+  IProductVendorGetSerialization,
+} from '@avo/type';
+
+import {
   Exclude,
   Expose,
   Transform,
@@ -9,10 +14,10 @@ import {
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 
-import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
+import { ProductImageGetSerialization } from '@/catalog/product-image/serialization/product-image.get.serialization';
 
 @Exclude()
-export class VendorSerialization {
+export class VendorGetSerialization implements IProductVendorGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -23,7 +28,7 @@ export class VendorSerialization {
   readonly isActive: boolean;
 }
 
-export class ProductListSerialization {
+export class ProductGetSerialization implements IProductGetSerialization {
   readonly id: string;
   readonly sku: string;
   readonly brand: string;
@@ -49,13 +54,13 @@ export class ProductListSerialization {
   @Expose()
   @Transform(({ obj }) =>
     obj.displayOptions?.[0]?.images.map((image: ProductImage) =>
-      plainToInstance(ProductImageListSerialization, image),
+      plainToInstance(ProductImageGetSerialization, image),
     ),
   )
-  readonly images: ProductImageListSerialization;
+  readonly images: ProductImageGetSerialization;
 
-  @Type(() => VendorSerialization)
-  vendor: VendorSerialization;
+  @Type(() => VendorGetSerialization)
+  readonly vendor: VendorGetSerialization;
 
   @Exclude()
   readonly deletedAt: Date;

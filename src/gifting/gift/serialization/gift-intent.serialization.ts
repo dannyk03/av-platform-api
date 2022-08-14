@@ -11,7 +11,7 @@ import {
 import { Gift } from '../entity';
 import { Product } from '@/catalog/product/entity';
 
-import { ProductListSerialization } from '@/catalog/product/serialization';
+import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 @Exclude()
 class GiftUserSerialization {
@@ -49,17 +49,41 @@ class GiftUserAdditionalDataSerialization {
   readonly lastName: string;
 }
 @Exclude()
-class GiftOptionSerialization {
+class GiftOptionsSerialization {
   @Expose()
   readonly id: string;
 
   @Expose()
   @Transform(({ value: products }) =>
     products?.map((product: Product) =>
-      plainToInstance(ProductListSerialization, product),
+      plainToInstance(ProductGetSerialization, product),
     ),
   )
-  products: ProductListSerialization;
+  products: ProductGetSerialization;
+}
+@Exclude()
+class GiftSubmitGiftsSerialization {
+  @Expose()
+  readonly id: string;
+
+  @Expose()
+  @Transform(({ value: products }) =>
+    products?.map((product: Product) => product.id),
+  )
+  products: string[];
+}
+@Exclude()
+class GiftSubmitSerialization {
+  @Expose()
+  readonly id: string;
+
+  @Expose()
+  @Transform(({ value: gifts }) =>
+    gifts?.map((giftOption: Gift) =>
+      plainToInstance(GiftSubmitGiftsSerialization, giftOption),
+    ),
+  )
+  gifts: GiftSubmitGiftsSerialization;
 }
 
 @Exclude()
@@ -96,10 +120,13 @@ export class GiftIntentSerialization {
 
   @Transform(({ value: giftOptions }) =>
     giftOptions.map((giftOption: Gift) =>
-      plainToInstance(GiftOptionSerialization, giftOption),
+      plainToInstance(GiftOptionsSerialization, giftOption),
     ),
   )
-  readonly giftOptions: GiftOptionSerialization;
+  readonly giftOptions: GiftOptionsSerialization;
+
+  @Type(() => GiftSubmitSerialization)
+  readonly giftSubmit: GiftSubmitSerialization;
 
   @Exclude()
   readonly deletedAt: Date;

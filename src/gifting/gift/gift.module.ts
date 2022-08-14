@@ -20,6 +20,7 @@ import {
   GiftIntentService,
   GiftSenderService,
   GiftService,
+  GiftSubmitService,
 } from './service';
 import { GiftRecipientService } from './service/gift-recipient.service';
 
@@ -46,6 +47,7 @@ import { EmailService } from '@/messaging/email';
   exports: [
     GiftService,
     GiftIntentService,
+    GiftSubmitService,
     GiftRecipientService,
     GiftSenderService,
     GiftIntentReadyLinkService,
@@ -54,6 +56,7 @@ import { EmailService } from '@/messaging/email';
   providers: [
     GiftService,
     GiftIntentService,
+    GiftSubmitService,
     GiftRecipientService,
     GiftSenderService,
     GiftIntentReadyLinkService,

@@ -10,7 +10,7 @@ import { ArrayTransform } from '@/utils/request/transform';
 
 export class GiftOptionCreateDto {
   @ArrayMinSize(1)
-  @ArrayMaxSize(1)
+  @ArrayMaxSize(3)
   @IsArray()
   @IsNotEmpty({ each: true })
   @IsUUID(undefined, { each: true })

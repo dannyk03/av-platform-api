@@ -5,12 +5,10 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  IsObject,
   IsOptional,
-  IsUUID,
+  IsString,
   Length,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 
 import {
@@ -20,7 +18,9 @@ import {
 
 import {
   ArrayTransform,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
+  ToLowerCaseTransform,
+  UniqueArrayTransform,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -30,46 +30,57 @@ export class ProductUpdateDisplayDto {
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @IsArray()
   @IsOptional()
   @ArrayTransform()
-  @NormalizeStringInput({ each: true })
-  keywords?: string[];
+  @NormalizeStringInputTransform({ each: true })
+  readonly keywords?: string[];
 }
 
 export class ProductUpdateDto {
-  @IsNotEmpty()
-  @IsUUID()
-  @Type(() => String)
-  readonly id: string;
-
   @Length(3, 30)
   @ProductSKU()
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly sku?: string;
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly brand?: string;
 
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
 
-  @IsObject()
+  @ProductDisplayLanguage()
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ProductUpdateDisplayDto)
-  readonly display: ProductUpdateDisplayDto;
+  language: EnumDisplayLanguage;
+
+  @IsOptional()
+  @MaxLength(30)
+  @NormalizeStringInputTransform()
+  readonly name?: string;
+
+  @MaxLength(200)
+  @NormalizeStringInputTransform()
+  readonly description!: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  @ArrayTransform()
+  @UniqueArrayTransform()
+  @NormalizeStringInputTransform({ each: true })
+  @ToLowerCaseTransform({ each: true })
+  readonly keywords?: string[];
 }

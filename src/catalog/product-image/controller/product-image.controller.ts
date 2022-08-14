@@ -3,17 +3,20 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   Query,
+  UnprocessableEntityException,
   UploadedFiles,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
+import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ImageBulkDeleteDto } from '../dto';
+import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
@@ -43,7 +46,9 @@ export class ProductImageController {
     systemOnly: true,
   })
   @Delete('/bulk')
-  async imageDeleteBulk(@Body() { ids }: ImageBulkDeleteDto): Promise<void> {
+  async imageDeleteBulk(
+    @Body() { ids }: ProductImageBulkDeleteDto,
+  ): Promise<void> {
     await this.productImageService.deleteBulkById(ids);
   }
 
@@ -87,5 +92,38 @@ export class ProductImageController {
   @Delete('/:id')
   async imageDelete(@Param('id') id: string): Promise<void> {
     await this.productImageService.deleteById(id);
+  }
+
+  @Response('product.updateImage')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.ProductImage,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/:id')
+  async setImageWeight(
+    @Param('id') imageId: string,
+    @Body() body: ProductImageUpdateDto,
+  ): Promise<IResponseData> {
+    const findImage = await this.productImageService.findOneBy({ id: imageId });
+
+    if (!findImage) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductImageNotFoundError,
+        message: 'product.error.image',
+      });
+    }
+
+    const saveImage = await this.productImageService.save({
+      ...findImage,
+      ...body,
+    });
+
+    return this.productImageService.serialization(saveImage);
   }
 }

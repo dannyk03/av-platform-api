@@ -11,7 +11,7 @@ export function ToLowerCaseTransform(options?: ITransformOptions): any {
   return applyDecorators(
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => v?.toLowerCase())
+        ? value.map((v) => (isString(v) ? v.toLowerCase() : v))
         : isString(value)
         ? value?.toLowerCase()
         : value,

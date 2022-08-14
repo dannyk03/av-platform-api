@@ -6,14 +6,14 @@ import escape from 'validator/lib/escape';
 
 import { ITransformOptions } from './transform.interface';
 
-export function Escape(options?: ITransformOptions): any {
+export function EscapeTransform(options?: ITransformOptions): any {
   const each = options?.each;
 
   return applyDecorators(
     Expose(),
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => escape(v))
+        ? value.map((v) => (isString(v) ? escape(v) : v))
         : isString(value)
         ? escape(value)
         : value,

@@ -5,3 +5,4 @@ export * from './gift-sender.entity';
 export * from './gift-intent.entity';
 export * from './gift.entity';
 export * from './gift-intent-ready-link.entity';
+export * from './gift-submit.entity';

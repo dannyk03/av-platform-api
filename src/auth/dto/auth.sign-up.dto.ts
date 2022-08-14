@@ -10,8 +10,8 @@ import {
 import {
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
-  NormalizeStringInput,
-  Trim,
+  NormalizeStringInputTransform,
+  TrimTransform,
 } from '@/utils/request/transform';
 import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
@@ -22,7 +22,7 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   @Length(1, 20)
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
 
@@ -30,7 +30,7 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   @Length(1, 20)
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
 
@@ -39,7 +39,7 @@ export class AuthSignUpDto {
   @EmptyStringToUndefinedTransform()
   @Length(10, 20)
   @IsPhoneNumber()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly phoneNumber?: string;
 
@@ -47,14 +47,14 @@ export class AuthSignUpDto {
   @IsOptional()
   @EmptyStringToUndefinedTransform()
   @Length(2, 50)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly title?: string;
 
   @IsNotEmpty()
   @MaxLength(30)
   @IsPasswordStrong()
-  @Trim()
+  @TrimTransform()
   @Type(() => String)
   readonly password!: string;
 }

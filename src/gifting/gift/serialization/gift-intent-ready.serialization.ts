@@ -12,7 +12,7 @@ import { Gift } from '../entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 import { Product } from '@/catalog/product/entity';
 
-import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
+import { ProductImageGetSerialization } from '@/catalog/product-image/serialization';
 
 @Exclude()
 class GiftUserSerialization {
@@ -60,10 +60,10 @@ export class ProductListReadySerialization {
   @Expose()
   @Transform(({ obj }) =>
     obj.displayOptions?.[0]?.images.map((image: ProductImage) =>
-      plainToInstance(ProductImageListSerialization, image),
+      plainToInstance(ProductImageGetSerialization, image),
     ),
   )
-  readonly images: ProductImageListSerialization;
+  readonly images: ProductImageGetSerialization;
 }
 
 @Exclude()
