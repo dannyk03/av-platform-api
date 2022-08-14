@@ -445,6 +445,11 @@ export class GiftCommonController {
     const giftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
+        sender: {
+          user: {
+            id: reqUser.id,
+          },
+        },
         giftOptions: { id: In(giftOptionIds) },
         sentAt: Not(IsNull()),
         // acceptedAt: Not(IsNull()),
@@ -452,8 +457,6 @@ export class GiftCommonController {
       },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
     });
-
-    // TODO check if owner
 
     if (!giftIntent) {
       throw new UnprocessableEntityException({

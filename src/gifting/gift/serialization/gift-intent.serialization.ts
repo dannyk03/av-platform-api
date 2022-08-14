@@ -79,7 +79,7 @@ class GiftSubmitSerialization {
 
   @Expose()
   @Transform(({ value: gifts }) =>
-    gifts.map((giftOption: Gift) =>
+    gifts?.map((giftOption: Gift) =>
       plainToInstance(GiftSubmitGiftsSerialization, giftOption),
     ),
   )
