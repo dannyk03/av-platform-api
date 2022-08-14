@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 import {
   NormalizeEmail,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
 } from '@/utils/request/transform';
 
 export class OrganizationInviteDto {
@@ -12,7 +12,7 @@ export class OrganizationInviteDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   // Can be role.slug or role.id
   readonly role: string;
 }

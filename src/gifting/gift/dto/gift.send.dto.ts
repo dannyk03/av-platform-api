@@ -22,7 +22,7 @@ import { MinGreaterThan } from '@/utils/request';
 import {
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
 } from '@/utils/request/transform';
 
 export class GiftSendRecipientDto {
@@ -31,13 +31,13 @@ export class GiftSendRecipientDto {
 
   @MaxLength(30)
   @IsOptional()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly lastName?: string;
 }
@@ -49,19 +49,19 @@ export class GiftSendSenderDto {
 
   @MaxLength(30)
   @IsOptional()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly lastName?: string;
 
   @MaxLength(30)
   @IsOptional()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly organizationName?: string;
 }

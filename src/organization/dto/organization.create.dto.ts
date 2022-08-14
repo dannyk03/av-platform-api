@@ -3,8 +3,8 @@ import { Length, MaxLength } from 'class-validator';
 
 import {
   NormalizeEmail,
-  NormalizeStringInput,
-  Trim,
+  NormalizeStringInputTransform,
+  TrimTransform,
 } from '@/utils/request/transform';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
@@ -14,12 +14,12 @@ export class OrganizationCreateDto {
 
   @MaxLength(30)
   @IsPasswordStrong()
-  @Trim()
+  @TrimTransform()
   @Type(() => String)
   readonly password!: string;
 
   @Length(2, 30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly name!: string;
 }

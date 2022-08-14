@@ -7,7 +7,7 @@ import normalizeEmail from 'validator/lib/normalizeEmail';
 
 import { ITransformOptions } from './transform.interface';
 
-import { NormalizeStringInput } from './NormalizeStringInput.transform';
+import { NormalizeStringInputTransform } from './NormalizeStringInput.transform';
 
 const emailNormalizeOptions = {
   all_lowercase: true,
@@ -26,7 +26,7 @@ export function NormalizeEmail(options?: ITransformOptions): any {
     Expose(),
     MaxLength(50),
     IsEmail(undefined, { each }),
-    NormalizeStringInput({ each }),
+    NormalizeStringInputTransform({ each }),
     Transform(({ value }) =>
       each && Array.isArray(value)
         ? value.map((v) => normalizeEmail(v, emailNormalizeOptions))

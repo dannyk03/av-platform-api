@@ -1,7 +1,10 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
-import { NormalizeStringInput, Trim } from '@/utils/request/transform';
+import {
+  NormalizeStringInputTransform,
+  TrimTransform,
+} from '@/utils/request/transform';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class OrganizationJoinDto {
@@ -9,7 +12,7 @@ export class OrganizationJoinDto {
   @IsOptional()
   @MaxLength(30)
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
 
@@ -17,14 +20,14 @@ export class OrganizationJoinDto {
   @IsOptional()
   @MaxLength(30)
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
 
   @IsNotEmpty()
   @MaxLength(30)
   @IsPasswordStrong()
-  @Trim()
+  @TrimTransform()
   @Type(() => String)
   readonly password!: string;
 }

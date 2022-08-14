@@ -6,7 +6,7 @@ import escape from 'validator/lib/escape';
 
 import { ITransformOptions } from './transform.interface';
 
-export function Escape(options?: ITransformOptions): any {
+export function EscapeTransform(options?: ITransformOptions): any {
   const each = options?.each;
 
   return applyDecorators(

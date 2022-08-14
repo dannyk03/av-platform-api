@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 
-import { NormalizeStringInput } from '@/utils/request/transform';
+import { NormalizeStringInputTransform } from '@/utils/request/transform';
 
 export class VendorUpdateDto {
   @IsNotEmpty()
@@ -18,14 +18,14 @@ export class VendorUpdateDto {
   @Length(3, 30)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly name?: string;
 
   @Length(3, 200)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @IsBoolean()

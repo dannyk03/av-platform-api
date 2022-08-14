@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { plainToInstance } from 'class-transformer';
-import { isNumber, isUUID } from 'class-validator';
+import { isNumber } from 'class-validator';
 import {
   Brackets,
   DeepPartial,
@@ -56,8 +56,6 @@ export class GiftIntentService {
     search,
     loadExtra = true,
   }: IGiftIntentSearch): Promise<SelectQueryBuilder<GiftIntent>> {
-    const isSearchUUID = isUUID(search);
-
     const builder = this.gifIntentRepository
       .createQueryBuilder('giftIntent')
       .leftJoinAndSelect('giftIntent.additionalData', 'additionalData')
@@ -66,10 +64,6 @@ export class GiftIntentService {
       .leftJoinAndSelect('recipient.user', 'recipientUser')
       .leftJoinAndSelect('sender.user', 'senderUser');
 
-    if (isSearchUUID) {
-      builder.where('giftIntent.id::text ILIKE aaaa');
-    }
-
     if (loadExtra) {
       builder
         .leftJoinAndSelect('giftIntent.giftSubmit', 'giftSubmit')
@@ -77,15 +71,14 @@ export class GiftIntentService {
         .leftJoinAndSelect('giftOptions.products', 'giftProducts');
     }
 
-    if (search && !isSearchUUID) {
+    if (search) {
       builder.andWhere(
         new Brackets((qb) => {
           builder.setParameters({ search, likeSearch: `%${search}%` });
           qb.where('senderUser.email ILIKE :likeSearch')
             .orWhere('recipientUser.email ILIKE :likeSearch')
             .orWhere(`recipient.additionalData ->> 'email' ILIKE :likeSearch`)
-            .orWhere(`sender.additionalData ->> 'email' ILIKE :likeSearch`)
-            .orWhere(`giftIntent.id::text ILIKE :likeSearch`);
+            .orWhere(`sender.additionalData ->> 'email' ILIKE :likeSearch`);
         }),
       );
     }

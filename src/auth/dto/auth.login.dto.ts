@@ -3,8 +3,8 @@ import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 
 import {
   NormalizeEmail,
-  NormalizeStringInput,
-  Trim,
+  NormalizeStringInputTransform,
+  TrimTransform,
 } from '@/utils/request/transform';
 
 export class AuthLoginDto {
@@ -17,7 +17,7 @@ export class AuthLoginDto {
 
   @IsNotEmpty()
   @MaxLength(30)
-  @Trim()
+  @TrimTransform()
   @Type(() => String)
   readonly password: string;
 }
@@ -29,14 +29,14 @@ export class AuthMagicLoginDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
 }
