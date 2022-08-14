@@ -2,7 +2,7 @@ import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
 import { ArrayTransform } from '@/utils/request/transform';
 
-export class ImageBulkDeleteDto {
+export class ProductImageBulkDeleteDto {
   @IsArray()
   @IsNotEmpty({ each: true })
   @IsUUID(undefined, { each: true })

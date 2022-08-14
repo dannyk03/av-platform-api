@@ -10,6 +10,9 @@ export class ProductImageGetSerialization
   readonly id: string;
 
   @Expose()
+  readonly weight: number;
+
+  @Expose()
   readonly fileName: string;
 
   @Expose()

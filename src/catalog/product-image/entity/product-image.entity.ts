@@ -1,11 +1,10 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
-  @Index()
   @Column({
     length: 30,
   })
@@ -29,6 +28,12 @@ export class ProductImage extends BaseEntity<ProductImage> {
     length: 200,
   })
   secureUrl!: string;
+
+  @Column({
+    type: 'int2',
+    default: 0,
+  })
+  weight: number;
 
   @Column({
     type: 'jsonb',

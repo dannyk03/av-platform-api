@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  UnprocessableEntityException,
   UploadedFiles,
 } from '@nestjs/common';
 
@@ -304,6 +305,13 @@ export class ProductCommonController {
     { lang: language }: ProductGetDto,
   ): Promise<IResponseData> {
     const getProduct = await this.productService.get({ id, language });
+
+    if (!getProduct) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
 
     return this.productService.serialization(getProduct);
   }
