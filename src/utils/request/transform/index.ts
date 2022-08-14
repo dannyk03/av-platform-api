@@ -6,3 +6,4 @@ export * from './Trim.transform';
 export * from './Escape.transform';
 export * from './Array.transform';
 export * from './UniqueArray.transform';
+export * from './BooleanString.transform';

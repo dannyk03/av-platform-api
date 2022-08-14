@@ -75,12 +75,18 @@ export class VendorCommonController {
     }
 
     // Rename
-    logo.originalname = `${vendorSlug}_logo.${logo.originalname.split('.')[1]}`;
+    if (logo) {
+      logo.originalname = `${vendorSlug}_logo.${
+        logo.originalname.split('.')[1]
+      }`;
+    }
 
-    const saveLogo = await this.vendorLogoService.createLogo({
-      logo,
-      subFolder: slugify(name),
-    });
+    const saveLogo = logo
+      ? await this.vendorLogoService.createLogo({
+          logo,
+          subFolder: slugify(name),
+        })
+      : undefined;
 
     const createVendor = await this.vendorService.create({
       name,

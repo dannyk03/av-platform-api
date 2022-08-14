@@ -1,23 +1,20 @@
 import { EnumDisplayLanguage } from '@avo/type';
 
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
-  Length,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
-import {
-  ProductDisplayLanguage,
-  ProductSKU,
-} from '@/catalog/catalog.decorator';
+import { ProductDisplayLanguage } from '@/catalog/catalog.decorator';
 
 import {
   ArrayTransform,
+  BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
   UniqueArrayTransform,
@@ -45,14 +42,6 @@ export class ProductUpdateDisplayDto {
 }
 
 export class ProductUpdateDto {
-  @Length(3, 30)
-  @ProductSKU()
-  @IsOptional()
-  @IsNotEmpty()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly sku?: string;
-
   @IsOptional()
   @MaxLength(30)
   @NormalizeStringInputTransform()
@@ -60,6 +49,7 @@ export class ProductUpdateDto {
 
   @IsBoolean()
   @IsOptional()
+  @BooleanStringTransform()
   isActive?: boolean;
 
   @ProductDisplayLanguage()
@@ -83,4 +73,16 @@ export class ProductUpdateDto {
   @NormalizeStringInputTransform({ each: true })
   @ToLowerCaseTransform({ each: true })
   readonly keywords?: string[];
+
+  @IsNotEmpty()
+  @IsUUID()
+  @IsOptional()
+  vendorId?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  @UniqueArrayTransform()
+  @ArrayTransform()
+  deleteImageIds: string[];
 }
