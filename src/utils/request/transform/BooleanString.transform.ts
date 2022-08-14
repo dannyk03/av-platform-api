@@ -1,18 +1,18 @@
 import { applyDecorators } from '@nestjs/common';
 
 import { Transform } from 'class-transformer';
-import { isString } from 'class-validator';
 
 export function BooleanStringTransform(): any {
   return applyDecorators(
-    Transform(({ value }) =>
-      isString(value)
-        ? value === 'true'
-          ? true
-          : value === 'false'
-          ? false
-          : value
-        : value,
-    ),
+    Transform(({ value }) => {
+      switch (String(value)?.toLowerCase()) {
+        case 'true':
+          return true;
+        case 'false':
+          return false;
+        default:
+          return value;
+      }
+    }),
   );
 }
