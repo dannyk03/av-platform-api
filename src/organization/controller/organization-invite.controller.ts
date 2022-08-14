@@ -7,12 +7,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
   EnumOrganizationStatusCodeError,
   EnumRoleStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import { isUUID } from 'class-validator';
@@ -50,6 +52,7 @@ export class OrganizationInviteController {
     private readonly authService: AuthService,
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Response('organization.invite')
@@ -68,7 +71,7 @@ export class OrganizationInviteController {
     { email, role }: OrganizationInviteDto,
     @ReqOrganizationIdentifierCtx()
     { id, slug }: IReqOrganizationIdentifierCtx,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const organizationCtxFind: Record<string, any> = {
       organization: { id, slug },
     };
@@ -97,10 +100,17 @@ export class OrganizationInviteController {
       });
     }
 
-    await this.organizationInviteService.invite({
+    const result = await this.organizationInviteService.invite({
       email,
       aclRole: existingRole,
     });
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
+    }
   }
 
   @Response('organization.join')

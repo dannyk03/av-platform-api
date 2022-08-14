@@ -84,7 +84,7 @@ export class OrganizationInviteService {
       });
     }
 
-    if (!aclRole.organization.isActive) {
+    if (!aclRole?.organization?.isActive) {
       throw new ForbiddenException({
         statusCode: EnumOrganizationStatusCodeError.OrganizationInactiveError,
         message: 'organization.error.inactive',
@@ -182,9 +182,7 @@ export class OrganizationInviteService {
             message: 'organization.error.alreadyInvited',
           },
           ...(!alreadyExistingOrganizationInvite.usedAt && {
-            data: {
-              code: alreadyExistingOrganizationInvite.code,
-            },
+            code: alreadyExistingOrganizationInvite.code,
           }),
         };
       }
