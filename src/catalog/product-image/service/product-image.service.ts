@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumProductStatusCodeError } from '@avo/type';
 
+import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
   FindOneOptions,
@@ -15,6 +16,9 @@ import { ProductImage } from '../entity';
 
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
+
+import { ProductImageGetSerialization } from '../serialization';
+import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 import { ICreateImages, ISaveImages } from '../product-image.interface';
 
@@ -140,5 +144,11 @@ export class ProductImageService {
     );
 
     return this.saveBulk(productImages);
+  }
+
+  async serialization(
+    data: ProductImage,
+  ): Promise<ProductImageGetSerialization> {
+    return plainToInstance(ProductImageGetSerialization, data);
   }
 }

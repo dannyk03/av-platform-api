@@ -8,6 +8,7 @@
   "active": "Active succeed",
   "imageDelete": "Image delete success",
   "imageAdd": "Image add success",
+  "updateImage": "Image update success",
   "error": {
     "notFound": "Product not found.",
     "inactive": "Product not active",
