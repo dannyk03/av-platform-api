@@ -82,6 +82,11 @@ export class ProductCreateDto {
 
   @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   @Type(() => String)
   vendorId!: string;
+
+  @IsNotEmpty()
+  @MaxLength(30)
+  vendorName?: string;
 }

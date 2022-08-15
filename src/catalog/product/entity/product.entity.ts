@@ -52,10 +52,16 @@ export class Product extends BaseEntity<Product> {
   shippingCost!: number;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.products, {
-    onDelete: 'CASCADE',
+    nullable: true,
   })
   @JoinColumn()
   vendor: Vendor;
+
+  @Column({
+    length: 30,
+    nullable: true,
+  })
+  vendorName: string;
 
   @ManyToOne(() => Currency)
   @JoinColumn()
