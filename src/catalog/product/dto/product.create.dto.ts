@@ -16,6 +16,7 @@ import {
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
+  BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
 } from '@/utils/request/transform';
@@ -58,6 +59,7 @@ export class ProductCreateDto {
 
   @IsBoolean()
   @IsOptional()
+  @BooleanStringTransform()
   isActive?: boolean;
 
   @IsNumber({ allowNaN: false })
