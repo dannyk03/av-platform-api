@@ -342,13 +342,14 @@ export class ProductCommonController {
 
     existingProduct.brand = restBody.brand;
     existingProduct.isActive = restBody.isActive;
+    existingProduct.vendorName = restBody.vendorName;
     displayOptionByLang.description = restBody.description;
     displayOptionByLang.name = restBody.name;
     displayOptionByLang.keywords = restBody.keywords;
 
     const existingImagesIdsOld = flatMap(displayOptionByLang.images, 'id');
     if (deleteImageIds) {
-      displayOptionByLang.images = displayOptionByLang.images.filter(
+      displayOptionByLang.images = displayOptionByLang.images?.filter(
         (img) => !deleteImageIds?.includes(img.id),
       );
     }
@@ -374,11 +375,11 @@ export class ProductCommonController {
     }
 
     // Delete images from Cloudinary
-    const idsToDeleteFromCloudinary = deleteImageIds.filter((id) =>
+    const idsToDeleteFromCloudinary = deleteImageIds?.filter((id) =>
       existingImagesIdsOld.includes(id),
     );
 
-    if (idsToDeleteFromCloudinary.length) {
+    if (idsToDeleteFromCloudinary?.length) {
       await this.productImageService.deleteBulkById(idsToDeleteFromCloudinary);
     }
 
