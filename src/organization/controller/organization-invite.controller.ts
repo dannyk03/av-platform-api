@@ -20,6 +20,8 @@ import {
 import { isUUID } from 'class-validator';
 import { DataSource } from 'typeorm';
 
+import { User } from '@/user/entity';
+
 import { OrganizationInviteService } from '../service';
 import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
@@ -36,6 +38,7 @@ import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
+import { ReqUser } from '@/user';
 import { Response } from '@/utils/response';
 
 @Controller({
@@ -67,6 +70,8 @@ export class OrganizationInviteController {
   })
   @Post('/invite')
   async invite(
+    @ReqUser()
+    reqUser: User,
     @Body()
     { email, role }: OrganizationInviteDto,
     @ReqOrganizationIdentifierCtx()
@@ -103,6 +108,7 @@ export class OrganizationInviteController {
     const result = await this.organizationInviteService.invite({
       email,
       aclRole: existingRole,
+      fromUser: reqUser,
     });
 
     // For local development/testing
@@ -150,7 +156,7 @@ export class OrganizationInviteController {
 
     const existingUser = await this.userService.findOne({
       where: { email: existingInvite.email },
-      relations: ['authConfig'],
+      relations: ['authConfig', 'profile'],
       select: {
         authConfig: {
           id: true,
@@ -173,11 +179,9 @@ export class OrganizationInviteController {
             emailVerifiedAt: this.helperDateService.create(),
           };
 
-          await transactionalEntityManager.save({
-            ...existingUser,
-            firstName,
-            lastName,
-          });
+          existingUser.profile.firstName = firstName;
+          existingUser.profile.lastName = lastName;
+          await transactionalEntityManager.save(existingUser);
         } else {
           const joinUser = await this.userService.create({
             email: existingInvite.email,
@@ -186,6 +190,10 @@ export class OrganizationInviteController {
               emailVerifiedAt: this.helperDateService.create(),
               salt,
               passwordExpiredAt,
+            },
+            profile: {
+              firstName,
+              lastName,
             },
             organization: existingInvite.organization,
             role: existingInvite.role,

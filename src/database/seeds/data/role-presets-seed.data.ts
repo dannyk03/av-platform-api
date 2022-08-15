@@ -111,5 +111,11 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
         ],
       },
     },
+    {
+      name: EnumOrganizationRole.User,
+      policy: {
+        subjects: [],
+      },
+    },
   ],
 };

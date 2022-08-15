@@ -52,7 +52,7 @@ export class User extends BaseEntity<User> {
   })
   organization?: Organization;
 
-  @OneToOne(() => UserProfile, { cascade: true, nullable: true })
+  @OneToOne(() => UserProfile, { cascade: true })
   @JoinColumn()
   profile?: UserProfile;
 

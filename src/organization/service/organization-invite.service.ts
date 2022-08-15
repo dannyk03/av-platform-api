@@ -10,6 +10,7 @@ import {
   EnumMessagingStatusCodeError,
   EnumOrganizationStatusCodeError,
   EnumRoleStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import {
@@ -21,6 +22,7 @@ import {
 } from 'typeorm';
 
 import { OrganizationInviteLink } from '../entity';
+import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
@@ -67,12 +69,14 @@ export class OrganizationInviteService {
   async invite({
     email,
     aclRole,
+    fromUser,
     transactionalEntityManager,
   }: {
     email: string;
     aclRole: AclRole;
+    fromUser: User;
     transactionalEntityManager?: EntityManager;
-  }) {
+  }): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
       'organization.inviteCodeExpiresInDays',
     );
@@ -106,6 +110,7 @@ export class OrganizationInviteService {
         email,
         role: aclRole,
         organization: aclRole.organization,
+        fromUser,
         // Set expired field after email send succeeded
       });
 

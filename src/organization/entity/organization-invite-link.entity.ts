@@ -2,6 +2,7 @@ import { Column, Entity, Index, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { Organization } from '@/organization/entity';
+import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
 @Entity()
@@ -12,6 +13,9 @@ export class OrganizationInviteLink extends BaseEntity<OrganizationInviteLink> {
     length: 50,
   })
   email!: string;
+
+  @ManyToOne(() => User)
+  fromUser: User;
 
   @Index()
   @Column({
