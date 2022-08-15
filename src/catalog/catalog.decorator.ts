@@ -3,14 +3,14 @@ import { applyDecorators } from '@nestjs/common';
 import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
 
 import { Expose, Transform } from 'class-transformer';
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsString, isEmpty, isString } from 'class-validator';
 
 export function ProductDisplayLanguage(): any {
   return applyDecorators(
     Expose(),
     IsEnum(EnumDisplayLanguage),
     Transform(({ value }) => {
-      return value ?? EnumDisplayLanguage.En;
+      return isEmpty(value) ? EnumDisplayLanguage.En : value;
     }),
   );
 }
@@ -20,7 +20,7 @@ export function ProductCurrency(): any {
     Expose(),
     IsEnum(EnumCurrency),
     Transform(({ value }) => {
-      return value ?? EnumCurrency.USD;
+      return isEmpty(value) ? EnumCurrency.USD : value;
     }),
   );
 }
@@ -30,7 +30,7 @@ export function ProductSKU(): any {
     Expose(),
     IsString(),
     Transform(({ value }) => {
-      return value?.toUpperCase() ?? undefined;
+      return isString(value) ? value.toUpperCase() : value;
     }),
   );
 }

@@ -79,6 +79,11 @@ export class ProductUpdateDto {
   @IsOptional()
   vendorId?: string;
 
+  @IsNotEmpty()
+  @MaxLength(30)
+  @IsOptional()
+  vendorName?: string;
+
   @IsArray()
   @IsOptional()
   @IsUUID(undefined, { each: true })

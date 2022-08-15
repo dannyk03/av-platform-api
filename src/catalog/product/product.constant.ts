@@ -9,6 +9,7 @@ export const PRODUCT_DEFAULT_AVAILABLE_SORT = [
   'price',
   'description',
   'keywords',
+  'vendor',
   'createdAt',
 ];
 export const PRODUCT_DEFAULT_AVAILABLE_SEARCH = [
@@ -27,4 +28,5 @@ export const ProductOrderByNestingAliasMap = {
   createdAt: 'product.createdAt',
   keywords: 'keywords_special_logic',
   price: 'product.price',
+  vendor: 'product.vendorName',
 };
