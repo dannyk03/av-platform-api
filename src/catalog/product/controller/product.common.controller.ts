@@ -81,6 +81,7 @@ export class ProductCommonController {
       taxCode,
       shippingCost,
       vendorId,
+      vendorName,
     }: ProductCreateDto,
   ): Promise<IResponseData> {
     const checkProductExists = await this.productService.checkExistsBy({ sku });
@@ -92,11 +93,13 @@ export class ProductCommonController {
       });
     }
 
-    const checkVendorExists = await this.vendorService.checkExistsBy({
-      id: vendorId,
-    });
+    const checkVendorExists =
+      vendorId &&
+      (await this.vendorService.checkExistsBy({
+        id: vendorId,
+      }));
 
-    if (!checkVendorExists) {
+    if (vendorId && !checkVendorExists) {
       throw new BadRequestException({
         statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
         message: 'vendor.error.notFound',
@@ -117,10 +120,8 @@ export class ProductCommonController {
       price,
       isActive,
       taxCode,
+      vendorName,
       shippingCost,
-      vendor: {
-        id: vendorId,
-      },
       currency: {
         code: currency,
       },
@@ -133,6 +134,11 @@ export class ProductCommonController {
           images: saveImages ? compact(saveImages) : null,
         },
       ],
+      ...(vendorId && {
+        vendor: {
+          id: vendorId,
+        },
+      }),
     });
 
     const saveProduct = await this.productService.save(createProduct);
