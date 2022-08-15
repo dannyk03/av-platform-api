@@ -16,6 +16,7 @@ import {
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
 import {
   ArrayTransform,
+  BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
 } from '@/utils/request/transform';
@@ -58,6 +59,7 @@ export class ProductCreateDto {
 
   @IsBoolean()
   @IsOptional()
+  @BooleanStringTransform()
   isActive?: boolean;
 
   @IsNumber({ allowNaN: false })
@@ -80,6 +82,11 @@ export class ProductCreateDto {
 
   @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   @Type(() => String)
   vendorId!: string;
+
+  @IsNotEmpty()
+  @MaxLength(30)
+  vendorName?: string;
 }
