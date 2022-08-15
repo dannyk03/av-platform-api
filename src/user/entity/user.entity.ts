@@ -36,14 +36,6 @@ export class User extends BaseEntity<User> {
   })
   isActive!: boolean;
 
-  @OneToOne(() => UserAuthConfig, {
-    cascade: true,
-    nullable: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  authConfig?: UserAuthConfig;
-
   @ManyToOne(() => AclRole, (role) => role.users, { nullable: true })
   role?: AclRole;
 
@@ -52,12 +44,19 @@ export class User extends BaseEntity<User> {
   })
   organization?: Organization;
 
-  @OneToOne(() => UserProfile, { cascade: true })
-  @JoinColumn()
-  profile?: UserProfile;
+  @OneToOne(() => UserAuthConfig, (authConfig) => authConfig.user, {
+    cascade: true,
+    nullable: true,
+  })
+  authConfig?: UserAuthConfig;
+
+  @OneToOne(() => UserProfile, (profile) => profile.user, {
+    cascade: true,
+  })
+  profile: UserProfile;
 
   @BeforeInsert()
   beforeInsert() {
-    this.email = this.email.toLowerCase();
+    this.email = this.email?.toLowerCase();
   }
 }

@@ -36,6 +36,7 @@ export class SignUpEmailVerificationLink extends BaseEntity<SignUpEmailVerificat
 
   @OneToOne(() => User, {
     cascade: ['insert'],
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   user!: User;

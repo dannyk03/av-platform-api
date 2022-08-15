@@ -14,11 +14,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 
 import { Action, Subjects } from '@avo/casl';
-import {
-  EnumProductStatusCodeError,
-  EnumVendorStatusCodeError,
-  IResponseData,
-} from '@avo/type';
+import { IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
@@ -30,7 +26,6 @@ import { AclRoleService } from '@acl/role/service';
 import { ReqUser } from '../user.decorator';
 
 import { UserListDto } from '../dto';
-import { ProductCreateDto } from '@/catalog/product/dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
@@ -135,23 +130,6 @@ export class UserController {
   })
   @RequestParamGuard(IdParamDto)
   @Delete('delete/:id')
-  async deleteUser(@Param('id') id: string): Promise<void> {
-    await this.userService.deleteUserBy({ id });
-  }
-
-  @Response('user.remove')
-  @HttpCode(HttpStatus.OK)
-  @AclGuard({
-    abilities: [
-      {
-        action: Action.Delete,
-        subject: Subjects.User,
-      },
-    ],
-    systemOnly: true,
-  })
-  @RequestParamGuard(IdParamDto)
-  @Delete('remove/:id')
   async removeUser(@Param('id') id: string): Promise<void> {
     await this.userService.removeUserBy({ id });
   }
