@@ -342,6 +342,7 @@ export class ProductCommonController {
 
     existingProduct.brand = restBody.brand;
     existingProduct.isActive = restBody.isActive;
+    existingProduct.vendorName = restBody.vendorName;
     displayOptionByLang.description = restBody.description;
     displayOptionByLang.name = restBody.name;
     displayOptionByLang.keywords = restBody.keywords;
