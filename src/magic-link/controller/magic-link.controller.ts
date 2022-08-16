@@ -29,7 +29,7 @@ import {
   GiftIntentConfirmationLinkService,
   GiftIntentReadyLinkService,
   GiftIntentService,
-} from '@/gifting/gift/service';
+} from '@/gifting/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
@@ -264,7 +264,7 @@ export class MagicLinkController {
               });
 
               if (sent) {
-                giftIntent.sentAt = this.helperDateService.create();
+                giftIntent.confirmedAt = this.helperDateService.create();
                 transactionalEntityManager.save(giftIntent);
               } else {
                 throw new InternalServerErrorException({

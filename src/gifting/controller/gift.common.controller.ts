@@ -2,11 +2,13 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
   Param,
+  Patch,
   Post,
   Query,
   UnprocessableEntityException,
@@ -17,6 +19,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
+  EnumGiftIntentStatus,
   EnumGiftIntentStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumProductStatusCodeError,
@@ -31,7 +34,6 @@ import { User } from '@/user/entity';
 
 import {
   GiftIntentConfirmationLinkService,
-  GiftIntentReadyLinkService,
   GiftIntentService,
   GiftService,
   GiftSubmitService,
@@ -45,6 +47,7 @@ import { GiftIntentSerialization } from '../serialization';
 
 import {
   GiftIntentListDto,
+  GiftIntentStatusUpdateDto,
   GiftOptionCreateDto,
   GiftOptionDeleteDto,
   GiftOptionSubmitDto,
@@ -63,6 +66,9 @@ import { Response, ResponsePaging } from '@/utils/response';
   version: '1',
 })
 export class GiftCommonController {
+  private readonly logicalGiftIntentStatusOrder =
+    Object.values(EnumGiftIntentStatus);
+
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
@@ -73,8 +79,7 @@ export class GiftCommonController {
     private readonly giftSubmitService: GiftSubmitService,
     private readonly giftIntentService: GiftIntentService,
     private readonly userService: UserService,
-    private readonly giftSendConfirmationLinkService: GiftIntentConfirmationLinkService,
-    private readonly giftIntentReadyLinkService: GiftIntentReadyLinkService,
+    private readonly giftConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
     private readonly productService: ProductService,
   ) {}
@@ -131,10 +136,9 @@ export class GiftCommonController {
           }),
         );
 
-        const confirmationLink =
-          await this.giftSendConfirmationLinkService.create({
-            giftIntents,
-          });
+        const confirmationLink = await this.giftConfirmationLinkService.create({
+          giftIntents,
+        });
 
         await transactionalEntityManager.save(confirmationLink);
 
@@ -228,6 +232,82 @@ export class GiftCommonController {
       availableSort,
       data,
     };
+  }
+
+  @Response('gift.intent.status')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftIntent,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/intent/status/:id')
+  async updateStatus(
+    @Param('id') giftIntentId: string,
+    @Body() { status }: GiftIntentStatusUpdateDto,
+  ): Promise<IResponseData> {
+    const giftIntent = await this.giftIntentService.findOne({
+      where: {
+        id: giftIntentId,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        confirmedAt: true,
+        acceptedAt: true,
+        readyAt: true,
+        submittedAt: true,
+        shippedAt: true,
+        deliveredAt: true,
+      },
+    });
+
+    if (giftIntent[`${status.toLocaleLowerCase()}At`]) {
+      throw new ForbiddenException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentUnprocessableStatusUpdateError,
+        message: 'gift.intent.error.statusAlready',
+        data: { status },
+      });
+    }
+
+    const prevLogicalStatus =
+      this.logicalGiftIntentStatusOrder[
+        this.logicalGiftIntentStatusOrder.indexOf(
+          status as EnumGiftIntentStatus,
+        ) - 1
+      ];
+
+    if (!giftIntent[`${prevLogicalStatus.toLocaleLowerCase()}At`]) {
+      const currentStatus = this.logicalGiftIntentStatusOrder.find(
+        (status, index, array) => {
+          return (
+            giftIntent[`${status.toLocaleLowerCase()}At`] &&
+            !giftIntent[`${array[index + 1].toLocaleLowerCase()}At`]
+          );
+        },
+      );
+
+      throw new ForbiddenException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentUnprocessableStatusUpdateError,
+        message: 'gift.intent.error.statusNotAvailable',
+        data: { status: currentStatus },
+      });
+    }
+
+    if (status === EnumGiftIntentStatus.Ready) {
+      return this.giftIntentService.notifyReady({ id: giftIntent.id });
+    } else {
+      giftIntent[`${status.toLocaleLowerCase()}At`] =
+        this.helperDateService.create();
+      return this.giftIntentService.save(giftIntent);
+    }
   }
 
   @Response('gift.intent.get')
@@ -361,73 +441,7 @@ export class GiftCommonController {
   async giftIntentReady(
     @Param('id') giftIntentId: string,
   ): Promise<IResponseData> {
-    const giftIntent = await this.giftIntentService.findOne({
-      where: { id: giftIntentId, readyAt: IsNull() },
-      relations: [
-        'giftOptions',
-        'additionalData',
-        'recipient',
-        'sender',
-        'recipient.user',
-        'sender.user',
-      ],
-    });
-
-    if (!giftIntent) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
-        message: 'gift.intent.error.unprocessable',
-      });
-    }
-
-    if (!giftIntent?.giftOptions?.length) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionsEmptyError,
-        message: 'gift.intent.error.empty',
-      });
-    }
-
-    const result = await this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        const readyLink = await this.giftIntentReadyLinkService.create({
-          giftIntent,
-        });
-
-        const saveReadyLink = await transactionalEntityManager.save(readyLink);
-
-        const emailSent = await this.emailService.sendGiftReady({
-          email:
-            giftIntent.recipient?.user?.email ||
-            giftIntent.recipient?.additionalData['email'],
-          code: readyLink.code,
-        });
-
-        if (!emailSent) {
-          throw new InternalServerErrorException({
-            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-            message: 'messaging.error.email.send',
-          });
-        }
-        giftIntent.readyAt = this.helperDateService.create();
-
-        const saveGiftIntent = await transactionalEntityManager.save(
-          giftIntent,
-        );
-
-        return {
-          code: saveReadyLink.code,
-          giftIntentId: saveGiftIntent?.id,
-        };
-      },
-    );
-
-    // For local development/testing
-    const isProduction = this.configService.get<boolean>('app.isProduction');
-    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (!(isProduction || isSecureMode)) {
-      return result;
-    }
+    return this.giftIntentService.notifyReady({ id: giftIntentId });
   }
 
   @Response('gift.intent.submit')
@@ -451,8 +465,8 @@ export class GiftCommonController {
           },
         },
         giftOptions: { id: In(giftOptionIds) },
-        sentAt: Not(IsNull()),
-        // acceptedAt: Not(IsNull()),
+        confirmedAt: Not(IsNull()),
+        acceptedAt: Not(IsNull()),
         submittedAt: IsNull(),
       },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],

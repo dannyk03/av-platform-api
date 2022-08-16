@@ -59,7 +59,7 @@ export class GiftSendSenderDto {
   @EmptyStringToUndefinedTransform()
   readonly lastName?: string;
 
-  @MaxLength(30)
+  @MaxLength(50)
   @IsOptional()
   @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()

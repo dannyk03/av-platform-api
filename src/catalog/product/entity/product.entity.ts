@@ -13,7 +13,7 @@ import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { Vendor } from '@/catalog/vendor/entity';
 import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
-import { Gift } from '@/gifting/gift/entity';
+import { Gift } from '@/gifting/entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {

@@ -2,12 +2,12 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { ProductModule } from '@/catalog/product/product.module';
-import { GiftModule } from '@/gifting/gift/gift.module';
+import { GiftModule } from '@/gifting/gift.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 
-import { GiftCommonController } from '@/gifting/gift/controller';
+import { GiftCommonController } from '@/gifting/controller';
 
 @Module({
   controllers: [GiftCommonController],

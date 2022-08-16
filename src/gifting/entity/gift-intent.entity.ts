@@ -40,7 +40,7 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   @Column({
     nullable: true,
   })
-  sentAt?: Date;
+  confirmedAt?: Date;
 
   @Column({
     nullable: true,

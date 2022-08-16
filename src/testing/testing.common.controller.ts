@@ -67,24 +67,24 @@ export class TestingCommonController {
     @ReqUser() user,
   ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
-      timezone: timezone,
+      timezone,
     });
     return {
       userAgent,
       date: newDate,
       format: this.helperDateService.format(newDate, {
-        timezone: timezone,
         format: EnumHelperDateFormat.FriendlyDateTime,
+        timezone,
       }),
       timestamp: this.helperDateService.timestamp({
         date: newDate,
-        timezone: timezone,
+        timezone,
       }),
       loginDate: {
         date: user.loginDate,
         format: this.helperDateService.format(user.loginDate, {
-          timezone: timezone,
           format: EnumHelperDateFormat.FriendlyDateTime,
+          timezone,
         }),
       },
       passwordExpiredAt: {
@@ -92,8 +92,8 @@ export class TestingCommonController {
         format: this.helperDateService.format(
           user.authConfig?.passwordExpiredAt,
           {
-            timezone: timezone,
             format: EnumHelperDateFormat.FriendlyDateTime,
+            timezone,
           },
         ),
       },
