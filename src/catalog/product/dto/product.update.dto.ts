@@ -64,6 +64,7 @@ export class ProductUpdateDto {
   readonly name?: string;
 
   @MaxLength(200)
+  @IsOptional()
   @NormalizeStringInputTransform()
   readonly description!: string;
 
