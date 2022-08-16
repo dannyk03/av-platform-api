@@ -343,6 +343,9 @@ export class ProductCommonController {
     existingProduct.brand = restBody.brand;
     existingProduct.isActive = restBody.isActive;
     existingProduct.vendorName = restBody.vendorName;
+    existingProduct.price = restBody.price;
+    existingProduct.shippingCost = restBody.shippingCost;
+
     displayOptionByLang.description = restBody.description;
     displayOptionByLang.name = restBody.name;
     displayOptionByLang.keywords = restBody.keywords;
