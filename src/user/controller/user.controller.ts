@@ -1,18 +1,36 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { Action, Subjects } from '@avo/casl';
 import { IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
 import { UserService } from '../service';
 import { HelperDateService } from '@/utils/helper/service';
+import { PaginationService } from '@/utils/pagination/service';
 import { AclRoleService } from '@acl/role/service';
 
 import { ReqUser } from '../user.decorator';
 
+import { UserListDto } from '../dto';
+import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+
 import { AclGuard } from '@/auth';
-import { Response } from '@/utils/response';
+import { RequestParamGuard } from '@/utils/request';
+import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -21,12 +39,14 @@ import { Response } from '@/utils/response';
 export class UserController {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
     private readonly roleService: AclRoleService,
     private readonly helperDateService: HelperDateService,
+    private readonly userService: UserService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @Response('user.profile')
+  @HttpCode(HttpStatus.OK)
   @AclGuard({
     relations: ['profile'],
   })
@@ -36,5 +56,127 @@ export class UserController {
     reqUser: User,
   ): Promise<IResponseData> {
     return this.userService.serializationUserProfile(reqUser);
+  }
+
+  @ResponsePaging('user.list')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.User,
+      },
+    ],
+    systemOnly: true,
+  })
+  @Get('/list')
+  async list(
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      isActive,
+    }: UserListDto,
+  ): Promise<IResponseData> {
+    const skip = await this.paginationService.skip(page, perPage);
+
+    const users = await this.userService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+      isActive,
+    });
+
+    const totalData = await this.userService.getTotal({
+      search,
+      isActive,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    const data = await this.userService.serializationList(users);
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data,
+    };
+  }
+
+  @Response('user.delete')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Delete,
+        subject: Subjects.User,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Delete('delete/:id')
+  async removeUser(@Param('id') id: string): Promise<void> {
+    await this.userService.removeUserBy({ id });
+  }
+
+  @Response('user.active')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.User,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('active/:id')
+  async activeUser(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.userService.updateUserActiveStatus({
+      id,
+      isActive: true,
+    });
+
+    return {
+      affected,
+    };
+  }
+
+  @Response('user.inactive')
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.User,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('inactive/:id')
+  async inactiveUser(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.userService.updateUserActiveStatus({
+      id,
+      isActive: false,
+    });
+
+    return {
+      affected,
+    };
   }
 }

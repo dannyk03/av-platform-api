@@ -17,7 +17,7 @@ import { AclAbilityService } from '@acl/ability/service';
 import { AclPolicyService } from '@acl/policy/service';
 import { AclSubjectService } from '@acl/subject/service';
 
-import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
+import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
 
 import { ConnectionNames } from '@/database';
 import { IPaginationOptions } from '@/utils/pagination';
@@ -129,7 +129,7 @@ export class AclRoleService {
     return null;
   }
 
-  async serializationList(data: AclRole[]): Promise<RoleListSerialization[]> {
-    return plainToInstance(RoleListSerialization, data);
+  async serializationList(data: AclRole[]): Promise<RoleGetSerialization[]> {
+    return plainToInstance(RoleGetSerialization, data);
   }
 }

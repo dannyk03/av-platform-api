@@ -11,6 +11,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { IResponse, IResponseData } from '@avo/type';
 
 import { Response } from 'express';
+import { result } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -76,7 +77,7 @@ export function ResponseDefaultInterceptor(
                     },
                   }),
 
-                  result: data,
+                  ...(Object.keys(data).length && { result: data }),
                 };
               }
 

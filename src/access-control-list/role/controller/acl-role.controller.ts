@@ -17,7 +17,7 @@ import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { RoleListSerialization } from '../serialization/acl-role.list.serialization';
+import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
 
 import { AclRoleListDto } from '../dto';
 
@@ -80,6 +80,7 @@ export class AclRoleController {
       const reqOrganization = await this.organizationService.findOne({
         where: organizationCtxFind.organization,
       });
+
       if (!reqOrganization) {
         throw new UnprocessableEntityException({
           statusCode: EnumOrganizationStatusCodeError.OrganizationNotFoundError,
@@ -88,19 +89,19 @@ export class AclRoleController {
       }
     }
 
-    const totalData: number =
+    const totalData =
       roles &&
       (await this.aclRoleService.getTotal({
         ...organizationCtxFind,
         name: search && ILike(`%${search}%`),
       }));
 
-    const totalPage: number = await this.paginationService.totalPage(
+    const totalPage = await this.paginationService.totalPage(
       totalData,
       perPage,
     );
 
-    const data: RoleListSerialization[] =
+    const data: RoleGetSerialization[] =
       await this.aclRoleService.serializationList(roles);
 
     return {

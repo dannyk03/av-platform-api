@@ -54,6 +54,24 @@ export const systemSeedData: {
             ],
           },
           {
+            type: Subjects.GiftingNamespace,
+            abilities: [
+              {
+                type: AbilityVerb.Can,
+                action: Action.Manage,
+              },
+            ],
+          },
+          {
+            type: Subjects.CatalogNamespace,
+            abilities: [
+              {
+                type: AbilityVerb.Can,
+                action: Action.Manage,
+              },
+            ],
+          },
+          {
             type: Subjects.System,
             abilities: [
               {

@@ -9,10 +9,12 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
-import { EnumOrganizationStatusCodeError } from '@avo/type';
+import { EnumOrganizationStatusCodeError, IResponseData } from '@avo/type';
 
 import { EnumOrganizationRole } from '@acl/role';
 import { DataSource } from 'typeorm';
+
+import { User } from '@/user/entity';
 
 import { OrganizationInviteService, OrganizationService } from '../service';
 import { AuthService } from '@/auth/service';
@@ -24,6 +26,7 @@ import { OrganizationCreateDto } from '../dto/organization.create.dto';
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
 import { EnumLogAction, LogTrace } from '@/log';
+import { ReqUser } from '@/user';
 import { Response } from '@/utils/response';
 
 @Controller({
@@ -62,13 +65,15 @@ export class OrganizationController {
   })
   @Post('/create')
   async create(
+    @ReqUser()
+    reqUser: User,
     @Body()
     {
       name: organizationName,
       email: organizationOwnerEmail,
       password: initialOwnerPassword,
     }: OrganizationCreateDto,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const checkOrganizationExist =
       await this.organizationService.checkExistsByName(organizationName);
 
@@ -92,7 +97,7 @@ export class OrganizationController {
 
     const rolePresets = await this.rolePresetService.findAll();
 
-    await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const organizationRoles = await this.aclRoleService.cloneSaveRolesTree(
@@ -133,6 +138,7 @@ export class OrganizationController {
           transactionalEntityManager,
           email: organizationOwnerEmail,
           aclRole: organizationOwnerRole,
+          fromUser: reqUser,
         });
 
         return {

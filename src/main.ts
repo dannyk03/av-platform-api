@@ -43,8 +43,9 @@ async function bootstrap() {
       { path: 'health/cloudinary', method: RequestMethod.GET },
       { path: 'confirm', method: RequestMethod.GET },
       { path: 'signup', method: RequestMethod.GET },
-      { path: 'join', method: RequestMethod.GET },
       { path: 'ready', method: RequestMethod.GET },
+      { path: 'join', method: RequestMethod.GET },
+      { path: 'org/join', method: RequestMethod.GET },
     ],
   });
 

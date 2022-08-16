@@ -28,6 +28,10 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendOrganizationInvite.toString(),
