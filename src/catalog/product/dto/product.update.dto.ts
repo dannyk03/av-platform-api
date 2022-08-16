@@ -91,11 +91,17 @@ export class ProductUpdateDto {
   @IsUUID(undefined, { each: true })
   @UniqueArrayTransform()
   @ArrayTransform()
-  deleteImageIds: string[];
+  deleteImageIds?: string[];
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
   @Type(() => Number)
-  price!: number;
+  shippingCost?: number;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @IsOptional()
+  @Type(() => Number)
+  price?: number;
 }
