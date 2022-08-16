@@ -264,7 +264,7 @@ export class MagicLinkController {
               });
 
               if (sent) {
-                giftIntent.sentAt = this.helperDateService.create();
+                giftIntent.confirmedAt = this.helperDateService.create();
                 transactionalEntityManager.save(giftIntent);
               } else {
                 throw new InternalServerErrorException({

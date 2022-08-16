@@ -14,13 +14,16 @@
     "deleteGiftOption": "Gift-intent delete option success",
     "ready": "Gift-intent ready success",
     "submit": "Gift-intent submit success",
+    "status": "Gift-intent status change success",
     "error": {
       "unprocessableSubmit": "Unprocessable gift submit",
       "unprocessable": "Unprocessable gift-intent",
       "notFound": "Gift intent not found",
       "empty": "Gift intent options are empty",
       "readyLinkInvalid": "Invalid gift-intent ready link",
-      "readyLinkNotFound": "Gift-intent ready link not found"
+      "readyLinkNotFound": "Gift-intent ready link not found",
+      "statusAlready": "Gift-intent is already in the requested status",
+      "statusNotAvailable": "Gift-intent requested status not available at this time"
     }
   }
 }
