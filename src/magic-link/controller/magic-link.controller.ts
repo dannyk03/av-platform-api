@@ -29,7 +29,7 @@ import {
   GiftIntentConfirmationLinkService,
   GiftIntentReadyLinkService,
   GiftIntentService,
-} from '@/gifting/gift/service';
+} from '@/gifting/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 

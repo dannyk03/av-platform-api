@@ -7,6 +7,7 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Param,
+  Patch,
   Post,
   Query,
   UnprocessableEntityException,
@@ -45,6 +46,7 @@ import { GiftIntentSerialization } from '../serialization';
 
 import {
   GiftIntentListDto,
+  GiftIntentStatusUpdateDto,
   GiftOptionCreateDto,
   GiftOptionDeleteDto,
   GiftOptionSubmitDto,
@@ -228,6 +230,30 @@ export class GiftCommonController {
       availableSort,
       data,
     };
+  }
+
+  @Response('gift.intent.get')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftIntent,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/intent/status/:id')
+  async updateStatus(
+    @Param('id') giftIntentId: string,
+    @Body() { status }: GiftIntentStatusUpdateDto,
+  ): Promise<IResponseData> {
+    const giftIntent = this.giftIntentService.findOne({
+      where: { id: giftIntentId, [`${status}At`]: Not(IsNull()) },
+    });
+
+    return giftIntent;
   }
 
   @Response('gift.intent.get')
