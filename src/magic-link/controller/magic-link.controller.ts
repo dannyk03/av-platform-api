@@ -146,8 +146,8 @@ export class MagicLinkController {
   }
 
   @Response('organization.inviteValid')
-  @Get('/join')
-  async joinValidate(
+  @Get('/org/join')
+  async orgJoinValidate(
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {

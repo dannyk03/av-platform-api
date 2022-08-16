@@ -7,16 +7,20 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
   EnumOrganizationStatusCodeError,
   EnumRoleStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import { isUUID } from 'class-validator';
 import { DataSource } from 'typeorm';
+
+import { User } from '@/user/entity';
 
 import { OrganizationInviteService } from '../service';
 import { AuthService } from '@/auth/service';
@@ -34,11 +38,12 @@ import { IReqOrganizationIdentifierCtx } from '../organization.interface';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
+import { ReqUser } from '@/user';
 import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
-  path: 'organization',
+  path: 'org',
 })
 export class OrganizationInviteController {
   constructor(
@@ -50,6 +55,7 @@ export class OrganizationInviteController {
     private readonly authService: AuthService,
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Response('organization.invite')
@@ -64,11 +70,13 @@ export class OrganizationInviteController {
   })
   @Post('/invite')
   async invite(
+    @ReqUser()
+    reqUser: User,
     @Body()
     { email, role }: OrganizationInviteDto,
     @ReqOrganizationIdentifierCtx()
     { id, slug }: IReqOrganizationIdentifierCtx,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const organizationCtxFind: Record<string, any> = {
       organization: { id, slug },
     };
@@ -97,10 +105,18 @@ export class OrganizationInviteController {
       });
     }
 
-    await this.organizationInviteService.invite({
+    const result = await this.organizationInviteService.invite({
       email,
       aclRole: existingRole,
+      fromUser: reqUser,
     });
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
+    }
   }
 
   @Response('organization.join')
@@ -140,7 +156,7 @@ export class OrganizationInviteController {
 
     const existingUser = await this.userService.findOne({
       where: { email: existingInvite.email },
-      relations: ['authConfig'],
+      relations: ['authConfig', 'profile'],
       select: {
         authConfig: {
           id: true,
@@ -163,11 +179,9 @@ export class OrganizationInviteController {
             emailVerifiedAt: this.helperDateService.create(),
           };
 
-          await transactionalEntityManager.save({
-            ...existingUser,
-            firstName,
-            lastName,
-          });
+          existingUser.profile.firstName = firstName;
+          existingUser.profile.lastName = lastName;
+          await transactionalEntityManager.save(existingUser);
         } else {
           const joinUser = await this.userService.create({
             email: existingInvite.email,
@@ -176,6 +190,10 @@ export class OrganizationInviteController {
               emailVerifiedAt: this.helperDateService.create(),
               salt,
               passwordExpiredAt,
+            },
+            profile: {
+              firstName,
+              lastName,
             },
             organization: existingInvite.organization,
             role: existingInvite.role,

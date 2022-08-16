@@ -1,3 +1,5 @@
+import { IPaginationOptions } from '@/utils/pagination';
+
 export interface IUserCreate {
   firstName: string;
   lastName?: string;
@@ -14,4 +16,10 @@ export type IUserUpdate = Pick<IUserCreate, 'firstName' | 'lastName'>;
 export interface IUserCheckExist {
   email: boolean;
   phoneNumber: boolean;
+}
+
+export interface IUserSearch {
+  search?: string;
+  options?: IPaginationOptions;
+  isActive?: boolean[];
 }
