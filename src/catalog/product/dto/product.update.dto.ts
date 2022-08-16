@@ -1,9 +1,11 @@
 import { EnumDisplayLanguage } from '@avo/type';
 
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
@@ -90,4 +92,10 @@ export class ProductUpdateDto {
   @UniqueArrayTransform()
   @ArrayTransform()
   deleteImageIds: string[];
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @IsOptional()
+  @Type(() => Number)
+  price!: number;
 }
