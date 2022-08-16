@@ -35,7 +35,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return new ValidationPipe({
-          forbidUnknownValues: false,
+          forbidUnknownValues: true,
           transform: true,
           skipNullProperties: false,
           skipUndefinedProperties: false,
