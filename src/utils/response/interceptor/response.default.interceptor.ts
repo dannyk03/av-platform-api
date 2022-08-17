@@ -8,16 +8,14 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
-import { IResponse, IResponseData } from '@avo/type';
+import { IMessage, IResponse, IResponseData } from '@avo/type';
 
 import { Response } from 'express';
-import { result } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IMessage } from '@/response-message';
 import { IRequestApp } from '@/utils/request';
 
 export function ResponseDefaultInterceptor(

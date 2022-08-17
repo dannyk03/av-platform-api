@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { IErrors, IMessage } from '@avo/type';
+
 import { ValidationError, isArray } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 
 import {
-  IMessage,
   IMessageOptions,
   IMessageSetOptions,
 } from '../response-message.interface';
 import {
-  IErrors,
   IErrorsImport,
   IValidationErrorImport,
 } from 'src/utils/error/error.interface';

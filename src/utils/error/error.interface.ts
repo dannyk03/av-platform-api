@@ -1,11 +1,8 @@
+import { IErrors } from '@avo/type';
+
 import { ValidationError } from 'class-validator';
 
-import { IMessage, IMessageOptionsProperties } from '@/response-message';
-
-export interface IErrors {
-  readonly message: string | IMessage;
-  readonly property: string;
-}
+import { IMessageOptionsProperties } from '@/response-message';
 
 export interface IErrorsImport {
   row: number;

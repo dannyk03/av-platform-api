@@ -7,9 +7,11 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 import { ProductDisplayLanguage } from '@/catalog/catalog.decorator';
@@ -34,7 +36,7 @@ export class ProductUpdateDisplayDto {
 
   @MaxLength(200)
   @NormalizeStringInputTransform()
-  readonly description!: string;
+  readonly description?: string;
 
   @IsArray()
   @IsOptional()
@@ -52,7 +54,7 @@ export class ProductUpdateDto {
   @IsBoolean()
   @IsOptional()
   @BooleanStringTransform()
-  isActive?: boolean;
+  readonly isActive?: boolean;
 
   @ProductDisplayLanguage()
   @IsOptional()
@@ -66,7 +68,7 @@ export class ProductUpdateDto {
   @MaxLength(200)
   @IsOptional()
   @NormalizeStringInputTransform()
-  readonly description!: string;
+  readonly description?: string;
 
   @IsArray()
   @IsOptional()
@@ -97,12 +99,17 @@ export class ProductUpdateDto {
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   shippingCost?: number;
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
+  @IsOptional()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   price?: number;
 }
