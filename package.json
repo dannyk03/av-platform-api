@@ -33,8 +33,8 @@
     "migration:create": "yarn typeorm  migration:create src/database/migrations/default/custom",
     "migration:run": "yarn typeorm migration:run -d src/database/typeorm-cli/default.datasource.ts",
     "migration:revert": "yarn typeorm migration:revert -d src/database/typeorm-cli/default.datasource.ts",
-    "schema:drop": "yarn typeorm schema:drop -d src/database/typeorm-cli/default.datasource.ts",
-    "db:recreate:dev": "yarn schema:drop && yarn migration:run && yarn seed",
+    "schema:drop:dev:danger": "yarn typeorm schema:drop -d src/database/typeorm-cli/default.datasource.ts",
+    "db:recreate:dev:danger": "yarn schema:drop:dev:danger && yarn migration:run && yarn seed",
     "cache:clear": "yarn typeorm cache:clear -d src/database/typeorm-cli/default.datasource.ts",
     "prestart": "nestjs-command create:db"
   },
