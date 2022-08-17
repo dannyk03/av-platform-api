@@ -81,12 +81,15 @@ export class AuthCommonController {
   ): Promise<IResponseData> {
     const rememberMe: boolean = body.rememberMe ? true : false;
 
-    const validate: boolean = await this.authService.validateUser(
-      body.password,
-      user.authConfig.password,
-    );
+    const isValid =
+      body.password &&
+      user.authConfig?.password &&
+      (await this.authService.validateUser(
+        body.password,
+        user.authConfig?.password,
+      ));
 
-    if (!validate) {
+    if (!isValid) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.notMatch',

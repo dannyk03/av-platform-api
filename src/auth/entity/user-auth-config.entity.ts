@@ -25,17 +25,6 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   })
   emailVerifiedAt?: Date;
 
-  @Index()
-  @Column({
-    unique: true,
-    length: 21,
-    nullable: true,
-  })
-  loginCode?: string;
-
-  @Column({ nullable: true })
-  loginCodeExpiredAt?: Date;
-
   @OneToOne(() => User, (user) => user.authConfig, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
