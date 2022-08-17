@@ -34,6 +34,7 @@
     "migration:run": "yarn typeorm migration:run -d src/database/typeorm-cli/default.datasource.ts",
     "migration:revert": "yarn typeorm migration:revert -d src/database/typeorm-cli/default.datasource.ts",
     "schema:drop": "yarn typeorm schema:drop -d src/database/typeorm-cli/default.datasource.ts",
+    "db:recreate:dev": "yarn schema:drop && yarn migration:run && yarn seed",
     "cache:clear": "yarn typeorm cache:clear -d src/database/typeorm-cli/default.datasource.ts",
     "prestart": "nestjs-command create:db"
   },
