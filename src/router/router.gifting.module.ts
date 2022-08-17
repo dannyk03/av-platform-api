@@ -7,10 +7,10 @@ import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 
-import { GiftCommonController } from '@/gifting/controller';
+import { GiftingSystemController } from '@/gifting/controller';
 
 @Module({
-  controllers: [GiftCommonController],
+  controllers: [GiftingSystemController],
   providers: [],
   exports: [],
   imports: [

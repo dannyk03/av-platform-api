@@ -65,7 +65,7 @@ import { Response, ResponsePaging } from '@/utils/response';
 @Controller({
   version: '1',
 })
-export class GiftCommonController {
+export class GiftingSystemController {
   private readonly logicalGiftIntentStatusOrder =
     Object.values(EnumGiftIntentStatus);
 
