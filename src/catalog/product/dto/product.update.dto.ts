@@ -12,6 +12,7 @@ import {
   IsUUID,
   MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 import { ProductDisplayLanguage } from '@/catalog/catalog.decorator';
@@ -48,6 +49,7 @@ export class ProductUpdateDisplayDto {
 export class ProductUpdateDto {
   @IsOptional()
   @MaxLength(30)
+  @MinLength(1)
   @NormalizeStringInputTransform()
   readonly brand?: string;
 
@@ -61,7 +63,8 @@ export class ProductUpdateDto {
   language: EnumDisplayLanguage;
 
   @IsOptional()
-  @MaxLength(30)
+  @MaxLength(50)
+  @MinLength(1)
   @NormalizeStringInputTransform()
   readonly name?: string;
 
@@ -86,7 +89,9 @@ export class ProductUpdateDto {
 
   @IsNotEmpty()
   @MaxLength(30)
+  @MinLength(1)
   @IsOptional()
+  @NormalizeStringInputTransform()
   vendorName?: string;
 
   @IsArray()
