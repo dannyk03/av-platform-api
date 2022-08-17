@@ -22,6 +22,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
+import { isDefined } from 'class-validator';
 import { flatMap } from 'lodash';
 import compact from 'lodash/compact';
 
@@ -295,7 +296,19 @@ export class ProductCommonController {
     @UploadedFiles() images: Express.Multer.File[],
     @Param('id') id: string,
     @Body()
-    { vendorId, deleteImageIds, language, ...restBody }: ProductUpdateDto,
+    {
+      vendorId,
+      deleteImageIds,
+      language,
+      description,
+      brand,
+      isActive,
+      keywords,
+      name,
+      price,
+      shippingCost,
+      vendorName,
+    }: ProductUpdateDto,
   ): Promise<IResponseData> {
     const existingProduct = await this.productService.findOne({
       where: {
@@ -340,15 +353,15 @@ export class ProductCommonController {
       (opt) => opt?.language?.isoCode === language,
     );
 
-    existingProduct.brand = restBody.brand;
-    existingProduct.isActive = restBody.isActive;
-    existingProduct.vendorName = restBody.vendorName;
-    existingProduct.price = restBody.price;
-    existingProduct.shippingCost = restBody.shippingCost;
+    isDefined(brand) && (existingProduct.brand = brand);
+    isDefined(isActive) && (existingProduct.isActive = isActive);
+    isDefined(vendorName) && (existingProduct.vendorName = vendorName);
+    isDefined(price) && (existingProduct.price = price);
+    isDefined(shippingCost) && (existingProduct.shippingCost = shippingCost);
 
-    displayOptionByLang.description = restBody.description;
-    displayOptionByLang.name = restBody.name;
-    displayOptionByLang.keywords = restBody.keywords;
+    isDefined(description) && (displayOptionByLang.description = description);
+    isDefined(name) && (displayOptionByLang.name = name);
+    isDefined(keywords) && (displayOptionByLang.keywords = keywords);
 
     const existingImagesIdsOld = flatMap(displayOptionByLang.images, 'id');
     if (deleteImageIds) {

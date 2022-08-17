@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
-import { IResponsePaging } from '@avo/type';
+import { IMessage, IResponsePaging } from '@avo/type';
 
 import { Response } from 'express';
 import { Observable } from 'rxjs';
@@ -18,7 +18,6 @@ import { ResponseMessageService } from '@/response-message/service';
 
 import { IResponsePagingOptions } from '../response.interface';
 
-import { IMessage } from '@/response-message';
 import { EnumPaginationType } from '@/utils/pagination';
 
 // This interceptor for restructure response success

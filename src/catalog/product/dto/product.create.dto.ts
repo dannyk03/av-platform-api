@@ -7,10 +7,12 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   Length,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
@@ -64,11 +66,15 @@ export class ProductCreateDto {
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   price!: number;
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   shippingCost!: number;
 

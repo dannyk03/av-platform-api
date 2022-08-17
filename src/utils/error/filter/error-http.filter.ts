@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
+import { IMessage } from '@avo/type';
+
 import { ValidationError } from 'class-validator';
 import { Response } from 'express';
 
@@ -14,8 +16,6 @@ import { ResponseMessageService } from '@/response-message/service';
 
 import { IErrorException, IValidationErrorImport } from '../error.interface';
 import { IRequestApp } from 'src/utils/request/request.interface';
-
-import { IMessage } from '@/response-message';
 
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
