@@ -5,6 +5,7 @@ import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
+import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
@@ -23,6 +24,7 @@ export class AppRouterModule {
         imports: [
           RouterCommonModule,
           RouterPublicModule,
+          RouterGiftingSystemModule,
           RouterGiftingModule,
           RouterCatalogModule,
           RouterProductModule,
@@ -38,6 +40,15 @@ export class AppRouterModule {
             {
               path: '/gift',
               module: RouterGiftingModule,
+            },
+            {
+              path: '/system',
+              children: [
+                {
+                  path: '/gift',
+                  module: RouterGiftingSystemModule,
+                },
+              ],
             },
             {
               path: '/network',
