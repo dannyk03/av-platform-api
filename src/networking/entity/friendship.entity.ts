@@ -5,7 +5,7 @@ import { User } from '@/user/entity';
 
 @Entity()
 @Unique('uq_requested_addressee_connection', ['requestedUser', 'addresseeUser'])
-export class Connection extends BaseEntity<Connection> {
+export class Friendship extends BaseEntity<Friendship> {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   requestedUser: User;

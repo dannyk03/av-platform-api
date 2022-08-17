@@ -8,7 +8,7 @@ import { User } from '@/user/entity';
   'blockingUser',
   'blockedUser',
 ])
-export class ConnectionRequestBlock extends BaseEntity<ConnectionRequestBlock> {
+export class FriendshipRequestBlock extends BaseEntity<FriendshipRequestBlock> {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   blockingUser: User;

@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { User } from '@/user/entity';
+
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
 import { EmailStatus, EmailTemplate } from '../email.constant';
@@ -15,12 +17,37 @@ export class EmailService {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
 
+  async sendNetworkJoinInvite({
+    email,
+    fromUser,
+    path = '/network/join',
+  }: {
+    email: string;
+    fromUser: User;
+    path?: string;
+  }) {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendNetworkInvite.toString(),
+      to: [email],
+      emailTemplatePayload: { from: fromUser.email, path },
+      identifier: { id: email },
+    });
+    console.log({ email, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
   async sendOrganizationInvite({
     email,
     code,
     expiresInDays,
     organizationName,
-    path = '/join',
+    path = 'org/join',
   }: {
     email: string;
     code: string;
@@ -40,7 +67,7 @@ export class EmailService {
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, organizationName, path });
-    return Boolean(sendResult.status == EmailStatus.success);
+    return sendResult.status === EmailStatus.success;
   }
 
   async sendSignUpEmailVerification({
@@ -66,7 +93,7 @@ export class EmailService {
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
-    return sendResult.status == EmailStatus.success;
+    return sendResult.status === EmailStatus.success;
   }
 
   async sendGiftSurvey({
@@ -90,7 +117,7 @@ export class EmailService {
       senderEmail,
       path,
     });
-    return Boolean(sendResult.status == EmailStatus.success);
+    return sendResult.status === EmailStatus.success;
   }
 
   async sendGiftConfirm({
@@ -117,7 +144,7 @@ export class EmailService {
       email,
       code,
     });
-    return Boolean(sendResult.status == EmailStatus.success);
+    return sendResult.status === EmailStatus.success;
   }
 
   async sendGiftReady({
@@ -144,6 +171,6 @@ export class EmailService {
       email,
       code,
     });
-    return Boolean(sendResult.status == EmailStatus.success);
+    return sendResult.status === EmailStatus.success;
   }
 }

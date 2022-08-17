@@ -8,9 +8,9 @@ import request from 'supertest';
 import { CoreModule } from '@/core/core.module';
 import { HealthModule } from '@/health/health.module';
 
-import { HelperDateService } from '@/utils/helper/service/helper.date.service';
+import { HelperDateService } from '@/utils/helper/service';
 
-import { HealthController } from '@/health/controller/health.controller';
+import { HealthController } from '@/health/controller';
 
 import { INTEGRATION_CLOUDINARY_URL } from './cloudinary.constant';
 

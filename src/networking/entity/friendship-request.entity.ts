@@ -14,7 +14,7 @@ import { User } from '@/user/entity';
   'addresseeUser',
   'status',
 ])
-export class ConnectionRequest extends BaseEntity<ConnectionRequest> {
+export class FriendshipRequest extends BaseEntity<FriendshipRequest> {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   requestedUser: User;
@@ -31,6 +31,7 @@ export class ConnectionRequest extends BaseEntity<ConnectionRequest> {
   @Column({
     type: 'enum',
     enum: EnumNetworkingConnectionRequestStatus,
+    default: EnumNetworkingConnectionRequestStatus.Pending,
   })
   status: NetworkingConnectionRequestStatusType;
 }

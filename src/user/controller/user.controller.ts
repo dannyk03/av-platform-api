@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  Body,
   Controller,
   Delete,
   Get,
@@ -8,7 +6,6 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Post,
   Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

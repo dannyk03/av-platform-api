@@ -1,3 +1,3 @@
-export * from './connection.entity';
-export * from './connection-request.entity';
-export * from './connection-request-block.entity';
+export * from './friendship.entity';
+export * from './friendship-request.entity';
+export * from './friendship-request-block.entity';
