@@ -1,6 +1,11 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import { IResponseData } from '@avo/type';
+import {
+  EnumNetworkingConnectionRequestStatus,
+  IResponseData,
+} from '@avo/type';
+
+import { In } from 'typeorm';
 
 import { User } from '@/user/entity';
 
@@ -25,9 +30,6 @@ export class NetworkingCommonController {
   constructor(
     private readonly userService: UserService,
     private readonly emailService: EmailService,
-    private readonly friendshipService: FriendshipService,
-    private readonly friendshipRequestService: FriendshipRequestService,
-    private readonly friendshipRequestBlockService: FriendshipRequestBlockService,
   ) {}
 
   @Response('networking.connectRequest')
@@ -42,34 +44,108 @@ export class NetworkingCommonController {
     const promises = to.map(async (email) => {
       const addresseeUser = await this.userService.findOneBy({ email });
 
-      if (!addresseeUser) {
-        const isEmailSent = await this.emailService.sendNetworkJoinInvite({
-          fromUser: reqUser,
-          email,
-        });
+      // try {
+      //   const pend = await this.friendshipRequestService.findPendingRequest({
+      //     from: reqUser.email,
+      //     to: email,
+      //   });
 
-        if (isEmailSent) {
-          const createFriendshipRequest =
-            await this.friendshipRequestService.create({
-              requestedUser: reqUser,
-              tempAddresseeEmail: addresseeUser ? null : email,
-            });
+      //   console.log(pend);
+      // } catch (error) {
+      //   console.log(error);
+      // }
 
-          return this.friendshipRequestService.save(createFriendshipRequest);
-        } else {
-          return Promise.reject(email);
-        }
-      }
+      // const xxx = await this.friendshipRequestService.findOne({
+      //   where: [
+      //     {
+      //       tempAddresseeEmail: email,
+      //       requestedUser: {
+      //         id: reqUser.id,
+      //       },
+      //     },
+      //     {
+      //       addresseeUser: {
+      //         email,
+      //       },
+      //       requestedUser: {
+      //         id: reqUser.id,
+      //       },
+      //     },
+      //   ],
+      // });
 
-      const createFriendshipRequest =
-        await this.friendshipRequestService.create({
-          requestedUser: reqUser,
-          addresseeUser,
-        });
+      // const [findBlockRequest, findExistingRequest] = await Promise.all([
+      //   this.friendshipRequestBlockService.findOne({
+      //     where: {
+      //       blockingUser: {
+      //         email,
+      //       },
+      //       blockedUser: {
+      //         id: reqUser.id,
+      //       },
+      //     },
+      //   }),
+      //   this.friendshipRequestService.findOne({
+      //     where: [
+      //       {
+      //         status: In([
+      //           EnumNetworkingConnectionRequestStatus.Pending,
+      //           EnumNetworkingConnectionRequestStatus.Rejected,
+      //         ]),
+      //         tempAddresseeEmail: email,
+      //         requestedUser: {
+      //           id: reqUser.id,
+      //         },
+      //       },
+      //       {
+      //         status: In([
+      //           EnumNetworkingConnectionRequestStatus.Pending,
+      //           EnumNetworkingConnectionRequestStatus.Rejected,
+      //         ]),
+      //         addresseeUser: {
+      //           email,
+      //         },
+      //         requestedUser: {
+      //           id: reqUser.id,
+      //         },
+      //       },
+      //     ],
+      //   }),
+      // ]);
 
-      return this.friendshipRequestService.save(createFriendshipRequest);
+      // if (findExistingRequest || findBlockRequest) {
+      //   return Promise.resolve(email);
+      // }
+
+      // if (!addresseeUser) {
+      //   const isEmailSent = await this.emailService.sendNetworkJoinInvite({
+      //     fromUser: reqUser,
+      //     email,
+      //   });
+
+      //   if (isEmailSent) {
+      //     const createFriendshipRequest =
+      //       await this.friendshipRequestService.create({
+      //         addressedUser: reqUser,
+      //         tempAddresseeEmail: addresseeUser ? null : email,
+      //       });
+
+      //     return this.friendshipRequestService.save(createFriendshipRequest);
+      //   } else {
+      //     return Promise.reject(email);
+      //   }
+      // }
+
+      // const createFriendshipRequest =
+      //   await this.friendshipRequestService.create({
+      //     addressedUser: reqUser,
+      //     addresseeUser,
+      //   });
+
+      // return this.friendshipRequestService.save(createFriendshipRequest);
     });
 
-    return Promise.allSettled(promises);
+    const res = await Promise.allSettled(promises);
+    return res;
   }
 }

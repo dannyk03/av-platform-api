@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { EnumNetworkingConnectionRequestStatus } from '@avo/type';
+
 import {
+  Brackets,
+  DataSource,
   DeepPartial,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -45,5 +50,33 @@ export class FriendshipRequestService {
       | FindOptionsWhere<FriendshipRequest>[],
   ): Promise<FriendshipRequest> {
     return this.friendshipRequestRepository.findOneBy(find);
+  }
+
+  async find(
+    find: FindManyOptions<FriendshipRequest>,
+  ): Promise<FriendshipRequest[]> {
+    return this.friendshipRequestRepository.find(find);
+  }
+
+  async findPendingRequest({ from, to }: { from: string; to: string }) {
+    return (
+      this.friendshipRequestRepository
+        .createQueryBuilder('friendshipReq')
+        .setParameters({ from, to })
+        .where('friendshipReq.status = :status', {
+          status: EnumNetworkingConnectionRequestStatus.Pending,
+        })
+        .innerJoin('friendshipReq.requestedUser', 'requestedUser')
+        .andWhere('requestedUser.email = :from')
+        .innerJoin('friendshipReq.addresseeUser', 'addresseeUser')
+        // .andWhere(
+        //   new Brackets((qb) => {
+        //     qb.where('addresseeUser.email = :to').orWhere(
+        //       'friendshipReq.tempAddresseeEmail = :to',
+        //     );
+        //   }),
+        // )
+        .getMany()
+    );
   }
 }

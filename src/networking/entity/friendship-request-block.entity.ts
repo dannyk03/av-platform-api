@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, OneToOne, Unique } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, OneToOne, Unique } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
@@ -9,11 +9,11 @@ import { User } from '@/user/entity';
   'blockedUser',
 ])
 export class FriendshipRequestBlock extends BaseEntity<FriendshipRequestBlock> {
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   blockingUser: User;
 
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   blockedUser: User;
 }

@@ -1,16 +1,16 @@
-import { Entity, JoinColumn, OneToOne, Unique } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique('uq_requested_addressee_connection', ['requestedUser', 'addresseeUser'])
+@Unique('uq_addressed_addressee_friendship', ['addressedUser', 'addresseeUser'])
 export class Friendship extends BaseEntity<Friendship> {
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
-  requestedUser: User;
+  addressedUser: User;
 
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   addresseeUser: User;
 }

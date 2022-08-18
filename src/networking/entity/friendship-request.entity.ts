@@ -3,28 +3,30 @@ import {
   NetworkingConnectionRequestStatusType,
 } from '@avo/type';
 
-import { Column, Entity, JoinColumn, OneToOne, Unique } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
-@Entity()
-@Unique('uq_requested_addressee_connection_request', [
-  'requestedUser',
+@Unique('uq_addressed_addressee_connection_request', [
+  'addressedUser',
   'addresseeUser',
+  'tempAddresseeEmail',
   'status',
 ])
+@Entity()
 export class FriendshipRequest extends BaseEntity<FriendshipRequest> {
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
-  requestedUser: User;
+  addressedUser: User;
 
-  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   addresseeUser: User;
 
   @Column({
     length: 30,
+    nullable: true,
   })
   tempAddresseeEmail: string;
 
