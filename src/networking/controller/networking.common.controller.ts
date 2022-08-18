@@ -1,8 +1,17 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+} from '@nestjs/common';
 
 import {
   EnumNetworkingConnectionRequestStatus,
   IResponseData,
+  IResponsePagingData,
 } from '@avo/type';
 
 import { In } from 'typeorm';
@@ -15,13 +24,17 @@ import {
   FriendshipService,
 } from '../service';
 import { UserService } from '@/user/service';
+import { PaginationService } from '@/utils/pagination/service';
 
-import { ConnectRequestDto } from '../dto';
+import { ProductGetSerialization } from '@/catalog/product/serialization';
+
+import { ConnectRequestDto, ConnectRequestListDto } from '../dto';
+import { ProductListDto } from '@/catalog/product/dto';
 
 import { AclGuard } from '@/auth';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
-import { Response } from '@/utils/response';
+import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -30,7 +43,9 @@ export class NetworkingCommonController {
   constructor(
     private readonly userService: UserService,
     private readonly friendshipRequestService: FriendshipRequestService,
+    private readonly friendshipRequestBlockService: FriendshipRequestBlockService,
     private readonly emailService: EmailService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   @Response('networking.connectRequest')
@@ -43,110 +58,136 @@ export class NetworkingCommonController {
     @Body() { to }: ConnectRequestDto,
   ): Promise<IResponseData> {
     const promises = to.map(async (email) => {
+      const [findExistingRequest, findBlockRequest] = await Promise.all([
+        this.friendshipRequestService.findFriendshipRequestByStatus({
+          fromEmail: reqUser.email,
+          toEmail: email,
+          status: [
+            EnumNetworkingConnectionRequestStatus.Approved,
+            EnumNetworkingConnectionRequestStatus.Pending,
+          ],
+        }),
+        this.friendshipRequestBlockService.findBlockRequest({
+          fromEmail: reqUser.email,
+          toEmail: email,
+        }),
+      ]);
+
+      if (findExistingRequest || findBlockRequest) {
+        return Promise.resolve(email);
+      }
+
       const addresseeUser = await this.userService.findOneBy({ email });
 
-      // try {
-      //   const pend = await this.friendshipRequestService.findPendingRequest({
-      //     from: reqUser.email,
-      //     to: email,
-      //   });
+      if (!addresseeUser) {
+        const isEmailSent = await this.emailService.sendNetworkJoinInvite({
+          fromUser: reqUser,
+          email,
+        });
 
-      //   console.log(pend);
-      // } catch (error) {
-      //   console.log(error);
-      // }
+        if (isEmailSent) {
+          const createFriendshipRequest =
+            await this.friendshipRequestService.create({
+              addressedUser: reqUser,
+              tempAddresseeEmail: addresseeUser ? null : email,
+            });
 
-      // const xxx = await this.friendshipRequestService.findOne({
-      //   where: [
-      //     {
-      //       tempAddresseeEmail: email,
-      //       requestedUser: {
-      //         id: reqUser.id,
-      //       },
-      //     },
-      //     {
-      //       addresseeUser: {
-      //         email,
-      //       },
-      //       requestedUser: {
-      //         id: reqUser.id,
-      //       },
-      //     },
-      //   ],
-      // });
+          const saveFriendshipRequest = this.friendshipRequestService.save(
+            createFriendshipRequest,
+          );
 
-      // const [findBlockRequest, findExistingRequest] = await Promise.all([
-      //   this.friendshipRequestBlockService.findOne({
-      //     where: {
-      //       blockingUser: {
-      //         email,
-      //       },
-      //       blockedUser: {
-      //         id: reqUser.id,
-      //       },
-      //     },
-      //   }),
-      //   this.friendshipRequestService.findOne({
-      //     where: [
-      //       {
-      //         status: In([
-      //           EnumNetworkingConnectionRequestStatus.Pending,
-      //           EnumNetworkingConnectionRequestStatus.Rejected,
-      //         ]),
-      //         tempAddresseeEmail: email,
-      //         requestedUser: {
-      //           id: reqUser.id,
-      //         },
-      //       },
-      //       {
-      //         status: In([
-      //           EnumNetworkingConnectionRequestStatus.Pending,
-      //           EnumNetworkingConnectionRequestStatus.Rejected,
-      //         ]),
-      //         addresseeUser: {
-      //           email,
-      //         },
-      //         requestedUser: {
-      //           id: reqUser.id,
-      //         },
-      //       },
-      //     ],
-      //   }),
-      // ]);
+          if (saveFriendshipRequest) {
+            return Promise.resolve(email);
+          }
+        } else {
+          return Promise.reject(email);
+        }
+      }
 
-      // if (findExistingRequest || findBlockRequest) {
-      //   return Promise.resolve(email);
-      // }
+      const createFriendshipRequest =
+        await this.friendshipRequestService.create({
+          addressedUser: reqUser,
+          addresseeUser,
+        });
 
-      // if (!addresseeUser) {
-      //   const isEmailSent = await this.emailService.sendNetworkJoinInvite({
-      //     fromUser: reqUser,
-      //     email,
-      //   });
+      const saveFriendshipRequest = this.friendshipRequestService.save(
+        createFriendshipRequest,
+      );
 
-      //   if (isEmailSent) {
-      //     const createFriendshipRequest =
-      //       await this.friendshipRequestService.create({
-      //         addressedUser: reqUser,
-      //         tempAddresseeEmail: addresseeUser ? null : email,
-      //       });
+      if (saveFriendshipRequest) {
+        return Promise.resolve(email);
+      }
 
-      //     return this.friendshipRequestService.save(createFriendshipRequest);
-      //   } else {
-      //     return Promise.reject(email);
-      //   }
-      // }
-
-      // const createFriendshipRequest =
-      //   await this.friendshipRequestService.create({
-      //     addressedUser: reqUser,
-      //     addresseeUser,
-      //   });
-
-      // return this.friendshipRequestService.save(createFriendshipRequest);
+      return Promise.reject(email);
     });
 
     const res = await Promise.allSettled(promises);
-    return res;
+
+    return res.reduce((acc, promiseValue) => {
+      if ('value' in promiseValue) {
+        acc[promiseValue.value] =
+          promiseValue.status === 'fulfilled' ? 'success' : 'fail';
+      }
+      return acc;
+    }, {});
+  }
+
+  @ResponsePaging('networking.connectRequestList')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/connect/list')
+  async list(
+    @ReqUser()
+    reqUser: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      status,
+    }: ConnectRequestListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const connectRequest =
+      await this.friendshipRequestService.paginatedSearchBy({
+        options: {
+          skip: skip,
+          take: perPage,
+          order: sort,
+        },
+        status,
+        search,
+        addresseeEmail: reqUser.email,
+      });
+
+    const totalData = await this.friendshipRequestService.getTotal({
+      status,
+      search,
+      addresseeEmail: reqUser.email,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    const data =
+      await this.friendshipRequestService.serializationConnectionRequestList(
+        connectRequest,
+      );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data,
+    };
   }
 }

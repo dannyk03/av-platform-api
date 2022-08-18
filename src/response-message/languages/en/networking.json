@@ -1,4 +1,5 @@
 {
   "connectRequest": "Connection request send success",
+  "connectRequestList": "Connection requests list success",
   "error": {}
 }

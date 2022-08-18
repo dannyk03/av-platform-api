@@ -48,4 +48,21 @@ export class FriendshipRequestBlockService {
   ): Promise<FriendshipRequestBlock> {
     return this.friendshipRequestBlockRepository.findOneBy(find);
   }
+
+  async findBlockRequest({
+    fromEmail,
+    toEmail,
+  }: {
+    fromEmail: string;
+    toEmail: string;
+  }) {
+    return this.friendshipRequestBlockRepository
+      .createQueryBuilder('friendshipBlock')
+      .setParameters({ fromEmail, toEmail })
+      .leftJoinAndSelect('friendshipBlock.blockingUser', 'blockingUser')
+      .leftJoinAndSelect('friendshipBlock.blockedUser', 'blockedUser')
+      .where('blockingUser.email = :fromEmail')
+      .andWhere('blockedUser.email = :toEmail')
+      .getOne();
+  }
 }

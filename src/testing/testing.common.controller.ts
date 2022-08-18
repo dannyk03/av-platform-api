@@ -64,12 +64,13 @@ export class TestingCommonController {
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-    @ReqUser() user,
+    @ReqUser() reqUser,
   ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone,
     });
     return {
+      email: reqUser.email,
       userAgent,
       date: newDate,
       format: this.helperDateService.format(newDate, {
@@ -81,23 +82,23 @@ export class TestingCommonController {
         timezone,
       }),
       loginDate: {
-        date: user.loginDate,
-        format: this.helperDateService.format(user.loginDate, {
+        date: reqUser.loginDate,
+        format: this.helperDateService.format(reqUser.loginDate, {
           format: EnumHelperDateFormat.FriendlyDateTime,
           timezone,
         }),
       },
       passwordExpiredAt: {
-        date: user.authConfig?.passwordExpiredAt,
+        date: reqUser.authConfig?.passwordExpiredAt,
         format: this.helperDateService.format(
-          user.authConfig?.passwordExpiredAt,
+          reqUser.authConfig?.passwordExpiredAt,
           {
             format: EnumHelperDateFormat.FriendlyDateTime,
             timezone,
           },
         ),
       },
-      role: user.role?.name,
+      role: reqUser.role?.name,
     };
   }
 
