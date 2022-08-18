@@ -13,6 +13,8 @@ import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 
+import { RolePresetsSeedService, SystemSeedService } from './service';
+
 import { CreateDbSeed } from './create-db.seed';
 import { RolePresetsSeed } from './role-presets.seed';
 import { SystemSeed } from './system.seed';
@@ -31,7 +33,13 @@ import { SystemSeed } from './system.seed';
     DisplayLanguageModule,
     CurrencyModule,
   ],
-  providers: [CreateDbSeed, SystemSeed, RolePresetsSeed],
+  providers: [
+    SystemSeedService,
+    RolePresetsSeedService,
+    CreateDbSeed,
+    SystemSeed,
+    RolePresetsSeed,
+  ],
   exports: [],
 })
 export class SeedsModule {}

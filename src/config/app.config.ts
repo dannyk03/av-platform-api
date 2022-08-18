@@ -7,11 +7,12 @@ export default registerAs(
   (): Record<string, any> => ({
     isProduction: process.env.APP_ENV === 'production',
     isSecureMode: process.env.APP_MODE === 'secure',
-    name: process.env.APP_NAME || 'avo',
+    runSeeds: true,
+    name: process.env.APP_NAME || 'platform',
     env: process.env.APP_ENV || 'development',
     mode: process.env.APP_MODE || 'simple',
     language: process.env.APP_LANGUAGE || 'en',
-    timezone: process.env.APP_TZ || 'Asia/Jakarta',
+    timezone: process.env.APP_TZ || 'Asia/Jerusalem',
 
     http: {
       host: process.env.APP_HOST || 'localhost',
