@@ -29,6 +29,7 @@ import { Response } from '@/utils/response';
 export class NetworkingCommonController {
   constructor(
     private readonly userService: UserService,
+    private readonly friendshipRequestService: FriendshipRequestService,
     private readonly emailService: EmailService,
   ) {}
 
