@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "start": "yarn migration:run && nest start",
-    "start:prod": "yarn migration:run && node dist/main",
+    "start:prod": "node dist/main",
     "start:dev": "yarn migration:run && nest start --watch",
     "start:debug": "yarn migration:run && nest start --debug --watch",
     "format": "yarn prettier:check --write",
