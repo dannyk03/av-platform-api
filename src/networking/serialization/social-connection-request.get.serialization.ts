@@ -6,7 +6,7 @@ import {
 import { Exclude, Expose, Transform } from 'class-transformer';
 
 @Exclude()
-export class ConnectRequestGetSerialization
+export class SocialConnectionRequestGetSerialization
   implements IConnectionRequestGetSerialization
 {
   @Expose()

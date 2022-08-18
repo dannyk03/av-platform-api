@@ -4,8 +4,11 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique('uq_addressed_addressee_friendship', ['addressedUser', 'addresseeUser'])
-export class Friendship extends BaseEntity<Friendship> {
+@Unique('uq_addressed_addressee_social_connection', [
+  'addressedUser',
+  'addresseeUser',
+])
+export class SocialConnection extends BaseEntity<SocialConnection> {
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   addressedUser: User;

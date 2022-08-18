@@ -37,6 +37,7 @@ export function LogInterceptor(
         [EnumLogLevel.Debug]: (data: ILog) => this.logService.debug(data),
         [EnumLogLevel.Warn]: (data: ILog) => this.logService.warn(data),
         [EnumLogLevel.Info]: (data: ILog) => this.logService.info(data),
+        [EnumLogLevel.Error]: (data: ILog) => this.logService.error(data),
       };
     }
 

@@ -1,1 +1,1 @@
-export * from './connect-request.get.serialization';
+export * from './social-connection-request.get.serialization';

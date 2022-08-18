@@ -4,9 +4,11 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumNetworkingConnectionRequestStatus,
@@ -14,24 +16,28 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { In } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 import { User } from '@/user/entity';
 
 import {
-  FriendshipRequestBlockService,
-  FriendshipRequestService,
-  FriendshipService,
+  SocialConnectionRequestBlockService,
+  SocialConnectionRequestService,
+  SocialConnectionService,
 } from '../service';
+import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
+import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ProductGetSerialization } from '@/catalog/product/serialization';
-
-import { ConnectRequestDto, ConnectRequestListDto } from '../dto';
-import { ProductListDto } from '@/catalog/product/dto';
+import {
+  ConnectRequestUpdateDto,
+  SocialConnectionRequestDto,
+  SocialConnectionRequestListDto,
+} from '../dto';
 
 import { AclGuard } from '@/auth';
+import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
 import { Response, ResponsePaging } from '@/utils/response';
@@ -41,11 +47,15 @@ import { Response, ResponsePaging } from '@/utils/response';
 })
 export class NetworkingCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly userService: UserService,
-    private readonly friendshipRequestService: FriendshipRequestService,
-    private readonly friendshipRequestBlockService: FriendshipRequestBlockService,
     private readonly emailService: EmailService,
     private readonly paginationService: PaginationService,
+    private readonly helperPromiseService: HelperPromiseService,
+    private readonly socialConnectionService: SocialConnectionService,
+    private readonly socialConnectionRequestService: SocialConnectionRequestService,
+    private readonly socialConnectionRequestBlockService: SocialConnectionRequestBlockService,
   ) {}
 
   @Response('networking.connectRequest')
@@ -55,19 +65,25 @@ export class NetworkingCommonController {
   async connect(
     @ReqUser()
     reqUser: User,
-    @Body() { to }: ConnectRequestDto,
+    @Body() { emails }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
-    const promises = to.map(async (email) => {
+    const promises = emails.map(async (email) => {
+      if (email === reqUser.email) {
+        return Promise.reject(email);
+      }
+
       const [findExistingRequest, findBlockRequest] = await Promise.all([
-        this.friendshipRequestService.findFriendshipRequestByStatus({
-          fromEmail: reqUser.email,
-          toEmail: email,
-          status: [
-            EnumNetworkingConnectionRequestStatus.Approved,
-            EnumNetworkingConnectionRequestStatus.Pending,
-          ],
-        }),
-        this.friendshipRequestBlockService.findBlockRequest({
+        this.socialConnectionRequestService.findSocialConnectionRequestByStatus(
+          {
+            fromEmail: reqUser.email,
+            toEmail: email,
+            status: [
+              EnumNetworkingConnectionRequestStatus.Approved,
+              EnumNetworkingConnectionRequestStatus.Pending,
+            ],
+          },
+        ),
+        this.socialConnectionRequestBlockService.findBlockRequest({
           fromEmail: reqUser.email,
           toEmail: email,
         }),
@@ -86,17 +102,18 @@ export class NetworkingCommonController {
         });
 
         if (isEmailSent) {
-          const createFriendshipRequest =
-            await this.friendshipRequestService.create({
+          const createSocialConnectionRequest =
+            await this.socialConnectionRequestService.create({
               addressedUser: reqUser,
               tempAddresseeEmail: addresseeUser ? null : email,
             });
 
-          const saveFriendshipRequest = this.friendshipRequestService.save(
-            createFriendshipRequest,
-          );
+          const saveSocialConnectionRequest =
+            this.socialConnectionRequestService.save(
+              createSocialConnectionRequest,
+            );
 
-          if (saveFriendshipRequest) {
+          if (saveSocialConnectionRequest) {
             return Promise.resolve(email);
           }
         } else {
@@ -104,39 +121,34 @@ export class NetworkingCommonController {
         }
       }
 
-      const createFriendshipRequest =
-        await this.friendshipRequestService.create({
+      const createSocialConnectionRequest =
+        await this.socialConnectionRequestService.create({
           addressedUser: reqUser,
           addresseeUser,
         });
 
-      const saveFriendshipRequest = this.friendshipRequestService.save(
-        createFriendshipRequest,
-      );
+      const saveSocialConnectionRequest =
+        this.socialConnectionRequestService.save(createSocialConnectionRequest);
 
-      if (saveFriendshipRequest) {
+      if (saveSocialConnectionRequest) {
         return Promise.resolve(email);
       }
 
       return Promise.reject(email);
     });
 
-    const res = await Promise.allSettled(promises);
+    const result = await Promise.allSettled(promises);
 
-    return res.reduce((acc, promiseValue) => {
-      if ('value' in promiseValue) {
-        acc[promiseValue.value] =
-          promiseValue.status === 'fulfilled' ? 'success' : 'fail';
-      }
-      return acc;
-    }, {});
+    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
+      result,
+    );
   }
 
   @ResponsePaging('networking.connectRequestList')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/connect/list')
-  async list(
+  async listConnectRequests(
     @ReqUser()
     reqUser: User,
     @Query()
@@ -148,12 +160,12 @@ export class NetworkingCommonController {
       availableSort,
       availableSearch,
       status,
-    }: ConnectRequestListDto,
+    }: SocialConnectionRequestListDto,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
     const connectRequest =
-      await this.friendshipRequestService.paginatedSearchBy({
+      await this.socialConnectionRequestService.paginatedSearchBy({
         options: {
           skip: skip,
           take: perPage,
@@ -164,7 +176,7 @@ export class NetworkingCommonController {
         addresseeEmail: reqUser.email,
       });
 
-    const totalData = await this.friendshipRequestService.getTotal({
+    const totalData = await this.socialConnectionRequestService.getTotal({
       status,
       search,
       addresseeEmail: reqUser.email,
@@ -176,7 +188,7 @@ export class NetworkingCommonController {
     );
 
     const data =
-      await this.friendshipRequestService.serializationConnectionRequestList(
+      await this.socialConnectionRequestService.serializationConnectionRequestList(
         connectRequest,
       );
 
@@ -189,5 +201,187 @@ export class NetworkingCommonController {
       availableSort,
       data,
     };
+  }
+  @ResponsePaging('networking.connectionsList')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/list')
+  async listConnections(
+    @ReqUser()
+    reqUser: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      status,
+    }: SocialConnectionRequestListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const connectRequest =
+      await this.socialConnectionRequestService.paginatedSearchBy({
+        options: {
+          skip: skip,
+          take: perPage,
+          order: sort,
+        },
+        status,
+        search,
+        addresseeEmail: reqUser.email,
+      });
+
+    const totalData = await this.socialConnectionRequestService.getTotal({
+      status,
+      search,
+      addresseeEmail: reqUser.email,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    const data =
+      await this.socialConnectionRequestService.serializationConnectionRequestList(
+        connectRequest,
+      );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data,
+    };
+  }
+
+  @Response('networking.connectApprove')
+  @AclGuard()
+  @Patch('/approve')
+  async approve(
+    @Body()
+    { socialConnectionRequestIds: connectRequestIds }: ConnectRequestUpdateDto,
+    @ReqUser() reqUser: User,
+  ): Promise<IResponseData> {
+    const userConnectionsRequestFind =
+      await this.socialConnectionRequestService.find({
+        where: {
+          id: In(connectRequestIds),
+          status: EnumNetworkingConnectionRequestStatus.Pending,
+          addresseeUser: {
+            id: reqUser.id,
+          },
+        },
+        relations: ['addressedUser', 'addresseeUser'],
+        select: {
+          addressedUser: {
+            id: true,
+            email: true,
+          },
+          addresseeUser: {
+            id: true,
+            email: true,
+          },
+        },
+      });
+
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        return await Promise.allSettled(
+          userConnectionsRequestFind.map(async (connectionRequest) => {
+            const { addressedUser, addresseeUser } = connectionRequest;
+
+            const createSocialConnection =
+              await this.socialConnectionService.create({
+                addressedUser,
+                addresseeUser,
+              });
+
+            connectionRequest.status =
+              EnumNetworkingConnectionRequestStatus.Approved;
+
+            await transactionalEntityManager.save(connectionRequest);
+
+            const saveSocialConnection = await transactionalEntityManager.save(
+              createSocialConnection,
+            );
+
+            if (saveSocialConnection) {
+              return Promise.resolve(addressedUser.email);
+            }
+            return Promise.reject(addressedUser.email);
+          }),
+        );
+      },
+    );
+
+    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
+      result,
+    );
+  }
+
+  @Response('networking.connectReject')
+  @AclGuard()
+  @Patch('/reject')
+  async reject(
+    @Body()
+    { socialConnectionRequestIds }: ConnectRequestUpdateDto,
+    @ReqUser() reqUser: User,
+  ): Promise<IResponseData> {
+    const userConnectionsRequestFind =
+      await this.socialConnectionRequestService.find({
+        where: {
+          id: In(socialConnectionRequestIds),
+          status: EnumNetworkingConnectionRequestStatus.Pending,
+          addresseeUser: {
+            id: reqUser.id,
+          },
+        },
+        relations: ['addressedUser', 'addresseeUser'],
+        select: {
+          addressedUser: {
+            id: true,
+            email: true,
+          },
+          addresseeUser: {
+            id: true,
+            email: true,
+          },
+        },
+      });
+
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        return await Promise.allSettled(
+          userConnectionsRequestFind.map(async (connectionRequest) => {
+            const { addressedUser } = connectionRequest;
+
+            connectionRequest.status =
+              EnumNetworkingConnectionRequestStatus.Rejected;
+
+            const updateConnectRequest = await transactionalEntityManager.save(
+              connectionRequest,
+            );
+
+            if (updateConnectRequest) {
+              return Promise.resolve(addressedUser.email);
+            }
+            return Promise.reject(addressedUser.email);
+          }),
+        );
+      },
+    );
+
+    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
+      result,
+    );
   }
 }

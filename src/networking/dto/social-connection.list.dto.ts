@@ -23,7 +23,7 @@ import {
   ConnectRequestOrderByNestingAliasMap,
 } from '../networking.constant';
 
-export class ConnectRequestListDto implements IPaginationList {
+export class SocialConnectionListDto implements IPaginationList {
   @PaginationSearch()
   readonly search: string;
 
@@ -45,10 +45,4 @@ export class ConnectRequestListDto implements IPaginationList {
 
   @PaginationAvailableSort(CONNECT_REQUEST_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
-
-  @PaginationFilterEnum<EnumNetworkingConnectionRequestStatus>(
-    [EnumNetworkingConnectionRequestStatus.Pending],
-    EnumNetworkingConnectionRequestStatus,
-  )
-  readonly status: EnumNetworkingConnectionRequestStatus[];
 }

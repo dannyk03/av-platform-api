@@ -4,11 +4,11 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique('uq_blocking_blocked_connection_request', [
+@Unique('uq_blocking_blocked_social_connection_request', [
   'blockingUser',
   'blockedUser',
 ])
-export class FriendshipRequestBlock extends BaseEntity<FriendshipRequestBlock> {
+export class SocialConnectionRequestBlock extends BaseEntity<SocialConnectionRequestBlock> {
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   blockingUser: User;

@@ -8,14 +8,14 @@ import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
-@Unique('uq_addressed_addressee_connection_request', [
+@Unique('uq_addressed_addressee_social_connection_request', [
   'addressedUser',
   'addresseeUser',
   'tempAddresseeEmail',
   'status',
 ])
 @Entity()
-export class FriendshipRequest extends BaseEntity<FriendshipRequest> {
+export class SocialConnectionRequest extends BaseEntity<SocialConnectionRequest> {
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   addressedUser: User;

@@ -4,15 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '@/user/user.module';
 
 import {
-  Friendship,
-  FriendshipRequest,
-  FriendshipRequestBlock,
+  SocialConnection,
+  SocialConnectionRequest,
+  SocialConnectionRequestBlock,
 } from './entity';
 
 import {
-  FriendshipRequestBlockService,
-  FriendshipRequestService,
-  FriendshipService,
+  SocialConnectionRequestBlockService,
+  SocialConnectionRequestService,
+  SocialConnectionService,
 } from './service';
 
 import { ConnectionNames } from '@/database';
@@ -20,21 +20,21 @@ import { ConnectionNames } from '@/database';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Friendship, FriendshipRequest, FriendshipRequestBlock],
+      [SocialConnection, SocialConnectionRequest, SocialConnectionRequestBlock],
       ConnectionNames.Default,
     ),
     UserModule,
   ],
 
   exports: [
-    FriendshipService,
-    FriendshipRequestService,
-    FriendshipRequestBlockService,
+    SocialConnectionService,
+    SocialConnectionRequestService,
+    SocialConnectionRequestBlockService,
   ],
   providers: [
-    FriendshipService,
-    FriendshipRequestService,
-    FriendshipRequestBlockService,
+    SocialConnectionService,
+    SocialConnectionRequestService,
+    SocialConnectionRequestBlockService,
   ],
   controllers: [],
 })

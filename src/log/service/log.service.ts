@@ -58,6 +58,19 @@ export class LogService {
       ? transactionalEntityManager.save(create)
       : this.logRepository.save(create);
   }
+  async error({
+    transactionalEntityManager,
+    ...logData
+  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    const create = this.logRepository.create({
+      level: EnumLogLevel.Error,
+      ...logData,
+    });
+
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
+  }
 
   async fatal({
     transactionalEntityManager,

@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
+import { HelperPromiseService } from './service';
 import { HelperArrayService } from './service/helper.array.service';
 import { HelperCookieService } from './service/helper.cookie.service';
 import { HelperDateService } from './service/helper.date.service';
@@ -32,6 +33,7 @@ import { HelperStringService } from './service/helper.string.service';
     HelperJwtService,
     HelperPhoneNumberService,
     HelperCookieService,
+    HelperPromiseService,
   ],
   exports: [
     HelperService,
@@ -47,6 +49,7 @@ import { HelperStringService } from './service/helper.string.service';
     HelperJwtService,
     HelperPhoneNumberService,
     HelperCookieService,
+    HelperPromiseService,
   ],
   controllers: [],
   imports: [
