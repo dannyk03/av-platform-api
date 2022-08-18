@@ -1,5 +1,6 @@
 import {
   IProductGetSerialization,
+  IProductImageGetSerialization,
   IProductVendorGetSerialization,
 } from '@avo/type';
 
@@ -11,7 +12,7 @@ import {
   plainToInstance,
 } from 'class-transformer';
 
-import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
+import { Product } from '../entity';
 import { ProductImage } from '@/catalog/product-image/entity';
 
 import { ProductImageGetSerialization } from '@/catalog/product-image/serialization/product-image.get.serialization';
@@ -28,15 +29,33 @@ export class VendorGetSerialization implements IProductVendorGetSerialization {
   readonly isActive: boolean;
 }
 
+@Exclude()
 export class ProductGetSerialization implements IProductGetSerialization {
+  @Expose()
   readonly id: string;
+
+  @Expose()
   readonly sku: string;
+
+  @Expose()
   readonly brand: string;
+
+  @Expose()
   readonly price: number;
+
+  @Expose()
   readonly shippingCost: number;
+
+  @Expose()
   readonly taxCode: string;
+
+  @Expose()
   readonly isActive: boolean;
+
+  @Expose()
   readonly createdAt: Date;
+
+  @Expose()
   readonly updatedAt: Date;
 
   @Expose()
@@ -52,19 +71,18 @@ export class ProductGetSerialization implements IProductGetSerialization {
   readonly keywords!: string[];
 
   @Expose()
-  @Transform(({ obj }) =>
-    obj.displayOptions?.[0]?.images.map((image: ProductImage) =>
-      plainToInstance(ProductImageGetSerialization, image),
+  @Transform(({ obj }: { obj: Product }): IProductImageGetSerialization[] =>
+    obj.displayOptions?.[0]?.images.map(
+      (image: ProductImage): ProductImageGetSerialization =>
+        plainToInstance(ProductImageGetSerialization, image),
     ),
   )
-  readonly images: ProductImageGetSerialization;
+  readonly images: IProductImageGetSerialization[];
 
+  @Expose()
   @Type(() => VendorGetSerialization)
-  readonly vendor: VendorGetSerialization;
+  readonly vendor: IProductVendorGetSerialization;
 
-  @Exclude()
-  readonly deletedAt: Date;
-
-  @Exclude()
-  readonly displayOptions: ProductDisplayOption;
+  @Expose()
+  readonly vendorName: string;
 }
