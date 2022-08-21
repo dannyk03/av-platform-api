@@ -1,4 +1,14 @@
-import { EnumOccasion } from '@avo/type';
+import {
+  EnumOccasion,
+  IGiftIntentAdditionalDataGetSerialization,
+  IGiftIntentGetSerialization,
+  IGiftOptionGetSerialization,
+  IGiftRecipientGetSerialization,
+  IGiftSenderGetSerialization,
+  IGiftSubmitGetSerialization,
+  IGiftSubmitGiftsGetSerialization,
+  IGiftUserGetSerialization,
+} from '@avo/type';
 
 import {
   Exclude,
@@ -14,7 +24,7 @@ import { Product } from '@/catalog/product/entity';
 import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 @Exclude()
-class GiftUserSerialization {
+class GiftUserSerialization implements IGiftUserGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -26,7 +36,9 @@ class GiftUserSerialization {
 }
 
 @Exclude()
-class GiftIntentAdditionalDataSerialization {
+class GiftIntentAdditionalDataSerialization
+  implements IGiftIntentAdditionalDataGetSerialization
+{
   @Expose()
   readonly priceMin: number;
 
@@ -49,7 +61,7 @@ class GiftUserAdditionalDataSerialization {
   readonly lastName: string;
 }
 @Exclude()
-class GiftOptionsSerialization {
+class GiftOptionsSerialization implements IGiftOptionGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -62,7 +74,7 @@ class GiftOptionsSerialization {
   products: ProductGetSerialization;
 }
 @Exclude()
-class GiftSubmitGiftsSerialization {
+class GiftSubmitGiftsSerialization implements IGiftSubmitGiftsGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -73,7 +85,7 @@ class GiftSubmitGiftsSerialization {
   products: string[];
 }
 @Exclude()
-class GiftSubmitSerialization {
+class GiftSubmitSerialization implements IGiftSubmitGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -87,7 +99,7 @@ class GiftSubmitSerialization {
 }
 
 @Exclude()
-class GiftRecipientSerialization {
+class GiftRecipientSerialization implements IGiftRecipientGetSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
   readonly user: GiftUserSerialization;
@@ -98,7 +110,7 @@ class GiftRecipientSerialization {
 }
 
 @Exclude()
-class GiftSenderSerialization {
+class GiftSenderSerialization implements IGiftSenderGetSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
   user: GiftUserSerialization;
@@ -109,7 +121,7 @@ class GiftSenderSerialization {
 }
 
 @Exclude()
-export class GiftIntentSerialization {
+export class GiftIntentSerialization implements IGiftIntentGetSerialization {
   @Expose()
   readonly id: string;
 
