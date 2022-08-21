@@ -4,7 +4,7 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique('uq_blocking_blocked_social_connection_request', [
+@Unique('uq_blocking_blocked_social_connection_request_block', [
   'blockingUser',
   'blockedUser',
 ])

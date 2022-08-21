@@ -1,13 +1,13 @@
 import {
   EnumNetworkingConnectionRequestStatus,
-  IConnectionRequestGetSerialization,
+  ISocialConnectionRequestGetSerialization,
 } from '@avo/type';
 
 import { Exclude, Expose, Transform } from 'class-transformer';
 
 @Exclude()
 export class SocialConnectionRequestGetSerialization
-  implements IConnectionRequestGetSerialization
+  implements ISocialConnectionRequestGetSerialization
 {
   @Expose()
   readonly id: string;

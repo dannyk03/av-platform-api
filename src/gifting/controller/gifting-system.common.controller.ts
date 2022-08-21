@@ -13,7 +13,6 @@ import {
   Query,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
@@ -27,14 +26,8 @@ import {
 
 import { DataSource, In } from 'typeorm';
 
-import {
-  GiftIntentConfirmationLinkService,
-  GiftIntentService,
-  GiftService,
-  GiftSubmitService,
-} from '../service';
+import { GiftIntentService, GiftService } from '../service';
 import { ProductService } from '@/catalog/product/service';
-import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
@@ -50,7 +43,6 @@ import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
 import { RequestParamGuard } from '@/utils/request';
 import { Response, ResponsePaging } from '@/utils/response';
 
@@ -64,14 +56,9 @@ export class GiftingSystemCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly configService: ConfigService,
     private readonly helperDateService: HelperDateService,
-    private readonly emailService: EmailService,
     private readonly giftService: GiftService,
-    private readonly giftSubmitService: GiftSubmitService,
     private readonly giftIntentService: GiftIntentService,
-    private readonly userService: UserService,
-    private readonly giftConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
     private readonly productService: ProductService,
   ) {}
@@ -331,22 +318,22 @@ export class GiftingSystemCommonController {
     };
   }
 
-  @Response('gift.intent.ready')
-  @HttpCode(HttpStatus.OK)
-  @AclGuard({
-    abilities: [
-      {
-        action: Action.Update,
-        subject: Subjects.GiftIntent,
-      },
-    ],
-    systemOnly: true,
-  })
-  @RequestParamGuard(IdParamDto)
-  @Post('/intent/ready/:id')
-  async giftIntentReady(
-    @Param('id') giftIntentId: string,
-  ): Promise<IResponseData> {
-    return this.giftIntentService.notifyReady({ id: giftIntentId });
-  }
+  // @Response('gift.intent.ready')
+  // @HttpCode(HttpStatus.OK)
+  // @AclGuard({
+  //   abilities: [
+  //     {
+  //       action: Action.Update,
+  //       subject: Subjects.GiftIntent,
+  //     },
+  //   ],
+  //   systemOnly: true,
+  // })
+  // @RequestParamGuard(IdParamDto)
+  // @Post('/intent/ready/:id')
+  // async giftIntentReady(
+  //   @Param('id') giftIntentId: string,
+  // ): Promise<IResponseData> {
+  //   return this.giftIntentService.notifyReady({ id: giftIntentId });
+  // }
 }

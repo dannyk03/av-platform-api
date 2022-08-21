@@ -19,7 +19,7 @@ import { SocialConnectionRequest } from '../entity';
 
 import { SocialConnectionRequestGetSerialization } from '../serialization';
 
-import { IConnectRequestSearch } from '../networking.interface';
+import { ISocialConnectionRequestSearch } from '../networking.interface';
 
 import { ConnectionNames } from '@/database';
 
@@ -103,7 +103,7 @@ export class SocialConnectionRequestService {
     status,
     addresseeEmail,
     extraDataForAddressedUser = false,
-  }: IConnectRequestSearch): Promise<
+  }: ISocialConnectionRequestSearch): Promise<
     SelectQueryBuilder<SocialConnectionRequest>
   > {
     const builder = this.socialConnectionRequestRepository
@@ -150,7 +150,7 @@ export class SocialConnectionRequestService {
     status,
     search,
     addresseeEmail,
-  }: IConnectRequestSearch): Promise<number> {
+  }: ISocialConnectionRequestSearch): Promise<number> {
     const searchBuilder = await this.getListSearchBuilder({
       search,
       status,
@@ -165,7 +165,7 @@ export class SocialConnectionRequestService {
     search,
     addresseeEmail,
     options,
-  }: IConnectRequestSearch): Promise<SocialConnectionRequest[]> {
+  }: ISocialConnectionRequestSearch): Promise<SocialConnectionRequest[]> {
     const searchBuilder = await this.getListSearchBuilder({
       extraDataForAddressedUser: true,
       search,
@@ -184,13 +184,13 @@ export class SocialConnectionRequestService {
     return searchBuilder.getMany();
   }
 
-  async serializationConnectionRequestList(
+  async serializationSocialConnectionRequestList(
     data: SocialConnectionRequest[],
   ): Promise<SocialConnectionRequestGetSerialization[]> {
     return plainToInstance(SocialConnectionRequestGetSerialization, data);
   }
 
-  async serializationConnectionRequest(
+  async serializationSocialConnectionRequest(
     data: SocialConnectionRequest,
   ): Promise<SocialConnectionRequestGetSerialization> {
     return plainToInstance(SocialConnectionRequestGetSerialization, data);

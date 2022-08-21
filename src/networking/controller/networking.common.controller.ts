@@ -32,6 +32,7 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import {
   ConnectRequestUpdateDto,
+  SocialConnectionListDto,
   SocialConnectionRequestDto,
   SocialConnectionRequestListDto,
 } from '../dto';
@@ -188,7 +189,7 @@ export class NetworkingCommonController {
     );
 
     const data =
-      await this.socialConnectionRequestService.serializationConnectionRequestList(
+      await this.socialConnectionRequestService.serializationSocialConnectionRequestList(
         connectRequest,
       );
 
@@ -217,27 +218,25 @@ export class NetworkingCommonController {
       search,
       availableSort,
       availableSearch,
-      status,
-    }: SocialConnectionRequestListDto,
+    }: SocialConnectionListDto,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const connectRequest =
-      await this.socialConnectionRequestService.paginatedSearchBy({
+    const socialConnections =
+      await this.socialConnectionService.paginatedSearchBy({
         options: {
           skip: skip,
           take: perPage,
           order: sort,
         },
-        status,
+
         search,
-        addresseeEmail: reqUser.email,
+        userEmail: reqUser.email,
       });
 
-    const totalData = await this.socialConnectionRequestService.getTotal({
-      status,
+    const totalData = await this.socialConnectionService.getTotal({
       search,
-      addresseeEmail: reqUser.email,
+      userEmail: reqUser.email,
     });
 
     const totalPage: number = await this.paginationService.totalPage(
@@ -246,8 +245,8 @@ export class NetworkingCommonController {
     );
 
     const data =
-      await this.socialConnectionRequestService.serializationConnectionRequestList(
-        connectRequest,
+      await this.socialConnectionService.serializationSocialConnectionList(
+        socialConnections,
       );
 
     return {
@@ -298,10 +297,15 @@ export class NetworkingCommonController {
           userConnectionsRequestFind.map(async (connectionRequest) => {
             const { addressedUser, addresseeUser } = connectionRequest;
 
-            const createSocialConnection =
+            const createSocialConnection1 =
               await this.socialConnectionService.create({
-                addressedUser,
-                addresseeUser,
+                user1: addressedUser,
+                user2: addresseeUser,
+              });
+            const createSocialConnection2 =
+              await this.socialConnectionService.create({
+                user1: addresseeUser,
+                user2: addressedUser,
               });
 
             connectionRequest.status =
@@ -309,9 +313,10 @@ export class NetworkingCommonController {
 
             await transactionalEntityManager.save(connectionRequest);
 
-            const saveSocialConnection = await transactionalEntityManager.save(
-              createSocialConnection,
-            );
+            const saveSocialConnection = await transactionalEntityManager.save([
+              createSocialConnection1,
+              createSocialConnection2,
+            ]);
 
             if (saveSocialConnection) {
               return Promise.resolve(addressedUser.email);

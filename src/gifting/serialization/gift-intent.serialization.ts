@@ -83,18 +83,18 @@ class GiftSubmitSerialization {
       plainToInstance(GiftSubmitGiftsSerialization, giftOption),
     ),
   )
-  gifts: GiftSubmitGiftsSerialization;
+  readonly gifts: GiftSubmitGiftsSerialization;
 }
 
 @Exclude()
 class GiftRecipientSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
-  user: GiftUserSerialization;
+  readonly user: GiftUserSerialization;
 
   @Expose()
   @Type(() => GiftUserAdditionalDataSerialization)
-  additionalData: GiftUserAdditionalDataSerialization;
+  readonly additionalData: GiftUserAdditionalDataSerialization;
 }
 
 @Exclude()
@@ -108,16 +108,24 @@ class GiftSenderSerialization {
   additionalData: GiftUserAdditionalDataSerialization;
 }
 
+@Exclude()
 export class GiftIntentSerialization {
+  @Expose()
+  readonly id: string;
+
+  @Expose()
   @Type(() => GiftRecipientSerialization)
   readonly recipient: GiftRecipientSerialization;
 
+  @Expose()
   @Type(() => GiftSenderSerialization)
   readonly sender: GiftSenderSerialization;
 
+  @Expose()
   @Type(() => GiftIntentAdditionalDataSerialization)
   readonly additionalData: GiftIntentAdditionalDataSerialization;
 
+  @Expose()
   @Transform(({ value: giftOptions }) =>
     giftOptions.map((giftOption: Gift) =>
       plainToInstance(GiftOptionsSerialization, giftOption),
@@ -125,9 +133,28 @@ export class GiftIntentSerialization {
   )
   readonly giftOptions: GiftOptionsSerialization;
 
+  @Expose()
   @Type(() => GiftSubmitSerialization)
   readonly giftSubmit: GiftSubmitSerialization;
 
-  @Exclude()
-  readonly deletedAt: Date;
+  @Expose()
+  readonly createdAt: Date;
+
+  @Expose()
+  readonly confirmedAt: Date;
+
+  @Expose()
+  readonly acceptedAt: Date;
+
+  @Expose()
+  readonly readyAt: Date;
+
+  @Expose()
+  readonly submittedAt: Date;
+
+  @Expose()
+  readonly shippedAt: Date;
+
+  @Expose()
+  readonly deliveredAt: Date;
 }
