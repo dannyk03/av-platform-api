@@ -31,7 +31,7 @@ import { ProductService } from '@/catalog/product/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { GiftIntentSerialization } from '../serialization';
+import { GiftIntentGetSerialization } from '../serialization';
 
 import {
   GiftIntentListDto,
@@ -106,7 +106,7 @@ export class GiftingSystemCommonController {
       perPage,
     );
 
-    const data: GiftIntentSerialization[] =
+    const data: GiftIntentGetSerialization[] =
       await this.giftIntentService.serializationGiftIntentList(giftIntents);
 
     return {

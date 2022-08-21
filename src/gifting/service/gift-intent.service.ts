@@ -30,7 +30,7 @@ import { GiftIntentReadyLinkService } from './gift-intent-ready-link.service';
 import { HelperDateService } from '@/utils/helper/service';
 
 import {
-  GiftIntentSerialization,
+  GiftIntentGetSerialization,
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
@@ -220,14 +220,14 @@ export class GiftIntentService {
 
   async serializationGiftIntentList(
     data: GiftIntent[],
-  ): Promise<GiftIntentSerialization[]> {
-    return plainToInstance(GiftIntentSerialization, data);
+  ): Promise<GiftIntentGetSerialization[]> {
+    return plainToInstance(GiftIntentGetSerialization, data);
   }
 
   async serializationGiftIntent(
     data: GiftIntent,
-  ): Promise<GiftIntentSerialization> {
-    return plainToInstance(GiftIntentSerialization, data);
+  ): Promise<GiftIntentGetSerialization> {
+    return plainToInstance(GiftIntentGetSerialization, data);
   }
 
   async serializationGiftIntentReady(

@@ -61,7 +61,7 @@ class GiftUserAdditionalDataSerialization {
   readonly lastName: string;
 }
 @Exclude()
-class GiftOptionsSerialization implements IGiftOptionGetSerialization {
+class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -74,7 +74,9 @@ class GiftOptionsSerialization implements IGiftOptionGetSerialization {
   products: ProductGetSerialization;
 }
 @Exclude()
-class GiftSubmitGiftsSerialization implements IGiftSubmitGiftsGetSerialization {
+class GiftSubmitGiftsGetSerialization
+  implements IGiftSubmitGiftsGetSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -85,21 +87,21 @@ class GiftSubmitGiftsSerialization implements IGiftSubmitGiftsGetSerialization {
   products: string[];
 }
 @Exclude()
-class GiftSubmitSerialization implements IGiftSubmitGetSerialization {
+class GiftSubmitGetSerialization implements IGiftSubmitGetSerialization {
   @Expose()
   readonly id: string;
 
   @Expose()
   @Transform(({ value: gifts }) =>
     gifts?.map((giftOption: Gift) =>
-      plainToInstance(GiftSubmitGiftsSerialization, giftOption),
+      plainToInstance(GiftSubmitGiftsGetSerialization, giftOption),
     ),
   )
-  readonly gifts: GiftSubmitGiftsSerialization;
+  readonly gifts: GiftSubmitGiftsGetSerialization;
 }
 
 @Exclude()
-class GiftRecipientSerialization implements IGiftRecipientGetSerialization {
+class GiftRecipientGetSerialization implements IGiftRecipientGetSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
   readonly user: GiftUserSerialization;
@@ -110,7 +112,7 @@ class GiftRecipientSerialization implements IGiftRecipientGetSerialization {
 }
 
 @Exclude()
-class GiftSenderSerialization implements IGiftSenderGetSerialization {
+class GiftSenderGetSerialization implements IGiftSenderGetSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
   user: GiftUserSerialization;
@@ -121,17 +123,17 @@ class GiftSenderSerialization implements IGiftSenderGetSerialization {
 }
 
 @Exclude()
-export class GiftIntentSerialization implements IGiftIntentGetSerialization {
+export class GiftIntentGetSerialization implements IGiftIntentGetSerialization {
   @Expose()
   readonly id: string;
 
   @Expose()
-  @Type(() => GiftRecipientSerialization)
-  readonly recipient: GiftRecipientSerialization;
+  @Type(() => GiftRecipientGetSerialization)
+  readonly recipient: GiftRecipientGetSerialization;
 
   @Expose()
-  @Type(() => GiftSenderSerialization)
-  readonly sender: GiftSenderSerialization;
+  @Type(() => GiftSenderGetSerialization)
+  readonly sender: GiftSenderGetSerialization;
 
   @Expose()
   @Type(() => GiftIntentAdditionalDataSerialization)
@@ -140,14 +142,14 @@ export class GiftIntentSerialization implements IGiftIntentGetSerialization {
   @Expose()
   @Transform(({ value: giftOptions }) =>
     giftOptions.map((giftOption: Gift) =>
-      plainToInstance(GiftOptionsSerialization, giftOption),
+      plainToInstance(GiftOptionsGetSerialization, giftOption),
     ),
   )
-  readonly giftOptions: GiftOptionsSerialization;
+  readonly giftOptions: GiftOptionsGetSerialization;
 
   @Expose()
-  @Type(() => GiftSubmitSerialization)
-  readonly giftSubmit: GiftSubmitSerialization;
+  @Type(() => GiftSubmitGetSerialization)
+  readonly giftSubmit: GiftSubmitGetSerialization;
 
   @Expose()
   readonly createdAt: Date;
