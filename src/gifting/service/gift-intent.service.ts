@@ -30,7 +30,7 @@ import { GiftIntentReadyLinkService } from './gift-intent-ready-link.service';
 import { HelperDateService } from '@/utils/helper/service';
 
 import {
-  GiftIntentSerialization,
+  GiftIntentGetSerialization,
   RecipientAdditionalDataSerialization,
   SenderAdditionalDataSerialization,
 } from '../serialization';
@@ -75,6 +75,7 @@ export class GiftIntentService {
   }
 
   async getListSearchBuilder({
+    ownerId,
     search,
     loadExtra = true,
   }: IGiftIntentSearch): Promise<SelectQueryBuilder<GiftIntent>> {
@@ -93,6 +94,10 @@ export class GiftIntentService {
         .leftJoinAndSelect('giftOptions.products', 'giftProducts');
     }
 
+    if (ownerId) {
+      builder.andWhere('senderUser.id = :ownerId', { ownerId });
+    }
+
     if (search) {
       builder.andWhere(
         new Brackets((qb) => {
@@ -109,10 +114,12 @@ export class GiftIntentService {
   }
 
   async paginatedSearchBy({
+    ownerId,
     search,
     options,
   }: IGiftIntentSearch): Promise<GiftIntent[]> {
     const searchBuilder = await this.getListSearchBuilder({
+      ownerId,
       search,
     });
 
@@ -127,9 +134,10 @@ export class GiftIntentService {
     return searchBuilder.getMany();
   }
 
-  async getTotal({ search }: IGiftIntentSearch): Promise<number> {
+  async getTotal({ search, ownerId }: IGiftIntentSearch): Promise<number> {
     const searchBuilder = await this.getListSearchBuilder({
       search,
+      ownerId,
       loadExtra: false,
     });
 
@@ -212,14 +220,14 @@ export class GiftIntentService {
 
   async serializationGiftIntentList(
     data: GiftIntent[],
-  ): Promise<GiftIntentSerialization[]> {
-    return plainToInstance(GiftIntentSerialization, data);
+  ): Promise<GiftIntentGetSerialization[]> {
+    return plainToInstance(GiftIntentGetSerialization, data);
   }
 
   async serializationGiftIntent(
     data: GiftIntent,
-  ): Promise<GiftIntentSerialization> {
-    return plainToInstance(GiftIntentSerialization, data);
+  ): Promise<GiftIntentGetSerialization> {
+    return plainToInstance(GiftIntentGetSerialization, data);
   }
 
   async serializationGiftIntentReady(

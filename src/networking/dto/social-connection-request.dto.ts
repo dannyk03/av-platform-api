@@ -2,8 +2,8 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsEmail,
   IsNotEmpty,
-  IsUUID,
 } from 'class-validator';
 
 import {
@@ -11,13 +11,13 @@ import {
   UniqueArrayTransform,
 } from '@/utils/request/transform';
 
-export class GiftOptionCreateDto {
+export class SocialConnectionRequestDto {
   @ArrayMinSize(1)
-  @ArrayMaxSize(3)
+  @ArrayMaxSize(50)
   @IsArray()
   @IsNotEmpty({ each: true })
-  @IsUUID(undefined, { each: true })
+  @IsEmail(undefined, { each: true })
   @UniqueArrayTransform()
   @ArrayTransform()
-  productIds: string[];
+  emails: string[];
 }

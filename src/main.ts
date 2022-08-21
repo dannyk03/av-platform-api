@@ -46,6 +46,7 @@ async function bootstrap() {
       { path: 'ready', method: RequestMethod.GET },
       { path: 'join', method: RequestMethod.GET },
       { path: 'org/join', method: RequestMethod.GET },
+      { path: 'network/join', method: RequestMethod.GET },
     ],
   });
 

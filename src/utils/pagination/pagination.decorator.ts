@@ -16,6 +16,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import capitalize from 'lodash/capitalize';
 
 import {
   IPaginationFilterDateOptions,
@@ -168,7 +169,7 @@ export function PaginationFilterEnum<T>(
     IsEnum(cEnum as object, { each: true }),
     Transform(({ value }) =>
       value
-        ? value.split(',').map((val: string) => defaultEnum[val])
+        ? value.split(',').map((val: string) => defaultEnum[capitalize(val)])
         : defaultValue,
     ),
   );

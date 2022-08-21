@@ -1,1 +1,2 @@
-export * from './gift.common.controller';
+export * from './gifting-system.common.controller';
+export * from './gifting.common.controller';

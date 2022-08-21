@@ -3,9 +3,7 @@ import { IVendorLogoGetSerialization } from '@avo/type';
 import { Exclude, Expose, Type } from 'class-transformer';
 
 @Exclude()
-export class VendorLogoListSerialization
-  implements IVendorLogoGetSerialization
-{
+export class VendorLogoGetSerialization implements IVendorLogoGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -24,8 +22,8 @@ export class VendorGetSerialization {
   readonly createdAt: Date;
   readonly updatedAt: Date;
 
-  @Type(() => VendorLogoListSerialization)
-  logo: VendorLogoListSerialization;
+  @Type(() => VendorLogoGetSerialization)
+  logo: VendorLogoGetSerialization;
 
   @Exclude()
   readonly deletedAt: Date;

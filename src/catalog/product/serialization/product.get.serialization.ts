@@ -81,7 +81,7 @@ export class ProductGetSerialization implements IProductGetSerialization {
 
   @Expose()
   @Type(() => VendorGetSerialization)
-  readonly vendor: IProductVendorGetSerialization;
+  readonly vendor?: IProductVendorGetSerialization;
 
   @Expose()
   readonly vendorName: string;

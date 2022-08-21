@@ -6,7 +6,7 @@ import { DisplayLanguage } from '@/language/display-language/entity';
 
 import { ProductImageGetSerialization } from '@/catalog/product-image/serialization';
 
-export class ProductDisplayOptionListSerialization {
+export class ProductDisplayOptionGetSerialization {
   readonly name: string;
   readonly description: string;
   readonly keywords!: string[];

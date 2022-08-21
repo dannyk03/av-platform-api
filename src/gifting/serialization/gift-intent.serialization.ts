@@ -1,4 +1,14 @@
-import { EnumOccasion } from '@avo/type';
+import {
+  EnumOccasion,
+  IGiftIntentAdditionalDataGetSerialization,
+  IGiftIntentGetSerialization,
+  IGiftOptionGetSerialization,
+  IGiftRecipientGetSerialization,
+  IGiftSenderGetSerialization,
+  IGiftSubmitGetSerialization,
+  IGiftSubmitGiftsGetSerialization,
+  IGiftUserGetSerialization,
+} from '@avo/type';
 
 import {
   Exclude,
@@ -14,7 +24,7 @@ import { Product } from '@/catalog/product/entity';
 import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 @Exclude()
-class GiftUserSerialization {
+class GiftUserSerialization implements IGiftUserGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -26,7 +36,9 @@ class GiftUserSerialization {
 }
 
 @Exclude()
-class GiftIntentAdditionalDataSerialization {
+class GiftIntentAdditionalDataSerialization
+  implements IGiftIntentAdditionalDataGetSerialization
+{
   @Expose()
   readonly priceMin: number;
 
@@ -49,7 +61,7 @@ class GiftUserAdditionalDataSerialization {
   readonly lastName: string;
 }
 @Exclude()
-class GiftOptionsSerialization {
+class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
   @Expose()
   readonly id: string;
 
@@ -62,7 +74,9 @@ class GiftOptionsSerialization {
   products: ProductGetSerialization;
 }
 @Exclude()
-class GiftSubmitGiftsSerialization {
+class GiftSubmitGiftsGetSerialization
+  implements IGiftSubmitGiftsGetSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -73,21 +87,32 @@ class GiftSubmitGiftsSerialization {
   products: string[];
 }
 @Exclude()
-class GiftSubmitSerialization {
+class GiftSubmitGetSerialization implements IGiftSubmitGetSerialization {
   @Expose()
   readonly id: string;
 
   @Expose()
   @Transform(({ value: gifts }) =>
     gifts?.map((giftOption: Gift) =>
-      plainToInstance(GiftSubmitGiftsSerialization, giftOption),
+      plainToInstance(GiftSubmitGiftsGetSerialization, giftOption),
     ),
   )
-  gifts: GiftSubmitGiftsSerialization;
+  readonly gifts: GiftSubmitGiftsGetSerialization;
 }
 
 @Exclude()
-class GiftRecipientSerialization {
+class GiftRecipientGetSerialization implements IGiftRecipientGetSerialization {
+  @Expose()
+  @Type(() => GiftUserSerialization)
+  readonly user: GiftUserSerialization;
+
+  @Expose()
+  @Type(() => GiftUserAdditionalDataSerialization)
+  readonly additionalData: GiftUserAdditionalDataSerialization;
+}
+
+@Exclude()
+class GiftSenderGetSerialization implements IGiftSenderGetSerialization {
   @Expose()
   @Type(() => GiftUserSerialization)
   user: GiftUserSerialization;
@@ -98,36 +123,52 @@ class GiftRecipientSerialization {
 }
 
 @Exclude()
-class GiftSenderSerialization {
+export class GiftIntentGetSerialization implements IGiftIntentGetSerialization {
   @Expose()
-  @Type(() => GiftUserSerialization)
-  user: GiftUserSerialization;
+  readonly id: string;
 
   @Expose()
-  @Type(() => GiftUserAdditionalDataSerialization)
-  additionalData: GiftUserAdditionalDataSerialization;
-}
+  @Type(() => GiftRecipientGetSerialization)
+  readonly recipient: GiftRecipientGetSerialization;
 
-export class GiftIntentSerialization {
-  @Type(() => GiftRecipientSerialization)
-  readonly recipient: GiftRecipientSerialization;
+  @Expose()
+  @Type(() => GiftSenderGetSerialization)
+  readonly sender: GiftSenderGetSerialization;
 
-  @Type(() => GiftSenderSerialization)
-  readonly sender: GiftSenderSerialization;
-
+  @Expose()
   @Type(() => GiftIntentAdditionalDataSerialization)
   readonly additionalData: GiftIntentAdditionalDataSerialization;
 
+  @Expose()
   @Transform(({ value: giftOptions }) =>
     giftOptions.map((giftOption: Gift) =>
-      plainToInstance(GiftOptionsSerialization, giftOption),
+      plainToInstance(GiftOptionsGetSerialization, giftOption),
     ),
   )
-  readonly giftOptions: GiftOptionsSerialization;
+  readonly giftOptions: GiftOptionsGetSerialization;
 
-  @Type(() => GiftSubmitSerialization)
-  readonly giftSubmit: GiftSubmitSerialization;
+  @Expose()
+  @Type(() => GiftSubmitGetSerialization)
+  readonly giftSubmit: GiftSubmitGetSerialization;
 
-  @Exclude()
-  readonly deletedAt: Date;
+  @Expose()
+  readonly createdAt: Date;
+
+  @Expose()
+  readonly confirmedAt: Date;
+
+  @Expose()
+  readonly acceptedAt: Date;
+
+  @Expose()
+  readonly readyAt: Date;
+
+  @Expose()
+  readonly submittedAt: Date;
+
+  @Expose()
+  readonly shippedAt: Date;
+
+  @Expose()
+  readonly deliveredAt: Date;
 }
