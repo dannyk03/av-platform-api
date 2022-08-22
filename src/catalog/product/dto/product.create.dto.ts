@@ -21,8 +21,8 @@ import {
   BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
+  UniqueArrayTransform,
 } from '@/utils/request/transform';
-import { UniqueArrayTransform } from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()

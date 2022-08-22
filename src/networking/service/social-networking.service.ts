@@ -26,10 +26,10 @@ export class SocialNetworkingService {
   async rejectSocialConnectionsRequests(
     connectionRequests: SocialConnectionRequest[],
   ) {
-    return await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        return await Promise.allSettled(
+        return Promise.allSettled(
           connectionRequests.map(async (connectionRequest) => {
             const { addressedUser } = connectionRequest;
 
@@ -56,7 +56,7 @@ export class SocialNetworkingService {
     return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        return await Promise.allSettled(
+        return Promise.allSettled(
           connectionRequests.map(async (connectionRequest) => {
             const { addressedUser, addresseeUser } = connectionRequest;
 
