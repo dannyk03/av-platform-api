@@ -23,6 +23,33 @@ export class SocialNetworkingService {
     private readonly socialConnectionRequestBlockService: SocialConnectionRequestBlockService,
   ) {}
 
+  async rejectSocialConnectionsRequests(
+    connectionRequests: SocialConnectionRequest[],
+  ) {
+    return await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        return await Promise.allSettled(
+          connectionRequests.map(async (connectionRequest) => {
+            const { addressedUser } = connectionRequest;
+
+            connectionRequest.status =
+              EnumNetworkingConnectionRequestStatus.Rejected;
+
+            const updateConnectRequest = await transactionalEntityManager.save(
+              connectionRequest,
+            );
+
+            if (updateConnectRequest) {
+              return Promise.resolve(addressedUser.email);
+            }
+            return Promise.reject(addressedUser.email);
+          }),
+        );
+      },
+    );
+  }
+
   async approveSocialConnectionsRequests(
     connectionRequests: SocialConnectionRequest[],
   ) {
@@ -49,12 +76,13 @@ export class SocialNetworkingService {
 
             await transactionalEntityManager.save(connectionRequest);
 
-            const saveSocialConnection = await transactionalEntityManager.save([
-              createSocialConnection1,
-              createSocialConnection2,
-            ]);
+            const updateSocialConnection =
+              await transactionalEntityManager.save([
+                createSocialConnection1,
+                createSocialConnection2,
+              ]);
 
-            if (saveSocialConnection) {
+            if (updateSocialConnection) {
               return Promise.resolve(addressedUser.email);
             }
             return Promise.reject(addressedUser.email);

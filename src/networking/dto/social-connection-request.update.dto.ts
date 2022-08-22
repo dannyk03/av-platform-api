@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsUUID,
 } from 'class-validator';
 
@@ -19,5 +20,6 @@ export class ConnectRequestUpdateDto {
   @IsUUID(undefined, { each: true })
   @UniqueArrayTransform()
   @ArrayTransform()
+  @IsOptional()
   socialConnectionRequestIds: string[];
 }

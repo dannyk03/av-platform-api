@@ -7,16 +7,18 @@ import {
   Patch,
   Post,
   Query,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumNetworkingConnectionRequestStatus,
+  EnumNetworkingStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
 
-import { DataSource, In } from 'typeorm';
+import compact from 'lodash/compact';
+import { In } from 'typeorm';
 
 import { User } from '@/user/entity';
 
@@ -36,9 +38,9 @@ import {
   SocialConnectionRequestDto,
   SocialConnectionRequestListDto,
 } from '../dto';
+import { EmailQueryParamOptionalDto } from '@/utils/request/dto';
 
 import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
 import { EmailService } from '@/messaging/email';
 import { ReqUser } from '@/user';
 import { Response, ResponsePaging } from '@/utils/response';
@@ -48,8 +50,6 @@ import { Response, ResponsePaging } from '@/utils/response';
 })
 export class NetworkingCommonController {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
     private readonly userService: UserService,
     private readonly emailService: EmailService,
     private readonly paginationService: PaginationService,
@@ -255,31 +255,28 @@ export class NetworkingCommonController {
   @AclGuard()
   @Patch('/approve')
   async approve(
+    @Query()
+    { email }: EmailQueryParamOptionalDto,
     @Body()
     { socialConnectionRequestIds }: ConnectRequestUpdateDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.find({
-        where: {
-          id: In(socialConnectionRequestIds),
-          status: EnumNetworkingConnectionRequestStatus.Pending,
-          addresseeUser: {
-            id: reqUser.id,
-          },
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrIds(
+        {
+          email,
+          socialConnectionRequestIds,
+          reqUserId: reqUser.id,
         },
-        relations: ['addressedUser', 'addresseeUser'],
-        select: {
-          addressedUser: {
-            id: true,
-            email: true,
-          },
-          addresseeUser: {
-            id: true,
-            email: true,
-          },
-        },
+      );
+
+    if (!userConnectionsRequestFind?.length) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
+        message: 'networking.error.requestNotFound',
       });
+    }
 
     const result =
       await this.socialNetworkingService.approveSocialConnectionsRequests(
@@ -295,54 +292,41 @@ export class NetworkingCommonController {
   @AclGuard()
   @Patch('/reject')
   async reject(
+    @Query()
+    { email }: EmailQueryParamOptionalDto,
     @Body()
     { socialConnectionRequestIds }: ConnectRequestUpdateDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.find({
-        where: {
-          id: In(socialConnectionRequestIds),
-          status: EnumNetworkingConnectionRequestStatus.Pending,
-          addresseeUser: {
-            id: reqUser.id,
-          },
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrIds(
+        {
+          email,
+          socialConnectionRequestIds,
+          reqUserId: reqUser.id,
         },
-        relations: ['addressedUser', 'addresseeUser'],
-        select: {
-          addressedUser: {
-            id: true,
-            email: true,
-          },
-          addresseeUser: {
-            id: true,
-            email: true,
-          },
-        },
+      );
+
+    if (!userConnectionsRequestFind?.length) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
+        message: 'networking.error.requestNotFound',
       });
+    }
 
-    const result = await this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        return await Promise.allSettled(
-          userConnectionsRequestFind.map(async (connectionRequest) => {
-            const { addressedUser } = connectionRequest;
+    if (!userConnectionsRequestFind.length) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
+        message: 'networking.error.requestNotFound',
+      });
+    }
 
-            connectionRequest.status =
-              EnumNetworkingConnectionRequestStatus.Rejected;
-
-            const updateConnectRequest = await transactionalEntityManager.save(
-              connectionRequest,
-            );
-
-            if (updateConnectRequest) {
-              return Promise.resolve(addressedUser.email);
-            }
-            return Promise.reject(addressedUser.email);
-          }),
-        );
-      },
-    );
+    const result =
+      await this.socialNetworkingService.rejectSocialConnectionsRequests(
+        userConnectionsRequestFind,
+      );
 
     return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
       result,

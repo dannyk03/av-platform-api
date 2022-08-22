@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumNetworkingConnectionRequestStatus } from '@avo/type';
+import {
+  EnumNetworkingConnectionRequestStatus,
+  EnumNetworkingStatusCodeError,
+} from '@avo/type';
 
 import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
+import { compact } from 'lodash';
 import {
   Brackets,
   DeepPartial,
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
+  In,
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
@@ -62,6 +67,59 @@ export class SocialConnectionRequestService {
     find: FindManyOptions<SocialConnectionRequest>,
   ): Promise<SocialConnectionRequest[]> {
     return this.socialConnectionRequestRepository.find(find);
+  }
+
+  async findPendingSocialConnectionRequestByEmailOrIds({
+    email,
+    reqUserId,
+    socialConnectionRequestIds,
+  }): Promise<SocialConnectionRequest[] | null> {
+    if (
+      (socialConnectionRequestIds && email) ||
+      !(socialConnectionRequestIds || email)
+    ) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsUnprocessableError,
+        message: 'networking.error.unprocessable',
+      });
+    }
+
+    const find = {
+      where: {
+        ...(socialConnectionRequestIds && {
+          id: In(socialConnectionRequestIds),
+        }),
+        ...(email && {
+          addressedUser: {
+            email,
+          },
+        }),
+        status: EnumNetworkingConnectionRequestStatus.Pending,
+        addresseeUser: {
+          id: reqUserId,
+        },
+      },
+      relations: ['addressedUser', 'addresseeUser'],
+      select: {
+        addressedUser: {
+          id: true,
+          email: true,
+        },
+        addresseeUser: {
+          id: true,
+          email: true,
+        },
+      },
+    };
+
+    const userConnectionsRequestFind = socialConnectionRequestIds
+      ? await this.find(find)
+      : email
+      ? compact([await this.findOne(find)])
+      : null;
+
+    return userConnectionsRequestFind;
   }
 
   async findSocialConnectionRequestByStatus({

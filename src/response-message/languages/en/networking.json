@@ -5,5 +5,8 @@
   "connectApprove": "Connection requests approve success",
   "connectReject": "Connection requests reject success",
   "connectBlock": "Connection requests block success",
-  "error": {}
+  "error": {
+    "unprocessable": "Unprocessable",
+    "requestNotFound": "Connection request not found"
+  }
 }
