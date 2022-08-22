@@ -24,8 +24,8 @@ import {
   SocialConnectionRequestBlockService,
   SocialConnectionRequestService,
   SocialConnectionService,
+  SocialNetworkingService,
 } from '../service';
-import { LogService } from '@/log/service';
 import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -53,6 +53,7 @@ export class NetworkingCommonController {
     private readonly userService: UserService,
     private readonly emailService: EmailService,
     private readonly paginationService: PaginationService,
+    private readonly socialNetworkingService: SocialNetworkingService,
     private readonly helperPromiseService: HelperPromiseService,
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
@@ -96,46 +97,36 @@ export class NetworkingCommonController {
 
       const addresseeUser = await this.userService.findOneBy({ email });
 
-      if (!addresseeUser) {
-        const isEmailSent = await this.emailService.sendNetworkJoinInvite({
-          fromUser: reqUser,
-          email,
-        });
-
-        if (isEmailSent) {
-          const createSocialConnectionRequest =
-            await this.socialConnectionRequestService.create({
-              addressedUser: reqUser,
-              tempAddresseeEmail: addresseeUser ? null : email,
-            });
-
-          const saveSocialConnectionRequest =
-            this.socialConnectionRequestService.save(
-              createSocialConnectionRequest,
-            );
-
-          if (saveSocialConnectionRequest) {
-            return Promise.resolve(email);
-          }
-        } else {
-          return Promise.reject(email);
-        }
-      }
-
       const createSocialConnectionRequest =
         await this.socialConnectionRequestService.create({
           addressedUser: reqUser,
           addresseeUser,
+          tempAddresseeEmail: addresseeUser ? null : email,
         });
 
       const saveSocialConnectionRequest =
-        this.socialConnectionRequestService.save(createSocialConnectionRequest);
+        await this.socialConnectionRequestService.save(
+          createSocialConnectionRequest,
+        );
 
       if (saveSocialConnectionRequest) {
-        return Promise.resolve(email);
-      }
+        const isEmailSent = addresseeUser
+          ? await this.emailService.sendNetworkNewConnectionRequest({
+              fromUser: reqUser,
+              email,
+            })
+          : await this.emailService.sendNetworkJoinInvite({
+              fromUser: reqUser,
+              email,
+            });
 
-      return Promise.reject(email);
+        if (isEmailSent) {
+          return Promise.resolve(email);
+        }
+        return Promise.reject(email);
+      } else {
+        return Promise.reject(email);
+      }
     });
 
     const result = await Promise.allSettled(promises);
@@ -265,13 +256,13 @@ export class NetworkingCommonController {
   @Patch('/approve')
   async approve(
     @Body()
-    { socialConnectionRequestIds: connectRequestIds }: ConnectRequestUpdateDto,
+    { socialConnectionRequestIds }: ConnectRequestUpdateDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
       await this.socialConnectionRequestService.find({
         where: {
-          id: In(connectRequestIds),
+          id: In(socialConnectionRequestIds),
           status: EnumNetworkingConnectionRequestStatus.Pending,
           addresseeUser: {
             id: reqUser.id,
@@ -290,42 +281,10 @@ export class NetworkingCommonController {
         },
       });
 
-    const result = await this.defaultDataSource.transaction(
-      'SERIALIZABLE',
-      async (transactionalEntityManager) => {
-        return await Promise.allSettled(
-          userConnectionsRequestFind.map(async (connectionRequest) => {
-            const { addressedUser, addresseeUser } = connectionRequest;
-
-            const createSocialConnection1 =
-              await this.socialConnectionService.create({
-                user1: addressedUser,
-                user2: addresseeUser,
-              });
-            const createSocialConnection2 =
-              await this.socialConnectionService.create({
-                user1: addresseeUser,
-                user2: addressedUser,
-              });
-
-            connectionRequest.status =
-              EnumNetworkingConnectionRequestStatus.Approved;
-
-            await transactionalEntityManager.save(connectionRequest);
-
-            const saveSocialConnection = await transactionalEntityManager.save([
-              createSocialConnection1,
-              createSocialConnection2,
-            ]);
-
-            if (saveSocialConnection) {
-              return Promise.resolve(addressedUser.email);
-            }
-            return Promise.reject(addressedUser.email);
-          }),
-        );
-      },
-    );
+    const result =
+      await this.socialNetworkingService.approveSocialConnectionsRequests(
+        userConnectionsRequestFind,
+      );
 
     return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
       result,

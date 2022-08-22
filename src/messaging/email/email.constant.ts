@@ -1,6 +1,7 @@
 export enum EmailTemplate {
   SendOrganizationInvite = 'SendOrganizationInvite',
   SendNetworkInvite = 'SendNetworkInvite',
+  SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest',
   SendSignUpEmailVerification = 'Email Verification',
   SendGiftSurvey = 'Survey Confirmation',
   SendGiftConfirm = 'SendGiftConfirm',
