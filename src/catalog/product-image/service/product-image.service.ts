@@ -18,7 +18,6 @@ import { ProductDisplayOptionService } from '@/catalog/product-display-option/se
 import { CloudinaryService } from '@/cloudinary/service';
 
 import { ProductImageGetSerialization } from '../serialization';
-import { ProductGetSerialization } from '@/catalog/product/serialization';
 
 import { ICreateImages, ISaveImages } from '../product-image.interface';
 

@@ -17,9 +17,6 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import compact from 'lodash/compact';
-import { In } from 'typeorm';
-
 import { User } from '@/user/entity';
 
 import {

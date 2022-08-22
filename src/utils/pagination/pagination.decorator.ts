@@ -29,7 +29,6 @@ import { RequestAddDatePipe } from '@/utils/request/pipe';
 import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
   PAGINATION_DEFAULT_AVAILABLE_SORT,
-  PAGINATION_DEFAULT_MAX_PER_PAGE,
   PAGINATION_DEFAULT_PAGE,
   PAGINATION_DEFAULT_PER_PAGE,
   PAGINATION_DEFAULT_SORT,
