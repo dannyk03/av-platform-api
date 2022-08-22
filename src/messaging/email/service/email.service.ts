@@ -20,12 +20,11 @@ export class EmailService {
   async sendNetworkJoinInvite({
     email,
     fromUser,
-    path = '/network/join',
   }: {
     email: string;
     fromUser: User;
-    path?: string;
   }) {
+    const path = '/network/join';
     // Temporary for local development
     if (!this.isProduction) {
       return true;
@@ -39,6 +38,32 @@ export class EmailService {
       identifier: { id: email },
     });
     console.log({ email, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendNetworkNewConnectionRequest({
+    email,
+    fromUser,
+  }: {
+    email: string;
+    fromUser: User;
+    path?: string;
+  }) {
+    const approvePath = `/network/approve?email=${fromUser.email}`;
+    const rejectPath = `/network/reject?email=${fromUser.email}`;
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendNetworkNewConnectionRequest.toString(),
+      to: [email],
+      emailTemplatePayload: { from: fromUser.email, approvePath, rejectPath },
+      identifier: { id: email },
+    });
+    console.log({ email, approvePath, rejectPath });
     return sendResult.status === EmailStatus.success;
   }
 

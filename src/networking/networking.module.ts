@@ -13,6 +13,7 @@ import {
   SocialConnectionRequestBlockService,
   SocialConnectionRequestService,
   SocialConnectionService,
+  SocialNetworkingService,
 } from './service';
 
 import { ConnectionNames } from '@/database';
@@ -27,11 +28,13 @@ import { ConnectionNames } from '@/database';
   ],
 
   exports: [
+    SocialNetworkingService,
     SocialConnectionService,
     SocialConnectionRequestService,
     SocialConnectionRequestBlockService,
   ],
   providers: [
+    SocialNetworkingService,
     SocialConnectionService,
     SocialConnectionRequestService,
     SocialConnectionRequestBlockService,
