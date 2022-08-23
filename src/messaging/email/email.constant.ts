@@ -55,5 +55,21 @@ export type SignUpEmailVerificationMessageData = {
   user: {
     firstName: string;
   };
-  verificationLink: string;
+  activationCode: string;
+};
+
+export type GiftOption = {
+  description: string;
+  imageUrl: string;
+  productLink: string;
+};
+
+export type GiftOptionSelectMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  giftOptions: GiftOption[];
 };
