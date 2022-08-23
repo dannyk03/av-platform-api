@@ -61,7 +61,6 @@ export type SignUpEmailVerificationMessageData = {
 export type GiftOption = {
   description: string;
   imageUrl: string;
-  productLink: string;
 };
 
 export type GiftOptionSelectMessageData = {
@@ -72,4 +71,5 @@ export type GiftOptionSelectMessageData = {
     firstName: string;
   };
   giftOptions: GiftOption[];
+  giftSelectUrl: string;
 };
