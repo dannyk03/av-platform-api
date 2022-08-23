@@ -131,7 +131,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
       .setHeader('x-custom-lang', reqCustomLang)
       .setHeader('x-timestamp', __timestamp)
       .setHeader('x-timezone', __timezone)
-      .setHeader('x-request-id', __correlationId)
+      .setHeader('x-correlation-id', __correlationId)
       .setHeader('x-version', __version)
       .setHeader('x-repo-version', __repoVersion)
       .status(statusHttp)
