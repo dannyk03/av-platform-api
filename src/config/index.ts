@@ -40,7 +40,7 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
   envFilePath: ['.env'],
   expandVariables: true,
   validationSchema: Joi.object({
-    APP_NAME: Joi.string().required(),
+    APP_NAME: Joi.string().default('avo').required(),
     APP_ENV: Joi.string()
       .valid('development', 'production')
       .default('development')
@@ -61,7 +61,7 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     ],
     APP_PORT: Joi.number().default(3001).required(),
     APP_VERSIONING: Joi.boolean().default(true).required(),
-    APP_DEBUG: Joi.boolean().default(true).required(),
+    APP_DEBUG: Joi.boolean().default(false).optional(),
 
     APP_HTTP_ON: Joi.boolean().default(true).required(),
     APP_JOB_ON: Joi.boolean().default(false).required(),
@@ -96,6 +96,8 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
     AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().required(),
     AUTH_SYSTEM_ADMIN_INITIAL_PASS: Joi.string().required(),
+
+    CUSTOMER_IO_API_KEY: Joi.string().required(),
   }),
   validationOptions: {
     allowUnknown: true,
