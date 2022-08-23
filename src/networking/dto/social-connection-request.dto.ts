@@ -22,7 +22,7 @@ export class SocialConnectionAddresseeDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(300)
+  @MaxLength(500)
   @Type(() => String)
   readonly personalNote?: string;
 }
@@ -39,7 +39,7 @@ export class SocialConnectionRequestDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(300)
+  @MaxLength(500)
   @Type(() => String)
   readonly personalNote?: string;
 }
