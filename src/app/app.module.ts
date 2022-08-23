@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AppRouterModule } from './app.router.module';
 import { CommonModule } from '@/core/core.module';
-import { JobsModule } from '@/task/task.module';
+import { JobsModule } from '@/jobs/jobs.module';
 
 @Module({
   controllers: [],
