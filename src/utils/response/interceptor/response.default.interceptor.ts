@@ -35,7 +35,7 @@ export class ResponseDefaultInterceptor
 {
   constructor(
     private readonly reflector: Reflector,
-    private readonly messageService: ResponseMessageService,
+    private readonly responseMessageService: ResponseMessageService,
   ) {}
 
   async intercept(
@@ -71,7 +71,7 @@ export class ResponseDefaultInterceptor
 
           // default response
           let statusCode: number = responseExpress.statusCode;
-          let message = await this.messageService.get(messagePath, {
+          let message = await this.responseMessageService.get(messagePath, {
             customLanguages: customLang,
           });
 
@@ -101,7 +101,7 @@ export class ResponseDefaultInterceptor
             }
 
             // message
-            message = await this.messageService.get(messagePath, {
+            message = await this.responseMessageService.get(messagePath, {
               customLanguages: customLang,
               properties,
             });

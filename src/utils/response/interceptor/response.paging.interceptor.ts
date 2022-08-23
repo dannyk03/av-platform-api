@@ -37,7 +37,7 @@ export class ResponsePagingInterceptor
 {
   constructor(
     private readonly reflector: Reflector,
-    private readonly messageService: ResponseMessageService,
+    private readonly responseMessageService: ResponseMessageService,
   ) {}
 
   async intercept(
@@ -92,13 +92,11 @@ export class ResponsePagingInterceptor
           }
 
           // message
-          const message: string | IMessage = await this.messageService.get(
-            messagePath,
-            {
+          const message: string | IMessage =
+            await this.responseMessageService.get(messagePath, {
               customLanguages: customLang,
               properties,
-            },
-          );
+            });
 
           const responseHttp: IResponsePaging = {
             statusCode,

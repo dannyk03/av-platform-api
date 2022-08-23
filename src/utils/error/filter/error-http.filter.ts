@@ -31,7 +31,7 @@ import { EnumErrorType } from '../error.constant';
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
   constructor(
-    private readonly messageService: ResponseMessageService,
+    private readonly responseMessageService: ResponseMessageService,
     private readonly debuggerService: DebuggerService,
   ) {}
 
@@ -93,17 +93,17 @@ export class ErrorHttpFilter implements ExceptionFilter {
     if (errors && errors.length) {
       errors =
         errorType === EnumErrorType.IMPORT
-          ? await this.messageService.getImportErrorsMessage(
+          ? await this.responseMessageService.getImportErrorsMessage(
               errors as IValidationErrorImport[],
               customLang,
             )
-          : await this.messageService.getRequestErrorsMessage(
+          : await this.responseMessageService.getRequestErrorsMessage(
               errors as ValidationError[],
               customLang,
             );
     }
 
-    const mapMessage: string | IMessage = await this.messageService.get(
+    const mapMessage: string | IMessage = await this.responseMessageService.get(
       message,
       { customLanguages: customLang, properties },
     );
