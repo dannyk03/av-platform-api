@@ -71,7 +71,7 @@ class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
       plainToInstance(ProductGetSerialization, product),
     ),
   )
-  products: ProductGetSerialization;
+  products: ProductGetSerialization[];
 }
 @Exclude()
 class GiftSubmitGiftsGetSerialization
