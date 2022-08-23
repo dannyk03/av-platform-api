@@ -256,7 +256,7 @@ export class GiftingCommonController {
   @RequestParamGuard(IdParamDto)
   @Post('/intent/submit/:id')
   async giftIntentSubmit(
-    @Body() { giftOptionIds }: GiftOptionSubmitDto,
+    @Body() { giftOptionIds, personalNote }: GiftOptionSubmitDto,
     @ReqUser()
     reqUser: User,
     @Param('id') giftIntentId: string,
@@ -302,6 +302,7 @@ export class GiftingCommonController {
           gifts: giftIntent.giftOptions.filter(({ id }) =>
             giftOptionIds.includes(id),
           ),
+          personalNote,
         });
 
         giftIntent.submittedAt = this.helperDateService.create();
