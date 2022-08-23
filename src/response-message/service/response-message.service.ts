@@ -40,12 +40,12 @@ export class ResponseMessageService {
       let property: string = transfomer.property;
       let propertyValue: string = transfomer.value;
 
-      if (children.length > 0) {
-        while (children.length > 0) {
+      if (children.length) {
+        while (children.length) {
           for (const child of children) {
             property = `${property}.${child.property}`;
 
-            if (child.children && child.children.length > 0) {
+            if (child?.children?.length) {
               children = child.children;
               break;
             } else if (child.constraints) {
@@ -86,11 +86,7 @@ export class ResponseMessageService {
       ? options
       : { properties: undefined, customLanguages: undefined };
 
-    if (
-      customLanguages &&
-      isArray(customLanguages) &&
-      customLanguages.length > 0
-    ) {
+    if (customLanguages && isArray(customLanguages) && customLanguages.length) {
       const messages: IMessage = {};
       for (const customLanguage of customLanguages) {
         messages[customLanguage] = await this.setMessage(customLanguage, key, {
