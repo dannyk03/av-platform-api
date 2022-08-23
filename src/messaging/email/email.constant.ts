@@ -59,8 +59,11 @@ export type SignUpEmailVerificationMessageData = {
 };
 
 export type GiftOption = {
+  productName: string;
   description: string;
   imageUrl: string;
+  currency: string;
+  price: string;
 };
 
 export type GiftOptionSelectMessageData = {
