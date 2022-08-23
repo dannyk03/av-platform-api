@@ -41,5 +41,5 @@ export class SocialConnectionRequestDto {
   @IsString()
   @MaxLength(300)
   @Type(() => String)
-  readonly sharedPersonalNote?: string;
+  readonly personalNote?: string;
 }
