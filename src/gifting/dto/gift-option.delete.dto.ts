@@ -1,11 +1,11 @@
 import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
-import { UniqueArrayTransform } from '@/utils/request/transform';
+import { UniqueArrayByTransform } from '@/utils/request/transform';
 
 export class GiftOptionDeleteDto {
   @IsArray()
   @IsNotEmpty({ each: true })
-  @UniqueArrayTransform()
+  @UniqueArrayByTransform()
   @IsUUID(undefined, { each: true })
   giftOptionIds: string[];
 }

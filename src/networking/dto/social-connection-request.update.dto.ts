@@ -9,7 +9,7 @@ import {
 
 import {
   ArrayTransform,
-  UniqueArrayTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class ConnectRequestUpdateDto {
@@ -18,7 +18,7 @@ export class ConnectRequestUpdateDto {
   @IsArray()
   @IsNotEmpty({ each: true })
   @IsUUID(undefined, { each: true })
-  @UniqueArrayTransform()
+  @UniqueArrayByTransform()
   @ArrayTransform()
   @IsOptional()
   socialConnectionRequestIds: string[];

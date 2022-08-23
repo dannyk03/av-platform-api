@@ -18,17 +18,23 @@ import { User } from '@/user/entity';
 export class SocialConnectionRequest extends BaseEntity<SocialConnectionRequest> {
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
-  addressedUser: User;
+  addressedUser!: User;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn()
-  addresseeUser: User;
+  addresseeUser?: User;
 
   @Column({
     length: 30,
     nullable: true,
   })
-  tempAddresseeEmail: string;
+  tempAddresseeEmail?: string;
+
+  @Column({
+    length: 500,
+    nullable: true,
+  })
+  personalNote?: string;
 
   @Column({
     type: 'enum',
