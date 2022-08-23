@@ -153,7 +153,7 @@ export class GiftingSystemCommonController {
       },
     });
 
-    if (giftIntent[`${status.toLocaleLowerCase()}At`]) {
+    if (giftIntent[`${status.toLowerCase()}At`]) {
       throw new ForbiddenException({
         statusCode:
           EnumGiftIntentStatusCodeError.GiftIntentUnprocessableStatusUpdateError,
@@ -169,11 +169,11 @@ export class GiftingSystemCommonController {
         ) - 1
       ];
 
-    if (!giftIntent[`${prevLogicalStatus.toLocaleLowerCase()}At`]) {
+    if (!giftIntent[`${prevLogicalStatus.toLowerCase()}At`]) {
       const currentStatus = this.logicalGiftIntentStatusOrder.find(
         (status, index, array) => {
           return (
-            giftIntent[`${status.toLocaleLowerCase()}At`] &&
+            giftIntent[`${status.toLowerCase()}At`] &&
             !giftIntent[`${array[index + 1].toLocaleLowerCase()}At`]
           );
         },
@@ -190,8 +190,7 @@ export class GiftingSystemCommonController {
     if (status === EnumGiftIntentStatus.Ready) {
       return this.giftIntentService.notifyReady({ id: giftIntent.id });
     } else {
-      giftIntent[`${status.toLocaleLowerCase()}At`] =
-        this.helperDateService.create();
+      giftIntent[`${status.toLowerCase()}At`] = this.helperDateService.create();
       return this.giftIntentService.save(giftIntent);
     }
   }

@@ -1,9 +1,11 @@
 import { EnumGiftIntentStatus } from '@avo/type';
 
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
+
+import { IsEnumCaseInsensitiveTransform } from '@/utils/request/transform';
 
 export class GiftIntentStatusUpdateDto {
-  @IsEnum(EnumGiftIntentStatus)
+  @IsEnumCaseInsensitiveTransform(EnumGiftIntentStatus)
   @IsNotEmpty()
   status: string;
 }

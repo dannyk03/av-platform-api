@@ -7,3 +7,4 @@ export * from './Escape.transform';
 export * from './Array.transform';
 export * from './UniqueArray.transform';
 export * from './BooleanString.transform';
+export * from './IsEnumCaseInsensitive.transform';
