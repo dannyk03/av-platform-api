@@ -1,4 +1,11 @@
-import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  MaxLength,
+} from 'class-validator';
 
 import { UniqueArrayByTransform } from '@/utils/request/transform';
 
@@ -7,5 +14,11 @@ export class GiftOptionSubmitDto {
   @IsNotEmpty({ each: true })
   @UniqueArrayByTransform()
   @IsUUID(undefined, { each: true })
-  giftOptionIds: string[];
+  readonly giftOptionIds!: string[];
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(500)
+  @Type(() => String)
+  readonly personalNote!: string;
 }

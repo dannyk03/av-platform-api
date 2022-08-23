@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 import { GiftIntent } from './gift-intent.entity';
 import { Gift } from './gift.entity';
@@ -14,4 +14,9 @@ export class GiftSubmit extends BaseEntity<GiftSubmit> {
 
   @OneToMany(() => Gift, (gift) => gift.giftSubmit)
   gifts!: Gift[];
+
+  @Column({
+    length: 500,
+  })
+  personalNote?: string;
 }
