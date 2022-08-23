@@ -117,6 +117,7 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
+    // TODO: Add server url to payload
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
