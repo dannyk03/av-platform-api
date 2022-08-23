@@ -116,6 +116,9 @@ class GiftSenderSerialization {
 @Exclude()
 export class GiftIntentReadySerialization {
   @Expose()
+  readonly id: string;
+
+  @Expose()
   @Type(() => GiftRecipientSerialization)
   readonly recipient: GiftRecipientSerialization;
 
