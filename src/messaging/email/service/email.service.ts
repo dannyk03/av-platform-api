@@ -6,7 +6,11 @@ import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
-import { EmailStatus, EmailTemplate } from '../email.constant';
+import {
+  EmailStatus,
+  EmailTemplate,
+  SignUpEmailVerificationMessageData,
+} from '../email.constant';
 
 @Injectable()
 export class EmailService {
@@ -98,11 +102,13 @@ export class EmailService {
 
   async sendSignUpEmailVerification({
     email,
+    firstName,
     code,
     expiresInDays,
     path = '/signup',
   }: {
     email: string;
+    firstName: string;
     code: string;
     expiresInDays: number;
     path?: string;
@@ -111,11 +117,10 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
-      emailTemplatePayload: { path, code },
+      emailTemplatePayload: { path, activationCode: code, user: { firstName } },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
