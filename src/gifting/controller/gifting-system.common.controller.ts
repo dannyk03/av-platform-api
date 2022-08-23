@@ -250,7 +250,7 @@ export class GiftingSystemCommonController {
   @Post('/intent/:id')
   async addGiftOption(
     @Param('id') giftIntentId: string,
-    @Body() { productIds }: GiftOptionCreateDto,
+    @Body() { productIds, lang }: GiftOptionCreateDto,
   ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: { id: giftIntentId },
@@ -263,7 +263,10 @@ export class GiftingSystemCommonController {
         message: 'gift.intent.error.notFound',
       });
     }
-    const products = await this.productService.findAllByIds(productIds);
+    const products = await this.productService.findAllByIds({
+      productIds,
+      lang,
+    });
 
     if (!products || products.length !== productIds?.length) {
       throw new UnprocessableEntityException({
@@ -272,7 +275,7 @@ export class GiftingSystemCommonController {
       });
     }
 
-    return this.defaultDataSource.transaction(
+    const saveGift = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const createGift = await this.giftService.create({
@@ -280,14 +283,14 @@ export class GiftingSystemCommonController {
         });
 
         const saveGift = await transactionalEntityManager.save(createGift);
-
         giftIntent.giftOptions = [...giftIntent.giftOptions, saveGift];
-
         await transactionalEntityManager.save(giftIntent);
 
         return saveGift;
       },
     );
+
+    return this.giftService.serializationGift(saveGift);
   }
 
   @Response('gift.intent.deleteGiftOption')

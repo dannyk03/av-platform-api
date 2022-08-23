@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumProductStatusCodeError } from '@avo/type';
+import { EnumDisplayLanguage, EnumProductStatusCodeError } from '@avo/type';
 
 import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
@@ -63,8 +63,24 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
-  async findAllByIds(ids?: string[]): Promise<Product[]> {
-    return this.productRepository.find({ where: { id: In(ids) } });
+  async findAllByIds({
+    productIds,
+    lang = EnumDisplayLanguage.En,
+  }: {
+    productIds: string[];
+    lang: EnumDisplayLanguage;
+  }): Promise<Product[]> {
+    return this.productRepository.find({
+      where: {
+        id: In(productIds),
+        displayOptions: {
+          language: {
+            isoCode: lang,
+          },
+        },
+      },
+      relations: ['displayOptions', 'displayOptions.images'],
+    });
   }
 
   async checkExistsBy(find: FindOptionsWhere<Product>) {

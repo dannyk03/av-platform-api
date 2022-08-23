@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
@@ -172,11 +173,13 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftReady({
+  async sendGiftReadyForSubmit({
+    giftIntent,
     email,
     code,
     path = '/ready',
   }: {
+    giftIntent: GiftIntent;
     email: string;
     code: string;
     path?: string;
