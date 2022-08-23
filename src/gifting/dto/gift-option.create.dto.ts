@@ -1,11 +1,15 @@
+import { EnumDisplayLanguage } from '@avo/type';
+
 import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsUUID,
 } from 'class-validator';
 
+import { ProductDisplayLanguage } from '@/catalog';
 import {
   ArrayTransform,
   UniqueArrayTransform,
@@ -20,4 +24,8 @@ export class GiftOptionCreateDto {
   @UniqueArrayTransform()
   @ArrayTransform()
   productIds: string[];
+
+  @ProductDisplayLanguage()
+  @IsOptional()
+  lang: EnumDisplayLanguage;
 }

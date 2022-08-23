@@ -72,7 +72,7 @@ export class ProductGetSerialization implements IProductGetSerialization {
 
   @Expose()
   @Transform(({ obj }: { obj: Product }): IProductImageGetSerialization[] =>
-    obj.displayOptions?.[0]?.images.map(
+    obj.displayOptions?.[0]?.images?.map(
       (image: ProductImage): ProductImageGetSerialization =>
         plainToInstance(ProductImageGetSerialization, image),
     ),
