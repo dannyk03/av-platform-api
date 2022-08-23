@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { CoreModule } from '@/core/core.module';
+import { CommonModule } from '@/core/core.module';
 
 import { ResponseMessageService } from '@/response-message/service/response-message.service';
 
@@ -9,7 +9,7 @@ describe('MessageService', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CoreModule],
+      imports: [CommonModule],
     }).compile();
 
     responseMessageService = moduleRef.get<ResponseMessageService>(

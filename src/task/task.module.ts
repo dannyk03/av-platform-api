@@ -2,11 +2,11 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({})
-export class TaskModule {
+export class JobsModule {
   static register(): DynamicModule {
     if (process.env.APP_TASK_ON === 'true') {
       return {
-        module: TaskModule,
+        module: JobsModule,
         controllers: [],
         providers: [],
         exports: [],
@@ -15,7 +15,7 @@ export class TaskModule {
     }
 
     return {
-      module: TaskModule,
+      module: JobsModule,
       providers: [],
       exports: [],
       controllers: [],

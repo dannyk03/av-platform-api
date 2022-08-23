@@ -5,7 +5,7 @@ import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 
-import { CoreModule } from '@/core/core.module';
+import { CommonModule } from '@/core/core.module';
 import { HealthModule } from '@/health/health.module';
 
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
@@ -21,7 +21,7 @@ describe('Database Integration', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CoreModule, HealthModule, TerminusModule],
+      imports: [CommonModule, HealthModule, TerminusModule],
       controllers: [HealthController],
     }).compile();
 

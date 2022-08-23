@@ -9,11 +9,16 @@ export class JwtRefreshGuard extends AuthGuard('jwtRefresh') {
     super();
   }
 
-  handleRequest<TUser = any>(err: Record<string, any>, user: TUser): TUser {
+  handleRequest<TUser = any>(
+    err: Record<string, any>,
+    user: TUser,
+    info: any,
+  ): TUser {
     if (err || !user) {
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtRefreshTokenError,
         message: 'http.clientError.unauthorized',
+        error: err?.message || info?.message,
       });
     }
 

@@ -4,7 +4,6 @@ import { CompressionMiddleware } from './compression/compression.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
 import { CorrelationIdMiddleware } from './correlation-id/correlation-id.middleware';
 import { CorsMiddleware } from './cors/cors.middleware';
-import { CustomLanguageMiddleware } from './custom-language/custom-language.middleware';
 import { HelmetMiddleware } from './helmet/helmet.middleware';
 import {
   HttpDebuggerMiddleware,
@@ -14,6 +13,7 @@ import { ResponseTimeMiddleware } from './response-time/response-time.middleware
 import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { TimezoneMiddleware } from './timezone/timezone.middleware';
 import { UserAgentMiddleware } from './user-agent/user-agent.middleware';
+import { ValidateCustomLanguageMiddleware } from './validate-custom-language/validate-custom-language.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
@@ -28,7 +28,7 @@ export class MiddlewareModule implements NestModule {
         HttpDebuggerMiddleware,
         HelmetMiddleware,
         CookieParserMiddleware,
-        CustomLanguageMiddleware,
+        ValidateCustomLanguageMiddleware,
         UserAgentMiddleware,
         ResponseTimeMiddleware,
         TimestampMiddleware,

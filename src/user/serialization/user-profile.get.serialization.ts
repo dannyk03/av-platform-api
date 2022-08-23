@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { IAwsS3Response } from '@/aws/aws.interface';
+import { IAwsS3 } from '@/aws';
 
 @Exclude()
 export class UserProfileGetSerialization {
@@ -30,5 +30,5 @@ export class UserProfileGetSerialization {
 
   @Expose()
   @Transform(({ obj }) => obj.profile.photo)
-  readonly photo?: IAwsS3Response;
+  readonly photo?: IAwsS3;
 }

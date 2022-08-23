@@ -10,11 +10,13 @@ export class JwtGuard extends AuthGuard('jwt') {
   handleRequest<TUser = AuthUserLoginSerialization>(
     err: Record<string, any>,
     user: TUser,
+    info: any,
   ): TUser {
     if (err || !user) {
       throw new UnauthorizedException({
         statusCode: EnumAuthStatusCodeError.AuthGuardJwtAccessTokenError,
         message: 'http.clientError.unauthorized',
+        error: err?.message || info?.message,
       });
     }
 

@@ -18,7 +18,6 @@ import { MiddlewareModule } from '@/utils/middleware/middleware.module';
 import { PaginationModule } from '@/utils/pagination/pagination.module';
 import { RequestModule } from '@/utils/request/request.module';
 import { ResponseModule } from '@/utils/response/response.module';
-import { VersionModule } from '@/utils/version/version.module';
 
 import { TypeOrmConfigService } from '@/database/service';
 import { DebuggerOptionService } from '@/debugger/service';
@@ -66,11 +65,10 @@ import { ConnectionNames } from '@/database/';
     ErrorModule,
     PaginationModule,
     RequestModule,
-    VersionModule,
     MiddlewareModule,
     LogModule,
     AuthModule,
     ResponseModule,
   ],
 })
-export class CoreModule {}
+export class CommonModule {}

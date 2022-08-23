@@ -3,95 +3,151 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  Type,
-  mixin,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 
-import { IMessage, IResponse, IResponseData } from '@avo/type';
+import { IResponse } from '@avo/type';
 
+import {
+  ClassConstructor,
+  ClassTransformOptions,
+  plainToInstance,
+} from 'class-transformer';
 import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IMessageOptionsProperties } from '@/response-message';
+import { IErrorHttpFilterMetadata } from '@/utils/error';
 import { IRequestApp } from '@/utils/request';
 
-export function ResponseDefaultInterceptor(
-  messagePath: string,
-): Type<NestInterceptor> {
-  @Injectable()
-  class MixinResponseDefaultInterceptor
-    implements NestInterceptor<Promise<any>>
-  {
-    constructor(
-      private readonly responseMessageService: ResponseMessageService,
-    ) {}
+import {
+  RESPONSE_MESSAGE_PATH_META_KEY,
+  RESPONSE_MESSAGE_PROPERTIES_META_KEY,
+  RESPONSE_SERIALIZATION_META_KEY,
+  RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
+} from '../response.constant';
 
-    async intercept(
-      context: ExecutionContext,
-      next: CallHandler,
-    ): Promise<Observable<Promise<IResponse> | string>> {
-      if (context.getType() === 'http') {
-        return next.handle().pipe(
-          map(
-            async (
-              responseData: Promise<IResponseData>,
-            ): Promise<IResponse> => {
-              const ctx: HttpArgumentsHost = context.switchToHttp();
-              const response: Response = ctx.getResponse();
-              const { customLang } = ctx.getRequest<IRequestApp>();
-              const customLanguages = customLang?.split(',') || [];
-              let resStatusCode = response.statusCode;
-              let resMessage: string | IMessage =
-                await this.responseMessageService.get(messagePath, {
-                  customLanguages,
-                });
-              const resData = await responseData;
-              if (resData) {
-                const { metadata, ...data } = resData;
+@Injectable()
+export class ResponseDefaultInterceptor
+  implements NestInterceptor<Promise<any>>
+{
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly messageService: ResponseMessageService,
+  ) {}
 
-                // metadata
-                let resMetadata = {};
-                if (metadata) {
-                  const { statusCode, message, ...metadataOthers } = metadata;
-                  resStatusCode = statusCode || resStatusCode;
-                  resMessage = message
-                    ? await this.responseMessageService.get(message, {
-                        customLanguages,
-                      })
-                    : resMessage;
-                  resMetadata = metadataOthers;
-                }
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<Promise<IResponse>>> {
+    if (context.getType() === 'http') {
+      return next.handle().pipe(
+        map(async (responseData: Promise<Record<string, any>>) => {
+          const ctx: HttpArgumentsHost = context.switchToHttp();
+          const responseExpress: Response = ctx.getResponse();
+          const requestExpress: IRequestApp = ctx.getRequest<IRequestApp>();
 
-                return {
-                  statusCode: resStatusCode,
-                  message: resMessage,
+          let messagePath: string = this.reflector.get<string>(
+            RESPONSE_MESSAGE_PATH_META_KEY,
+            context.getHandler(),
+          );
+          const classSerialization: ClassConstructor<any> = this.reflector.get<
+            ClassConstructor<any>
+          >(RESPONSE_SERIALIZATION_META_KEY, context.getHandler());
+          const classSerializationOptions: ClassTransformOptions =
+            this.reflector.get<ClassTransformOptions>(
+              RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
+              context.getHandler(),
+            );
+          const messageProperties: IMessageOptionsProperties =
+            this.reflector.get<IMessageOptionsProperties>(
+              RESPONSE_MESSAGE_PROPERTIES_META_KEY,
+              context.getHandler(),
+            );
 
-                  ...(Object.keys(resMetadata).length && {
-                    meta: {
-                      ...resMetadata,
-                    },
-                  }),
+          // message base on language
+          const { customLang } = ctx.getRequest<IRequestApp>();
 
-                  ...(Object.keys(data).length && { result: data }),
-                };
-              }
+          // default response
+          let statusCode: number = responseExpress.statusCode;
+          let message = await this.messageService.get(messagePath, {
+            customLanguages: customLang,
+          });
 
-              return {
-                statusCode: resStatusCode,
-                message: resMessage,
-                result: resData === null ? null : undefined,
-              };
-            },
-          ),
-        );
-      }
+          // get metadata
+          const __path = requestExpress.path;
+          const __correlationId = requestExpress.correlationId;
+          const __timestamp = requestExpress.timestamp;
+          const __timezone = requestExpress.timezone;
+          const __version = requestExpress.version;
+          const __repoVersion = requestExpress.repoVersion;
 
-      return next.handle();
+          const resMetadata: IErrorHttpFilterMetadata = {
+            languages: customLang,
+            timestamp: __timestamp,
+            timezone: __timezone,
+            correlationId: __correlationId,
+            path: __path,
+            version: __version,
+            repoVersion: __repoVersion,
+          };
+
+          // response
+          const response = (await responseData) as IResponse;
+          if (response) {
+            const { meta, ...data } = response;
+            let properties: IMessageOptionsProperties = messageProperties;
+            let serialization = data;
+
+            if (classSerialization) {
+              serialization = plainToInstance(
+                classSerialization,
+                data,
+                classSerializationOptions,
+              );
+            }
+
+            if (meta) {
+              statusCode = meta.statusCode || statusCode;
+              messagePath = meta.message || messagePath;
+              properties = meta.properties || properties;
+
+              delete meta.statusCode;
+              delete meta.message;
+              delete meta.properties;
+            }
+
+            // message
+            message = await this.messageService.get(messagePath, {
+              customLanguages: customLang,
+              properties,
+            });
+
+            serialization =
+              serialization && Object.keys(serialization).length > 0
+                ? serialization
+                : undefined;
+
+            return {
+              statusCode,
+              message,
+              metadata: { ...resMetadata, ...meta },
+              result: serialization,
+            };
+          }
+
+          return {
+            statusCode,
+            message,
+            metadata: resMetadata,
+          };
+        }),
+      );
     }
-  }
 
-  return mixin(MixinResponseDefaultInterceptor);
+    return next.handle();
+  }
 }

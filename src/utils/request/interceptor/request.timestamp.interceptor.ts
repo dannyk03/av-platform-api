@@ -87,7 +87,7 @@ export class RequestTimestampInterceptor
       } else {
         const newTimestamp = xTimestamp || currentTimestamp.toString();
         request.headers['x-timestamp'] = newTimestamp;
-        request.timestamp = newTimestamp;
+        request.timestamp = this.helperNumberService.create(newTimestamp);
       }
     }
 
