@@ -14,6 +14,7 @@ import { TimestampMiddleware } from './timestamp/timestamp.middleware';
 import { TimezoneMiddleware } from './timezone/timezone.middleware';
 import { UserAgentMiddleware } from './user-agent/user-agent.middleware';
 import { ValidateCustomLanguageMiddleware } from './validate-custom-language/validate-custom-language.middleware';
+import { VersionMiddleware } from './version/version.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
@@ -32,6 +33,7 @@ export class MiddlewareModule implements NestModule {
         UserAgentMiddleware,
         ResponseTimeMiddleware,
         TimestampMiddleware,
+        VersionMiddleware,
       )
       .forRoutes('*');
   }

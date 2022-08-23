@@ -13,3 +13,10 @@ export interface IResponseOptions {
   classSerialization: ClassConstructor<any>;
   messageProperties?: IMessageOptionsProperties;
 }
+
+export interface IResponseMetadata {
+  statusCode?: number;
+  message?: string;
+  messageProperties?: IMessageOptionsProperties;
+  [key: string]: any;
+}

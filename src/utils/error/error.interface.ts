@@ -32,11 +32,13 @@ export interface IErrorException {
 
 // final error
 export interface IErrorHttpFilterMetadata {
-  languages: string[];
+  languages?: string[];
   timestamp: number;
   timezone: string;
   correlationId: string;
   path: string;
+  version: string;
+  repoVersion: string;
   [key: string]: any;
 }
 

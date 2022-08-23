@@ -3,11 +3,12 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UnprocessableEntityException,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 
-import { IResponseData } from '@avo/type';
+import { EnumRequestStatusCodeError, IResponseData } from '@avo/type';
 
 import { IResult } from 'ua-parser-js';
 
@@ -109,6 +110,18 @@ export class TestingCommonController {
   async timeout(): Promise<IResponseData> {
     await this.helperService.delay(5000);
     return;
+  }
+
+  @Response('response.default')
+  @ResponseTimeout('2s')
+  @ErrorMeta(TestingCommonController.name, 'errorTest')
+  @Get('/error')
+  async errorTest(): Promise<IResponseData> {
+    throw new UnprocessableEntityException({
+      statusCode: EnumRequestStatusCodeError.RequestValidationError,
+      message: 'http.clientError.unprocessableEntity',
+      error: 'Test error message',
+    });
   }
 
   // @Response('test.cld')

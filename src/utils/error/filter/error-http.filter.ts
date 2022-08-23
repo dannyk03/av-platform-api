@@ -109,7 +109,6 @@ export class ErrorHttpFilter implements ExceptionFilter {
     );
 
     const resMetadata: IErrorHttpFilterMetadata = {
-      languages: customLang,
       timestamp: __timestamp,
       timezone: __timezone,
       correlationId: __correlationId,

@@ -1,3 +1,3 @@
 export * from './interceptor';
-export * from './response.decorator';
+export * from './decorators/response.decorator';
 export * from './response.interface';
