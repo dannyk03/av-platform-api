@@ -67,8 +67,9 @@ class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
 
   @Expose()
   @Transform(({ value: products }) =>
-    products?.map((product: Product) =>
-      plainToInstance(ProductGetSerialization, product),
+    products?.map(
+      (product: Product): ProductGetSerialization =>
+        plainToInstance(ProductGetSerialization, product),
     ),
   )
   products: ProductGetSerialization[];
