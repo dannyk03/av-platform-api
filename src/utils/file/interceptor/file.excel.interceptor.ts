@@ -88,7 +88,7 @@ export function FileExcelInterceptor(
               }
             }
 
-            if (errors.length > 0) {
+            if (errors.length) {
               throw new UnprocessableEntityException({
                 statusCode: EnumFileStatusCodeError.FileValidationDtoError,
                 message: 'file.error.validationDto',
@@ -168,20 +168,20 @@ export function FileExcelInterceptor(
           const classDto = plainToInstance<any, any>(options.dto, ext);
 
           const validator: ValidationError[] = await validate(classDto);
-          if (validator.length > 0) {
+          if (validator.length) {
             errors.push({
               row: index,
               file: fileName,
               errors: validator,
             });
-          } else if (errors.length > 0) {
+          } else if (errors.length) {
             continue;
           } else {
             data.push(classDto);
           }
         }
 
-        if (errors.length > 0) {
+        if (errors.length) {
           throw errors;
         }
 

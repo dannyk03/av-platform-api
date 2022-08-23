@@ -90,7 +90,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     } = responseException;
 
     let { errors } = responseException;
-    if (errors && errors.length > 0) {
+    if (errors && errors.length) {
       errors =
         errorType === EnumErrorType.IMPORT
           ? await this.messageService.getImportErrorsMessage(
@@ -122,7 +122,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const resResponse: IErrorHttpFilter = {
       statusCode: statusCode || statusHttp,
       message: mapMessage,
-      error: error && Object.keys(error).length > 0 ? error : undefined,
+      error: error && Object.keys(error).length ? error : undefined,
       errors: errors as IErrors[] | IErrorsImport[],
       metadata: resMetadata,
       data,

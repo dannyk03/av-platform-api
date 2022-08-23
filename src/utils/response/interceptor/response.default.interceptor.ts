@@ -127,7 +127,7 @@ export class ResponseDefaultInterceptor
             });
 
             serialization =
-              serialization && Object.keys(serialization).length > 0
+              serialization && Object.keys(serialization).length
                 ? serialization
                 : undefined;
 

@@ -24,7 +24,7 @@ export function RequestParamRawGuard(
 
         const errors: ValidationError[] = await validate(request);
 
-        if (errors.length > 0) {
+        if (errors.length) {
           throw new BadRequestException({
             statusCode: EnumRequestStatusCodeError.RequestValidationError,
             message: 'http.clientError.badRequest',

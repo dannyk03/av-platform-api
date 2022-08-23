@@ -34,7 +34,7 @@ export class ValidateCustomLanguageMiddleware implements NestMiddleware {
         this.helperArrayService.includes(enumLanguage, val),
       );
 
-      if (languages.length > 0) {
+      if (languages.length) {
         language = languages.join(',');
         customLang = languages;
       }
