@@ -64,7 +64,11 @@ export class NetworkingCommonController {
   async connect(
     @ReqUser()
     reqUser: User,
-    @Body() { addressees, sharedPersonalNote }: SocialConnectionRequestDto,
+    @Body()
+    {
+      addressees,
+      personalNote: sharedPersonalNote,
+    }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
     const promises = addressees.map(async ({ email, personalNote }) => {
       if (email === reqUser.email) {
@@ -96,6 +100,7 @@ export class NetworkingCommonController {
 
       const createSocialConnectionRequest =
         await this.socialConnectionRequestService.create({
+          personalNote: personalNote || sharedPersonalNote,
           addressedUser: reqUser,
           addresseeUser,
           tempAddresseeEmail: addresseeUser ? null : email,
@@ -109,12 +114,18 @@ export class NetworkingCommonController {
       if (saveSocialConnectionRequest) {
         const isEmailSent = addresseeUser
           ? await this.emailService.sendNetworkNewConnectionRequest({
-              fromUser: reqUser,
-              email,
+              personalNote: saveSocialConnectionRequest.personalNote,
+              fromUser: saveSocialConnectionRequest.addressedUser,
+              email:
+                saveSocialConnectionRequest.addresseeUser?.email ||
+                saveSocialConnectionRequest.tempAddresseeEmail,
             })
           : await this.emailService.sendNetworkJoinInvite({
-              fromUser: reqUser,
-              email,
+              personalNote: saveSocialConnectionRequest.personalNote,
+              fromUser: saveSocialConnectionRequest.addressedUser,
+              email:
+                saveSocialConnectionRequest.addresseeUser?.email ||
+                saveSocialConnectionRequest.tempAddresseeEmail,
             });
 
         if (isEmailSent) {

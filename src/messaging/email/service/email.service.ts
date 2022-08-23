@@ -43,12 +43,13 @@ export class EmailService {
   }
 
   async sendNetworkNewConnectionRequest({
+    personalNote,
     email,
     fromUser,
   }: {
     email: string;
     fromUser: User;
-    path?: string;
+    personalNote?: string;
   }) {
     const approvePath = `/network/approve?email=${fromUser.email}`;
     const rejectPath = `/network/reject?email=${fromUser.email}`;
@@ -61,7 +62,12 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkNewConnectionRequest.toString(),
       to: [email],
-      emailTemplatePayload: { from: fromUser.email, approvePath, rejectPath },
+      emailTemplatePayload: {
+        from: fromUser.email,
+        approvePath,
+        rejectPath,
+        personalNote,
+      },
       identifier: { id: email },
     });
     console.log({ email, approvePath, rejectPath });
