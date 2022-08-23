@@ -22,7 +22,7 @@ import {
   BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
-  UniqueArrayTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -77,7 +77,7 @@ export class ProductUpdateDto {
   @IsOptional()
   @IsString({ each: true })
   @ArrayTransform()
-  @UniqueArrayTransform()
+  @UniqueArrayByTransform()
   @NormalizeStringInputTransform({ each: true })
   @ToLowerCaseTransform({ each: true })
   readonly keywords?: string[];
@@ -97,7 +97,7 @@ export class ProductUpdateDto {
   @IsArray()
   @IsOptional()
   @IsUUID(undefined, { each: true })
-  @UniqueArrayTransform()
+  @UniqueArrayByTransform()
   @ArrayTransform()
   deleteImageIds?: string[];
 

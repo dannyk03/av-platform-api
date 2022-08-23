@@ -64,9 +64,9 @@ export class NetworkingCommonController {
   async connect(
     @ReqUser()
     reqUser: User,
-    @Body() { emails }: SocialConnectionRequestDto,
+    @Body() { addressees, sharedPersonalNote }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
-    const promises = emails.map(async (email) => {
+    const promises = addressees.map(async ({ email, personalNote }) => {
       if (email === reqUser.email) {
         return Promise.reject(email);
       }

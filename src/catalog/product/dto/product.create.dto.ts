@@ -21,7 +21,7 @@ import {
   BooleanStringTransform,
   NormalizeStringInputTransform,
   ToLowerCaseTransform,
-  UniqueArrayTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class ProductCreateDto {
@@ -53,7 +53,7 @@ export class ProductCreateDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  @UniqueArrayTransform()
+  @UniqueArrayByTransform()
   @ArrayTransform()
   @ToLowerCaseTransform({ each: true })
   @NormalizeStringInputTransform({ each: true })

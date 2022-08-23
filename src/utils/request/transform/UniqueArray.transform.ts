@@ -1,11 +1,16 @@
 import { applyDecorators } from '@nestjs/common';
 
 import { Transform } from 'class-transformer';
+import uniqBy from 'lodash/uniqBy';
 
-export function UniqueArrayTransform(): any {
+export function UniqueArrayByTransform(field?: string): any {
   return applyDecorators(
     Transform(({ value }) =>
-      Array.isArray(value) ? [...new Set(value)] : value,
+      Array.isArray(value)
+        ? field
+          ? uniqBy(value, field)
+          : [...new Set(value)]
+        : value,
     ),
   );
 }
