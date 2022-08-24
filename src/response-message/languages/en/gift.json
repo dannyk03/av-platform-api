@@ -17,7 +17,7 @@
     "list": "List gift-intent success",
     "addGiftOption": "Gift option add success",
     "updateGiftOption": "Gift option update success",
-    "upsertGiftOption": "Gift option update/save success",
+    "upsertGiftOption": "Gift option update or save success",
     "deleteGiftOption": "Gift-intent delete option success",
     "ready": "Gift-intent ready success",
     "submit": "Gift-intent submit success",

@@ -524,10 +524,6 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
-
-    const saveGiftOption = await this.giftService.save(giftOption);
-
-    return this.giftService.serializationGift(saveGiftOption);
   }
 
   @Response('gift.intent.deleteGiftOption')
