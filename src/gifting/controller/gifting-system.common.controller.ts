@@ -38,6 +38,7 @@ import {
   GiftIntentStatusUpdateDto,
   GiftOptionCreateDto,
   GiftOptionDeleteDto,
+  GiftOptionUpdateDto,
 } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
@@ -291,6 +292,75 @@ export class GiftingSystemCommonController {
     );
 
     return this.giftService.serializationGift(saveGift);
+  }
+
+  @Response('gift.intent.updateGiftOption')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftOption,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/intent/:id')
+  async updateGiftOption(
+    @Param('id') giftIntentId: string,
+    @Body()
+    {
+      addProductIds,
+      deleteProductIds,
+      giftOptionId,
+      lang,
+    }: GiftOptionUpdateDto,
+  ): Promise<IResponseData> {
+    const giftOption = await this.giftService.findOne({
+      where: {
+        id: giftOptionId,
+        giftIntent: {
+          id: giftIntentId,
+        },
+      },
+      relations: ['giftIntent'],
+      select: {
+        products: true,
+        giftIntent: {
+          id: true,
+        },
+      },
+    });
+
+    if (!giftOption) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionNotFoundError,
+        message: 'gift.option.error.notFound',
+      });
+    }
+    const addProductsFind = addProductIds
+      ? await this.productService.findAllByIds({
+          productIds: addProductIds,
+          lang,
+        })
+      : [];
+
+    if (addProductIds && addProductIds?.length !== addProductsFind?.length) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    giftOption.products = [
+      ...giftOption.products.filter(({ id }) => !deleteProductIds.includes(id)),
+      ...addProductsFind,
+    ];
+
+    const saveGiftOption = await this.giftService.save(giftOption);
+
+    return this.giftService.serializationGift(saveGiftOption);
   }
 
   @Response('gift.intent.deleteGiftOption')

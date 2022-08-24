@@ -7,5 +7,5 @@ import { IsEnumCaseInsensitiveTransform } from '@/utils/request/transform';
 export class GiftIntentStatusUpdateDto {
   @IsEnumCaseInsensitiveTransform(EnumGiftIntentStatus)
   @IsNotEmpty()
-  status: string;
+  readonly status: string;
 }
