@@ -36,19 +36,43 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
-      - run: |
-          touch .env
-          echo APP_NAME="avo" >> .env
-          echo APP_ENV="production" >> .env
-          echo APP_MODE="secure" >> .env
-          echo APP_LANGUAGE="en" >> .env
-          echo APP_TZ="Asia/Jerusalem" >> .env
-          echo APP_HOST="localhost" >> .env
-          echo APP_PORT=" 3000" >> .env
-          echo APP_VERSIONING="true" >> .env
-          echo APP_VERSION="1" >> .env
-          echo APP_HTTP_ON="true" >> .env
-          echo APP_JOB_ON="true" >> .env
+      - run:
+          name: Create test .env
+          command: |
+            touch .env
+            echo APP_NAME="avo" >> .env
+            echo APP_ENV="production" >> .env
+            echo APP_MODE="secure" >> .env
+            echo APP_LANGUAGE="en" >> .env
+            echo APP_TZ="Asia/Jerusalem" >> .env
+            echo APP_HOST="localhost" >> .env
+            echo APP_PORT=" 3000" >> .env
+            echo APP_VERSIONING="true" >> .env
+            echo APP_VERSION="1" >> .env
+            echo APP_HTTP_ON="true" >> .env
+            echo APP_JOB_ON="true" >> .env
+            echo APP_JOB_ON="true" >> .env
+            echo MIDDLEWARE_TOLERANCE_TIMESTAMP="5m" >> .env
+            echo MIDDLEWARE_TIMEOUT="30s" >> .env
+            echo AUTH_SYSTEM_ADMIN_EMAIL="test@avonow.com" >> .env
+            echo AUTH_SYSTEM_ADMIN_INITIAL_PASS="Avo12345!" >> .env
+            echo AUTH_JWT_AUDIENCE="https://avonow.com" >> .env
+            echo AUTH_JWT_ISSUER="avonow" >> .env
+            echo AUTH_JWT_ACCESS_TOKEN_SECRET_KEY="123456" >> .env
+            echo AUTH_JWT_ACCESS_TOKEN_EXPIRED="300m" >> .env
+            echo AUTH_JWT_REFRESH_TOKEN_SECRET_KEY="01001231" >> .env
+            echo AUTH_JWT_REFRESH_TOKEN_EXPIRED="7d" >> .env
+            echo AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED="30d" >> .env
+            echo AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION="30m" >> .env
+            echo POSTGRES_HOST=${POSTGRES_HOST} >> .env
+            echo POSTGRES_PORT=${POSTGRES_PORT} >> .env
+            echo POSTGRES_USER=${POSTGRES_USER} >> .env
+            echo POSTGRES_PASSWORD=${POSTGRES_PASSWORD} >> .env
+            echo POSTGRES_DB=${POSTGRES_DB} >> .env
+            echo CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+            echo CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+            echo CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+            echo CUSTOMER_IO_API_KEY=${CUSTOMER_IO_API_KEY}
       - run:
           name: Run linter
           command: yarn lint
