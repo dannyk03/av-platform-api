@@ -228,7 +228,7 @@ export class EmailService {
     }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftReady.toString(),
+      template: EmailTemplate.SendGiftShipped.toString(),
       to: [email],
       emailTemplatePayload: { path },
       identifier: { id: email },
