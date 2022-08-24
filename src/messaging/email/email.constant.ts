@@ -5,7 +5,7 @@ export enum EmailTemplate {
   SendSignUpEmailVerification = 'Email Verification',
   SendGiftSurvey = 'Survey Confirmation',
   SendGiftConfirm = 'SendGiftConfirm',
-  SendGiftReady = 'SendGiftReady',
+  SendGiftOptions = 'SendGiftOptions',
 }
 
 export enum EmailStatus {
@@ -55,5 +55,24 @@ export type SignUpEmailVerificationMessageData = {
   user: {
     firstName: string;
   };
-  verificationLink: string;
+  activationCode: string;
+};
+
+export type GiftOption = {
+  productName: string;
+  description: string;
+  imageUrl: string;
+  currency: string;
+  price: string;
+};
+
+export type GiftOptionSelectMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  giftOptions: GiftOption[];
+  giftSelectUrl: string;
 };

@@ -211,6 +211,7 @@ export class AuthCommonController {
           email,
           code: signUpEmailVerificationLink.code,
           expiresInDays,
+          firstName: signUpUser.profile.firstName,
         });
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);

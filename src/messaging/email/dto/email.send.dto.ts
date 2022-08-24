@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 import {
+  GiftOptionSelectMessageData,
   GiftSurveyMessageData,
   Identifier,
   SignUpEmailVerificationMessageData,
@@ -28,6 +29,7 @@ export class SendEmailDto {
   emailTemplatePayload:
     | GiftSurveyMessageData
     | SignUpEmailVerificationMessageData
+    | GiftOptionSelectMessageData
     | any;
 
   @IsObject()
