@@ -77,8 +77,7 @@ export class ResponsePagingInterceptor
           const { customLang } = ctx.getRequest<IRequestApp>();
 
           // response
-          const response = (await responseData) as IResponsePagingData;
-          const { data, ...meta } = response;
+          const { data, ...meta } = await responseData;
           const statusCode: number = responseExpress.statusCode;
           const properties: IMessageOptionsProperties = messageProperties;
           let serialization = data;

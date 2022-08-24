@@ -78,7 +78,6 @@ export class ErrorHttpFilter implements ExceptionFilter {
       return;
     }
 
-    const responseException = response as IErrorException;
     const {
       statusCode,
       message,
@@ -87,9 +86,9 @@ export class ErrorHttpFilter implements ExceptionFilter {
       data,
       properties,
       metadata,
-    } = responseException;
+    } = response;
 
-    let { errors } = responseException;
+    let { errors } = response;
     if (errors && errors.length) {
       errors =
         errorType === EnumErrorType.IMPORT
@@ -136,8 +135,6 @@ export class ErrorHttpFilter implements ExceptionFilter {
       .setHeader('x-repo-version', __repoVersion)
       .status(statusHttp)
       .json(resResponse);
-
-    return;
   }
 
   isErrorException(obj: any): obj is IErrorException {
