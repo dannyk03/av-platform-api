@@ -209,4 +209,28 @@ export class EmailService {
     });
     return sendResult.status === EmailStatus.success;
   }
+
+  async sendGiftShipped({
+    email,
+    path = '/shipped',
+  }: {
+    email: string;
+    path?: string;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftReady.toString(),
+      to: [email],
+      emailTemplatePayload: { path },
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
 }

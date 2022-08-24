@@ -17,6 +17,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumGiftIntentStatusCodeError,
+  EnumGiftingStatusCodeError,
   EnumMessagingStatusCodeError,
   IResponseData,
   IResponsePagingData,
@@ -25,6 +26,7 @@ import {
 import flatMap from 'lodash/flatMap';
 import { DataSource, In, IsNull, Not } from 'typeorm';
 
+import { GiftIntentConfirmationLink } from '../entity';
 import { User } from '@/user/entity';
 
 import {
@@ -68,12 +70,14 @@ export class GiftingCommonController {
 
   @Response('gift.send')
   @HttpCode(HttpStatus.OK)
-  @AclGuard()
+  @AclGuard({
+    loadSensitiveAuthData: true,
+  })
   @Throttle(1, 5)
   @Post('/send')
   async sendGiftSurvey(
     @Body()
-    { sender, recipients, additionalData }: GiftSendDto,
+    { recipients, additionalData }: GiftSendDto,
     @ReqUser()
     reqUser: User,
   ): Promise<IResponseData> {
@@ -84,28 +88,43 @@ export class GiftingCommonController {
       async (transactionalEntityManager) => {
         const giftIntents = await Promise.all(
           uniqueRecipients.map(async (recipient) => {
+            if (recipient.email === reqUser.email) {
+              throw new BadRequestException({
+                statusCode:
+                  EnumGiftingStatusCodeError.GiftSendUnprocessableError,
+                message: 'gift.error.send',
+              });
+            }
             const maybeRecipientUser = await this.userService.findOneBy({
               email: recipient.email,
             });
+
+            if (!maybeRecipientUser) {
+              throw new BadRequestException({
+                statusCode:
+                  EnumGiftingStatusCodeError.GiftRecipientNotFoundError,
+                message: 'gift.error.send',
+              });
+            }
 
             return this.giftIntentService.create({
               sender: {
                 user: {
                   id: reqUser.id,
                 },
-                additionalData: {
-                  ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
-                    sender,
-                  )),
-                },
+                // additionalData: {
+                //   ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
+                //     sender,
+                //   )),
+                // },
               },
               recipient: {
                 user: maybeRecipientUser ? { id: maybeRecipientUser.id } : null,
-                additionalData: {
-                  ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
-                    recipient,
-                  )),
-                },
+                // additionalData: {
+                //   ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
+                //     recipient,
+                //   )),
+                // },
               },
               additionalData: {
                 occasion: additionalData.occasion,
@@ -117,32 +136,56 @@ export class GiftingCommonController {
           }),
         );
 
-        const confirmationLink = await this.giftConfirmationLinkService.create({
-          giftIntents,
-        });
+        // If sender email not verified, need to confirm gift send
 
-        await transactionalEntityManager.save(confirmationLink);
+        const isSenderVerifiedUser = Boolean(
+          reqUser?.authConfig.emailVerifiedAt,
+        );
+
+        let confirmationLinkSave: GiftIntentConfirmationLink;
+
+        if (!isSenderVerifiedUser) {
+          const confirmationLink =
+            await this.giftConfirmationLinkService.create({
+              giftIntents,
+            });
+
+          confirmationLinkSave = await transactionalEntityManager.save(
+            confirmationLink,
+          );
+        }
 
         const saveGiftIntents = await Promise.all(
           giftIntents.map(async (giftIntent) => {
-            const emailSent = await this.emailService.sendGiftConfirm({
-              email: giftIntent.sender.user?.email,
-              code: confirmationLink.code,
-            });
-            if (!emailSent) {
-              throw new InternalServerErrorException({
-                statusCode:
-                  EnumMessagingStatusCodeError.MessagingEmailSendError,
-                message: 'messaging.error.email.send',
+            if (confirmationLinkSave) {
+              const emailSent = await this.emailService.sendGiftConfirm({
+                email: giftIntent.sender.user?.email,
+                code: confirmationLinkSave.code,
               });
+              if (!emailSent) {
+                throw new InternalServerErrorException({
+                  statusCode:
+                    EnumMessagingStatusCodeError.MessagingEmailSendError,
+                  message: 'messaging.error.email.send',
+                });
+              }
+              giftIntent.confirmationLink = confirmationLinkSave;
             }
-            giftIntent.confirmationLink = confirmationLink;
+
+            if (isSenderVerifiedUser) {
+              giftIntent.confirmedAt = this.helperDateService.create();
+            }
+
+            if (giftIntent?.recipient?.user) {
+              giftIntent.acceptedAt = this.helperDateService.create();
+            }
+
             return transactionalEntityManager.save(giftIntent);
           }),
         );
 
         return {
-          code: confirmationLink.code,
+          ...(confirmationLinkSave && { code: confirmationLinkSave.code }),
           giftIntentIds: saveGiftIntents
             ? saveGiftIntents.map(({ id }) => id)
             : null,
