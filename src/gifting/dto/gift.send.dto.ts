@@ -29,17 +29,17 @@ export class GiftSendRecipientDto {
   @NormalizeEmail()
   readonly email: string;
 
-  @MaxLength(30)
-  @IsOptional()
-  @NormalizeStringInputTransform()
-  @EmptyStringToUndefinedTransform()
-  readonly firstName?: string;
+  // @MaxLength(30)
+  // @IsOptional()
+  // @NormalizeStringInputTransform()
+  // @EmptyStringToUndefinedTransform()
+  // readonly firstName?: string;
 
-  @MaxLength(30)
-  @IsOptional()
-  @NormalizeStringInputTransform()
-  @EmptyStringToUndefinedTransform()
-  readonly lastName?: string;
+  // @MaxLength(30)
+  // @IsOptional()
+  // @NormalizeStringInputTransform()
+  // @EmptyStringToUndefinedTransform()
+  // readonly lastName?: string;
 }
 export class GiftSendSenderDto {
   @MaxLength(50)
@@ -103,10 +103,10 @@ export class GiftSendDto {
   @Type(() => GiftSendRecipientDto)
   readonly recipients: GiftSendRecipientDto[];
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => GiftSendSenderDto)
-  readonly sender: GiftSendSenderDto;
+  // @IsObject()
+  // @ValidateNested()
+  // @Type(() => GiftSendSenderDto)
+  // readonly sender: GiftSendSenderDto;
 
   @IsObject()
   @IsNotEmpty()
