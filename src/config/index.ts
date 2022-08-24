@@ -63,7 +63,6 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     ],
     APP_PORT: Joi.number().default(3001).required(),
     APP_VERSIONING: Joi.boolean().default(true).required(),
-    APP_DEBUG: Joi.boolean().default(false).optional(),
 
     APP_HTTP_ON: Joi.boolean().default(true).required(),
     APP_JOB_ON: Joi.boolean().default(false).required(),
@@ -73,7 +72,6 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     POSTGRES_DB: Joi.any().default('avo').required(),
     POSTGRES_USER: Joi.any().optional(),
     POSTGRES_PASSWORD: Joi.any().optional(),
-    DATABASE_DEBUG: Joi.boolean().default(false).required(),
 
     MIDDLEWARE_TOLERANCE_TIMESTAMP: Joi.string().default('5m').required(),
     MIDDLEWARE_TIMEOUT: Joi.string().default('30s').required(),
