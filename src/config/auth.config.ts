@@ -29,8 +29,6 @@ export default registerAs(
           : ms('30m'), // recommendation for production is 30m
       },
 
-      audience: process.env.AUTH_JWT_AUDIENCE || 'localhost',
-      issuer: process.env.AUTH_JWT_ISSUER || 'ack',
       prefixAuthorization: 'Bearer',
     },
 

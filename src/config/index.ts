@@ -76,8 +76,6 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     MIDDLEWARE_TOLERANCE_TIMESTAMP: Joi.string().default('5m').required(),
     MIDDLEWARE_TIMEOUT: Joi.string().default('30s').required(),
 
-    AUTH_JWT_AUDIENCE: Joi.string().required(),
-    AUTH_JWT_ISSUER: Joi.string().required(),
     AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: Joi.string()
       .alphanum()
       .min(5)
@@ -96,6 +94,10 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
     AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
     AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().required(),
     AUTH_SYSTEM_ADMIN_INITIAL_PASS: Joi.string().required(),
+
+    CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+    CLOUDINARY_API_KEY: Joi.string().required(),
+    CLOUDINARY_API_SECRET: Joi.string().required(),
 
     CUSTOMER_IO_API_KEY: Joi.string().required(),
   }),
