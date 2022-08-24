@@ -6,7 +6,11 @@ import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
-import { EmailStatus, EmailTemplate } from '../email.constant';
+import {
+  EmailStatus,
+  EmailTemplate,
+  SignUpEmailVerificationMessageData,
+} from '../email.constant';
 
 @Injectable()
 export class EmailService {
@@ -106,11 +110,13 @@ export class EmailService {
 
   async sendSignUpEmailVerification({
     email,
+    firstName,
     code,
     expiresInDays,
     path = '/signup',
   }: {
     email: string;
+    firstName: string;
     code: string;
     expiresInDays: number;
     path?: string;
@@ -119,11 +125,11 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    // TODO: Verify template parameters
+    // TODO: Add server url to payload
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
-      emailTemplatePayload: { path, code },
+      emailTemplatePayload: { path, activationCode: code, user: { firstName } },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
@@ -197,7 +203,7 @@ export class EmailService {
     }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftReady.toString(),
+      template: EmailTemplate.SendGiftOptions.toString(),
       to: [email],
       emailTemplatePayload: { path, code },
       identifier: { id: email },
@@ -206,6 +212,30 @@ export class EmailService {
       path,
       email,
       code,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGiftShipped({
+    email,
+    path = '/shipped',
+  }: {
+    email: string;
+    path?: string;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftShipped.toString(),
+      to: [email],
+      emailTemplatePayload: { path },
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
     });
     return sendResult.status === EmailStatus.success;
   }

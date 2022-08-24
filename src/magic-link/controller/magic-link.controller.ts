@@ -13,7 +13,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumGiftIntentStatusCodeError,
-  EnumGiftStatusCodeError,
+  EnumGiftingStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumOrganizationStatusCodeError,
   EnumUserStatusCodeError,
@@ -198,7 +198,8 @@ export class MagicLinkController {
 
     if (!existingGiftSendConfirmationLink) {
       throw new NotFoundException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkNotFoundError,
+        statusCode:
+          EnumGiftingStatusCodeError.GiftConfirmationLinkNotFoundError,
         message: 'gift.error.code',
       });
     }
@@ -215,7 +216,7 @@ export class MagicLinkController {
       existingGiftSendConfirmationLink.usedAt
     ) {
       throw new ForbiddenException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpiredError,
+        statusCode: EnumGiftingStatusCodeError.GiftConfirmationLinkExpiredError,
         message: 'gift.error.verificationLink',
       });
     }
@@ -227,7 +228,7 @@ export class MagicLinkController {
 
     if (uniqueSenders.length > 1) {
       throw new UnprocessableEntityException({
-        statusCode: EnumGiftStatusCodeError.GiftSendersLimitError,
+        statusCode: EnumGiftingStatusCodeError.GiftSendersLimitError,
         message: 'gift.error.senders',
       });
     }
