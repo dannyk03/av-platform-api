@@ -68,6 +68,7 @@ workflows:
             - ci-migrations-job
             - jfrog-platform
             - cloudinary
+            - customerio
       - build-and-push-image:
           context:
             - eu-ecr
