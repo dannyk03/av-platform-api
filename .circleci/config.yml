@@ -36,6 +36,19 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+      - run: |
+          touch .env
+          echo APP_NAME="avo" >> .env
+          echo APP_ENV="production" >> .env
+          echo APP_MODE="secure" >> .env
+          echo APP_LANGUAGE="en" >> .env
+          echo APP_TZ="Asia/Jerusalem" >> .env
+          echo APP_HOST="localhost" >> .env
+          echo APP_PORT=" 3000" >> .env
+          echo APP_VERSIONING="true" >> .env
+          echo APP_VERSION="1" >> .env
+          echo APP_HTTP_ON="true" >> .env
+          echo APP_JOB_ON="true" >> .env
       - run:
           name: Run linter
           command: yarn lint
