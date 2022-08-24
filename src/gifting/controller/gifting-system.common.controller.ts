@@ -13,6 +13,7 @@ import {
   Query,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
@@ -61,6 +62,7 @@ export class GiftingSystemCommonController {
     private readonly giftIntentService: GiftIntentService,
     private readonly paginationService: PaginationService,
     private readonly productService: ProductService,
+    private readonly configService: ConfigService,
   ) {}
 
   @ResponsePaging('gift.intent.list')
@@ -187,12 +189,30 @@ export class GiftingSystemCommonController {
       });
     }
 
+    let devResult: any;
+
     if (status === EnumGiftIntentStatus.Ready) {
-      return this.giftIntentService.notifyReady({ id: giftIntent.id });
-    } else {
-      giftIntent[`${status.toLowerCase()}At`] = this.helperDateService.create();
-      return this.giftIntentService.save(giftIntent);
+      devResult = await this.giftIntentService.notifyGiftOptionsReady({
+        id: giftIntent.id,
+        markAsReady: false,
+      });
     }
+
+    if (status === EnumGiftIntentStatus.Shipped) {
+      devResult = await this.giftIntentService.notifyGiftShipped({
+        id: giftIntent.id,
+        markAsShipped: false,
+      });
+    }
+
+    giftIntent[`${status.toLowerCase()}At`] = this.helperDateService.create();
+
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    return {
+      ...(await this.giftIntentService.save(giftIntent)),
+      ...(!(isProduction || isSecureMode) && devResult),
+    };
   }
 
   @Response('gift.intent.get')

@@ -144,7 +144,13 @@ export class GiftIntentService {
     return searchBuilder.getCount();
   }
 
-  async notifyReady({ id }) {
+  async notifyGiftOptionsReady({
+    id,
+    markAsReady = true,
+  }: {
+    id: string;
+    markAsReady?: boolean;
+  }) {
     const giftIntent = await this.findOne({
       where: { id, readyAt: IsNull() },
       relations: [
@@ -194,9 +200,11 @@ export class GiftIntentService {
             message: 'messaging.error.email.send',
           });
         }
-        giftIntent.readyAt = this.helperDateService.create();
 
-        await transactionalEntityManager.save(giftIntent);
+        if (markAsReady) {
+          giftIntent.readyAt = this.helperDateService.create();
+          await transactionalEntityManager.save(giftIntent);
+        }
 
         return {
           code: saveReadyLink.code,
@@ -209,6 +217,58 @@ export class GiftIntentService {
     const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
     if (!(isProduction || isSecureMode)) {
       return result;
+    }
+  }
+
+  async notifyGiftShipped({
+    id,
+    markAsShipped = true,
+  }: {
+    id: string;
+    markAsShipped?: boolean;
+  }) {
+    const giftIntent = await this.findOne({
+      where: { id, shippedAt: IsNull() },
+      relations: [
+        'giftOptions',
+        'additionalData',
+        'recipient',
+        'sender',
+        'recipient.user',
+        'sender.user',
+      ],
+    });
+
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    if (!giftIntent?.giftOptions?.length) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionsEmptyError,
+        message: 'gift.intent.error.empty',
+      });
+    }
+
+    const emailSent = await this.emailService.sendGiftShipped({
+      email:
+        giftIntent.recipient?.user?.email ||
+        giftIntent.recipient?.additionalData['email'],
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+      });
+    }
+
+    if (markAsShipped) {
+      giftIntent.shippedAt = this.helperDateService.create();
+      await this.save(giftIntent);
     }
   }
 
