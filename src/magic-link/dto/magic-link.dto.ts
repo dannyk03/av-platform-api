@@ -15,5 +15,5 @@ export class MagicLinkDto {
 
   @ProductDisplayLanguage()
   @IsOptional()
-  lang: EnumDisplayLanguage;
+  readonly lang: EnumDisplayLanguage;
 }

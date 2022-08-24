@@ -7,5 +7,5 @@ import { ProductDisplayLanguage } from '../product.decorator';
 export class ProductGetDto {
   @ProductDisplayLanguage()
   @IsOptional()
-  lang: EnumDisplayLanguage;
+  readonly lang: EnumDisplayLanguage;
 }

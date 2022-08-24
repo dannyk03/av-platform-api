@@ -1,3 +1,5 @@
+import { EnumDisplayLanguage } from '@avo/type';
+
 import { IPaginationOptions } from '@/utils/pagination/pagination.interface';
 
 export interface IGiftIntentSearch {
@@ -5,4 +7,5 @@ export interface IGiftIntentSearch {
   search?: string;
   loadExtra?: boolean;
   options?: IPaginationOptions;
+  lang?: EnumDisplayLanguage;
 }
