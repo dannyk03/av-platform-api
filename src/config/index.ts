@@ -39,70 +39,71 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
   cache: true,
   envFilePath: ['.env'],
   expandVariables: true,
-  // Temp patch for test env
-  // Need to propagate .env to CI somehow for proper validation
-  validationSchema: Joi.object({
-    APP_NAME: Joi.string().default('avo').required(),
-    APP_ENV: Joi.string()
-      .valid('development', 'production')
-      .default('development')
-      .required(),
-    APP_MODE: Joi.string()
-      .valid('simple', 'secure')
-      .default('simple')
-      .required(),
-    APP_LANGUAGE: Joi.string()
-      .valid(...Object.values(EnumMessageLanguage))
-      .default('en')
-      .required(),
-    APP_TZ: Joi.any().default('Asia/Jerusalem').required(),
+  // Validate .env on non production environment
+  ...(process.env.APP_ENV !== 'production' && {
+    validationSchema: Joi.object({
+      APP_NAME: Joi.string().default('avo').required(),
+      APP_ENV: Joi.string()
+        .valid('development', 'production')
+        .default('development')
+        .required(),
+      APP_MODE: Joi.string()
+        .valid('simple', 'secure')
+        .default('simple')
+        .required(),
+      APP_LANGUAGE: Joi.string()
+        .valid(...Object.values(EnumMessageLanguage))
+        .default('en')
+        .required(),
+      APP_TZ: Joi.any().default('Asia/Jerusalem').required(),
 
-    APP_HOST: [
-      Joi.string().ip({ version: 'ipv4' }).required(),
-      Joi.valid('localhost').required(),
-    ],
-    APP_PORT: Joi.number().default(3001).required(),
-    APP_VERSIONING: Joi.boolean().default(true).required(),
+      APP_HOST: [
+        Joi.string().ip({ version: 'ipv4' }).required(),
+        Joi.valid('localhost').required(),
+      ],
+      APP_PORT: Joi.number().default(3001).required(),
+      APP_VERSIONING: Joi.boolean().default(true).required(),
 
-    APP_HTTP_ON: Joi.boolean().default(true).required(),
-    APP_JOB_ON: Joi.boolean().default(false).required(),
+      APP_HTTP_ON: Joi.boolean().default(true).required(),
+      APP_JOB_ON: Joi.boolean().default(false).required(),
 
-    POSTGRES_HOST: Joi.any().default('localhost').required(),
-    POSTGRES_PORT: Joi.any().default(5432).required(),
-    POSTGRES_DB: Joi.any().default('avo').required(),
-    POSTGRES_USER: Joi.any().optional(),
-    POSTGRES_PASSWORD: Joi.any().optional(),
+      POSTGRES_HOST: Joi.any().default('localhost').required(),
+      POSTGRES_PORT: Joi.any().default(5432).required(),
+      POSTGRES_DB: Joi.any().default('avo').required(),
+      POSTGRES_USER: Joi.any().optional(),
+      POSTGRES_PASSWORD: Joi.any().optional(),
 
-    MIDDLEWARE_TOLERANCE_TIMESTAMP: Joi.string().default('5m').required(),
-    MIDDLEWARE_TIMEOUT: Joi.string().default('30s').required(),
+      MIDDLEWARE_TOLERANCE_TIMESTAMP: Joi.string().default('5m').required(),
+      MIDDLEWARE_TIMEOUT: Joi.string().default('30s').required(),
 
-    AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: Joi.string()
-      .alphanum()
-      .min(5)
-      .max(50)
-      .required(),
-    AUTH_JWT_ACCESS_TOKEN_EXPIRED: Joi.string().default('30m').required(),
-    AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: Joi.string()
-      .alphanum()
-      .min(5)
-      .max(50)
-      .required(),
-    AUTH_JWT_REFRESH_TOKEN_EXPIRED: Joi.string().default('7d').required(),
-    AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: Joi.string()
-      .default('30d')
-      .required(),
-    AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
-    AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().required(),
-    AUTH_SYSTEM_ADMIN_INITIAL_PASS: Joi.string().required(),
+      AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: Joi.string()
+        .alphanum()
+        .min(5)
+        .max(50)
+        .required(),
+      AUTH_JWT_ACCESS_TOKEN_EXPIRED: Joi.string().default('30m').required(),
+      AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: Joi.string()
+        .alphanum()
+        .min(5)
+        .max(50)
+        .required(),
+      AUTH_JWT_REFRESH_TOKEN_EXPIRED: Joi.string().default('7d').required(),
+      AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: Joi.string()
+        .default('30d')
+        .required(),
+      AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
+      AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().required(),
+      AUTH_SYSTEM_ADMIN_INITIAL_PASS: Joi.string().required(),
 
-    CLOUDINARY_CLOUD_NAME: Joi.string().required(),
-    CLOUDINARY_API_KEY: Joi.string().required(),
-    CLOUDINARY_API_SECRET: Joi.string().required(),
+      CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+      CLOUDINARY_API_KEY: Joi.string().required(),
+      CLOUDINARY_API_SECRET: Joi.string().required(),
 
-    CUSTOMER_IO_API_KEY: Joi.string().required(),
+      CUSTOMER_IO_API_KEY: Joi.string().required(),
+    }),
+    validationOptions: {
+      allowUnknown: true,
+      abortEarly: true,
+    },
   }),
-  validationOptions: {
-    allowUnknown: true,
-    abortEarly: true,
-  },
 });
