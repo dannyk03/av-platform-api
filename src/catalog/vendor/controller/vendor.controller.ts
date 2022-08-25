@@ -196,7 +196,7 @@ export class VendorCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 
@@ -219,7 +219,7 @@ export class VendorCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 

@@ -150,7 +150,7 @@ export class UserController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 
@@ -173,7 +173,7 @@ export class UserController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 }

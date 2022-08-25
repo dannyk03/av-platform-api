@@ -110,6 +110,28 @@ export class SocialConnectionService {
     return searchBuilder.getMany();
   }
 
+  async checkIsBiDirectionalSocialConnected({
+    user1Email,
+    user2Email,
+  }: {
+    user1Email: string;
+    user2Email: string;
+  }): Promise<boolean> {
+    const biDirectionalSocialConnection =
+      await this.socialConnectionRepository.find({
+        where: [
+          { user1: { email: user1Email }, user2: { email: user2Email } },
+          { user1: { email: user2Email }, user2: { email: user1Email } },
+        ],
+        select: {
+          user1: { email: true },
+          user2: { email: true },
+        },
+      });
+
+    return Boolean(biDirectionalSocialConnection.length);
+  }
+
   async serializationSocialConnectionList(
     data: SocialConnection[],
   ): Promise<SocialConnectionGetSerialization[]> {
