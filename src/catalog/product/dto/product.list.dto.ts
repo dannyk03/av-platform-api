@@ -32,7 +32,7 @@ import {
 
 export class ProductListDto implements IPaginationList {
   @ProductDisplayLanguage()
-  lang: EnumDisplayLanguage;
+  readonly lang: EnumDisplayLanguage;
 
   @PaginationSearch()
   readonly search: string;

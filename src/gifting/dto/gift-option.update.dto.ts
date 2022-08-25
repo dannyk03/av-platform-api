@@ -15,7 +15,12 @@ import {
   UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
-export class GiftOptionCreateDto {
+export class GiftOptionUpdateDto {
+  @IsUUID()
+  @IsNotEmpty()
+  readonly giftOptionId: string;
+
+  @IsOptional()
   @ArrayMinSize(1)
   @ArrayMaxSize(3)
   @IsArray()
@@ -23,7 +28,17 @@ export class GiftOptionCreateDto {
   @IsUUID(undefined, { each: true })
   @UniqueArrayByTransform()
   @ArrayTransform()
-  readonly productIds!: string[];
+  readonly addProductIds?: string[];
+
+  @IsOptional()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  @IsArray()
+  @IsNotEmpty({ each: true })
+  @IsUUID(undefined, { each: true })
+  @UniqueArrayByTransform()
+  @ArrayTransform()
+  readonly deleteProductIds?: string[];
 
   @ProductDisplayLanguage()
   @IsOptional()
