@@ -251,7 +251,7 @@ export class ProductCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 
@@ -274,7 +274,7 @@ export class ProductCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 

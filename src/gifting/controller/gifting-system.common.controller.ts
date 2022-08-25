@@ -475,7 +475,7 @@ export class GiftingSystemCommonController {
       const { affected } = await this.giftService.deleteOneBy({
         id: giftOption.id,
       });
-      return { delete: { affected } };
+      return { deleted: affected };
     }
 
     if (giftOptionId && !giftOption) {
@@ -558,7 +558,7 @@ export class GiftingSystemCommonController {
     });
 
     return {
-      affected,
+      deleted: affected,
     };
   }
 
