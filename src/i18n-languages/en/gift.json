@@ -7,10 +7,17 @@
     "verificationLink": "Invalid confirmation link",
     "senders": "Senders limit invalid"
   },
+  "option": {
+    "error": {
+      "notFound": "Gift option not found"
+    }
+  },
   "intent": {
     "get": "Get gift-intent success",
     "list": "List gift-intent success",
     "addGiftOption": "Gift option add success",
+    "updateGiftOption": "Gift option update success",
+    "upsertGiftOption": "Gift option update or save success",
     "deleteGiftOption": "Gift-intent delete option success",
     "ready": "Gift-intent ready success",
     "submit": "Gift-intent submit success",
