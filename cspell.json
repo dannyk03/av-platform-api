@@ -24,7 +24,8 @@
     "unnest",
     "customerio",
     "trivago",
-    "casl"
+    "casl",
+    "upsert"
   ],
   "ignorePaths": [
     "node_modules/**",

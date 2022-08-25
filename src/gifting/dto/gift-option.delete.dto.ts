@@ -7,5 +7,5 @@ export class GiftOptionDeleteDto {
   @IsNotEmpty({ each: true })
   @UniqueArrayByTransform()
   @IsUUID(undefined, { each: true })
-  giftOptionIds: string[];
+  readonly giftOptionIds: string[];
 }

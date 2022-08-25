@@ -4,3 +4,5 @@ export * from './gift-option.create.dto';
 export * from './gift-option.delete.dto';
 export * from './gift-options-submit.dto';
 export * from './gift-intent-status.update.dto';
+export * from './gift-option.update.dto';
+export * from './gift-option.upsert.dto';

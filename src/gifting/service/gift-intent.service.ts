@@ -77,6 +77,7 @@ export class GiftIntentService {
   async getListSearchBuilder({
     ownerId,
     search,
+    lang,
     loadExtra = true,
   }: IGiftIntentSearch): Promise<SelectQueryBuilder<GiftIntent>> {
     const builder = this.gifIntentRepository
@@ -91,7 +92,13 @@ export class GiftIntentService {
       builder
         .leftJoinAndSelect('giftIntent.giftSubmit', 'giftSubmit')
         .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions')
-        .leftJoinAndSelect('giftOptions.products', 'giftProducts');
+        .leftJoinAndSelect('giftOptions.products', 'giftProducts')
+        .leftJoinAndSelect('giftProducts.displayOptions', 'displayOptions')
+        .leftJoinAndSelect('displayOptions.language', 'language');
+
+      if (lang) {
+        builder.andWhere('language.isoCode = :lang', { lang });
+      }
     }
 
     if (ownerId) {
@@ -117,10 +124,12 @@ export class GiftIntentService {
     ownerId,
     search,
     options,
+    lang,
   }: IGiftIntentSearch): Promise<GiftIntent[]> {
     const searchBuilder = await this.getListSearchBuilder({
       ownerId,
       search,
+      lang,
     });
 
     if (options.order) {

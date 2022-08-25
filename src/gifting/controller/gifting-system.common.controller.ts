@@ -18,6 +18,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
+  EnumDisplayLanguage,
   EnumGiftIntentStatus,
   EnumGiftIntentStatusCodeError,
   EnumProductStatusCodeError,
@@ -25,7 +26,8 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { DataSource, In } from 'typeorm';
+import { flatMap } from 'lodash';
+import { DataSource, In, IsNull } from 'typeorm';
 
 import { GiftIntentService, GiftService } from '../service';
 import { ProductService } from '@/catalog/product/service';
@@ -39,6 +41,8 @@ import {
   GiftIntentStatusUpdateDto,
   GiftOptionCreateDto,
   GiftOptionDeleteDto,
+  GiftOptionUpdateDto,
+  GiftOptionUpsetDto,
 } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
@@ -86,6 +90,7 @@ export class GiftingSystemCommonController {
       search,
       availableSort,
       availableSearch,
+      lang,
     }: GiftIntentListDto,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
@@ -97,6 +102,7 @@ export class GiftingSystemCommonController {
         order: sort,
       },
       search,
+      lang,
     });
 
     const totalData = await this.giftIntentService.getTotal({
@@ -154,6 +160,13 @@ export class GiftingSystemCommonController {
         deliveredAt: true,
       },
     });
+
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentNotFoundError,
+        message: 'gift.intent.error.notFound',
+      });
+    }
 
     if (giftIntent[`${status.toLowerCase()}At`]) {
       throw new ForbiddenException({
@@ -230,7 +243,18 @@ export class GiftingSystemCommonController {
   @Get('/intent/:id')
   async get(@Param('id') giftIntentId: string) {
     const getGiftIntent = await this.giftIntentService.findOne({
-      where: { id: giftIntentId },
+      where: {
+        id: giftIntentId,
+        // giftOptions: {
+        //   products: {
+        //     displayOptions: {
+        //       language: {
+        //         isoCode: EnumDisplayLanguage.En,
+        //       },
+        //     },
+        //   },
+        // },
+      },
       relations: [
         'additionalData',
         'recipient',
@@ -239,6 +263,8 @@ export class GiftingSystemCommonController {
         'sender.user',
         'giftOptions',
         'giftOptions.products',
+        'giftOptions.products.displayOptions',
+        'giftOptions.products.displayOptions.language',
         'giftSubmit',
         'giftSubmit.gifts',
         'giftSubmit.gifts.products',
@@ -311,6 +337,193 @@ export class GiftingSystemCommonController {
     );
 
     return this.giftService.serializationGift(saveGift);
+  }
+
+  @Response('gift.intent.updateGiftOption')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftOption,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/intent/update/:id')
+  async updateGiftOption(
+    @Param('id') giftIntentId: string,
+    @Body()
+    {
+      addProductIds,
+      deleteProductIds,
+      giftOptionId,
+      lang,
+    }: GiftOptionUpdateDto,
+  ): Promise<IResponseData> {
+    const giftOption = await this.giftService.findOne({
+      where: {
+        id: giftOptionId,
+        giftIntent: {
+          id: giftIntentId,
+        },
+      },
+      relations: ['giftIntent', 'products'],
+      select: {
+        products: true,
+        giftIntent: {
+          id: true,
+        },
+      },
+    });
+
+    if (!giftOption) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionNotFoundError,
+        message: 'gift.option.error.notFound',
+      });
+    }
+
+    const existingProductIds = flatMap(giftOption.products, 'id');
+    const missingProductIds = addProductIds.filter(
+      (id) => !existingProductIds.includes(id),
+    );
+
+    const addProductsFind = addProductIds
+      ? await this.productService.findAllByIds({
+          productIds: missingProductIds,
+          lang,
+        })
+      : [];
+
+    if (
+      missingProductIds &&
+      missingProductIds?.length !== addProductsFind?.length
+    ) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    giftOption.products = [
+      ...new Set([
+        ...(deleteProductIds?.length
+          ? giftOption.products?.filter(
+              ({ id }) => !deleteProductIds.includes(id),
+            )
+          : giftOption.products),
+        ...(deleteProductIds?.length
+          ? addProductsFind?.filter(
+              ({ id }) =>
+                !deleteProductIds.includes(id) &&
+                !Boolean(
+                  giftOption.products.find((product) => product.id === id),
+                ),
+            )
+          : addProductsFind),
+      ]),
+    ];
+
+    const saveGiftOption = await this.giftService.save(giftOption);
+
+    return this.giftService.serializationGift(saveGiftOption);
+  }
+
+  @Response('gift.intent.upsertGiftOption')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.GiftOption,
+      },
+      {
+        action: Action.Create,
+        subject: Subjects.GiftOption,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/intent/:id')
+  async upsertGiftOption(
+    @Param('id') giftIntentId: string,
+    @Body()
+    { productIds, giftOptionId, lang }: GiftOptionUpsetDto,
+  ): Promise<IResponseData> {
+    const giftOption = giftOptionId
+      ? await this.giftService.findOne({
+          where: {
+            id: giftOptionId,
+            giftIntent: {
+              id: giftIntentId,
+            },
+          },
+          relations: ['giftIntent'],
+          select: {
+            products: true,
+            giftIntent: {
+              id: true,
+            },
+          },
+        })
+      : null;
+
+    if (giftOptionId && !giftOption) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionNotFoundError,
+        message: 'gift.option.error.notFound',
+      });
+    }
+
+    const productsFind = productIds
+      ? await this.productService.findAllByIds({
+          productIds,
+          lang,
+        })
+      : null;
+
+    if (giftOption) {
+      giftOption.products = productsFind;
+      const updateGiftOption = await this.giftService.save(giftOption);
+      return this.giftService.serializationGift(updateGiftOption);
+    }
+
+    return this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const findGiftIntent = await this.giftIntentService.findOne({
+          where: {
+            id: giftIntentId,
+          },
+          relations: ['giftOptions'],
+          select: {
+            id: true,
+            giftOptions: true,
+          },
+        });
+
+        if (!findGiftIntent) {
+          throw new UnprocessableEntityException({
+            statusCode: EnumGiftIntentStatusCodeError.GiftIntentNotFoundError,
+            message: 'gift.intent.error.notFound',
+          });
+        }
+
+        const createGift = await this.giftService.create({
+          products: productsFind,
+        });
+
+        const saveGift = await transactionalEntityManager.save(createGift);
+
+        findGiftIntent.giftOptions = [...findGiftIntent.giftOptions, saveGift];
+        await transactionalEntityManager.save(findGiftIntent);
+
+        return saveGift;
+      },
+    );
   }
 
   @Response('gift.intent.deleteGiftOption')

@@ -1,5 +1,10 @@
-import { IPaginationList, IPaginationSort } from '@avo/type';
+import {
+  EnumDisplayLanguage,
+  IPaginationList,
+  IPaginationSort,
+} from '@avo/type';
 
+import { ProductDisplayLanguage } from '@/catalog';
 import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
@@ -44,4 +49,7 @@ export class GiftIntentListDto implements IPaginationList {
 
   @PaginationAvailableSort(GIFT_INTENT_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
+
+  @ProductDisplayLanguage()
+  readonly lang: EnumDisplayLanguage;
 }
