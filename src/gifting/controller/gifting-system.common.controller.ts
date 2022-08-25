@@ -471,6 +471,13 @@ export class GiftingSystemCommonController {
         })
       : null;
 
+    if (giftOption && !productIds?.length) {
+      const { affected } = await this.giftService.deleteOneBy({
+        id: giftOption.id,
+      });
+      return { delete: { affected } };
+    }
+
     if (giftOptionId && !giftOption) {
       throw new UnprocessableEntityException({
         statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionNotFoundError,
@@ -478,7 +485,7 @@ export class GiftingSystemCommonController {
       });
     }
 
-    const productsFind = productIds
+    const productsFind = productIds.length
       ? await this.productService.findAllByIds({
           productIds,
           lang,

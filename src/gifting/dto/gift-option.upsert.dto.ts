@@ -21,7 +21,6 @@ export class GiftOptionUpsetDto {
   @IsNotEmpty()
   readonly giftOptionId: string;
 
-  @ArrayMinSize(1)
   @ArrayMaxSize(3)
   @IsArray()
   @IsNotEmpty({ each: true })
