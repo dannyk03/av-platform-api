@@ -128,16 +128,4 @@ export class SocialConnectionService {
 
     return Boolean(biDirectionalSocialConnection.length);
   }
-
-  async serializationSocialConnectionList(
-    data: SocialConnection[],
-  ): Promise<SocialConnectionGetSerialization[]> {
-    return plainToInstance(SocialConnectionGetSerialization, data);
-  }
-
-  async serializationSocialConnection(
-    data: SocialConnection,
-  ): Promise<SocialConnectionGetSerialization> {
-    return plainToInstance(SocialConnectionGetSerialization, data);
-  }
 }

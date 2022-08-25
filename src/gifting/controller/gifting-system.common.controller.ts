@@ -492,7 +492,7 @@ export class GiftingSystemCommonController {
       return this.giftService.save(giftOption);
     }
 
-    const saveGiftOption = await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const findGiftIntent = await this.giftIntentService.findOne({
@@ -525,8 +525,6 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
-
-    return await this.giftService.serializationGift(saveGiftOption);
   }
 
   @Response('gift.intent.deleteGiftOption')
