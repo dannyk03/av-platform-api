@@ -34,6 +34,7 @@ import {
   GiftIntentService,
   GiftSubmitService,
 } from '../service';
+import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -42,7 +43,7 @@ import { GiftIntentGetSerialization } from '../serialization';
 
 import { GiftIntentListDto, GiftOptionSubmitDto } from '../dto';
 import { GiftSendDto } from '../dto/gift.send.dto';
-import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+import { IdParamDto } from '@/utils/request/dto';
 
 import { AclGuard } from '@/auth';
 import { ConnectionNames } from '@/database';
@@ -66,6 +67,7 @@ export class GiftingCommonController {
     private readonly userService: UserService,
     private readonly giftConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
+    private readonly socialConnectionService: SocialConnectionService,
   ) {}
 
   @Response('gift.send')
@@ -95,6 +97,23 @@ export class GiftingCommonController {
                 message: 'gift.error.send',
               });
             }
+
+            const isSocialConnected =
+              await this.socialConnectionService.checkIsBiDirectionalSocialConnected(
+                {
+                  user1Email: reqUser.email,
+                  user2Email: recipient.email,
+                },
+              );
+
+            if (!isSocialConnected) {
+              throw new BadRequestException({
+                statusCode:
+                  EnumGiftingStatusCodeError.GiftSendNotSocialConnectionError,
+                message: 'gift.error.send',
+              });
+            }
+
             const maybeRecipientUser = await this.userService.findOneBy({
               email: recipient.email,
             });

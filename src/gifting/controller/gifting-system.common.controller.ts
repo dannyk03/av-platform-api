@@ -465,6 +465,13 @@ export class GiftingSystemCommonController {
         })
       : null;
 
+    if (giftOption && !productIds?.length) {
+      const { affected } = await this.giftService.deleteOneBy({
+        id: giftOption.id,
+      });
+      return { deleted: affected };
+    }
+
     if (giftOptionId && !giftOption) {
       throw new UnprocessableEntityException({
         statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionNotFoundError,
@@ -472,7 +479,7 @@ export class GiftingSystemCommonController {
       });
     }
 
-    const productsFind = productIds
+    const productsFind = productIds.length
       ? await this.productService.findAllByIds({
           productIds,
           lang,
@@ -485,7 +492,7 @@ export class GiftingSystemCommonController {
       return this.giftService.save(giftOption);
     }
 
-    return this.defaultDataSource.transaction(
+    const saveGiftOption = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const findGiftIntent = await this.giftIntentService.findOne({
@@ -518,6 +525,8 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
+
+    return await this.giftService.serializationGift(saveGiftOption);
   }
 
   @Response('gift.intent.deleteGiftOption')
@@ -543,7 +552,7 @@ export class GiftingSystemCommonController {
     });
 
     return {
-      affected,
+      deleted: affected,
     };
   }
 
