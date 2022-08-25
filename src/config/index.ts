@@ -39,7 +39,6 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
   cache: true,
   envFilePath: ['.env'],
   expandVariables: true,
-  // Validate .env on non production environment
   validationSchema: Joi.object({
     APP_NAME: Joi.string().default('avo').required(),
     APP_ENV: Joi.string()
