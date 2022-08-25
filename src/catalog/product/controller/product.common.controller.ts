@@ -53,7 +53,7 @@ export class ProductCommonController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('product.create')
+  @Response('product.create', { classSerialization: ProductGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -143,10 +143,12 @@ export class ProductCommonController {
     });
 
     const saveProduct = await this.productService.save(createProduct);
-    return this.productService.serialization(saveProduct);
+    return saveProduct;
   }
 
-  @ResponsePaging('product.list')
+  @ResponsePaging('product.list', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -201,9 +203,6 @@ export class ProductCommonController {
       perPage,
     );
 
-    const data: ProductGetSerialization[] =
-      await this.productService.serializationList(products);
-
     return {
       totalData,
       totalPage,
@@ -211,7 +210,7 @@ export class ProductCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: products,
     };
   }
 
@@ -278,7 +277,7 @@ export class ProductCommonController {
     };
   }
 
-  @Response('product.update')
+  @Response('product.update', { classSerialization: ProductGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -402,10 +401,10 @@ export class ProductCommonController {
     // Save Updated
     const updateProduct = await this.productService.save(existingProduct);
 
-    return this.productService.serialization(updateProduct);
+    return updateProduct;
   }
 
-  @Response('product.get')
+  @Response('product.get', { classSerialization: ProductGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
@@ -424,6 +423,6 @@ export class ProductCommonController {
       });
     }
 
-    return this.productService.serialization(getProduct);
+    return getProduct;
   }
 }

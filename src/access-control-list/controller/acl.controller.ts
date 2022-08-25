@@ -6,6 +6,8 @@ import { User } from '@/user/entity';
 
 import { AclPolicyService } from '../policy/service';
 
+import { AclPolicySerialization } from '../policy/serialization';
+
 import { AclGuard } from '@/auth';
 import { ReqUser } from '@/user';
 import { Response } from '@/utils/response';
@@ -17,7 +19,7 @@ import { Response } from '@/utils/response';
 export class AclController {
   constructor(private readonly aclPolicyService: AclPolicyService) {}
 
-  @Response('acl.abilities')
+  @Response('acl.abilities', { classSerialization: AclPolicySerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get()
@@ -25,9 +27,6 @@ export class AclController {
     @ReqUser()
     reqUser: User,
   ): Promise<IResponseData> {
-    return (
-      reqUser.role &&
-      this.aclPolicyService.serializationUserAcl(reqUser.role.policy)
-    );
+    return reqUser?.role?.policy;
   }
 }

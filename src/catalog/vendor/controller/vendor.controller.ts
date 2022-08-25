@@ -44,7 +44,7 @@ export class VendorCommonController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('vendor.create')
+  @Response('vendor.create', { classSerialization: VendorGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -74,7 +74,7 @@ export class VendorCommonController {
       });
     }
 
-    // Rename
+    // Rename image
     if (logo) {
       logo.originalname = `${vendorSlug}_logo.${
         logo.originalname.split('.')[1]
@@ -95,12 +95,10 @@ export class VendorCommonController {
       logo: saveLogo,
     });
 
-    const saveVendor = await this.vendorService.save(createVendor);
-
-    return this.vendorService.serialization(saveVendor);
+    return this.vendorService.save(createVendor);
   }
 
-  @ResponsePaging('vendor.list')
+  @ResponsePaging('vendor.list', { classSerialization: VendorGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -146,9 +144,6 @@ export class VendorCommonController {
       perPage,
     );
 
-    const data: VendorGetSerialization[] =
-      await this.vendorService.serializationList(vendors);
-
     return {
       totalData,
       totalPage,
@@ -156,7 +151,7 @@ export class VendorCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: vendors,
     };
   }
 
@@ -223,7 +218,7 @@ export class VendorCommonController {
     };
   }
 
-  @Response('vendor.update')
+  @Response('vendor.update', { classSerialization: VendorGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -238,13 +233,15 @@ export class VendorCommonController {
   async update(
     @Body()
     body: VendorUpdateDto,
-  ): Promise<void> {
-    const updateRes = await this.vendorService.update(body);
+  ): Promise<IResponseData> {
+    const { affected } = await this.vendorService.update(body);
 
-    await this.vendorService.serialization(updateRes);
+    return {
+      updated: affected,
+    };
   }
 
-  @Response('vendor.get')
+  @Response('vendor.get', { classSerialization: VendorGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -257,8 +254,6 @@ export class VendorCommonController {
   @RequestParamGuard(IdParamDto)
   @Get('/:id')
   async get(@Param('id') id: string): Promise<IResponseData> {
-    const getVendor = await this.vendorService.get({ id });
-
-    return this.vendorService.serialization(getVendor);
+    return this.vendorService.get({ id });
   }
 }

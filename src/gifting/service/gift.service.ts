@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { plainToInstance } from 'class-transformer';
 import {
   DeepPartial,
   DeleteResult,
@@ -11,8 +10,6 @@ import {
 } from 'typeorm';
 
 import { Gift } from '../entity';
-
-import { GiftGetSerialization } from '../serialization/gift.serialization';
 
 import { ConnectionNames } from '@/database';
 
@@ -45,13 +42,5 @@ export class GiftService {
 
   async deleteOneBy(find: FindOptionsWhere<Gift>): Promise<DeleteResult> {
     return this.giftRepository.delete(find);
-  }
-
-  async serializationGift(data: Gift): Promise<GiftGetSerialization> {
-    return plainToInstance(GiftGetSerialization, data);
-  }
-
-  async serializationGiftList(data: Gift[]): Promise<GiftGetSerialization[]> {
-    return plainToInstance(GiftGetSerialization, data);
   }
 }

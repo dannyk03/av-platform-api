@@ -112,19 +112,9 @@ export class GiftingCommonController {
                 user: {
                   id: reqUser.id,
                 },
-                // additionalData: {
-                //   ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
-                //     sender,
-                //   )),
-                // },
               },
               recipient: {
                 user: maybeRecipientUser ? { id: maybeRecipientUser.id } : null,
-                // additionalData: {
-                //   ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
-                //     recipient,
-                //   )),
-                // },
               },
               additionalData: {
                 occasion: additionalData.occasion,
@@ -201,7 +191,9 @@ export class GiftingCommonController {
     }
   }
 
-  @ResponsePaging('gift.intent.list')
+  @ResponsePaging('gift.intent.list', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/intent/list')
@@ -239,9 +231,6 @@ export class GiftingCommonController {
       perPage,
     );
 
-    const data: GiftIntentGetSerialization[] =
-      await this.giftIntentService.serializationGiftIntentList(giftIntents);
-
     return {
       totalData,
       totalPage,
@@ -249,11 +238,13 @@ export class GiftingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: giftIntents,
     };
   }
 
-  @Response('gift.intent.get')
+  @Response('gift.intent.get', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
@@ -289,7 +280,7 @@ export class GiftingCommonController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntent(getGiftIntent);
+    return getGiftIntent;
   }
 
   @Response('gift.intent.submit')

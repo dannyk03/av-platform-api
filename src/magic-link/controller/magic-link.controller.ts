@@ -33,6 +33,8 @@ import {
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
+import { GiftIntentReadySerialization } from '@/gifting/serialization';
+
 import { MagicLinkDto } from '../dto';
 
 import { AuthUserLoginSerialization } from '@/auth';
@@ -281,7 +283,9 @@ export class MagicLinkController {
     );
   }
 
-  @Response('gift.intent.ready')
+  @Response('gift.intent.ready', {
+    classSerialization: GiftIntentReadySerialization,
+  })
   @Throttle(1, 5)
   @Get('/ready')
   async giftIntentReadyValidate(
@@ -324,8 +328,6 @@ export class MagicLinkController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntentReady(
-      existingReadyLink.giftIntent,
-    );
+    return existingReadyLink.giftIntent;
   }
 }

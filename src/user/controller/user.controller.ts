@@ -20,6 +20,11 @@ import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 import { AclRoleService } from '@acl/role/service';
 
+import {
+  UserGetSerialization,
+  UserProfileGetSerialization,
+} from '../serialization';
+
 import { ReqUser } from '../user.decorator';
 
 import { UserListDto } from '../dto';
@@ -42,7 +47,7 @@ export class UserController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('user.profile')
+  @Response('user.profile', { classSerialization: UserProfileGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     relations: ['profile'],
@@ -52,10 +57,10 @@ export class UserController {
     @ReqUser()
     reqUser: User,
   ): Promise<IResponseData> {
-    return this.userService.serializationUserProfile(reqUser);
+    return reqUser;
   }
 
-  @ResponsePaging('user.list')
+  @ResponsePaging('user.list', { classSerialization: UserGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -101,8 +106,6 @@ export class UserController {
       perPage,
     );
 
-    const data = await this.userService.serializationList(users);
-
     return {
       totalData,
       totalPage,
@@ -110,7 +113,7 @@ export class UserController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: users,
     };
   }
 

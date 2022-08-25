@@ -18,7 +18,6 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
-  EnumDisplayLanguage,
   EnumGiftIntentStatus,
   EnumGiftIntentStatusCodeError,
   EnumProductStatusCodeError,
@@ -27,7 +26,7 @@ import {
 } from '@avo/type';
 
 import { flatMap } from 'lodash';
-import { DataSource, In, IsNull } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 import { GiftIntentService, GiftService } from '../service';
 import { ProductService } from '@/catalog/product/service';
@@ -35,6 +34,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { GiftIntentGetSerialization } from '../serialization';
+import { GiftGetSerialization } from '../serialization';
 
 import {
   GiftIntentListDto,
@@ -69,7 +69,9 @@ export class GiftingSystemCommonController {
     private readonly configService: ConfigService,
   ) {}
 
-  @ResponsePaging('gift.intent.list')
+  @ResponsePaging('gift.intent.list', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -114,9 +116,6 @@ export class GiftingSystemCommonController {
       perPage,
     );
 
-    const data: GiftIntentGetSerialization[] =
-      await this.giftIntentService.serializationGiftIntentList(giftIntents);
-
     return {
       totalData,
       totalPage,
@@ -124,7 +123,7 @@ export class GiftingSystemCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: giftIntents,
     };
   }
 
@@ -228,7 +227,9 @@ export class GiftingSystemCommonController {
     };
   }
 
-  @Response('gift.intent.get')
+  @Response('gift.intent.get', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -245,15 +246,6 @@ export class GiftingSystemCommonController {
     const getGiftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
-        // giftOptions: {
-        //   products: {
-        //     displayOptions: {
-        //       language: {
-        //         isoCode: EnumDisplayLanguage.En,
-        //       },
-        //     },
-        //   },
-        // },
       },
       relations: [
         'additionalData',
@@ -278,10 +270,12 @@ export class GiftingSystemCommonController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntent(getGiftIntent);
+    return getGiftIntent;
   }
 
-  @Response('gift.intent.addGiftOption')
+  @Response('gift.intent.addGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -321,7 +315,7 @@ export class GiftingSystemCommonController {
       });
     }
 
-    const saveGift = await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const createGift = await this.giftService.create({
@@ -335,11 +329,11 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
-
-    return this.giftService.serializationGift(saveGift);
   }
 
-  @Response('gift.intent.updateGiftOption')
+  @Response('gift.intent.updateGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -426,12 +420,12 @@ export class GiftingSystemCommonController {
       ]),
     ];
 
-    const saveGiftOption = await this.giftService.save(giftOption);
-
-    return this.giftService.serializationGift(saveGiftOption);
+    return this.giftService.save(giftOption);
   }
 
-  @Response('gift.intent.upsertGiftOption')
+  @Response('gift.intent.upsertGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -487,8 +481,8 @@ export class GiftingSystemCommonController {
 
     if (giftOption) {
       giftOption.products = productsFind;
-      const updateGiftOption = await this.giftService.save(giftOption);
-      return this.giftService.serializationGift(updateGiftOption);
+
+      return this.giftService.save(giftOption);
     }
 
     return this.defaultDataSource.transaction(

@@ -16,6 +16,8 @@ import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
+import { ProductImageGetSerialization } from '../serialization';
+
 import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
@@ -94,7 +96,9 @@ export class ProductImageController {
     await this.productImageService.deleteById(id);
   }
 
-  @Response('product.updateImage')
+  @Response('product.updateImage', {
+    classSerialization: ProductImageGetSerialization,
+  })
   @AclGuard({
     abilities: [
       {
@@ -124,6 +128,6 @@ export class ProductImageController {
       ...body,
     });
 
-    return this.productImageService.serialization(saveImage);
+    return saveImage;
   }
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import {
   DeepPartial,
@@ -12,8 +11,6 @@ import {
 } from 'typeorm';
 
 import { SocialConnection } from '../entity';
-
-import { SocialConnectionGetSerialization } from '../serialization/social-connection.get.serialization';
 
 import { ISocialConnectionSearch } from '../networking.interface';
 
@@ -108,17 +105,5 @@ export class SocialConnectionService {
     }
 
     return searchBuilder.getMany();
-  }
-
-  async serializationSocialConnectionList(
-    data: SocialConnection[],
-  ): Promise<SocialConnectionGetSerialization[]> {
-    return plainToInstance(SocialConnectionGetSerialization, data);
-  }
-
-  async serializationSocialConnection(
-    data: SocialConnection,
-  ): Promise<SocialConnectionGetSerialization> {
-    return plainToInstance(SocialConnectionGetSerialization, data);
   }
 }

@@ -39,7 +39,7 @@ export class AclRoleController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @ResponsePaging('role.list')
+  @ResponsePaging('role.list', { classSerialization: RoleGetSerialization })
   @AclGuard({
     abilities: [
       {
@@ -101,9 +101,6 @@ export class AclRoleController {
       perPage,
     );
 
-    const data: RoleGetSerialization[] =
-      await this.aclRoleService.serializationList(roles);
-
     return {
       totalData,
       totalPage,
@@ -111,7 +108,7 @@ export class AclRoleController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: roles,
     };
   }
 }

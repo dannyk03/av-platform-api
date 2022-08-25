@@ -29,6 +29,9 @@ import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { SocialConnectionRequestGetSerialization } from '../serialization';
+import { SocialConnectionGetSerialization } from '../serialization';
+
 import {
   ConnectRequestUpdateDto,
   SocialConnectionListDto,
@@ -144,7 +147,9 @@ export class NetworkingCommonController {
     );
   }
 
-  @ResponsePaging('networking.connectRequestList')
+  @ResponsePaging('networking.connectRequestList', {
+    classSerialization: SocialConnectionRequestGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/connect/list')
@@ -164,7 +169,7 @@ export class NetworkingCommonController {
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const connectRequest =
+    const connectionRequests =
       await this.socialConnectionRequestService.paginatedSearchBy({
         options: {
           skip: skip,
@@ -187,11 +192,6 @@ export class NetworkingCommonController {
       perPage,
     );
 
-    const data =
-      await this.socialConnectionRequestService.serializationSocialConnectionRequestList(
-        connectRequest,
-      );
-
     return {
       totalData,
       totalPage,
@@ -199,10 +199,12 @@ export class NetworkingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: connectionRequests,
     };
   }
-  @ResponsePaging('networking.connectionsList')
+  @ResponsePaging('networking.connectionsList', {
+    classSerialization: SocialConnectionGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/list')
@@ -243,11 +245,6 @@ export class NetworkingCommonController {
       perPage,
     );
 
-    const data =
-      await this.socialConnectionService.serializationSocialConnectionList(
-        socialConnections,
-      );
-
     return {
       totalData,
       totalPage,
@@ -255,7 +252,7 @@ export class NetworkingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: socialConnections,
     };
   }
 
