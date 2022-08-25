@@ -4,7 +4,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 @Module({})
 export class JobsModule {
   static register(): DynamicModule {
-    if (process.env.APP_TASK_ON === 'true') {
+    if (process.env.APP_JOB_ON === 'true') {
       return {
         module: JobsModule,
         controllers: [],

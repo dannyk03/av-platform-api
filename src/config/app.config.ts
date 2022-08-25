@@ -41,6 +41,6 @@ export default registerAs(
     },
 
     httpOn: process.env.APP_HTTP_ON === 'true',
-    taskOn: process.env.APP_TASK_ON === 'true',
+    taskOn: process.env.APP_JOB_ON === 'true',
   }),
 );
