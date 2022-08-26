@@ -90,7 +90,7 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
       .default('30d')
       .required(),
     AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
-    AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().required(),
+    AUTH_SYSTEM_ADMIN_EMAIL: Joi.string().email({ tlds: { allow: false } }),
     AUTH_SYSTEM_ADMIN_INITIAL_PASS: Joi.string().required(),
 
     CLOUDINARY_CLOUD_NAME: Joi.string().required(),
