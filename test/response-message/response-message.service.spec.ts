@@ -1,11 +1,21 @@
 import { Test } from '@nestjs/testing';
 
+import { ValidationError } from 'class-validator';
+
 import { CommonModule } from '@/core/core.module';
 
-import { ResponseMessageService } from '@/response-message/service/response-message.service';
+import { ResponseMessageService } from '@/response-message/service';
+
+import { IValidationErrorImport } from '@/utils/error';
 
 describe('MessageService', () => {
   let responseMessageService: ResponseMessageService;
+
+  let validationError: ValidationError[];
+  let validationErrorTwo: ValidationError[];
+  let validationErrorThree: ValidationError[];
+  let validationErrorConstrainEmpty: ValidationError[];
+  let validationErrorImport: IValidationErrorImport[];
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -15,6 +25,266 @@ describe('MessageService', () => {
     responseMessageService = moduleRef.get<ResponseMessageService>(
       ResponseMessageService,
     );
+
+    validationError = [
+      {
+        target: {
+          email: 'admin-mail.com',
+          password: process.env.TEST_PASSWORD,
+          rememberMe: true,
+        },
+        value: 'admin-mail.com',
+        property: 'email',
+        children: [],
+        constraints: { isEmail: 'email must be an email' },
+      },
+    ];
+
+    validationErrorTwo = [
+      {
+        target: {
+          email: 'admin-mail.com',
+          password: process.env.TEST_PASSWORD,
+          rememberMe: true,
+        },
+        value: 'admin-mail.com',
+        property: 'email',
+        constraints: { isEmail: 'email must be an email' },
+        children: [
+          {
+            target: {
+              email: 'admin-mail.com',
+              password: process.env.TEST_PASSWORD,
+              rememberMe: true,
+            },
+            value: 'admin-mail.com',
+            property: 'email',
+            constraints: {
+              isEmail: 'email must be an email',
+            },
+            children: [],
+          },
+        ],
+      },
+    ];
+
+    validationErrorThree = [
+      {
+        target: {
+          email: 'admin-mail.com',
+          password: process.env.TEST_PASSWORD,
+          rememberMe: true,
+        },
+        value: 'admin-mail.com',
+        property: 'email',
+        constraints: { isEmail: 'email must be an email' },
+        children: [
+          {
+            target: {
+              email: 'admin-mail.com',
+              password: process.env.TEST_PASSWORD,
+              rememberMe: true,
+            },
+            value: 'admin-mail.com',
+            property: 'email',
+            constraints: {
+              isEmail: 'email must be an email',
+            },
+            children: [
+              {
+                target: {
+                  email: 'admin-mail.com',
+                  password: process.env.TEST_PASSWORD,
+                  rememberMe: true,
+                },
+                value: 'admin-mail.com',
+                property: 'email',
+                constraints: {
+                  isEmail: 'email must be an email',
+                },
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    validationErrorConstrainEmpty = [
+      {
+        target: {
+          email: 'admin-mail.com',
+          password: process.env.TEST_PASSWORD,
+          rememberMe: true,
+        },
+        value: 'admin-mail.com',
+        property: 'email',
+        children: [],
+      },
+    ];
+
+    validationErrorImport = [
+      {
+        row: 0,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: 1,
+              area: 'area',
+              city: 'area city',
+              gps: { latitude: 6.1754, longitude: 106.8272 },
+              address: 'address 1',
+              tags: ['test', 'lala'],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+      {
+        row: 1,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: 2,
+              area: 'area',
+              city: 'area city',
+              tags: [],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+      {
+        row: 2,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: null,
+              area: 'area',
+              city: 'area city',
+              address: 'address 3',
+              tags: ['test'],
+            },
+            value: null,
+            property: 'number',
+            children: [],
+            constraints: {
+              min: 'number must not be less than 0',
+              isNumber:
+                'number must be a number conforming to the specified constraints',
+            },
+          },
+          {
+            target: {
+              number: null,
+              area: 'area',
+              city: 'area city',
+              address: 'address 3',
+              tags: ['test'],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+      {
+        row: 3,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: 4,
+              area: 'area',
+              city: 'area city',
+              gps: { latitude: 6.1754, longitude: 106.8273 },
+              address: 'address 4',
+              tags: ['hand', 'test'],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+      {
+        row: 4,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: null,
+              area: 'area',
+              city: 'area city',
+              tags: ['lala'],
+            },
+            value: null,
+            property: 'number',
+            children: [],
+            constraints: {
+              min: 'number must not be less than 0',
+              isNumber:
+                'number must be a number conforming to the specified constraints',
+            },
+          },
+          {
+            target: {
+              number: null,
+              area: 'area',
+              city: 'area city',
+              tags: ['lala'],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+      {
+        row: 5,
+        file: 'error.xlsx',
+        errors: [
+          {
+            target: {
+              number: 6,
+              area: 'area',
+              city: 'area city',
+              gps: { latitude: 6.1754, longitude: 106.8273 },
+              address: 'address 6',
+              tags: [],
+            },
+            property: 'mainBranch',
+            children: [],
+            constraints: {
+              isNotEmpty: 'mainBranch should not be empty',
+              isString: 'mainBranch must be a string',
+            },
+          },
+        ],
+      },
+    ];
   });
 
   it('should be defined', () => {
@@ -40,90 +310,6 @@ describe('MessageService', () => {
   });
 
   describe('getRequestErrorsMessage', () => {
-    const validationError = [
-      {
-        target: {
-          email: 'adminmail.com',
-          password: process.env.TEST_PASSWORD,
-          rememberMe: true,
-        },
-        value: 'adminmail.com',
-        property: 'email',
-        children: [],
-        constraints: { isEmail: 'email must be an email' },
-      },
-    ];
-
-    const validationErrorTwo = [
-      {
-        target: {
-          email: 'adminmail.com',
-          password: process.env.TEST_PASSWORD,
-          rememberMe: true,
-        },
-        value: 'adminmail.com',
-        property: 'email',
-        constraints: { isEmail: 'email must be an email' },
-        children: [
-          {
-            target: {
-              email: 'adminmail.com',
-              password: process.env.TEST_PASSWORD,
-              rememberMe: true,
-            },
-            value: 'adminmail.com',
-            property: 'email',
-            constraints: {
-              isEmail: 'email must be an email',
-            },
-            children: [],
-          },
-        ],
-      },
-    ];
-
-    const validationErrorThree = [
-      {
-        target: {
-          email: 'adminmail.com',
-          password: process.env.TEST_PASSWORD,
-          rememberMe: true,
-        },
-        value: 'adminmail.com',
-        property: 'email',
-        constraints: { isEmail: 'email must be an email' },
-        children: [
-          {
-            target: {
-              email: 'adminmail.com',
-              password: process.env.TEST_PASSWORD,
-              rememberMe: true,
-            },
-            value: 'adminmail.com',
-            property: 'email',
-            constraints: {
-              isEmail: 'email must be an email',
-            },
-            children: [
-              {
-                target: {
-                  email: 'adminmail.com',
-                  password: process.env.TEST_PASSWORD,
-                  rememberMe: true,
-                },
-                value: 'adminmail.com',
-                property: 'email',
-                constraints: {
-                  isEmail: 'email must be an email',
-                },
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
     it('should be called', async () => {
       const test = jest.spyOn(
         responseMessageService,
@@ -153,19 +339,34 @@ describe('MessageService', () => {
     it('multi message should be success', async () => {
       const message = await responseMessageService.getRequestErrorsMessage(
         validationError,
-        // Optionally add more languages
-        ['en'],
+        ['en', 'id'],
       );
       jest
         .spyOn(responseMessageService, 'getRequestErrorsMessage')
         .mockImplementation(async () => message);
 
       expect(
-        await responseMessageService.getRequestErrorsMessage(
-          validationError,
-          // Optionally add more languages
-          ['en'],
-        ),
+        await responseMessageService.getRequestErrorsMessage(validationError, [
+          'en',
+          'id',
+        ]),
+      ).toBe(message);
+    });
+
+    it('multi message if there has some undefined value should be success', async () => {
+      const message = await responseMessageService.getRequestErrorsMessage(
+        validationError,
+        [undefined, 'id'],
+      );
+      jest
+        .spyOn(responseMessageService, 'getRequestErrorsMessage')
+        .mockImplementation(async () => message);
+
+      expect(
+        await responseMessageService.getRequestErrorsMessage(validationError, [
+          undefined,
+          'id',
+        ]),
       ).toBe(message);
     });
 
@@ -224,23 +425,61 @@ describe('MessageService', () => {
         ),
       ).toBe(message);
     });
+
+    it('empty constrain should be success', async () => {
+      const message = await responseMessageService.getRequestErrorsMessage(
+        validationErrorConstrainEmpty,
+      );
+      jest
+        .spyOn(responseMessageService, 'getRequestErrorsMessage')
+        .mockImplementation(async () => message);
+
+      expect(
+        await responseMessageService.getRequestErrorsMessage(
+          validationErrorConstrainEmpty,
+        ),
+      ).toBe(message);
+    });
   });
 
-  describe('getLanguages', () => {
+  describe('getImportErrorsMessage', () => {
     it('should be called', async () => {
-      const test = jest.spyOn(responseMessageService, 'getLanguages');
+      const test = jest.spyOn(responseMessageService, 'getImportErrorsMessage');
 
-      await responseMessageService.getLanguages();
+      await responseMessageService.getImportErrorsMessage(
+        validationErrorImport,
+      );
       expect(test).toHaveBeenCalled();
     });
 
     it('should be success', async () => {
-      const languages = responseMessageService.getLanguages();
+      const languages = responseMessageService.getImportErrorsMessage(
+        validationErrorImport,
+      );
       jest
-        .spyOn(responseMessageService, 'getLanguages')
+        .spyOn(responseMessageService, 'getImportErrorsMessage')
         .mockImplementation(() => languages);
 
-      expect(responseMessageService.getLanguages()).toBe(languages);
+      expect(
+        responseMessageService.getImportErrorsMessage(validationErrorImport),
+      ).toBe(languages);
+    });
+
+    it('should be success with options', async () => {
+      const languages = responseMessageService.getImportErrorsMessage(
+        validationErrorImport,
+        ['en', 'id'],
+      );
+      jest
+        .spyOn(responseMessageService, 'getImportErrorsMessage')
+        .mockImplementation(() => languages);
+
+      expect(
+        responseMessageService.getImportErrorsMessage(validationErrorImport, [
+          'en',
+          'id',
+        ]),
+      ).toBe(languages);
     });
   });
 });
