@@ -339,7 +339,7 @@ describe('MessageService', () => {
     it('multi message should be success', async () => {
       const message = await responseMessageService.getRequestErrorsMessage(
         validationError,
-        ['en', 'id'],
+        ['en'],
       );
       jest
         .spyOn(responseMessageService, 'getRequestErrorsMessage')
@@ -348,7 +348,6 @@ describe('MessageService', () => {
       expect(
         await responseMessageService.getRequestErrorsMessage(validationError, [
           'en',
-          'id',
         ]),
       ).toBe(message);
     });
@@ -356,7 +355,7 @@ describe('MessageService', () => {
     it('multi message if there has some undefined value should be success', async () => {
       const message = await responseMessageService.getRequestErrorsMessage(
         validationError,
-        [undefined, 'id'],
+        [undefined, 'en'],
       );
       jest
         .spyOn(responseMessageService, 'getRequestErrorsMessage')
@@ -365,7 +364,7 @@ describe('MessageService', () => {
       expect(
         await responseMessageService.getRequestErrorsMessage(validationError, [
           undefined,
-          'id',
+          'en',
         ]),
       ).toBe(message);
     });
@@ -468,7 +467,7 @@ describe('MessageService', () => {
     it('should be success with options', async () => {
       const languages = responseMessageService.getImportErrorsMessage(
         validationErrorImport,
-        ['en', 'id'],
+        ['en'],
       );
       jest
         .spyOn(responseMessageService, 'getImportErrorsMessage')
@@ -477,7 +476,6 @@ describe('MessageService', () => {
       expect(
         responseMessageService.getImportErrorsMessage(validationErrorImport, [
           'en',
-          'id',
         ]),
       ).toBe(languages);
     });
