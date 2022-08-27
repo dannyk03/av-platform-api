@@ -39,7 +39,7 @@ export class LogInterceptor implements NestInterceptor<any> {
       const {
         method,
         originalUrl,
-        user,
+        __user,
         correlationId,
         body,
         params,
@@ -71,16 +71,16 @@ export class LogInterceptor implements NestInterceptor<any> {
             description: loggerOptions.description
               ? loggerOptions.description
               : `Request ${method} called, url ${originalUrl}, and action ${loggerAction}`,
-            user: user ? user._id : undefined,
+            user: __user,
+            role: __user?.role,
             correlationId,
             method: method as EnumRequestMethod,
-            role: user ? user.role : undefined,
             params,
             body,
-            path: path ? path : undefined,
+            path,
             statusCode,
             userAgent,
-            tags: loggerOptions.tags ? loggerOptions.tags : [],
+            tags: loggerOptions?.tags || [],
           });
         }),
       );

@@ -7,7 +7,6 @@ export interface IRequestApp extends Request {
   correlationId: string;
   timezone: string;
   timestamp: number;
-  user?: Record<string, any>;
   customLang: string[];
   version: string;
   repoVersion: string;
