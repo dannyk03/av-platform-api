@@ -6,9 +6,9 @@ import { CommonModule } from '@/core/core.module';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IValidationErrorImport } from '@/utils/error';
+import { IValidationErrorImport } from '@/utils/error/types';
 
-describe('MessageService', () => {
+describe('ResponseMessageService', () => {
   let responseMessageService: ResponseMessageService;
 
   let validationError: ValidationError[];
