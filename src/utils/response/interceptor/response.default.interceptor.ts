@@ -123,6 +123,11 @@ export class ResponseDefaultInterceptor
               };
             }
 
+            message = await this.responseMessageService.get(messagePath, {
+              customLanguages: customLang,
+              properties: messageProperties as IMessageOptionsProperties,
+            });
+
             return {
               statusCode,
               message,

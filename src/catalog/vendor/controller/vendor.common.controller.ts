@@ -264,7 +264,10 @@ export class VendorCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Get('/:id')
-  async get(@Param('id') id: string): Promise<IResponseData> {
+  async get(
+    @Param('id')
+    id: string,
+  ): Promise<IResponseData> {
     return this.vendorService.get({ id });
   }
 }

@@ -135,7 +135,10 @@ export class TestingCommonController {
     });
   }
 
-  @ClientResponse('response.default')
+  @ClientResponse('response.test.withProps', {
+    messageProperties: { prop1: 'test1', prop2: 'test2' },
+    classSerialization: null,
+  })
   @Get('/log')
   async logTest(
     @ReqLogData()

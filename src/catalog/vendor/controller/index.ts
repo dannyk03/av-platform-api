@@ -1,1 +1,1 @@
-export * from './vendor.controller';
+export * from './vendor.common.controller';
