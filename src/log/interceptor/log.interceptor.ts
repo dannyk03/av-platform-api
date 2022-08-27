@@ -44,6 +44,8 @@ export class LogInterceptor implements NestInterceptor<any> {
         body,
         params,
         path,
+        version,
+        repoVersion,
         userAgent,
       } = ctx.getRequest<IRequestApp>();
       const responseExpress = ctx.getResponse<Response>();
@@ -80,6 +82,8 @@ export class LogInterceptor implements NestInterceptor<any> {
             path,
             statusCode,
             userAgent,
+            version,
+            repoVersion,
             tags: loggerOptions?.tags || [],
           });
         }),

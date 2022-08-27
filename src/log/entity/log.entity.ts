@@ -62,7 +62,7 @@ export class Log {
     type: 'varchar',
     array: true,
     length: 20,
-    nullable: true,
+    default: [],
     update: false,
   })
   tags?: string[];
@@ -97,6 +97,18 @@ export class Log {
     update: false,
   })
   version!: string;
+
+  @Column({
+    length: 20,
+    update: false,
+  })
+  repoVersion!: string;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  data?: object;
 
   @CreateDateColumn({
     update: false,

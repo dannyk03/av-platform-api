@@ -6,20 +6,25 @@ import { User } from '@/user/entity';
 import { EnumLogAction, EnumLogLevel } from '../constants';
 import { EnumRequestMethod } from '@/utils/request/constants';
 
-export interface ILog {
-  path: string;
+export interface ILog extends IReqLogData {
   description: string;
   action: EnumLogAction;
+  tags?: string[];
+  statusCode?: number;
+  data?: Record<string, any>;
+}
+
+export interface IReqLogData {
+  path: string;
   role?: AclRole;
   method: EnumRequestMethod;
-  tags?: string[];
   params?: Record<string, any>;
   body?: Record<string, any>;
-  statusCode?: number;
   user?: User;
   correlationId: string;
   userAgent: IResult;
   version?: string;
+  repoVersion: string;
 }
 
 export interface ILogRaw extends ILog {

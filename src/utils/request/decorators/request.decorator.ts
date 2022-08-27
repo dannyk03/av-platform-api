@@ -8,7 +8,7 @@ import { DeepPartial } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
 import { IRequestApp } from '../types';
-import { ILog } from '@/log/types';
+import { ILog, IReqLogData } from '@/log/types';
 
 import {
   EnumRequestMethod,
@@ -51,17 +51,31 @@ export const RequestCustomLang = createParamDecorator(
 );
 
 export const ReqLogData = createParamDecorator(
-  (_data: string, ctx: ExecutionContext): DeepPartial<ILog> => {
-    const { path, method, correlationId, version, userAgent } = ctx
-      .switchToHttp()
-      .getRequest<IRequestApp>();
+  (_data: string, ctx: ExecutionContext): IReqLogData => {
+    const {
+      __user,
+      originalUrl,
+      path,
+      method,
+      correlationId,
+      version,
+      userAgent,
+      params,
+      body,
+      repoVersion,
+    } = ctx.switchToHttp().getRequest<IRequestApp>();
 
     return {
-      version,
-      path,
+      user: __user,
+      role: __user?.role,
       correlationId,
-      userAgent,
       method: method as EnumRequestMethod,
+      params,
+      body,
+      path,
+      userAgent,
+      version,
+      repoVersion,
     };
   },
 );

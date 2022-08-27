@@ -13,15 +13,22 @@ import { EnumRequestStatusCodeError, IResponseData } from '@avo/type';
 import { IResult } from 'ua-parser-js';
 
 import { CloudinaryService } from '@/cloudinary/service';
+import { LogService } from '@/log/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
 import { LogTrace } from '@/log/decorators';
 import { ReqUser } from '@/user/decorators';
 import { ErrorMeta } from '@/utils/error/decorators';
-import { RequestTimezone, RequestUserAgent } from '@/utils/request/decorators';
+import {
+  ReqLogData,
+  RequestTimezone,
+  RequestUserAgent,
+} from '@/utils/request/decorators';
 import { ClientResponse, ResponseTimeout } from '@/utils/response/decorators';
 
 import { AclGuard } from '@/auth/guards';
+
+import { IReqLogData } from '@/log/types';
 
 import { EnumLogAction } from '@/log/constants';
 
@@ -33,9 +40,9 @@ import { EnumHelperDateFormat } from '@/utils/helper';
 })
 export class TestingCommonController {
   constructor(
-    private readonly cloudinaryService: CloudinaryService,
     private readonly helperService: HelperService,
     private readonly helperDateService: HelperDateService,
+    private readonly logService: LogService,
   ) {}
   @ClientResponse('test.ping')
   @HttpCode(HttpStatus.OK)
@@ -120,7 +127,7 @@ export class TestingCommonController {
   @ResponseTimeout('2s')
   @ErrorMeta(TestingCommonController.name, 'errorTest')
   @Get('/error')
-  async errorTest(): Promise<IResponseData> {
+  async errorTest(): Promise<void> {
     throw new UnprocessableEntityException({
       statusCode: EnumRequestStatusCodeError.RequestValidationError,
       message: 'http.clientError.unprocessableEntity',
@@ -128,11 +135,18 @@ export class TestingCommonController {
     });
   }
 
-  // @ClientResponse('test.cld')
-  // @HttpCode(HttpStatus.OK)
-  // @Get('/cld')
-  // async cld(): Promise<IResponse> {
-  //   await this.cloudinaryService.list();
-  //   return;
-  // }
+  @ClientResponse('response.default')
+  @Get('/log')
+  async logTest(
+    @ReqLogData()
+    logData: IReqLogData,
+  ): Promise<void> {
+    this.logService.error({
+      ...logData,
+      action: EnumLogAction.Test,
+      description: 'Test error log',
+      tags: ['test'],
+      data: { error: 'some error' },
+    });
+  }
 }

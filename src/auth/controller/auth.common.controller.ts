@@ -19,12 +19,14 @@ import {
 } from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
+import _ from 'lodash';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
 import { User } from '@/user/entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
+import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
@@ -32,7 +34,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 import { ReqJwtUser, Token } from '../decorators';
 import { LogTrace } from '@/log/decorators';
 import { ReqUser } from '@/user/decorators';
-import { RequestUserAgent } from '@/utils/request/decorators';
+import { ReqLogData, RequestUserAgent } from '@/utils/request/decorators';
 import { ClientResponse } from '@/utils/response/decorators';
 
 import {
@@ -41,6 +43,8 @@ import {
   AuthRefreshJwtGuard,
   LoginGuard,
 } from '../guards';
+
+import { IReqLogData } from '@/log/types';
 
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
@@ -64,6 +68,7 @@ export class AuthCommonController {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly helperCookieService: HelperCookieService,
+    private readonly logService: LogService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 
