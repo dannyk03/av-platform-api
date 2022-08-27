@@ -12,7 +12,6 @@ import { EnumRequestStatusCodeError, IResponseData } from '@avo/type';
 
 import { IResult } from 'ua-parser-js';
 
-import { CloudinaryService } from '@/cloudinary/service';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 

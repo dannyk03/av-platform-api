@@ -19,7 +19,6 @@ import {
 } from '@avo/type';
 
 import { Response as ExpressResponse } from 'express';
-import _ from 'lodash';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
@@ -34,7 +33,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 import { ReqJwtUser, Token } from '../decorators';
 import { LogTrace } from '@/log/decorators';
 import { ReqUser } from '@/user/decorators';
-import { ReqLogData, RequestUserAgent } from '@/utils/request/decorators';
+import { RequestUserAgent } from '@/utils/request/decorators';
 import { ClientResponse } from '@/utils/response/decorators';
 
 import {
@@ -43,8 +42,6 @@ import {
   AuthRefreshJwtGuard,
   LoginGuard,
 } from '../guards';
-
-import { IReqLogData } from '@/log/types';
 
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';

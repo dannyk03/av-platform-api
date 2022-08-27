@@ -51,8 +51,10 @@ import {
 } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
-import { GiftIntentGetSerialization } from '../serialization';
-import { GiftGetSerialization } from '../serialization';
+import {
+  GiftGetSerialization,
+  GiftIntentGetSerialization,
+} from '../serialization';
 
 import { ConnectionNames } from '@/database/constants';
 

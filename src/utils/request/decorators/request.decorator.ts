@@ -4,11 +4,9 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { DeepPartial } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
 import { IRequestApp } from '../types';
-import { ILog, IReqLogData } from '@/log/types';
 
 import {
   EnumRequestMethod,
@@ -54,7 +52,6 @@ export const ReqLogData = createParamDecorator(
   (_data: string, ctx: ExecutionContext): IReqLogData => {
     const {
       __user,
-      originalUrl,
       path,
       method,
       correlationId,
