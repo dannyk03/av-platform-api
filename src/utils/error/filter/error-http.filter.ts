@@ -9,7 +9,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 import { IErrors, IMessage } from '@avo/type';
 
-import { ValidationError } from 'class-validator';
+import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
 
 import { DebuggerService } from '@/debugger/service';
@@ -137,6 +137,6 @@ export class ErrorHttpFilter implements ExceptionFilter {
   }
 
   isErrorException(obj: any): obj is IErrorException {
-    return 'statusCode' in obj && 'message' in obj;
+    return isObject(obj) && 'statusCode' in obj && 'message' in obj;
   }
 }
