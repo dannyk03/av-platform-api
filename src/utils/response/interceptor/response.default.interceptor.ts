@@ -77,6 +77,7 @@ export class ResponseDefaultInterceptor
             let statusCode: number = responseExpress.statusCode;
             let message = await this.responseMessageService.get(messagePath, {
               customLanguages: customLang,
+              properties: messageProperties as IMessageOptionsProperties,
             });
 
             // response
@@ -122,11 +123,6 @@ export class ResponseDefaultInterceptor
                 result: serialization,
               };
             }
-
-            message = await this.responseMessageService.get(messagePath, {
-              customLanguages: customLang,
-              properties: messageProperties as IMessageOptionsProperties,
-            });
 
             return {
               statusCode,
