@@ -15,7 +15,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { ProductDisplayLanguage } from '@/catalog/catalog.decorator';
+import { ProductDisplayLanguage } from '@/catalog/decorators/catalog.decorator';
 
 import {
   ArrayTransform,

@@ -18,12 +18,12 @@ import {
 } from 'class-validator';
 import { isArray } from 'lodash';
 
-import { MinGreaterThan } from '@/utils/request';
 import {
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
 } from '@/utils/request/transform';
+import { MinGreaterThan } from '@/utils/request/validation';
 
 export class GiftSendRecipientDto {
   @NormalizeEmail()

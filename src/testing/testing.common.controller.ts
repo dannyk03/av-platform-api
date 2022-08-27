@@ -15,13 +15,17 @@ import { IResult } from 'ua-parser-js';
 import { CloudinaryService } from '@/cloudinary/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
-import { AclGuard } from '@/auth';
-import { EnumLogAction, LogTrace } from '@/log';
-import { ReqUser } from '@/user';
-import { ErrorMeta } from '@/utils/error';
+import { LogTrace } from '@/log/decorators';
+import { ReqUser } from '@/user/decorators';
+import { ErrorMeta } from '@/utils/error/decorators';
+import { RequestTimezone, RequestUserAgent } from '@/utils/request/decorators';
+import { ClientResponse, ResponseTimeout } from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+
+import { EnumLogAction } from '@/log/constants';
+
 import { EnumHelperDateFormat } from '@/utils/helper';
-import { RequestTimezone, RequestUserAgent } from '@/utils/request';
-import { Response, ResponseTimeout } from '@/utils/response';
 
 @Throttle(1, 10)
 @Controller({
@@ -33,7 +37,7 @@ export class TestingCommonController {
     private readonly helperService: HelperService,
     private readonly helperDateService: HelperDateService,
   ) {}
-  @Response('test.ping')
+  @ClientResponse('test.ping')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.Test, { tags: ['test'] })
   @Get()
@@ -58,7 +62,7 @@ export class TestingCommonController {
     };
   }
 
-  @Response('test.auth')
+  @ClientResponse('test.auth')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/auth')
@@ -103,7 +107,7 @@ export class TestingCommonController {
     };
   }
 
-  @Response('test.timeout')
+  @ClientResponse('test.timeout')
   @ResponseTimeout('2s')
   @ErrorMeta(TestingCommonController.name, 'helloTimeoutCustom')
   @Get('/timeout')
@@ -112,7 +116,7 @@ export class TestingCommonController {
     return;
   }
 
-  @Response('response.default')
+  @ClientResponse('response.default')
   @ResponseTimeout('2s')
   @ErrorMeta(TestingCommonController.name, 'errorTest')
   @Get('/error')
@@ -124,7 +128,7 @@ export class TestingCommonController {
     });
   }
 
-  // @Response('test.cld')
+  // @ClientResponse('test.cld')
   // @HttpCode(HttpStatus.OK)
   // @Get('/cld')
   // async cld(): Promise<IResponse> {

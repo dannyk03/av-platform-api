@@ -1,6 +1,15 @@
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
+  CONNECTIONS_DEFAULT_AVAILABLE_SEARCH,
+  CONNECTIONS_DEFAULT_AVAILABLE_SORT,
+  CONNECTIONS_DEFAULT_PAGE,
+  CONNECTIONS_DEFAULT_PER_PAGE,
+  CONNECTIONS_DEFAULT_SORT,
+  ConnectionsOrderByNestingAliasMap,
+} from '../constants';
+
+import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationPage,
@@ -8,15 +17,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-
-import {
-  CONNECTIONS_DEFAULT_AVAILABLE_SEARCH,
-  CONNECTIONS_DEFAULT_AVAILABLE_SORT,
-  CONNECTIONS_DEFAULT_PAGE,
-  CONNECTIONS_DEFAULT_PER_PAGE,
-  CONNECTIONS_DEFAULT_SORT,
-  ConnectionsOrderByNestingAliasMap,
-} from '../networking.constant';
 
 export class SocialConnectionListDto implements IPaginationList {
   @PaginationSearch()

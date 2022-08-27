@@ -9,7 +9,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { Observable, map } from 'rxjs';
 
-import { IRequestApp } from '@/utils/request';
+import { IRequestApp } from '@/utils/request/types';
 
 // only for response success and error in controller
 @Injectable()

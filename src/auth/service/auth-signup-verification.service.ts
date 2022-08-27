@@ -12,7 +12,7 @@ import { SignUpEmailVerificationLink } from '../entity';
 
 import { HelperHashService } from '@/utils/helper/service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class AuthSignUpVerificationLinkService {

@@ -6,11 +6,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { EnumRequestStatusCodeError } from '@avo/type';
 
-import { RequestControllerGuard } from './guard/request.controller.guard';
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { RangeTupleConstraint } from './validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
@@ -55,10 +54,6 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
     {
       provide: APP_INTERCEPTOR,
       useClass: RequestTimestampInterceptor,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RequestControllerGuard,
     },
     IsPasswordStrongConstraint,
     IsPasswordMediumConstraint,

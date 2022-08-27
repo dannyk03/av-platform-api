@@ -5,11 +5,10 @@ import { EntityManager, Repository } from 'typeorm';
 
 import { Log } from '../entity';
 
-import { ILog } from '../log.interface';
+import { ILog, ILogRaw } from '../types/log.interface';
 
-import { ConnectionNames } from '@/database';
-
-import { EnumLogLevel } from '../log.constant';
+import { EnumLogLevel } from '../constants';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class LogService {
@@ -78,6 +77,21 @@ export class LogService {
   }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
     const create = this.logRepository.create({
       level: EnumLogLevel.Fatal,
+      ...logData,
+    });
+
+    return transactionalEntityManager
+      ? transactionalEntityManager.save(create)
+      : this.logRepository.save(create);
+  }
+
+  async raw({
+    transactionalEntityManager,
+    ...logData
+  }: ILogRaw & {
+    transactionalEntityManager?: EntityManager;
+  }): Promise<Log> {
+    const create = this.logRepository.create({
       ...logData,
     });
 

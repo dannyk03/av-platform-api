@@ -10,9 +10,9 @@ import { HealthModule } from '@/health/health.module';
 
 import { HelperDateService } from '@/utils/helper/service';
 
-import { HealthController } from '@/health/controller';
-
 import { INTEGRATION_CLOUDINARY_URL } from './cloudinary.constant';
+
+import { HealthController } from '@/health/controller';
 
 describe('Cloudinary Integration', () => {
   let app: INestApplication;

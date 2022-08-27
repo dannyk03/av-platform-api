@@ -23,24 +23,29 @@ import {
 } from '@avo/type';
 
 import { isDefined } from 'class-validator';
-import { flatMap } from 'lodash';
 import compact from 'lodash/compact';
+import flatMap from 'lodash/flatMap';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ProductGetSerialization } from '../serialization';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
-import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+import { IdParamDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
+import { ProductGetSerialization } from '../serialization';
+
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -53,7 +58,9 @@ export class ProductCommonController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('product.create', { classSerialization: ProductGetSerialization })
+  @ClientResponse('product.create', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -146,7 +153,7 @@ export class ProductCommonController {
     return saveProduct;
   }
 
-  @ResponsePaging('product.list', {
+  @ClientResponsePaging('product.list', {
     classSerialization: ProductGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -214,7 +221,7 @@ export class ProductCommonController {
     };
   }
 
-  @Response('product.delete')
+  @ClientResponse('product.delete')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -231,7 +238,7 @@ export class ProductCommonController {
     await this.productService.deleteProductBy({ id });
   }
 
-  @Response('product.active')
+  @ClientResponse('product.active')
   @AclGuard({
     abilities: [
       {
@@ -254,7 +261,7 @@ export class ProductCommonController {
     };
   }
 
-  @Response('product.inactive')
+  @ClientResponse('product.inactive')
   @AclGuard({
     abilities: [
       {
@@ -277,7 +284,9 @@ export class ProductCommonController {
     };
   }
 
-  @Response('product.update', { classSerialization: ProductGetSerialization })
+  @ClientResponse('product.update', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -404,7 +413,9 @@ export class ProductCommonController {
     return updateProduct;
   }
 
-  @Response('product.get', { classSerialization: ProductGetSerialization })
+  @ClientResponse('product.get', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)

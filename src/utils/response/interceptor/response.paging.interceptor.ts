@@ -19,9 +19,7 @@ import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IMessageOptionsProperties } from '@/response-message';
-import { EnumPaginationType } from '@/utils/pagination';
-import { IRequestApp } from '@/utils/request';
+import { IRequestApp } from '@/utils/request/types';
 
 import {
   RESPONSE_MESSAGE_PATH_META_KEY,
@@ -30,6 +28,9 @@ import {
   RESPONSE_SERIALIZATION_META_KEY,
   RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
 } from '../constants/response.constant';
+
+import { IMessageOptionsProperties } from '@/response-message';
+import { EnumPaginationType } from '@/utils/pagination';
 
 @Injectable()
 export class ResponsePagingInterceptor

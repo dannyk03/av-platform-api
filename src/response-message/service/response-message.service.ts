@@ -6,12 +6,12 @@ import { IErrors, IMessage } from '@avo/type';
 import { ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 
+import { IErrorsImport, IValidationErrorImport } from '@/utils/error/types';
+
 import {
   IMessageOptions,
   IMessageSetOptions,
 } from '../response-message.interface';
-
-import { IErrorsImport, IValidationErrorImport } from '@/utils/error';
 
 @Injectable()
 export class ResponseMessageService {

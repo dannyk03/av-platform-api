@@ -14,10 +14,11 @@ import { VendorLogo } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ICreateLogo } from '../vendor.interface';
+import { ConnectionNames } from '@/database/constants';
 
 import { CloudinarySubject } from '@/cloudinary';
-import { ConnectionNames } from '@/database';
+
+import { ICreateLogo } from '../vendor.interface';
 
 @Injectable()
 export class VendorLogoService {

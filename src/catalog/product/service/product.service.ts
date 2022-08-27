@@ -20,14 +20,15 @@ import { Product } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
+import { ConnectionNames } from '@/database/constants';
+
+import { IPaginationOptions } from '@/utils/pagination';
+
 import {
   IGetProduct,
   IProductSearch,
   IProductUpdate,
 } from '../product.interface';
-
-import { ConnectionNames } from '@/database';
-import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()
 export class ProductService {

@@ -23,16 +23,21 @@ import {
 import { VendorLogoService, VendorService } from '../service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { VendorGetSerialization } from '../serialization';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { VendorCreateDto, VendorListDto, VendorUpdateDto } from '../dto';
-import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+import { IdParamDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
+import { VendorGetSerialization } from '../serialization';
+
 import { EnumFileType, UploadFileSingle } from '@/utils/file';
 import { slugify } from '@/utils/helper';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -44,7 +49,9 @@ export class VendorCommonController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('vendor.create', { classSerialization: VendorGetSerialization })
+  @ClientResponse('vendor.create', {
+    classSerialization: VendorGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -98,7 +105,9 @@ export class VendorCommonController {
     return this.vendorService.save(createVendor);
   }
 
-  @ResponsePaging('vendor.list', { classSerialization: VendorGetSerialization })
+  @ClientResponsePaging('vendor.list', {
+    classSerialization: VendorGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -155,7 +164,7 @@ export class VendorCommonController {
     };
   }
 
-  @Response('vendor.delete')
+  @ClientResponse('vendor.delete')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -172,7 +181,7 @@ export class VendorCommonController {
     await this.vendorService.deleteBy({ id });
   }
 
-  @Response('vendor.active')
+  @ClientResponse('vendor.active')
   @AclGuard({
     abilities: [
       {
@@ -195,7 +204,7 @@ export class VendorCommonController {
     };
   }
 
-  @Response('vendor.inactive')
+  @ClientResponse('vendor.inactive')
   @AclGuard({
     abilities: [
       {
@@ -218,7 +227,9 @@ export class VendorCommonController {
     };
   }
 
-  @Response('vendor.update', { classSerialization: VendorGetSerialization })
+  @ClientResponse('vendor.update', {
+    classSerialization: VendorGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -241,7 +252,7 @@ export class VendorCommonController {
     };
   }
 
-  @Response('vendor.get', { classSerialization: VendorGetSerialization })
+  @ClientResponse('vendor.get', { classSerialization: VendorGetSerialization })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [

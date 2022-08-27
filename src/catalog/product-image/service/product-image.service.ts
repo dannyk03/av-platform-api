@@ -16,10 +16,11 @@ import { ProductImage } from '../entity';
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ICreateImages, ISaveImages } from '../product-image.interface';
+import { ConnectionNames } from '@/database/constants';
 
 import { CloudinarySubject } from '@/cloudinary';
-import { ConnectionNames } from '@/database';
+
+import { ICreateImages, ISaveImages } from '../product-image.interface';
 
 @Injectable()
 export class ProductImageService {

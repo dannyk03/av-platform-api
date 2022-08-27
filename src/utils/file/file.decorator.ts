@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
-import { IFileOptions } from './file.interface';
-
 import { EnumFileType } from './file.constant';
+
+import { IFileOptions } from './file.interface';
 import { FileExcelInterceptor } from './interceptor/file.excel.interceptor';
 import { FileImageInterceptor } from './interceptor/file.image.interceptor';
 

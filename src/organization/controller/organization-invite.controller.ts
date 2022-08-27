@@ -28,18 +28,19 @@ import { UserService } from '@/user/service';
 import { HelperDateService, HelperSlugService } from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
 
-import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
+import { ReqOrganizationIdentifierCtx } from '../decorators/organization.decorator';
+import { ReqUser } from '@/user/decorators';
+import { ClientResponse } from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+
+import { IReqOrganizationIdentifierCtx } from '../types/organization.interface';
 
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
-import { IReqOrganizationIdentifierCtx } from '../organization.interface';
-
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { ReqUser } from '@/user';
-import { Response } from '@/utils/response';
+import { ConnectionNames } from '@/database/constants';
 
 @Controller({
   version: '1',
@@ -58,7 +59,7 @@ export class OrganizationInviteController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Response('organization.invite')
+  @ClientResponse('organization.invite')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -119,7 +120,7 @@ export class OrganizationInviteController {
     }
   }
 
-  @Response('organization.join')
+  @ClientResponse('organization.join')
   @HttpCode(HttpStatus.OK)
   @Post('/join')
   async join(

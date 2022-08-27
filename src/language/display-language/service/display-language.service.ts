@@ -10,7 +10,7 @@ import {
 
 import { DisplayLanguage } from '../entity';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class DisplayLanguageService {

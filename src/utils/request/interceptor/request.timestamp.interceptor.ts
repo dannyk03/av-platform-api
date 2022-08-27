@@ -14,9 +14,9 @@ import { Observable } from 'rxjs';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
-import { IRequestApp } from '../request.interface';
+import { IRequestApp } from '../types';
 
-import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../request.constant';
+import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../constants';
 
 @Injectable()
 export class RequestTimestampInterceptor

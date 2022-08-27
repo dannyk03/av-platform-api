@@ -7,7 +7,7 @@ import { Organization, OrganizationInviteLink } from './entity';
 
 import { OrganizationInviteService, OrganizationService } from './service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Module({
   imports: [

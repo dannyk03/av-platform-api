@@ -21,9 +21,9 @@ import {
 
 import { SocialConnectionRequest } from '../entity';
 
-import { ISocialConnectionRequestSearch } from '../networking.interface';
+import { ISocialConnectionRequestSearch } from '../types';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class SocialConnectionRequestService {

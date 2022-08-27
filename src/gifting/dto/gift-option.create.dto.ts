@@ -9,7 +9,8 @@ import {
   IsUUID,
 } from 'class-validator';
 
-import { ProductDisplayLanguage } from '@/catalog';
+import { ProductDisplayLanguage } from '@/catalog/decorators';
+
 import {
   ArrayTransform,
   UniqueArrayByTransform,

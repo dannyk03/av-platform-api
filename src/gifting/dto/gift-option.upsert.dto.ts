@@ -2,14 +2,14 @@ import { EnumDisplayLanguage } from '@avo/type';
 
 import {
   ArrayMaxSize,
-  ArrayMinSize,
   IsArray,
   IsNotEmpty,
   IsOptional,
   IsUUID,
 } from 'class-validator';
 
-import { ProductDisplayLanguage } from '@/catalog';
+import { ProductDisplayLanguage } from '@/catalog/decorators';
+
 import {
   ArrayTransform,
   UniqueArrayByTransform,

@@ -18,9 +18,9 @@ import { Vendor } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
+import { ConnectionNames } from '@/database/constants';
 
-import { ConnectionNames } from '@/database';
+import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
 
 @Injectable()
 export class VendorService {

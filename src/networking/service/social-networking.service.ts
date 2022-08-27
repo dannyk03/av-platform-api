@@ -11,7 +11,7 @@ import { SocialConnectionRequestBlockService } from './social-connection-request
 import { SocialConnectionRequestService } from './social-connection-request.service';
 import { SocialConnectionService } from './social-connection.service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class SocialNetworkingService {

@@ -4,7 +4,17 @@ import {
   IPaginationSort,
 } from '@avo/type';
 
-import { ProductDisplayLanguage } from '@/catalog';
+import { ProductDisplayLanguage } from '@/catalog/decorators';
+
+import {
+  GIFT_INTENT_DEFAULT_AVAILABLE_SEARCH,
+  GIFT_INTENT_DEFAULT_AVAILABLE_SORT,
+  GIFT_INTENT_DEFAULT_PAGE,
+  GIFT_INTENT_DEFAULT_PER_PAGE,
+  GIFT_INTENT_DEFAULT_SORT,
+  GiftIntentOrderByNestingAliasMap,
+} from '../constants';
+
 import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
@@ -14,15 +24,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-
-import {
-  GIFT_INTENT_DEFAULT_AVAILABLE_SEARCH,
-  GIFT_INTENT_DEFAULT_AVAILABLE_SORT,
-  GIFT_INTENT_DEFAULT_PAGE,
-  GIFT_INTENT_DEFAULT_PER_PAGE,
-  GIFT_INTENT_DEFAULT_SORT,
-  GiftIntentOrderByNestingAliasMap,
-} from '../gift-intent.constant';
 
 export class GiftIntentListDto implements IPaginationList {
   @PaginationSearch()

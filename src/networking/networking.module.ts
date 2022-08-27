@@ -16,7 +16,7 @@ import {
   SocialNetworkingService,
 } from './service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Module({
   imports: [

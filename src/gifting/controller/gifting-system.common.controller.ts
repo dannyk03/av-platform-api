@@ -25,7 +25,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { flatMap } from 'lodash';
+import flatMap from 'lodash/flatMap';
 import { DataSource, In } from 'typeorm';
 
 import { GiftIntentService, GiftService } from '../service';
@@ -33,8 +33,13 @@ import { ProductService } from '@/catalog/product/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { GiftIntentGetSerialization } from '../serialization';
-import { GiftGetSerialization } from '../serialization';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import {
   GiftIntentListDto,
@@ -46,10 +51,10 @@ import {
 } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
+import { GiftIntentGetSerialization } from '../serialization';
+import { GiftGetSerialization } from '../serialization';
+
+import { ConnectionNames } from '@/database/constants';
 
 @Controller({
   version: '1',
@@ -69,7 +74,7 @@ export class GiftingSystemCommonController {
     private readonly configService: ConfigService,
   ) {}
 
-  @ResponsePaging('gift.intent.list', {
+  @ClientResponsePaging('gift.intent.list', {
     classSerialization: GiftIntentGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -127,7 +132,7 @@ export class GiftingSystemCommonController {
     };
   }
 
-  @Response('gift.intent.status')
+  @ClientResponse('gift.intent.status')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -227,7 +232,7 @@ export class GiftingSystemCommonController {
     };
   }
 
-  @Response('gift.intent.get', {
+  @ClientResponse('gift.intent.get', {
     classSerialization: GiftIntentGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -273,7 +278,7 @@ export class GiftingSystemCommonController {
     return getGiftIntent;
   }
 
-  @Response('gift.intent.addGiftOption', {
+  @ClientResponse('gift.intent.addGiftOption', {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -331,7 +336,7 @@ export class GiftingSystemCommonController {
     );
   }
 
-  @Response('gift.intent.updateGiftOption', {
+  @ClientResponse('gift.intent.updateGiftOption', {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -423,7 +428,7 @@ export class GiftingSystemCommonController {
     return this.giftService.save(giftOption);
   }
 
-  @Response('gift.intent.upsertGiftOption', {
+  @ClientResponse('gift.intent.upsertGiftOption', {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -527,7 +532,7 @@ export class GiftingSystemCommonController {
     );
   }
 
-  @Response('gift.intent.deleteGiftOption')
+  @ClientResponse('gift.intent.deleteGiftOption')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -554,7 +559,7 @@ export class GiftingSystemCommonController {
     };
   }
 
-  // @Response('gift.intent.ready')
+  // @ClientResponse('gift.intent.ready')
   // @HttpCode(HttpStatus.OK)
   // @AclGuard({
   //   abilities: [

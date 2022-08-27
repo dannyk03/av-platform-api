@@ -13,9 +13,10 @@ import { IResponseData } from '@avo/type';
 
 import { DataSource } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
-import { RequestExcludeTimestamp } from '@/utils/request';
-import { Response } from '@/utils/response';
+import { RequestExcludeTimestamp } from '@/utils/request/decorators';
+import { ClientResponse } from '@/utils/response/decorators';
+
+import { ConnectionNames } from '@/database/constants';
 
 import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 
@@ -56,7 +57,7 @@ export class HealthController {
 
   private checkCloudinary = async () => this.cloudinaryIndicator.isHealthy();
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get()
   checkAll() {
@@ -69,35 +70,35 @@ export class HealthController {
     ]);
   }
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get('/database')
   async healthCheckDatabase(): Promise<IResponseData> {
     return this.healthService.check([this.checkDatabase]);
   }
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get('/memory-heap')
   async healthCheckMemoryHeap(): Promise<IResponseData> {
     return this.healthService.check([this.checkMemoryHeap]);
   }
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get('/memory-rss')
   async healthCheckMemoryRss(): Promise<IResponseData> {
     return this.healthService.check([this.checkMemoryRss]);
   }
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get('/storage')
   async healthCheckStorage(): Promise<IResponseData> {
     return this.healthService.check([this.checkStorage]);
   }
 
-  @Response('health.check')
+  @ClientResponse('health.check')
   @HealthCheck()
   @Get('/cloudinary')
   async healthCheckCloudinary(): Promise<IResponseData> {

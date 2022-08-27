@@ -16,9 +16,9 @@ import { EnumFileStatusCodeError } from '@avo/type';
 
 import { Observable } from 'rxjs';
 
-import { IFile, IFileImageOptions } from '../file.interface';
-
 import { EnumFileImageMime } from '../file.constant';
+
+import { IFile, IFileImageOptions } from '../file.interface';
 
 export function FileImageInterceptor(
   options?: IFileImageOptions,

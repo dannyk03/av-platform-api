@@ -16,16 +16,18 @@ import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ProductImageGetSerialization } from '../serialization';
+import { ClientResponse } from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
-import { AclGuard } from '@/auth';
+import { ProductImageGetSerialization } from '../serialization';
+
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
-import { RequestParamGuard } from '@/utils/request';
-import { Response } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -37,7 +39,7 @@ export class ProductImageController {
     private readonly productImageService: ProductImageService,
   ) {}
 
-  @Response('product.imageDelete')
+  @ClientResponse('product.imageDelete')
   @AclGuard({
     abilities: [
       {
@@ -54,7 +56,7 @@ export class ProductImageController {
     await this.productImageService.deleteBulkById(ids);
   }
 
-  @Response('product.imageAdd')
+  @ClientResponse('product.imageAdd')
   @AclGuard({
     abilities: [
       {
@@ -80,7 +82,7 @@ export class ProductImageController {
     });
   }
 
-  @Response('product.imageDelete')
+  @ClientResponse('product.imageDelete')
   @AclGuard({
     abilities: [
       {
@@ -96,7 +98,7 @@ export class ProductImageController {
     await this.productImageService.deleteById(id);
   }
 
-  @Response('product.updateImage', {
+  @ClientResponse('product.updateImage', {
     classSerialization: ProductImageGetSerialization,
   })
   @AclGuard({

@@ -21,13 +21,16 @@ import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
+import { LogTrace } from '@/log/decorators';
+import { ReqUser } from '@/user/decorators';
+import { ClientResponse } from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EnumLogAction, LogTrace } from '@/log';
-import { ReqUser } from '@/user';
-import { Response } from '@/utils/response';
+import { ConnectionNames } from '@/database/constants';
+import { EnumLogAction } from '@/log/constants';
 
 @Controller({
   version: '1',
@@ -45,7 +48,7 @@ export class OrganizationController {
     private readonly authService: AuthService,
   ) {}
 
-  @Response('organization.create')
+  @ClientResponse('organization.create')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CreateOrganization, {
     tags: ['organization', 'create'],

@@ -6,11 +6,12 @@ import { User } from '@/user/entity';
 
 import { AclPolicyService } from '../policy/service';
 
-import { AclPolicySerialization } from '../policy/serialization';
+import { ReqUser } from '@/user/decorators';
+import { ClientResponse } from '@/utils/response/decorators';
 
-import { AclGuard } from '@/auth';
-import { ReqUser } from '@/user';
-import { Response } from '@/utils/response';
+import { AclGuard } from '@/auth/guards';
+
+import { AclPolicySerialization } from '../policy/serialization';
 
 @Controller({
   version: '1',
@@ -19,7 +20,9 @@ import { Response } from '@/utils/response';
 export class AclController {
   constructor(private readonly aclPolicyService: AclPolicyService) {}
 
-  @Response('acl.abilities', { classSerialization: AclPolicySerialization })
+  @ClientResponse('acl.abilities', {
+    classSerialization: AclPolicySerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get()

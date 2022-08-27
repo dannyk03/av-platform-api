@@ -30,17 +30,18 @@ import {
   GiftIntentReadyLinkService,
   GiftIntentService,
 } from '@/gifting/service';
+import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
-import { GiftIntentReadySerialization } from '@/gifting/serialization';
+import { ClientResponse } from '@/utils/response/decorators';
 
 import { MagicLinkDto } from '../dto';
 
-import { AuthUserLoginSerialization } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
-import { Response } from '@/utils/response';
+import { AuthUserLoginSerialization } from '@/auth/serialization';
+import { GiftIntentReadySerialization } from '@/gifting/serialization';
+
+import { ConnectionNames } from '@/database/constants';
 
 @Controller({})
 export class MagicLinkController {
@@ -58,7 +59,7 @@ export class MagicLinkController {
     private readonly authService: AuthService,
   ) {}
 
-  @Response('user.signUpSuccess')
+  @ClientResponse('user.signUpSuccess')
   @Get('/signup')
   async signUpValidate(
     @Query()
@@ -147,7 +148,7 @@ export class MagicLinkController {
     };
   }
 
-  @Response('organization.inviteValid')
+  @ClientResponse('organization.inviteValid')
   @Get('/org/join')
   async orgJoinValidate(
     @Query()
@@ -179,7 +180,7 @@ export class MagicLinkController {
     }
   }
 
-  @Response('gift.confirm')
+  @ClientResponse('gift.confirm')
   @Get('/confirm')
   async confirmSendGift(
     @Query()
@@ -283,7 +284,7 @@ export class MagicLinkController {
     );
   }
 
-  @Response('gift.intent.ready', {
+  @ClientResponse('gift.intent.ready', {
     classSerialization: GiftIntentReadySerialization,
   })
   @Throttle(1, 5)

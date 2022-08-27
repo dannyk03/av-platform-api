@@ -3,95 +3,89 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  Type,
-  mixin,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 
 import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
-import { EnumRequestMethod } from 'src/utils/request/request.constant';
 
-import { Log } from '../entity';
+import { LogService } from '../service';
 
-import { LogService } from '../service/log.service';
+import { ILogOptions } from '../types/log.interface';
+import { IRequestApp } from '@/utils/request/types';
 
-import { ILog, ILogOptions } from '../log.interface';
-import { IRequestApp } from 'src/utils/request/request.interface';
+import {
+  EnumLogAction,
+  EnumLogLevel,
+  LOG_ACTION_META_KEY,
+  LOG_OPTIONS_META_KEY,
+} from '../constants';
+import { EnumRequestMethod } from '@/utils/request/constants';
 
-import { EnumLogAction, EnumLogLevel } from '../log.constant';
+@Injectable()
+export class LogInterceptor implements NestInterceptor<any> {
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly loggerService: LogService,
+  ) {}
 
-export function LogInterceptor(
-  action: EnumLogAction,
-  options?: ILogOptions,
-): Type<NestInterceptor> {
-  @Injectable()
-  class MixinLoggerInterceptor implements NestInterceptor<Promise<any>> {
-    private readonly logMethods: Record<
-      EnumLogLevel,
-      (data: ILog) => Promise<Log>
-    >;
-    constructor(private readonly logService: LogService) {
-      this.logMethods = {
-        [EnumLogLevel.Fatal]: (data: ILog) => this.logService.fatal(data),
-        [EnumLogLevel.Debug]: (data: ILog) => this.logService.debug(data),
-        [EnumLogLevel.Warn]: (data: ILog) => this.logService.warn(data),
-        [EnumLogLevel.Info]: (data: ILog) => this.logService.info(data),
-        [EnumLogLevel.Error]: (data: ILog) => this.logService.error(data),
-      };
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<Promise<any> | string>> {
+    if (context.getType() === 'http') {
+      const ctx: HttpArgumentsHost = context.switchToHttp();
+      const {
+        method,
+        originalUrl,
+        user,
+        correlationId,
+        body,
+        params,
+        path,
+        userAgent,
+      } = ctx.getRequest<IRequestApp>();
+      const responseExpress = ctx.getResponse<Response>();
+      return next.handle().pipe(
+        tap(async (response: Promise<Record<string, any>>) => {
+          const responseData: Record<string, any> = await response;
+          const responseStatus: number = responseExpress.statusCode;
+          const statusCode =
+            responseData && responseData.statusCode
+              ? responseData.statusCode
+              : responseStatus;
+
+          const loggerAction: EnumLogAction = this.reflector.get<EnumLogAction>(
+            LOG_ACTION_META_KEY,
+            context.getHandler(),
+          );
+          const loggerOptions: ILogOptions = this.reflector.get<ILogOptions>(
+            LOG_OPTIONS_META_KEY,
+            context.getHandler(),
+          );
+
+          await this.loggerService.raw({
+            level: loggerOptions.level || EnumLogLevel.Info,
+            action: loggerAction,
+            description: loggerOptions.description
+              ? loggerOptions.description
+              : `Request ${method} called, url ${originalUrl}, and action ${loggerAction}`,
+            user: user ? user._id : undefined,
+            correlationId,
+            method: method as EnumRequestMethod,
+            role: user ? user.role : undefined,
+            params,
+            body,
+            path: path ? path : undefined,
+            statusCode,
+            userAgent,
+            tags: loggerOptions.tags ? loggerOptions.tags : [],
+          });
+        }),
+      );
     }
 
-    async intercept(
-      context: ExecutionContext,
-      next: CallHandler,
-    ): Promise<Observable<Promise<any> | string>> {
-      if (context.getType() === 'http') {
-        const ctx: HttpArgumentsHost = context.switchToHttp();
-        const {
-          __user,
-          method,
-          originalUrl,
-          userAgent,
-          correlationId,
-          body,
-          params,
-          version,
-        } = ctx.getRequest<IRequestApp>();
-        const responseExpress = ctx.getResponse<Response>();
-        return next.handle().pipe(
-          tap(async (response: Promise<Record<string, any>>) => {
-            const responseData: Record<string, any> = await response;
-            const responseStatus: number = responseExpress?.statusCode;
-            const statusCode = responseData?.statusCode || responseStatus;
-
-            const logData = {
-              action,
-              originalUrl,
-              version,
-              description:
-                options?.description ||
-                `${method} ${originalUrl} ${version} called, ${action}`,
-              user: __user,
-              correlationId,
-              method: method as EnumRequestMethod,
-              role: __user?.role,
-              params,
-              body,
-              statusCode,
-              userAgent,
-              tags: options?.tags,
-            };
-
-            await this.logMethods[options?.level || EnumLogLevel.Info]?.(
-              logData,
-            );
-          }),
-        );
-      }
-
-      return next.handle();
-    }
+    return next.handle();
   }
-
-  return mixin(MixinLoggerInterceptor);
 }

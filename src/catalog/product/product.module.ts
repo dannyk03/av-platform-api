@@ -9,7 +9,7 @@ import { Product } from './entity';
 import { ProductService } from './service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Module({
   imports: [

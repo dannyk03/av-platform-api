@@ -7,11 +7,12 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { CountryCode } from 'libphonenumber-js/types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 
 import { HelperPhoneNumberService } from '@/utils/helper/service';
+
+import { CountryCode } from 'libphonenumber-js/types';
 
 @ValidatorConstraint({ async: true })
 @Injectable()

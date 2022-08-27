@@ -11,7 +11,7 @@ import { IResult } from 'ua-parser-js';
 import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
-import { EnumLogAction, EnumLogLevel } from '../log.constant';
+import { EnumLogAction, EnumLogLevel } from '../constants';
 
 @Entity()
 export class Log {
@@ -89,7 +89,7 @@ export class Log {
     length: 50,
     update: false,
   })
-  originalUrl!: string;
+  path!: string;
 
   @Column({
     length: 3,

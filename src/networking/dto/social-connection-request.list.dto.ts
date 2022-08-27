@@ -5,6 +5,15 @@ import {
 } from '@avo/type';
 
 import {
+  CONNECT_REQUEST_DEFAULT_AVAILABLE_SEARCH,
+  CONNECT_REQUEST_DEFAULT_AVAILABLE_SORT,
+  CONNECT_REQUEST_DEFAULT_PAGE,
+  CONNECT_REQUEST_DEFAULT_PER_PAGE,
+  CONNECT_REQUEST_DEFAULT_SORT,
+  ConnectRequestOrderByNestingAliasMap,
+} from '../constants';
+
+import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterEnum,
@@ -13,15 +22,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-
-import {
-  CONNECT_REQUEST_DEFAULT_AVAILABLE_SEARCH,
-  CONNECT_REQUEST_DEFAULT_AVAILABLE_SORT,
-  CONNECT_REQUEST_DEFAULT_PAGE,
-  CONNECT_REQUEST_DEFAULT_PER_PAGE,
-  CONNECT_REQUEST_DEFAULT_SORT,
-  ConnectRequestOrderByNestingAliasMap,
-} from '../networking.constant';
 
 export class SocialConnectionRequestListDto implements IPaginationList {
   @PaginationSearch()

@@ -17,16 +17,16 @@ import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
+import { ReqOrganizationIdentifierCtx } from '@/organization/decorators';
+import { ClientResponsePaging } from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
+
+import { IReqOrganizationIdentifierCtx } from '@/organization/types';
 
 import { AclRoleListDto } from '../dto';
 
-import { AclGuard } from '@/auth';
-import {
-  IReqOrganizationIdentifierCtx,
-  ReqOrganizationIdentifierCtx,
-} from '@/organization';
-import { ResponsePaging } from '@/utils/response';
+import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
 
 @Controller({
   version: '1',
@@ -39,7 +39,9 @@ export class AclRoleController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @ResponsePaging('role.list', { classSerialization: RoleGetSerialization })
+  @ClientResponsePaging('role.list', {
+    classSerialization: RoleGetSerialization,
+  })
   @AclGuard({
     abilities: [
       {

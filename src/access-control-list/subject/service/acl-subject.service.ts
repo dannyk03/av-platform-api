@@ -5,7 +5,7 @@ import { DeepPartial, Repository } from 'typeorm';
 
 import { AclSubject } from '../entity';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class AclSubjectService {

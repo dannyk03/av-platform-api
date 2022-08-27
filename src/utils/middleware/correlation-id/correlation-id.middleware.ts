@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import cuid from 'cuid';
 import { NextFunction, Response } from 'express';
 
-import { IRequestApp } from '@/utils/request';
+import { IRequestApp } from '@/utils/request/types';
 
 @Injectable()
 export class CorrelationIdMiddleware implements NestMiddleware {

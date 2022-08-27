@@ -25,12 +25,18 @@ import {
   SocialConnectionService,
   SocialNetworkingService,
 } from '../service';
+import { EmailService } from '@/messaging/email/service';
 import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { SocialConnectionRequestGetSerialization } from '../serialization';
-import { SocialConnectionGetSerialization } from '../serialization';
+import { ReqUser } from '@/user/decorators';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorators';
+
+import { AclGuard } from '@/auth/guards';
 
 import {
   ConnectRequestUpdateDto,
@@ -40,10 +46,10 @@ import {
 } from '../dto';
 import { EmailQueryParamOptionalDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
-import { EmailService } from '@/messaging/email';
-import { ReqUser } from '@/user';
-import { Response, ResponsePaging } from '@/utils/response';
+import {
+  SocialConnectionGetSerialization,
+  SocialConnectionRequestGetSerialization,
+} from '../serialization';
 
 @Controller({
   version: '1',
@@ -60,7 +66,7 @@ export class NetworkingCommonController {
     private readonly socialConnectionRequestBlockService: SocialConnectionRequestBlockService,
   ) {}
 
-  @Response('networking.connectRequest')
+  @ClientResponse('networking.connectRequest')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Post('/connect')
@@ -147,7 +153,7 @@ export class NetworkingCommonController {
     );
   }
 
-  @ResponsePaging('networking.connectRequestList', {
+  @ClientResponsePaging('networking.connectRequestList', {
     classSerialization: SocialConnectionRequestGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -202,7 +208,7 @@ export class NetworkingCommonController {
       data: connectionRequests,
     };
   }
-  @ResponsePaging('networking.connectionsList', {
+  @ClientResponsePaging('networking.connectionsList', {
     classSerialization: SocialConnectionGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
@@ -256,7 +262,7 @@ export class NetworkingCommonController {
     };
   }
 
-  @Response('networking.connectApprove')
+  @ClientResponse('networking.connectApprove')
   @AclGuard()
   @Patch('/approve')
   async approve(
@@ -293,7 +299,7 @@ export class NetworkingCommonController {
     );
   }
 
-  @Response('networking.connectReject')
+  @ClientResponse('networking.connectReject')
   @AclGuard()
   @Patch('/reject')
   async reject(

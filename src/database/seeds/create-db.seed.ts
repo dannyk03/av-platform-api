@@ -4,7 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { Command } from 'nestjs-command';
 import { DataSourceOptions } from 'typeorm';
 
-import { ConnectionNames } from '../database.constant';
+import { ConnectionNames } from '../constants/database.constant';
+
 import { createDB } from '../utils';
 
 @Injectable()

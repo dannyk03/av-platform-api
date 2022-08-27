@@ -3,7 +3,8 @@ import { EnumDisplayLanguage } from '@avo/type';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, Length } from 'class-validator';
 
-import { ProductDisplayLanguage } from '@/catalog';
+import { ProductDisplayLanguage } from '@/catalog/decorators';
+
 import { NormalizeStringInputTransform } from '@/utils/request/transform';
 
 export class MagicLinkDto {

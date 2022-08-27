@@ -22,8 +22,9 @@ import { ResponseModule } from '@/utils/response/response.module';
 import { TypeOrmConfigService } from '@/database/service';
 import { DebuggerOptionService } from '@/debugger/service';
 
+import { ConnectionNames } from '@/database/constants';
+
 import { ConfigDynamicModule } from '@/config';
-import { ConnectionNames } from '@/database/';
 
 @Module({
   controllers: [],

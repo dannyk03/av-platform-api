@@ -5,8 +5,9 @@ import { NextFunction } from 'express';
 
 import { HelperArrayService } from '@/utils/helper/service';
 
+import { IRequestApp } from '@/utils/request/types';
+
 import { EnumMessageLanguage } from '@/response-message';
-import { IRequestApp } from '@/utils/request';
 
 @Injectable()
 export class ValidateCustomLanguageMiddleware implements NestMiddleware {

@@ -26,12 +26,12 @@ import {
 import { GiftIntent } from '../entity';
 
 import { GiftIntentReadyLinkService } from './gift-intent-ready-link.service';
+import { EmailService } from '@/messaging/email/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import { IGiftIntentSearch } from '../gift-intent.interface';
+import { IGiftIntentSearch } from '../types/gift-intent.interface';
 
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
+import { ConnectionNames } from '@/database/constants';
 
 @Injectable()
 export class GiftIntentService {
