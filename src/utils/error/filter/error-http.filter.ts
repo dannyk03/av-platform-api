@@ -121,7 +121,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
       message: mapMessage,
       error: error && Object.keys(error).length ? error : undefined,
       errors: errors as IErrors[] | IErrorsImport[],
-      metadata: resMetadata,
+      meta: resMetadata,
       data,
     };
 

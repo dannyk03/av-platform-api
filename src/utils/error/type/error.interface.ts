@@ -47,6 +47,6 @@ export interface IErrorHttpFilter {
   message: string | IMessage;
   error?: string;
   errors?: IErrors[] | IErrorsImport[];
-  metadata: IErrorHttpFilterMetadata;
+  meta: IErrorHttpFilterMetadata;
   data?: Record<string, any>;
 }
