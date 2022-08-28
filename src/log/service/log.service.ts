@@ -121,6 +121,7 @@ export class LogService {
     userAgent = this.request.userAgent,
     version = this.request.version,
     repoVersion = this.request.repoVersion,
+    exec = `${this.request.__class}::${this.request.__function}`,
     action,
     description,
     statusCode,
@@ -139,6 +140,7 @@ export class LogService {
     | 'userAgent'
     | 'version'
     | 'repoVersion'
+    | 'exec'
   > & {
     transactionalEntityManager?: EntityManager;
   }): Promise<Log> {
@@ -156,6 +158,7 @@ export class LogService {
       action,
       description,
       statusCode,
+      exec,
       tags,
       data,
       level,

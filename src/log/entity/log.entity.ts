@@ -99,10 +99,16 @@ export class Log {
   version!: string;
 
   @Column({
-    length: 20,
+    length: 15,
     update: false,
   })
   repoVersion!: string;
+
+  @Column({
+    length: 30,
+    update: false,
+  })
+  exec!: string;
 
   @Column({
     type: 'jsonb',

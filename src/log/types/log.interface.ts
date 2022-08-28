@@ -10,7 +10,6 @@ export interface ILog extends ILogData, IReqLogData {}
 export interface ILogData {
   description: string;
   action: EnumLogAction;
-
   tags?: string[];
   data?: Record<string, any>;
 }
@@ -31,6 +30,7 @@ export interface IReqLogData {
 export interface ILogRaw extends ILog {
   level: EnumLogLevel;
   statusCode?: number;
+  exec: string;
 }
 
 export interface ILogOptions {
