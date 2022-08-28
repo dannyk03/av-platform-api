@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumUserStatusCodeError } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import {
   Brackets,
@@ -19,15 +18,10 @@ import {
 
 import { User } from '../entity';
 
-import {
-  UserGetSerialization,
-  UserProfileGetSerialization,
-} from '../serialization';
+import { IUserCheckExist, IUserSearch } from '../type/user.interface';
+import { IAuthPassword } from '@/auth/type/auth.interface';
 
-import { IUserCheckExist, IUserSearch } from '../user.interface';
-import { IAuthPassword } from '@/auth/auth.interface';
-
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserService {
@@ -210,19 +204,5 @@ export class UserService {
       .where('id = :id', { id })
       .andWhere('isActive != :isActive', { isActive })
       .execute();
-  }
-
-  async serializationUserProfile(
-    data: User,
-  ): Promise<UserProfileGetSerialization> {
-    return plainToInstance(UserProfileGetSerialization, data);
-  }
-
-  async serialization(data: User): Promise<UserGetSerialization> {
-    return plainToInstance(UserGetSerialization, data);
-  }
-
-  async serializationList(data: User[]): Promise<UserGetSerialization[]> {
-    return plainToInstance(UserGetSerialization, data);
   }
 }

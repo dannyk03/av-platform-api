@@ -3,120 +3,127 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  Type,
-  mixin,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { Reflector } from '@nestjs/core';
 
-import { IMessage, IResponsePaging } from '@avo/type';
+import { IMessage, IResponsePaging, IResponsePagingData } from '@avo/type';
 
+import {
+  ClassConstructor,
+  ClassTransformOptions,
+  plainToInstance,
+} from 'class-transformer';
 import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IResponsePagingOptions } from '../response.interface';
+import { IRequestApp } from '@/utils/request/type';
 
+import {
+  RESPONSE_MESSAGE_PATH_META_KEY,
+  RESPONSE_MESSAGE_PROPERTIES_META_KEY,
+  RESPONSE_PAGING_TYPE_META_KEY,
+  RESPONSE_SERIALIZATION_META_KEY,
+  RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
+} from '../constant/response.constant';
+
+import { IMessageOptionsProperties } from '@/response-message';
 import { EnumPaginationType } from '@/utils/pagination';
 
-// This interceptor for restructure response success
-export function ResponsePagingInterceptor(
-  messagePath: string,
-  options?: IResponsePagingOptions,
-): Type<NestInterceptor> {
-  @Injectable()
-  class MixinResponseInterceptor implements NestInterceptor<Promise<any>> {
-    constructor(
-      private readonly responseMessageService: ResponseMessageService,
-    ) {}
+@Injectable()
+export class ResponsePagingInterceptor
+  implements NestInterceptor<Promise<any>>
+{
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly responseMessageService: ResponseMessageService,
+  ) {}
 
-    async intercept(
-      context: ExecutionContext,
-      next: CallHandler,
-    ): Promise<Observable<Promise<IResponsePaging> | string>> {
-      if (context.getType() === 'http') {
-        const statusCode: number = options?.statusCode;
+  async intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Promise<Observable<Promise<IResponsePaging>>> {
+    if (context.getType() === 'http') {
+      return next.handle().pipe(
+        map(async (responseData: Promise<IResponsePagingData>) => {
+          const ctx: HttpArgumentsHost = context.switchToHttp();
+          const responseExpress: Response = ctx.getResponse();
 
-        return next.handle().pipe(
-          map(
-            async (
-              responseData: Promise<Record<string, any>>,
-            ): Promise<IResponsePaging> => {
-              const ctx: HttpArgumentsHost = context.switchToHttp();
-              const responseExpress: Response = ctx.getResponse();
-              const { headers } = ctx.getRequest();
-              const customLanguages = headers['x-custom-lang'];
+          const messagePath: string = this.reflector.get<string>(
+            RESPONSE_MESSAGE_PATH_META_KEY,
+            context.getHandler(),
+          );
+          const type: EnumPaginationType =
+            this.reflector.get<EnumPaginationType>(
+              RESPONSE_PAGING_TYPE_META_KEY,
+              context.getHandler(),
+            );
+          const classSerialization: ClassConstructor<any> = this.reflector.get<
+            ClassConstructor<any>
+          >(RESPONSE_SERIALIZATION_META_KEY, context.getHandler());
+          const classSerializationOptions: ClassTransformOptions =
+            this.reflector.get<ClassTransformOptions>(
+              RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
+              context.getHandler(),
+            );
+          const messageProperties: IMessageOptionsProperties =
+            this.reflector.get<IMessageOptionsProperties>(
+              RESPONSE_MESSAGE_PROPERTIES_META_KEY,
+              context.getHandler(),
+            );
 
-              const newStatusCode = statusCode || responseExpress.statusCode;
-              const resData: Record<string, any> = await responseData;
-              const {
-                totalData,
-                currentPage,
-                perPage,
-                data,
-                metadata,
-                availableSort,
-                availableSearch,
-              } = resData;
+          // message base on language
+          const { customLang } = ctx.getRequest<IRequestApp>();
 
-              const { totalPage } = resData;
+          // response
+          const { data, ...meta } = await responseData;
+          const statusCode: number = responseExpress.statusCode;
+          const properties: IMessageOptionsProperties = messageProperties;
+          let serialization = data;
 
-              const message: string | IMessage =
-                await this.responseMessageService.get(messagePath, {
-                  customLanguages,
-                });
+          if (classSerialization) {
+            serialization = plainToInstance(
+              classSerialization,
+              data,
+              classSerializationOptions,
+            );
+          }
 
-              const listData = Array.isArray(data) ? data : [data];
-              if (options?.type === EnumPaginationType.Simple) {
-                return {
-                  statusCode: newStatusCode,
-                  message,
-                  meta: {
-                    totalData,
-                    totalPage,
-                    currentPage,
-                    perPage,
-                    ...metadata,
-                  },
-                  results: listData,
-                };
-              }
+          // message
+          const message: string | IMessage =
+            await this.responseMessageService.get(messagePath, {
+              customLanguages: customLang,
+              properties,
+            });
 
-              if (options?.type === EnumPaginationType.Mini) {
-                return {
-                  statusCode: newStatusCode,
-                  message,
-                  meta: {
-                    totalData,
-                    ...metadata,
-                  },
-                  results: listData,
-                };
-              }
+          const responseHttp: IResponsePaging = {
+            statusCode,
+            message,
+            meta,
+            results: serialization,
+          };
 
-              return {
-                statusCode: newStatusCode,
-                message,
-                meta: {
-                  totalData,
-                  totalPage,
-                  currentPage,
-                  perPage,
-                  availableSort,
-                  availableSearch,
-                  ...metadata,
-                },
-                results: listData,
-              };
-            },
-          ),
-        );
-      }
+          if (
+            type === EnumPaginationType.Simple ||
+            type === EnumPaginationType.Mini
+          ) {
+            delete responseHttp.meta.totalPage;
+            delete responseHttp.meta.currentPage;
+            delete responseHttp.meta.perPage;
+          }
 
-      return next.handle();
+          if (type === EnumPaginationType.Mini) {
+            delete responseHttp.meta.availableSort;
+            delete responseHttp.meta.availableSearch;
+          }
+
+          return responseHttp;
+        }),
+      );
     }
-  }
 
-  return mixin(MixinResponseInterceptor);
+    return next.handle();
+  }
 }

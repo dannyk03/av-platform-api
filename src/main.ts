@@ -11,7 +11,7 @@ import { useContainer } from 'class-validator';
 
 import { AppModule } from '@/app/app.module';
 
-import { ConnectionNames } from './database';
+import { ConnectionNames } from './database/constant';
 
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule, {

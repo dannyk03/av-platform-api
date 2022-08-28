@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 import ms from 'ms';
 
-import { EnumRequestMethod } from '@/utils/request';
+import { EnumRequestMethod } from '@/utils/request/constant';
 
 export default registerAs(
   'middleware',

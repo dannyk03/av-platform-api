@@ -6,7 +6,6 @@ import {
   EnumNetworkingStatusCodeError,
 } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import { compact } from 'lodash';
 import {
@@ -22,11 +21,9 @@ import {
 
 import { SocialConnectionRequest } from '../entity';
 
-import { SocialConnectionRequestGetSerialization } from '../serialization';
+import { ISocialConnectionRequestSearch } from '../type';
 
-import { ISocialConnectionRequestSearch } from '../networking.interface';
-
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class SocialConnectionRequestService {
@@ -240,17 +237,5 @@ export class SocialConnectionRequestService {
     }
 
     return searchBuilder.getMany();
-  }
-
-  async serializationSocialConnectionRequestList(
-    data: SocialConnectionRequest[],
-  ): Promise<SocialConnectionRequestGetSerialization[]> {
-    return plainToInstance(SocialConnectionRequestGetSerialization, data);
-  }
-
-  async serializationSocialConnectionRequest(
-    data: SocialConnectionRequest,
-  ): Promise<SocialConnectionRequestGetSerialization> {
-    return plainToInstance(SocialConnectionRequestGetSerialization, data);
   }
 }

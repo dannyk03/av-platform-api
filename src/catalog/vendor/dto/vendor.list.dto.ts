@@ -1,16 +1,6 @@
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
-  PaginationAvailableSearch,
-  PaginationAvailableSort,
-  PaginationFilterBoolean,
-  PaginationPage,
-  PaginationPerPage,
-  PaginationSearch,
-  PaginationSort,
-} from '@/utils/pagination';
-
-import {
   VENDOR_DEFAULT_ACTIVE,
   VENDOR_DEFAULT_AVAILABLE_SEARCH,
   VENDOR_DEFAULT_AVAILABLE_SORT,
@@ -19,6 +9,16 @@ import {
   VENDOR_DEFAULT_SORT,
   VendorOrderByNestingAliasMap,
 } from '../vendor.constant';
+
+import {
+  PaginationAvailableSearch,
+  PaginationAvailableSort,
+  PaginationFilterBoolean,
+  PaginationPage,
+  PaginationPerPage,
+  PaginationSearch,
+  PaginationSort,
+} from '@/utils/pagination';
 
 export class VendorListDto implements IPaginationList {
   @PaginationSearch()

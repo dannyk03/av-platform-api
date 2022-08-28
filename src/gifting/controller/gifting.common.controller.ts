@@ -34,23 +34,27 @@ import {
   GiftIntentService,
   GiftSubmitService,
 } from '../service';
+import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { GiftIntentGetSerialization } from '../serialization';
+import { ReqUser } from '@/user/decorator';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
 
-import { GiftIntentListDto, GiftOptionSubmitDto } from '../dto';
-import { GiftSendDto } from '../dto/gift.send.dto';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
+
+import { GiftIntentListDto, GiftOptionSubmitDto, GiftSendDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
-import { ReqUser } from '@/user';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
+import { GiftIntentGetSerialization } from '../serialization';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',
@@ -70,7 +74,7 @@ export class GiftingCommonController {
     private readonly socialConnectionService: SocialConnectionService,
   ) {}
 
-  @Response('gift.send')
+  @ClientResponse('gift.send')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     loadSensitiveAuthData: true,
@@ -131,19 +135,9 @@ export class GiftingCommonController {
                 user: {
                   id: reqUser.id,
                 },
-                // additionalData: {
-                //   ...(await this.giftIntentService.serializationSenderGiftAdditionalData(
-                //     sender,
-                //   )),
-                // },
               },
               recipient: {
                 user: maybeRecipientUser ? { id: maybeRecipientUser.id } : null,
-                // additionalData: {
-                //   ...(await this.giftIntentService.serializationRecipientGiftAdditionalData(
-                //     recipient,
-                //   )),
-                // },
               },
               additionalData: {
                 occasion: additionalData.occasion,
@@ -220,7 +214,9 @@ export class GiftingCommonController {
     }
   }
 
-  @ResponsePaging('gift.intent.list')
+  @ClientResponsePaging('gift.intent.list', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/intent/list')
@@ -258,9 +254,6 @@ export class GiftingCommonController {
       perPage,
     );
 
-    const data: GiftIntentGetSerialization[] =
-      await this.giftIntentService.serializationGiftIntentList(giftIntents);
-
     return {
       totalData,
       totalPage,
@@ -268,11 +261,13 @@ export class GiftingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: giftIntents,
     };
   }
 
-  @Response('gift.intent.get')
+  @ClientResponse('gift.intent.get', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
@@ -308,10 +303,10 @@ export class GiftingCommonController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntent(getGiftIntent);
+    return getGiftIntent;
   }
 
-  @Response('gift.intent.submit')
+  @ClientResponse('gift.intent.submit')
   @HttpCode(HttpStatus.OK)
   @Throttle(1, 5)
   @AclGuard()

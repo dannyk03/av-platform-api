@@ -11,7 +11,6 @@ import {
   EnumMessagingStatusCodeError,
 } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import {
   Brackets,
@@ -27,19 +26,12 @@ import {
 import { GiftIntent } from '../entity';
 
 import { GiftIntentReadyLinkService } from './gift-intent-ready-link.service';
+import { EmailService } from '@/messaging/email/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import {
-  GiftIntentGetSerialization,
-  RecipientAdditionalDataSerialization,
-  SenderAdditionalDataSerialization,
-} from '../serialization';
-import { GiftIntentReadySerialization } from '../serialization/gift-intent-ready.serialization';
+import { IGiftIntentSearch } from '../type/gift-intent.interface';
 
-import { IGiftIntentSearch } from '../gift-intent.interface';
-
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class GiftIntentService {
@@ -279,30 +271,5 @@ export class GiftIntentService {
       giftIntent.shippedAt = this.helperDateService.create();
       await this.save(giftIntent);
     }
-  }
-
-  async serializationSenderGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(SenderAdditionalDataSerialization, data);
-  }
-  async serializationRecipientGiftAdditionalData(data: any): Promise<any> {
-    return plainToInstance(RecipientAdditionalDataSerialization, data);
-  }
-
-  async serializationGiftIntentList(
-    data: GiftIntent[],
-  ): Promise<GiftIntentGetSerialization[]> {
-    return plainToInstance(GiftIntentGetSerialization, data);
-  }
-
-  async serializationGiftIntent(
-    data: GiftIntent,
-  ): Promise<GiftIntentGetSerialization> {
-    return plainToInstance(GiftIntentGetSerialization, data);
-  }
-
-  async serializationGiftIntentReady(
-    data: GiftIntent,
-  ): Promise<GiftIntentReadySerialization> {
-    return plainToInstance(GiftIntentReadySerialization, data);
   }
 }

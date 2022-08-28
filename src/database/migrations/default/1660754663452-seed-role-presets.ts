@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 
 import { MigrationInterface } from 'typeorm';
 
-import { SeedsModule } from '@/database/seeds/seeds.module';
+import { SeedsModule } from '@/database/seed/seeds.module';
 
-import { RolePresetsSeedService } from '@/database/seeds/service';
+import { RolePresetsSeedService } from '@/database/seed/service';
 
 export class seed1660754663452 implements MigrationInterface {
   name = 'seed1660754663452';

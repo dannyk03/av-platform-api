@@ -11,9 +11,9 @@ import {
   HelperHashService,
 } from '@/utils/helper/service';
 
-import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
+import { IAuthPassword, IAuthPayloadOptions } from '../type';
 
-import { IAuthPassword, IAuthPayloadOptions } from '../auth.interface';
+import { AuthUserLoginSerialization } from '../serialization';
 
 @Injectable()
 export class AuthService {

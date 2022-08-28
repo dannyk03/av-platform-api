@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { CoreModule } from '@/core/core.module';
+import { CommonModule } from '@/core/core.module';
 
 import { TypeOrmConfigService } from '@/database/service/typeorm-config.service';
 
@@ -9,7 +9,7 @@ describe('DatabaseService', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CoreModule],
+      imports: [CommonModule],
     }).compile();
 
     databaseService = moduleRef.get<TypeOrmConfigService>(TypeOrmConfigService);

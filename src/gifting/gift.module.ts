@@ -23,9 +23,9 @@ import {
   GiftSubmitService,
 } from './service';
 import { GiftRecipientService } from './service/gift-recipient.service';
+import { EmailService } from '@/messaging/email/service';
 
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [

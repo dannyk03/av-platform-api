@@ -1,6 +1,16 @@
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
+  USER_DEFAULT_ACTIVE,
+  USER_DEFAULT_AVAILABLE_SEARCH,
+  USER_DEFAULT_AVAILABLE_SORT,
+  USER_DEFAULT_PAGE,
+  USER_DEFAULT_PER_PAGE,
+  USER_DEFAULT_SORT,
+  UserOrderByNestingAliasMap,
+} from '../constant/user.constant';
+
+import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationFilterBoolean,
@@ -9,16 +19,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-
-import {
-  USER_DEFAULT_ACTIVE,
-  USER_DEFAULT_AVAILABLE_SEARCH,
-  USER_DEFAULT_AVAILABLE_SORT,
-  USER_DEFAULT_PAGE,
-  USER_DEFAULT_PER_PAGE,
-  USER_DEFAULT_SORT,
-  UserOrderByNestingAliasMap,
-} from '../user.constant';
 
 export class UserListDto implements IPaginationList {
   @PaginationSearch()

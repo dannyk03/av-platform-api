@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
 
 import ms from 'ms';
+import { version } from 'package.json';
 
 export default registerAs(
   'app',
@@ -14,9 +15,12 @@ export default registerAs(
     language: process.env.APP_LANGUAGE || 'en',
     timezone: process.env.APP_TZ || 'Asia/Jerusalem',
 
+    version: process.env.APP_VERSION || '1',
+    repoVersion: version,
+
     http: {
       host: process.env.APP_HOST || 'localhost',
-      port: Number.parseInt(process.env.APP_PORT) || 3000,
+      port: Number.parseInt(process.env.APP_PORT) || 3001,
     },
     globalPrefix: '/api',
     versioning: {
@@ -37,6 +41,6 @@ export default registerAs(
     },
 
     httpOn: process.env.APP_HTTP_ON === 'true',
-    taskOn: process.env.APP_TASK_ON === 'true',
+    taskOn: process.env.APP_JOB_ON === 'true',
   }),
 );

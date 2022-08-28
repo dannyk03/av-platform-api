@@ -3,15 +3,16 @@ import { ConfigService } from '@nestjs/config';
 
 import { NextFunction, Response } from 'express';
 
-import { HelperDateService } from '@/utils/helper/service';
+import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
-import { IRequestApp } from '@/utils/request';
+import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class TimestampMiddleware implements NestMiddleware {
   constructor(
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
+    private readonly helperNumberService: HelperNumberService,
   ) {}
 
   async use(
@@ -29,7 +30,7 @@ export class TimestampMiddleware implements NestMiddleware {
     }
 
     req.headers['x-timestamp'] = reqTs;
-    req.timestamp = reqTs;
+    req.timestamp = this.helperNumberService.create(reqTs);
 
     next();
   }

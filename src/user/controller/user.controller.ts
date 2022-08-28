@@ -16,18 +16,26 @@ import { IResponseData } from '@avo/type';
 import { User } from '../entity';
 
 import { UserService } from '../service';
+import { AclRoleService } from '@/access-control-list/role/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
-import { AclRoleService } from '@acl/role/service';
 
-import { ReqUser } from '../user.decorator';
+import { ReqUser } from '../decorator/user.decorator';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { UserListDto } from '../dto';
-import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+import { IdParamDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
+import {
+  UserGetSerialization,
+  UserProfileGetSerialization,
+} from '../serialization';
 
 @Controller({
   version: '1',
@@ -42,7 +50,9 @@ export class UserController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('user.profile')
+  @ClientResponse('user.profile', {
+    classSerialization: UserProfileGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     relations: ['profile'],
@@ -52,10 +62,12 @@ export class UserController {
     @ReqUser()
     reqUser: User,
   ): Promise<IResponseData> {
-    return this.userService.serializationUserProfile(reqUser);
+    return reqUser;
   }
 
-  @ResponsePaging('user.list')
+  @ClientResponsePaging('user.list', {
+    classSerialization: UserGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -101,8 +113,6 @@ export class UserController {
       perPage,
     );
 
-    const data = await this.userService.serializationList(users);
-
     return {
       totalData,
       totalPage,
@@ -110,11 +120,11 @@ export class UserController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: users,
     };
   }
 
-  @Response('user.delete')
+  @ClientResponse('user.delete')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -131,7 +141,7 @@ export class UserController {
     await this.userService.removeUserBy({ id });
   }
 
-  @Response('user.active')
+  @ClientResponse('user.active')
   @AclGuard({
     abilities: [
       {
@@ -154,7 +164,7 @@ export class UserController {
     };
   }
 
-  @Response('user.inactive')
+  @ClientResponse('user.inactive')
   @AclGuard({
     abilities: [
       {

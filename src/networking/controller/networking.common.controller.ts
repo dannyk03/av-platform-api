@@ -25,9 +25,18 @@ import {
   SocialConnectionService,
   SocialNetworkingService,
 } from '../service';
+import { EmailService } from '@/messaging/email/service';
 import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
+
+import { ReqUser } from '@/user/decorator';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
 
 import {
   ConnectRequestUpdateDto,
@@ -37,10 +46,10 @@ import {
 } from '../dto';
 import { EmailQueryParamOptionalDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
-import { EmailService } from '@/messaging/email';
-import { ReqUser } from '@/user';
-import { Response, ResponsePaging } from '@/utils/response';
+import {
+  SocialConnectionGetSerialization,
+  SocialConnectionRequestGetSerialization,
+} from '../serialization';
 
 @Controller({
   version: '1',
@@ -57,7 +66,7 @@ export class NetworkingCommonController {
     private readonly socialConnectionRequestBlockService: SocialConnectionRequestBlockService,
   ) {}
 
-  @Response('networking.connectRequest')
+  @ClientResponse('networking.connectRequest')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Post('/connect')
@@ -144,7 +153,9 @@ export class NetworkingCommonController {
     );
   }
 
-  @ResponsePaging('networking.connectRequestList')
+  @ClientResponsePaging('networking.connectRequestList', {
+    classSerialization: SocialConnectionRequestGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/connect/list')
@@ -164,7 +175,7 @@ export class NetworkingCommonController {
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const connectRequest =
+    const connectionRequests =
       await this.socialConnectionRequestService.paginatedSearchBy({
         options: {
           skip: skip,
@@ -187,11 +198,6 @@ export class NetworkingCommonController {
       perPage,
     );
 
-    const data =
-      await this.socialConnectionRequestService.serializationSocialConnectionRequestList(
-        connectRequest,
-      );
-
     return {
       totalData,
       totalPage,
@@ -199,10 +205,12 @@ export class NetworkingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: connectionRequests,
     };
   }
-  @ResponsePaging('networking.connectionsList')
+  @ClientResponsePaging('networking.connectionsList', {
+    classSerialization: SocialConnectionGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/list')
@@ -243,11 +251,6 @@ export class NetworkingCommonController {
       perPage,
     );
 
-    const data =
-      await this.socialConnectionService.serializationSocialConnectionList(
-        socialConnections,
-      );
-
     return {
       totalData,
       totalPage,
@@ -255,11 +258,11 @@ export class NetworkingCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: socialConnections,
     };
   }
 
-  @Response('networking.connectApprove')
+  @ClientResponse('networking.connectApprove')
   @AclGuard()
   @Patch('/approve')
   async approve(
@@ -296,7 +299,7 @@ export class NetworkingCommonController {
     );
   }
 
-  @Response('networking.connectReject')
+  @ClientResponse('networking.connectReject')
   @AclGuard()
   @Patch('/reject')
   async reject(

@@ -18,36 +18,38 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
 import { User } from '@/user/entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
+import { LogService } from '@/log/service';
+import { EmailService } from '@/messaging/email/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
-import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
+import { ReqJwtUser, Token } from '../decorator';
+import { LogTrace } from '@/log/decorator';
+import { ReqUser } from '@/user/decorator';
+import { ReqLogData, RequestUserAgent } from '@/utils/request/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
 import {
   AuthChangePasswordGuard,
   AuthLogoutGuard,
   AuthRefreshJwtGuard,
   LoginGuard,
-  ReqJwtUser,
-  Token,
-} from '../auth.decorator';
+} from '../guard';
 
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 
-import { ConnectionNames } from '@/database';
-import { EnumLogAction, LogTrace } from '@/log';
-import { EmailService } from '@/messaging/email';
-import { ReqUser } from '@/user';
-import { RequestUserAgent } from '@/utils/request';
-import { Response } from '@/utils/response';
+import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
+
+import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
@@ -63,23 +65,24 @@ export class AuthCommonController {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly helperCookieService: HelperCookieService,
+    private readonly logService: LogService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 
-  @Response('auth.login')
+  @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
   @LoginGuard()
   @Post('/login')
   async login(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @Body()
     body: AuthLoginDto,
     @ReqUser()
     user: User,
   ): Promise<IResponseData> {
-    const rememberMe: boolean = body.rememberMe ? true : false;
+    const rememberMe = Boolean(body.rememberMe);
 
     const isValid =
       body.password &&
@@ -140,13 +143,13 @@ export class AuthCommonController {
     };
   }
 
-  @Response('auth.signUp')
+  @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @Body()
     { email, password, firstName, lastName, phoneNumber, title }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
@@ -228,13 +231,13 @@ export class AuthCommonController {
     );
   }
 
-  @Response('auth.refresh')
+  @ClientResponse('auth.refresh')
   @HttpCode(HttpStatus.OK)
   @AuthRefreshJwtGuard()
   @Post('/refresh')
   async refresh(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @ReqUser()
     reqUser: User,
     @ReqJwtUser()
@@ -263,7 +266,7 @@ export class AuthCommonController {
     };
   }
 
-  @Response('auth.changePassword')
+  @ClientResponse('auth.changePassword')
   @AuthChangePasswordGuard()
   @Patch('/change-password')
   async changePassword(
@@ -313,13 +316,13 @@ export class AuthCommonController {
     await this.userService.updatePassword(user.id, password);
   }
 
-  @Response('auth.logout')
+  @ClientResponse('auth.logout')
   @HttpCode(HttpStatus.OK)
   @AuthLogoutGuard()
   @Post('/logout')
   async logout(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
   ) {
     await this.helperCookieService.detachAccessToken(response);
     // TODO invalidate/blacklist refresh token

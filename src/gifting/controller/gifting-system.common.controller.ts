@@ -18,7 +18,6 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
-  EnumDisplayLanguage,
   EnumGiftIntentStatus,
   EnumGiftIntentStatusCodeError,
   EnumProductStatusCodeError,
@@ -26,15 +25,21 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { flatMap } from 'lodash';
-import { DataSource, In, IsNull } from 'typeorm';
+import flatMap from 'lodash/flatMap';
+import { DataSource, In } from 'typeorm';
 
 import { GiftIntentService, GiftService } from '../service';
 import { ProductService } from '@/catalog/product/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { GiftIntentGetSerialization } from '../serialization';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import {
   GiftIntentListDto,
@@ -46,10 +51,12 @@ import {
 } from '../dto';
 import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
+import {
+  GiftGetSerialization,
+  GiftIntentGetSerialization,
+} from '../serialization';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',
@@ -69,7 +76,9 @@ export class GiftingSystemCommonController {
     private readonly configService: ConfigService,
   ) {}
 
-  @ResponsePaging('gift.intent.list')
+  @ClientResponsePaging('gift.intent.list', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -114,9 +123,6 @@ export class GiftingSystemCommonController {
       perPage,
     );
 
-    const data: GiftIntentGetSerialization[] =
-      await this.giftIntentService.serializationGiftIntentList(giftIntents);
-
     return {
       totalData,
       totalPage,
@@ -124,11 +130,11 @@ export class GiftingSystemCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: giftIntents,
     };
   }
 
-  @Response('gift.intent.status')
+  @ClientResponse('gift.intent.status')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -228,7 +234,9 @@ export class GiftingSystemCommonController {
     };
   }
 
-  @Response('gift.intent.get')
+  @ClientResponse('gift.intent.get', {
+    classSerialization: GiftIntentGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -245,15 +253,6 @@ export class GiftingSystemCommonController {
     const getGiftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
-        // giftOptions: {
-        //   products: {
-        //     displayOptions: {
-        //       language: {
-        //         isoCode: EnumDisplayLanguage.En,
-        //       },
-        //     },
-        //   },
-        // },
       },
       relations: [
         'additionalData',
@@ -278,10 +277,12 @@ export class GiftingSystemCommonController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntent(getGiftIntent);
+    return getGiftIntent;
   }
 
-  @Response('gift.intent.addGiftOption')
+  @ClientResponse('gift.intent.addGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -321,7 +322,7 @@ export class GiftingSystemCommonController {
       });
     }
 
-    const saveGift = await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const createGift = await this.giftService.create({
@@ -335,11 +336,11 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
-
-    return this.giftService.serializationGift(saveGift);
   }
 
-  @Response('gift.intent.updateGiftOption')
+  @ClientResponse('gift.intent.updateGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -426,12 +427,12 @@ export class GiftingSystemCommonController {
       ]),
     ];
 
-    const saveGiftOption = await this.giftService.save(giftOption);
-
-    return this.giftService.serializationGift(saveGiftOption);
+    return this.giftService.save(giftOption);
   }
 
-  @Response('gift.intent.upsertGiftOption')
+  @ClientResponse('gift.intent.upsertGiftOption', {
+    classSerialization: GiftGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -494,11 +495,11 @@ export class GiftingSystemCommonController {
 
     if (giftOption) {
       giftOption.products = productsFind;
-      const updateGiftOption = await this.giftService.save(giftOption);
-      return this.giftService.serializationGift(updateGiftOption);
+
+      return this.giftService.save(giftOption);
     }
 
-    const saveGiftOption = await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const findGiftIntent = await this.giftIntentService.findOne({
@@ -531,11 +532,9 @@ export class GiftingSystemCommonController {
         return saveGift;
       },
     );
-
-    return await this.giftService.serializationGift(saveGiftOption);
   }
 
-  @Response('gift.intent.deleteGiftOption')
+  @ClientResponse('gift.intent.deleteGiftOption')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -562,7 +561,7 @@ export class GiftingSystemCommonController {
     };
   }
 
-  // @Response('gift.intent.ready')
+  // @ClientResponse('gift.intent.ready')
   // @HttpCode(HttpStatus.OK)
   // @AclGuard({
   //   abilities: [

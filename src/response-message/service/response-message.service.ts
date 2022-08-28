@@ -3,19 +3,15 @@ import { ConfigService } from '@nestjs/config';
 
 import { IErrors, IMessage } from '@avo/type';
 
-import { ValidationError, isArray } from 'class-validator';
+import { ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
+
+import { IErrorsImport, IValidationErrorImport } from '@/utils/error/type';
 
 import {
   IMessageOptions,
   IMessageSetOptions,
 } from '../response-message.interface';
-import {
-  IErrorsImport,
-  IValidationErrorImport,
-} from 'src/utils/error/error.interface';
-
-import { EnumMessageLanguage } from '../response-message.constant';
 
 @Injectable()
 export class ResponseMessageService {
@@ -26,6 +22,17 @@ export class ResponseMessageService {
     private readonly configService: ConfigService,
   ) {
     this.defaultLanguage = this.configService.get<string>('app.language');
+  }
+
+  private setMessage(
+    lang: string,
+    key: string,
+    options?: IMessageSetOptions,
+  ): any {
+    return this.i18n.translate(key, {
+      lang: lang || this.defaultLanguage,
+      args: options?.properties,
+    });
   }
 
   async getRequestErrorsMessage(
@@ -40,8 +47,8 @@ export class ResponseMessageService {
       let property: string = transfomer.property;
       let propertyValue: string = transfomer.value;
 
-      if (children.length) {
-        while (children.length) {
+      if (children.length > 0) {
+        while (children.length > 0) {
           for (const child of children) {
             property = `${property}.${child.property}`;
 
@@ -78,34 +85,6 @@ export class ResponseMessageService {
     return messages.flat(1) as IErrors[];
   }
 
-  async get(
-    key: string,
-    options?: IMessageOptions,
-  ): Promise<string | IMessage> {
-    const { properties, customLanguages } = options
-      ? options
-      : { properties: undefined, customLanguages: undefined };
-
-    if (customLanguages && isArray(customLanguages) && customLanguages.length) {
-      const messages: IMessage = {};
-      for (const customLanguage of customLanguages) {
-        messages[customLanguage] = await this.setMessage(customLanguage, key, {
-          properties,
-        });
-      }
-
-      if (Object.keys(messages).length === 1) {
-        return messages[customLanguages[0]];
-      }
-
-      return messages;
-    }
-
-    return this.setMessage(this.defaultLanguage, key, {
-      properties,
-    });
-  }
-
   async getImportErrorsMessage(
     errors: IValidationErrorImport[],
     customLanguages?: string[],
@@ -125,18 +104,27 @@ export class ResponseMessageService {
     return newErrors;
   }
 
-  private setMessage(
-    lang: string,
+  async get(
     key: string,
-    options?: IMessageSetOptions,
-  ): any {
-    return this.i18n.translate(key, {
-      lang: lang || this.defaultLanguage,
-      args: options?.properties,
-    });
-  }
+    options?: IMessageOptions,
+  ): Promise<string | IMessage> {
+    const properties = options?.properties;
+    const customLanguages =
+      options?.customLanguages?.length > 0
+        ? options.customLanguages
+        : [this.defaultLanguage];
 
-  async getLanguages(): Promise<string[]> {
-    return Object.values(EnumMessageLanguage);
+    const messages: IMessage = {};
+    for (const customLanguage of customLanguages) {
+      messages[customLanguage] = await this.setMessage(customLanguage, key, {
+        properties,
+      });
+    }
+
+    if (customLanguages.length <= 1) {
+      return messages[customLanguages[0]];
+    }
+
+    return messages;
   }
 }

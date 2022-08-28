@@ -19,7 +19,8 @@ import { AclSubjectService } from '@acl/subject/service';
 
 import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
+
 import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()

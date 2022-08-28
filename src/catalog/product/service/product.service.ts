@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumDisplayLanguage, EnumProductStatusCodeError } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
@@ -21,16 +20,15 @@ import { Product } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ProductGetSerialization } from '../serialization';
+import { ConnectionNames } from '@/database/constant';
+
+import { IPaginationOptions } from '@/utils/pagination';
 
 import {
   IGetProduct,
   IProductSearch,
   IProductUpdate,
 } from '../product.interface';
-
-import { ConnectionNames } from '@/database';
-import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()
 export class ProductService {
@@ -276,13 +274,5 @@ export class ProductService {
     };
 
     return this.productRepository.save(getProduct);
-  }
-
-  async serialization(data: Product): Promise<ProductGetSerialization> {
-    return plainToInstance(ProductGetSerialization, data);
-  }
-
-  async serializationList(data: Product[]): Promise<ProductGetSerialization[]> {
-    return plainToInstance(ProductGetSerialization, data);
   }
 }

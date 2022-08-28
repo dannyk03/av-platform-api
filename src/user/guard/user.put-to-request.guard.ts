@@ -13,7 +13,7 @@ import { UserService } from '../service';
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY,
   USER_RELATIONS_META_KEY,
-} from '../user.constant';
+} from '../constant/user.constant';
 
 @Injectable()
 export class UserPutToRequestGuard implements CanActivate {

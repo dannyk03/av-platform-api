@@ -20,7 +20,7 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource, IsNull } from 'typeorm';
 
@@ -30,15 +30,18 @@ import {
   GiftIntentReadyLinkService,
   GiftIntentService,
 } from '@/gifting/service';
+import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
+import { ClientResponse } from '@/utils/response/decorator';
+
 import { MagicLinkDto } from '../dto';
 
-import { AuthUserLoginSerialization } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
-import { Response } from '@/utils/response';
+import { AuthUserLoginSerialization } from '@/auth/serialization';
+import { GiftIntentReadySerialization } from '@/gifting/serialization';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({})
 export class MagicLinkController {
@@ -56,13 +59,13 @@ export class MagicLinkController {
     private readonly authService: AuthService,
   ) {}
 
-  @Response('user.signUpSuccess')
+  @ClientResponse('user.signUpSuccess')
   @Get('/signup')
   async signUpValidate(
     @Query()
     { code }: MagicLinkDto,
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
   ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
@@ -145,7 +148,7 @@ export class MagicLinkController {
     };
   }
 
-  @Response('organization.inviteValid')
+  @ClientResponse('organization.inviteValid')
   @Get('/org/join')
   async orgJoinValidate(
     @Query()
@@ -177,7 +180,7 @@ export class MagicLinkController {
     }
   }
 
-  @Response('gift.confirm')
+  @ClientResponse('gift.confirm')
   @Get('/confirm')
   async confirmSendGift(
     @Query()
@@ -281,7 +284,9 @@ export class MagicLinkController {
     );
   }
 
-  @Response('gift.intent.ready')
+  @ClientResponse('gift.intent.ready', {
+    classSerialization: GiftIntentReadySerialization,
+  })
   @Throttle(1, 5)
   @Get('/ready')
   async giftIntentReadyValidate(
@@ -324,8 +329,6 @@ export class MagicLinkController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntentReady(
-      existingReadyLink.giftIntent,
-    );
+    return existingReadyLink.giftIntent;
   }
 }

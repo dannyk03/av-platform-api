@@ -18,12 +18,14 @@ import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
+import { LogTrace } from '@/log/decorator';
+
+import { AclGuard } from '@/auth/guard';
+
 import { PaymentCreateDto } from '../dto';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EnumLogAction, LogTrace } from '@/log';
-import { Response } from '@/utils/response';
+import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 import { StripeService } from '../stripe';
 
@@ -38,7 +40,7 @@ export class PaymentController {
     private readonly stripeService: StripeService,
   ) {}
 
-  // @Response('payment.create')
+  // @ClientResponse('payment.create')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CreatePayment, {
     tags: ['payment', 'create'],

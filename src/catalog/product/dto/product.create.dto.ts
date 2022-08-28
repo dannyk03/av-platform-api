@@ -15,7 +15,12 @@ import {
   Min,
 } from 'class-validator';
 
-import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
+import {
+  ProductCurrency,
+  ProductDisplayLanguage,
+  ProductSKU,
+} from '@/catalog/decorator';
+
 import {
   ArrayTransform,
   BooleanStringTransform,

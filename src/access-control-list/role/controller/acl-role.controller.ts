@@ -17,16 +17,16 @@ import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
+import { ReqOrganizationIdentifierCtx } from '@/organization/decorator';
+import { ClientResponsePaging } from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
+
+import { IReqOrganizationIdentifierCtx } from '@/organization/type';
 
 import { AclRoleListDto } from '../dto';
 
-import { AclGuard } from '@/auth';
-import {
-  IReqOrganizationIdentifierCtx,
-  ReqOrganizationIdentifierCtx,
-} from '@/organization';
-import { ResponsePaging } from '@/utils/response';
+import { RoleGetSerialization } from '../serialization/acl-role.get.serialization';
 
 @Controller({
   version: '1',
@@ -39,7 +39,9 @@ export class AclRoleController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @ResponsePaging('role.list')
+  @ClientResponsePaging('role.list', {
+    classSerialization: RoleGetSerialization,
+  })
   @AclGuard({
     abilities: [
       {
@@ -101,9 +103,6 @@ export class AclRoleController {
       perPage,
     );
 
-    const data: RoleGetSerialization[] =
-      await this.aclRoleService.serializationList(roles);
-
     return {
       totalData,
       totalPage,
@@ -111,7 +110,7 @@ export class AclRoleController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: roles,
     };
   }
 }

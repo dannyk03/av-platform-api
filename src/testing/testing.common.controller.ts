@@ -3,24 +3,32 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UnprocessableEntityException,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 
-import { IResponseData } from '@avo/type';
+import { EnumRequestStatusCodeError, IResponseData } from '@avo/type';
 
 import { IResult } from 'ua-parser-js';
 
-import { CloudinaryService } from '@/cloudinary/service';
+import { LogService } from '@/log/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
-import { AclGuard } from '@/auth';
-import { EnumLogAction, LogTrace } from '@/log';
-import { ReqUser } from '@/user';
-import { ErrorMeta } from '@/utils/error';
+import { LogTrace } from '@/log/decorator';
+import { ReqUser } from '@/user/decorator';
+import {
+  ExecMeta,
+  RequestTimezone,
+  RequestUserAgent,
+} from '@/utils/request/decorator';
+import { ClientResponse, ResponseTimeout } from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
+
+import { EnumLogAction } from '@/log/constant';
+
 import { EnumHelperDateFormat } from '@/utils/helper';
-import { RequestTimezone, RequestUserAgent } from '@/utils/request';
-import { Response, ResponseTimeout } from '@/utils/response';
 
 @Throttle(1, 10)
 @Controller({
@@ -28,11 +36,11 @@ import { Response, ResponseTimeout } from '@/utils/response';
 })
 export class TestingCommonController {
   constructor(
-    private readonly cloudinaryService: CloudinaryService,
     private readonly helperService: HelperService,
     private readonly helperDateService: HelperDateService,
+    private readonly logService: LogService,
   ) {}
-  @Response('test.ping')
+  @ClientResponse('test.ping')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.Test, { tags: ['test'] })
   @Get()
@@ -57,7 +65,7 @@ export class TestingCommonController {
     };
   }
 
-  @Response('test.auth')
+  @ClientResponse('test.auth')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Get('/auth')
@@ -102,20 +110,38 @@ export class TestingCommonController {
     };
   }
 
-  @Response('test.timeout')
+  @ClientResponse('test.timeout')
   @ResponseTimeout('2s')
-  @ErrorMeta(TestingCommonController.name, 'helloTimeoutCustom')
+  @ExecMeta(TestingCommonController.name, 'helloTimeoutCustom')
   @Get('/timeout')
   async timeout(): Promise<IResponseData> {
     await this.helperService.delay(5000);
     return;
   }
 
-  // @Response('test.cld')
-  // @HttpCode(HttpStatus.OK)
-  // @Get('/cld')
-  // async cld(): Promise<IResponse> {
-  //   await this.cloudinaryService.list();
-  //   return;
-  // }
+  @ClientResponse('response.default')
+  @ResponseTimeout('2s')
+  @ExecMeta(TestingCommonController.name, 'errorTestCustomFunc')
+  @Get('/error')
+  async errorTest(): Promise<void> {
+    throw new UnprocessableEntityException({
+      statusCode: EnumRequestStatusCodeError.RequestValidationError,
+      message: 'http.clientError.unprocessableEntity',
+      error: 'Test error message',
+    });
+  }
+
+  @ClientResponse('response.test.withProps', {
+    messageProperties: { prop1: 'test1', prop2: 'test2' },
+    classSerialization: null,
+  })
+  @Get('/log')
+  async logTest(): Promise<void> {
+    this.logService.error({
+      action: EnumLogAction.Test,
+      description: 'Test error log',
+      tags: ['test'],
+      data: { error: 'some error' },
+    });
+  }
 }

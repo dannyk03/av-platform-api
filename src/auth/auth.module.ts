@@ -5,10 +5,10 @@ import { SignUpEmailVerificationLink, UserAuthConfig } from './entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from './service';
 
-import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
-import { ConnectionNames } from '@/database';
-
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
+import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [

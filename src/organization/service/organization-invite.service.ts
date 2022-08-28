@@ -25,10 +25,10 @@ import { OrganizationInviteLink } from '../entity';
 import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
+import { EmailService } from '@/messaging/email/service';
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class OrganizationInviteService {

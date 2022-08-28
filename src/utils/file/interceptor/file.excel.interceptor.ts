@@ -20,11 +20,11 @@ import { Observable } from 'rxjs';
 
 import { HelperFileService } from 'src/utils/helper/service/helper.file.service';
 
-import { IFile, IFileExcelOptions } from '../file.interface';
-
-import { IValidationErrorImport } from '@/utils/error';
+import { IValidationErrorImport } from '@/utils/error/type';
 
 import { EnumFileExcelMime } from '../file.constant';
+
+import { IFile, IFileExcelOptions } from '../file.interface';
 
 export function FileExcelInterceptor(
   options?: IFileExcelOptions,

@@ -10,7 +10,7 @@ import {
 
 import { GiftRecipient } from '../entity';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class GiftRecipientService {

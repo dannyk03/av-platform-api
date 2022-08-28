@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 
 import { EnumUserStatusCodeError } from '@avo/type';
 
-import { USER_VERIFIED_ONLY_META_KEY } from '../user.constant';
+import { USER_VERIFIED_ONLY_META_KEY } from '../constant';
 
 @Injectable()
 export class ReqUserVerifiedOnlyGuard implements CanActivate {
