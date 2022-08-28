@@ -88,7 +88,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     } = response;
 
     let { errors } = response;
-    if (errors && errors.length) {
+    if (errors?.length) {
       errors =
         errorType === EnumErrorType.IMPORT
           ? await this.responseMessageService.getImportErrorsMessage(
