@@ -84,14 +84,6 @@ export class AuthCommonController {
   ): Promise<IResponseData> {
     const rememberMe = Boolean(body.rememberMe);
 
-    this.logService.error({
-      action: EnumLogAction.Test,
-      description:
-        'TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST',
-      tags: ['test1', 'test2'],
-      data: { error: { error: 'error' } },
-    });
-
     const isValid =
       body.password &&
       user.authConfig?.password &&
