@@ -37,7 +37,7 @@ import {
 } from '@/utils/response/decorators';
 
 import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guard';
+import { RequestParamGuard } from '@/utils/request/guards';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';

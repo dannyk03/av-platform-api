@@ -1,20 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { ERROR_META_CLASS_KEY, ERROR_META_FUNCTION_KEY } from '../constants';
+import { EXEC_META_CLASS_KEY, EXEC_META_FUNCTION_KEY } from '../constants';
 
 @Injectable()
-export class ErrorMetaGuard implements CanActivate {
+export class ExecMetaGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const cls = this.reflector.get<string>(
-      ERROR_META_CLASS_KEY,
+      EXEC_META_CLASS_KEY,
       context.getHandler(),
     );
     const func = this.reflector.get<string>(
-      ERROR_META_FUNCTION_KEY,
+      EXEC_META_FUNCTION_KEY,
       context.getHandler(),
     );
 

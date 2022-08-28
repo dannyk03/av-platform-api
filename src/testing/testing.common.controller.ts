@@ -17,17 +17,14 @@ import { HelperDateService, HelperService } from '@/utils/helper/service';
 
 import { LogTrace } from '@/log/decorators';
 import { ReqUser } from '@/user/decorators';
-import { ErrorMeta } from '@/utils/error/decorators';
 import {
-  ReqLogData,
+  ExecMeta,
   RequestTimezone,
   RequestUserAgent,
 } from '@/utils/request/decorators';
 import { ClientResponse, ResponseTimeout } from '@/utils/response/decorators';
 
 import { AclGuard } from '@/auth/guards';
-
-import { IReqLogData } from '@/log/types';
 
 import { EnumLogAction } from '@/log/constants';
 
@@ -115,7 +112,7 @@ export class TestingCommonController {
 
   @ClientResponse('test.timeout')
   @ResponseTimeout('2s')
-  @ErrorMeta(TestingCommonController.name, 'helloTimeoutCustom')
+  @ExecMeta(TestingCommonController.name, 'helloTimeoutCustom')
   @Get('/timeout')
   async timeout(): Promise<IResponseData> {
     await this.helperService.delay(5000);
@@ -124,7 +121,7 @@ export class TestingCommonController {
 
   @ClientResponse('response.default')
   @ResponseTimeout('2s')
-  @ErrorMeta(TestingCommonController.name, 'errorTest')
+  @ExecMeta(TestingCommonController.name, 'errorTestCustomFunc')
   @Get('/error')
   async errorTest(): Promise<void> {
     throw new UnprocessableEntityException({
@@ -139,12 +136,8 @@ export class TestingCommonController {
     classSerialization: null,
   })
   @Get('/log')
-  async logTest(
-    @ReqLogData()
-    logData: IReqLogData,
-  ): Promise<void> {
+  async logTest(): Promise<void> {
     this.logService.error({
-      ...logData,
       action: EnumLogAction.Test,
       description: 'Test error log',
       tags: ['test'],

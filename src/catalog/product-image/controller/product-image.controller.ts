@@ -19,7 +19,7 @@ import { CloudinaryService } from '@/cloudinary/service';
 import { ClientResponse } from '@/utils/response/decorators';
 
 import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guard';
+import { RequestParamGuard } from '@/utils/request/guards';
 
 import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';

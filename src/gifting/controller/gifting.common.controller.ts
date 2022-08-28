@@ -47,7 +47,7 @@ import {
 } from '@/utils/response/decorators';
 
 import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guard';
+import { RequestParamGuard } from '@/utils/request/guards';
 
 import { GiftIntentListDto, GiftOptionSubmitDto, GiftSendDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';

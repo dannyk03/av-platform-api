@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-
-import { ErrorMetaGuard } from './guards';
+import { APP_FILTER } from '@nestjs/core';
 
 import { ErrorHttpFilter } from './filter/error-http.filter';
 
@@ -11,10 +9,6 @@ import { ErrorHttpFilter } from './filter/error-http.filter';
     {
       provide: APP_FILTER,
       useClass: ErrorHttpFilter,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ErrorMetaGuard,
     },
   ],
   imports: [],

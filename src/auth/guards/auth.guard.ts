@@ -10,7 +10,7 @@ import {
   ReqUserSystemOnlyGuard,
   ReqUserVerifiedOnlyGuard,
   UserPutToRequestGuard,
-} from '@/user/guard';
+} from '@/user/guards';
 
 import { IAclGuard } from '../types';
 import { IReqAclAbility } from '@/access-control-list/types';
