@@ -114,7 +114,7 @@ export class ResponseDefaultInterceptor
               serialization =
                 serialization && Object.keys(serialization).length
                   ? serialization
-                  : undefined;
+                  : null;
 
               return {
                 statusCode,
