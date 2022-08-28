@@ -12,7 +12,7 @@ import { GiftIntentReadyLink } from '../entity';
 
 import { HelperHashService } from '@/utils/helper/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class GiftIntentReadyLinkService {

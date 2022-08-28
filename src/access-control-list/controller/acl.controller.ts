@@ -6,10 +6,10 @@ import { User } from '@/user/entity';
 
 import { AclPolicyService } from '../policy/service';
 
-import { ReqUser } from '@/user/decorators';
-import { ClientResponse } from '@/utils/response/decorators';
+import { ReqUser } from '@/user/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
 import { AclPolicySerialization } from '../policy/serialization';
 

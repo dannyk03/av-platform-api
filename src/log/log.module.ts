@@ -5,7 +5,7 @@ import { Log } from './entity';
 
 import { LogService } from './service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Global()
 @Module({

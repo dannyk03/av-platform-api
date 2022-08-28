@@ -19,7 +19,7 @@ import {
   ProductCurrency,
   ProductDisplayLanguage,
   ProductSKU,
-} from '@/catalog/decorators';
+} from '@/catalog/decorator';
 
 import {
   ArrayTransform,

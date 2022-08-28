@@ -4,7 +4,7 @@ import {
   IPaginationSort,
 } from '@avo/type';
 
-import { ProductDisplayLanguage } from '@/catalog/decorators';
+import { ProductDisplayLanguage } from '@/catalog/decorator';
 
 import {
   GIFT_INTENT_DEFAULT_AVAILABLE_SEARCH,
@@ -13,7 +13,7 @@ import {
   GIFT_INTENT_DEFAULT_PER_PAGE,
   GIFT_INTENT_DEFAULT_SORT,
   GiftIntentOrderByNestingAliasMap,
-} from '../constants';
+} from '../constant';
 
 import {
   PaginationAvailableSearch,

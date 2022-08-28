@@ -6,7 +6,7 @@ import { DeepPartial, Repository } from 'typeorm';
 
 import { AclAbility } from '../entity';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class AclAbilityService {

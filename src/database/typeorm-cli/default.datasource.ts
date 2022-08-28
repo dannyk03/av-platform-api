@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import { ConnectionNames } from '@/database/constants/database.constant';
+import { ConnectionNames } from '@/database/constant/database.constant';
 
 import { ConfigDynamicModule } from '@/config';
 import dbConfiguration from '@/config/database.config';

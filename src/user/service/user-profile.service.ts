@@ -5,7 +5,7 @@ import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 
 import { User, UserProfile } from '../entity';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserProfileService {

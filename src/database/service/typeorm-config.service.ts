@@ -4,7 +4,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 
 import { DataSourceOptions } from 'typeorm';
 
-import { ConnectionNames } from '../constants/database.constant';
+import { ConnectionNames } from '../constant/database.constant';
 
 import { createDB } from '../utils';
 

@@ -5,7 +5,7 @@ import { NextFunction } from 'express';
 
 import { HelperNumberService } from '@/utils/helper/service';
 
-import { IRequestApp } from '@/utils/request/types';
+import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class VersionMiddleware implements NestMiddleware {

@@ -34,10 +34,10 @@ import { PaginationService } from '@/utils/pagination/service';
 import {
   ClientResponse,
   ClientResponsePaging,
-} from '@/utils/response/decorators';
+} from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guards';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';

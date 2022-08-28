@@ -16,7 +16,7 @@ import { ProductImage } from '../entity';
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 import { CloudinarySubject } from '@/cloudinary';
 

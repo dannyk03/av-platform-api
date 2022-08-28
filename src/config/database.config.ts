@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 import { DataSourceOptions } from 'typeorm';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 import { TypeormSnakeCaseNamingStrategy } from '@/database/naming-strategy';
 

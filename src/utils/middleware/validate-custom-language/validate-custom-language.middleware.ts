@@ -5,7 +5,7 @@ import { NextFunction } from 'express';
 
 import { HelperArrayService } from '@/utils/helper/service';
 
-import { IRequestApp } from '@/utils/request/types';
+import { IRequestApp } from '@/utils/request/type';
 
 import { EnumMessageLanguage } from '@/response-message';
 

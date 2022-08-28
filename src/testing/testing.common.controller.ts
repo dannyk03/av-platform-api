@@ -15,18 +15,18 @@ import { IResult } from 'ua-parser-js';
 import { LogService } from '@/log/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
-import { LogTrace } from '@/log/decorators';
-import { ReqUser } from '@/user/decorators';
+import { LogTrace } from '@/log/decorator';
+import { ReqUser } from '@/user/decorator';
 import {
   ExecMeta,
   RequestTimezone,
   RequestUserAgent,
-} from '@/utils/request/decorators';
-import { ClientResponse, ResponseTimeout } from '@/utils/response/decorators';
+} from '@/utils/request/decorator';
+import { ClientResponse, ResponseTimeout } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
-import { EnumLogAction } from '@/log/constants';
+import { EnumLogAction } from '@/log/constant';
 
 import { EnumHelperDateFormat } from '@/utils/helper';
 

@@ -36,10 +36,10 @@ import { PaginationService } from '@/utils/pagination/service';
 import {
   ClientResponse,
   ClientResponsePaging,
-} from '@/utils/response/decorators';
+} from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guards';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import {
   GiftIntentListDto,
@@ -56,7 +56,7 @@ import {
   GiftIntentGetSerialization,
 } from '../serialization';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',

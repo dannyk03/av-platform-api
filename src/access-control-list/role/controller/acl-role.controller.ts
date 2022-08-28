@@ -17,12 +17,12 @@ import { AclRoleService } from '../service';
 import { OrganizationService } from '@/organization/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqOrganizationIdentifierCtx } from '@/organization/decorators';
-import { ClientResponsePaging } from '@/utils/response/decorators';
+import { ReqOrganizationIdentifierCtx } from '@/organization/decorator';
+import { ClientResponsePaging } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
-import { IReqOrganizationIdentifierCtx } from '@/organization/types';
+import { IReqOrganizationIdentifierCtx } from '@/organization/type';
 
 import { AclRoleListDto } from '../dto';
 

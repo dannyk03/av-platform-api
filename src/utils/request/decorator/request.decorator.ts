@@ -6,13 +6,13 @@ import {
 
 import { IResult } from 'ua-parser-js';
 
-import { IRequestApp } from '../types';
-import { IReqLogData } from '@/log/types';
+import { IRequestApp } from '../type';
+import { IReqLogData } from '@/log/type';
 
 import {
   EnumRequestMethod,
   REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
-} from '../constants';
+} from '../constant';
 
 export const RequestUserAgent = createParamDecorator(
   (_data: string, ctx: ExecutionContext): IResult => {

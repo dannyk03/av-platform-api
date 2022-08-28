@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 
 import { defineAbilities } from '@avo/casl';
 
-import { IReqAclAbility } from '@/access-control-list/types/acl.interface';
+import { IReqAclAbility } from '@/access-control-list/type/acl.interface';
 
 import {
   ABILITY_META_KEY,

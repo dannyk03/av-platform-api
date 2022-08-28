@@ -29,9 +29,9 @@ import { GiftIntentReadyLinkService } from './gift-intent-ready-link.service';
 import { EmailService } from '@/messaging/email/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import { IGiftIntentSearch } from '../types/gift-intent.interface';
+import { IGiftIntentSearch } from '../type/gift-intent.interface';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class GiftIntentService {

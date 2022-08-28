@@ -10,7 +10,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { EnumRequestStatusCodeError } from '@avo/type';
 
-import { ExecMetaGuard } from './guards/exec-meta.guard';
+import { ExecMetaGuard } from './guard/exec-meta.guard';
 
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { RangeTupleConstraint } from './validation';

@@ -11,7 +11,7 @@ import { IResult } from 'ua-parser-js';
 import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
-import { EnumLogAction, EnumLogLevel } from '../constants';
+import { EnumLogAction, EnumLogLevel } from '../constant';
 
 @Entity()
 export class Log {

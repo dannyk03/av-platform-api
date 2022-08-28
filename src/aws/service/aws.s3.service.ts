@@ -23,7 +23,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 
-import { IAwsS3, IAwsS3MultiPart, IAwsS3PutItemOptions } from '../types';
+import { IAwsS3, IAwsS3MultiPart, IAwsS3PutItemOptions } from '../type';
 
 @Injectable()
 export class AwsS3Service {

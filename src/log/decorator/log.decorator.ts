@@ -1,12 +1,12 @@
 import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
 
-import { ILogOptions } from '../types/log.interface';
+import { ILogOptions } from '../type/log.interface';
 
-import { EnumLogAction } from '../constants';
+import { EnumLogAction } from '../constant';
 import {
   LOG_ACTION_META_KEY,
   LOG_OPTIONS_META_KEY,
-} from '../constants/log.constant';
+} from '../constant/log.constant';
 
 import { LogInterceptor } from '../interceptor/log.interceptor';
 

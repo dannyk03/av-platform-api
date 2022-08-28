@@ -10,16 +10,16 @@ import {
   ReqUserSystemOnlyGuard,
   ReqUserVerifiedOnlyGuard,
   UserPutToRequestGuard,
-} from '@/user/guards';
+} from '@/user/guard';
 
-import { IAclGuard } from '../types';
-import { IReqAclAbility } from '@/access-control-list/types';
+import { IAclGuard } from '../type';
+import { IReqAclAbility } from '@/access-control-list/type';
 
 import {
   USER_LOAD_AUTH_SENSITIVE_DATA_META_KEY,
   USER_RELATIONS_META_KEY,
   USER_VERIFIED_ONLY_META_KEY,
-} from '@/user/constants';
+} from '@/user/constant';
 
 import { ABILITY_META_KEY } from '@/access-control-list/ability';
 import { SYSTEM_ONLY_META_KEY } from '@/system';

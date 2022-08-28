@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { EXEC_META_CLASS_KEY, EXEC_META_FUNCTION_KEY } from '../constants';
+import { EXEC_META_CLASS_KEY, EXEC_META_FUNCTION_KEY } from '../constant';
 
 @Injectable()
 export class ExecMetaGuard implements CanActivate {

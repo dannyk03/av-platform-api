@@ -1,6 +1,6 @@
 import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
 
-import { IResponseOptions } from '../types';
+import { IResponseOptions } from '../type';
 
 import {
   RESPONSE_CUSTOM_TIMEOUT_META_KEY,
@@ -9,7 +9,7 @@ import {
   RESPONSE_MESSAGE_PROPERTIES_META_KEY,
   RESPONSE_PAGING_TYPE_META_KEY,
   RESPONSE_SERIALIZATION_META_KEY,
-} from '../constants/response.constant';
+} from '../constant/response.constant';
 
 import { EnumPaginationType } from '@/utils/pagination';
 

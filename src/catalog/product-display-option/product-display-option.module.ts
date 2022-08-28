@@ -6,7 +6,7 @@ import { ProductDisplayOption } from './entity';
 import { ProductDisplayOptionService } from './service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [

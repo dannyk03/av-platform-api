@@ -8,7 +8,7 @@ import {
   USER_DEFAULT_PER_PAGE,
   USER_DEFAULT_SORT,
   UserOrderByNestingAliasMap,
-} from '../constants/user.constant';
+} from '../constant/user.constant';
 
 import {
   PaginationAvailableSearch,

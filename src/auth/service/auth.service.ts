@@ -11,7 +11,7 @@ import {
   HelperHashService,
 } from '@/utils/helper/service';
 
-import { IAuthPassword, IAuthPayloadOptions } from '../types';
+import { IAuthPassword, IAuthPayloadOptions } from '../type';
 
 import { AuthUserLoginSerialization } from '../serialization';
 

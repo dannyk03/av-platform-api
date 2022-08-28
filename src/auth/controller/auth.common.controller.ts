@@ -30,26 +30,26 @@ import { EmailService } from '@/messaging/email/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
-import { ReqJwtUser, Token } from '../decorators';
-import { LogTrace } from '@/log/decorators';
-import { ReqUser } from '@/user/decorators';
-import { ReqLogData, RequestUserAgent } from '@/utils/request/decorators';
-import { ClientResponse } from '@/utils/response/decorators';
+import { ReqJwtUser, Token } from '../decorator';
+import { LogTrace } from '@/log/decorator';
+import { ReqUser } from '@/user/decorator';
+import { ReqLogData, RequestUserAgent } from '@/utils/request/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
 import {
   AuthChangePasswordGuard,
   AuthLogoutGuard,
   AuthRefreshJwtGuard,
   LoginGuard,
-} from '../guards';
+} from '../guard';
 
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
-import { ConnectionNames } from '@/database/constants';
-import { EnumLogAction } from '@/log/constants';
+import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',

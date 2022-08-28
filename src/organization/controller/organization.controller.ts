@@ -21,16 +21,16 @@ import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
-import { LogTrace } from '@/log/decorators';
-import { ReqUser } from '@/user/decorators';
-import { ClientResponse } from '@/utils/response/decorators';
+import { LogTrace } from '@/log/decorator';
+import { ReqUser } from '@/user/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
 import { OrganizationCreateDto } from '../dto/organization.create.dto';
 
-import { ConnectionNames } from '@/database/constants';
-import { EnumLogAction } from '@/log/constants';
+import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',

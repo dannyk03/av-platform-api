@@ -13,10 +13,10 @@ import { IResponseData } from '@avo/type';
 
 import { DataSource } from 'typeorm';
 
-import { RequestExcludeTimestamp } from '@/utils/request/decorators';
-import { ClientResponse } from '@/utils/response/decorators';
+import { RequestExcludeTimestamp } from '@/utils/request/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 

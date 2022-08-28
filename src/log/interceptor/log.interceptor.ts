@@ -12,16 +12,16 @@ import { Observable, tap } from 'rxjs';
 
 import { LogService } from '../service';
 
-import { ILogOptions } from '../types/log.interface';
-import { IRequestApp } from '@/utils/request/types';
+import { ILogOptions } from '../type/log.interface';
+import { IRequestApp } from '@/utils/request/type';
 
 import {
   EnumLogAction,
   EnumLogLevel,
   LOG_ACTION_META_KEY,
   LOG_OPTIONS_META_KEY,
-} from '../constants';
-import { EnumRequestMethod } from '@/utils/request/constants';
+} from '../constant';
+import { EnumRequestMethod } from '@/utils/request/constant';
 
 @Injectable()
 export class LogInterceptor implements NestInterceptor<any> {

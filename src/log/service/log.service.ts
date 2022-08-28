@@ -7,13 +7,13 @@ import { EntityManager, Repository } from 'typeorm';
 
 import { Log } from '../entity';
 
-import { ILogData, ILogRaw } from '../types';
-import { IRequestApp } from '@/utils/request/types';
+import { ILogData, ILogRaw } from '../type';
+import { IRequestApp } from '@/utils/request/type';
 import { Optional } from 'utility-types';
 
-import { EnumLogLevel } from '../constants';
-import { ConnectionNames } from '@/database/constants';
-import { EnumRequestMethod } from '@/utils/request/constants';
+import { EnumLogLevel } from '../constant';
+import { ConnectionNames } from '@/database/constant';
+import { EnumRequestMethod } from '@/utils/request/constant';
 
 @Injectable()
 export class LogService {

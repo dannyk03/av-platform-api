@@ -28,19 +28,19 @@ import { UserService } from '@/user/service';
 import { HelperDateService, HelperSlugService } from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
 
-import { ReqOrganizationIdentifierCtx } from '../decorators/organization.decorator';
-import { ReqUser } from '@/user/decorators';
-import { ClientResponse } from '@/utils/response/decorators';
+import { ReqOrganizationIdentifierCtx } from '../decorator/organization.decorator';
+import { ReqUser } from '@/user/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
-import { IReqOrganizationIdentifierCtx } from '../types/organization.interface';
+import { IReqOrganizationIdentifierCtx } from '../type/organization.interface';
 
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',

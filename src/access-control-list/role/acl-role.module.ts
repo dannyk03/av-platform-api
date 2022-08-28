@@ -9,7 +9,7 @@ import { AclRole, AclRolePreset } from './entity';
 
 import { AclRolePresetService, AclRoleService } from './service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [

@@ -6,7 +6,7 @@ import { CommonModule } from '@/core/core.module';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IValidationErrorImport } from '@/utils/error/types';
+import { IValidationErrorImport } from '@/utils/error/type';
 
 describe('ResponseMessageService', () => {
   let responseMessageService: ResponseMessageService;

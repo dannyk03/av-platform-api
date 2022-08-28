@@ -30,13 +30,13 @@ import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqUser } from '@/user/decorators';
+import { ReqUser } from '@/user/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
-} from '@/utils/response/decorators';
+} from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
+import { AclGuard } from '@/auth/guard';
 
 import {
   ConnectRequestUpdateDto,

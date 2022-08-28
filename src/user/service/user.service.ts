@@ -18,10 +18,10 @@ import {
 
 import { User } from '../entity';
 
-import { IUserCheckExist, IUserSearch } from '../types/user.interface';
-import { IAuthPassword } from '@/auth/types/auth.interface';
+import { IUserCheckExist, IUserSearch } from '../type/user.interface';
+import { IAuthPassword } from '@/auth/type/auth.interface';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserService {

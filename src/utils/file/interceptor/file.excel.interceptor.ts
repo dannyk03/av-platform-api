@@ -20,7 +20,7 @@ import { Observable } from 'rxjs';
 
 import { HelperFileService } from 'src/utils/helper/service/helper.file.service';
 
-import { IValidationErrorImport } from '@/utils/error/types';
+import { IValidationErrorImport } from '@/utils/error/type';
 
 import { EnumFileExcelMime } from '../file.constant';
 

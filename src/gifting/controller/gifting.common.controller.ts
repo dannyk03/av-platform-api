@@ -40,21 +40,21 @@ import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqUser } from '@/user/decorators';
+import { ReqUser } from '@/user/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
-} from '@/utils/response/decorators';
+} from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guards';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { GiftIntentListDto, GiftOptionSubmitDto, GiftSendDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { GiftIntentGetSerialization } from '../serialization';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',

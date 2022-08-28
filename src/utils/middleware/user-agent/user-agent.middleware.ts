@@ -6,7 +6,7 @@ import { EnumRequestStatusCodeError } from '@avo/type';
 import { NextFunction, Response } from 'express';
 import userAgentParser from 'ua-parser-js';
 
-import { IRequestApp } from '@/utils/request/types';
+import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class UserAgentMiddleware implements NestMiddleware {

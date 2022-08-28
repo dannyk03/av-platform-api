@@ -16,10 +16,10 @@ import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ClientResponse } from '@/utils/response/decorators';
+import { ClientResponse } from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guards';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';

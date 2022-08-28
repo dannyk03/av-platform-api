@@ -20,14 +20,14 @@ import { AclRoleService } from '@/access-control-list/role/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqUser } from '../decorators/user.decorator';
+import { ReqUser } from '../decorator/user.decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
-} from '@/utils/response/decorators';
+} from '@/utils/response/decorator';
 
-import { AclGuard } from '@/auth/guards';
-import { RequestParamGuard } from '@/utils/request/guards';
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';

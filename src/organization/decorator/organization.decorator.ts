@@ -9,7 +9,7 @@ import { EnumRequestStatusCodeError } from '@avo/type';
 
 import { isUUID } from 'class-validator';
 
-import { IReqOrganizationIdentifierCtx } from '../types/organization.interface';
+import { IReqOrganizationIdentifierCtx } from '../type/organization.interface';
 
 import { PermissionsStatusCodeError } from '@/access-control-list/ability';
 import { SYSTEM_ORGANIZATION_NAME } from '@/system';

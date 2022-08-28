@@ -12,9 +12,9 @@ import {
 
 import { SocialConnection } from '../entity';
 
-import { ISocialConnectionSearch } from '../types';
+import { ISocialConnectionSearch } from '../type';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class SocialConnectionService {

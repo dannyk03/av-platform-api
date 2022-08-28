@@ -11,7 +11,7 @@ import {
   CONNECT_REQUEST_DEFAULT_PER_PAGE,
   CONNECT_REQUEST_DEFAULT_SORT,
   ConnectRequestOrderByNestingAliasMap,
-} from '../constants';
+} from '../constant';
 
 import {
   PaginationAvailableSearch,

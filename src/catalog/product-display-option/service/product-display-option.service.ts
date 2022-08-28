@@ -12,7 +12,7 @@ import {
 
 import { ProductDisplayOption } from '../entity';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class ProductDisplayOptionService {

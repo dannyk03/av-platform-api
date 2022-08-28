@@ -16,7 +16,7 @@ import ms from 'ms';
 import { Observable, TimeoutError, throwError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 
-import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from '../constants/response.constant';
+import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from '../constant/response.constant';
 
 export function ResponseTimeoutInterceptor(
   seconds: string,

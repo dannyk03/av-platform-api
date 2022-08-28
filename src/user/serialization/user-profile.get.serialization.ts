@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { IAwsS3 } from '@/aws/types';
+import { IAwsS3 } from '@/aws/type';
 
 @Exclude()
 export class UserProfileGetSerialization {

@@ -6,7 +6,7 @@ import { Vendor, VendorLogo } from './entity';
 import { VendorLogoService, VendorService } from './service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [

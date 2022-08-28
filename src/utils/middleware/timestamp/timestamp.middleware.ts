@@ -5,7 +5,7 @@ import { NextFunction, Response } from 'express';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
-import { IRequestApp } from '@/utils/request/types';
+import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class TimestampMiddleware implements NestMiddleware {

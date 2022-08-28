@@ -18,7 +18,7 @@ import { Vendor } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
 

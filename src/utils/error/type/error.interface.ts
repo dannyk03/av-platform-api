@@ -2,7 +2,7 @@ import { IErrors, IMessage } from '@avo/type';
 
 import { ValidationError } from 'class-validator';
 
-import { EnumErrorType } from '../constants';
+import { EnumErrorType } from '../constant';
 
 import { IMessageOptionsProperties } from '@/response-message';
 

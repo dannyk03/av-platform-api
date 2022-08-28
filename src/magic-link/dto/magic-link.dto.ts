@@ -3,7 +3,7 @@ import { EnumDisplayLanguage } from '@avo/type';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, Length } from 'class-validator';
 
-import { ProductDisplayLanguage } from '@/catalog/decorators';
+import { ProductDisplayLanguage } from '@/catalog/decorator';
 
 import { NormalizeStringInputTransform } from '@/utils/request/transform';
 

@@ -3,8 +3,8 @@ import { IResult } from 'ua-parser-js';
 import { AclRole } from '@/access-control-list/role/entity';
 import { User } from '@/user/entity';
 
-import { EnumLogAction, EnumLogLevel } from '../constants';
-import { EnumRequestMethod } from '@/utils/request/constants';
+import { EnumLogAction, EnumLogLevel } from '../constant';
+import { EnumRequestMethod } from '@/utils/request/constant';
 
 export interface ILog extends ILogData, IReqLogData {}
 export interface ILogData {

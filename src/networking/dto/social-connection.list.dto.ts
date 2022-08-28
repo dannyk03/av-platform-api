@@ -7,7 +7,7 @@ import {
   CONNECTIONS_DEFAULT_PER_PAGE,
   CONNECTIONS_DEFAULT_SORT,
   ConnectionsOrderByNestingAliasMap,
-} from '../constants';
+} from '../constant';
 
 import {
   PaginationAvailableSearch,

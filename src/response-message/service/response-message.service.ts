@@ -6,7 +6,7 @@ import { IErrors, IMessage } from '@avo/type';
 import { ValidationError } from 'class-validator';
 import { I18nService } from 'nestjs-i18n';
 
-import { IErrorsImport, IValidationErrorImport } from '@/utils/error/types';
+import { IErrorsImport, IValidationErrorImport } from '@/utils/error/type';
 
 import {
   IMessageOptions,

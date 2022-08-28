@@ -22,7 +22,7 @@ import { ResponseModule } from '@/utils/response/response.module';
 import { TypeOrmConfigService } from '@/database/service';
 import { DebuggerOptionService } from '@/debugger/service';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 import { ConfigDynamicModule } from '@/config';
 

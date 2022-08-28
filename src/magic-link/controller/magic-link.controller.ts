@@ -34,14 +34,14 @@ import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
-import { ClientResponse } from '@/utils/response/decorators';
+import { ClientResponse } from '@/utils/response/decorator';
 
 import { MagicLinkDto } from '../dto';
 
 import { AuthUserLoginSerialization } from '@/auth/serialization';
 import { GiftIntentReadySerialization } from '@/gifting/serialization';
 
-import { ConnectionNames } from '@/database/constants';
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({})
 export class MagicLinkController {

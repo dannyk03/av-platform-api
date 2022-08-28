@@ -21,10 +21,10 @@ import {
   IErrorHttpFilterMetadata,
   IErrorsImport,
   IValidationErrorImport,
-} from '../types';
-import { IRequestApp } from '@/utils/request/types';
+} from '../type';
+import { IRequestApp } from '@/utils/request/type';
 
-import { EnumErrorType } from '../constants';
+import { EnumErrorType } from '../constant';
 
 // The exception filter only catch HttpException
 @Catch(HttpException)
