@@ -7,6 +7,7 @@ import {
 import { IResult } from 'ua-parser-js';
 
 import { IRequestApp } from '../types';
+import { IReqLogData } from '@/log/types';
 
 import {
   EnumRequestMethod,
