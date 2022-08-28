@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 
 import { HelperDateService } from './helper.date.service';
 import { HelperJwtService } from './helper.jwt.service';
@@ -20,7 +20,7 @@ export class HelperCookieService {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
 
-  async attachAccessToken(response: ExpressResponse, accessToken: string) {
+  async attachAccessToken(response: Response, accessToken: string) {
     return response.cookie(this.accessTokenCookieName, accessToken, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
@@ -28,7 +28,7 @@ export class HelperCookieService {
       httpOnly: true,
     });
   }
-  async detachAccessToken(response: ExpressResponse) {
+  async detachAccessToken(response: Response) {
     return response.cookie(this.accessTokenCookieName, undefined, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperDateService.create(),

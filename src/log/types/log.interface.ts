@@ -6,11 +6,12 @@ import { User } from '@/user/entity';
 import { EnumLogAction, EnumLogLevel } from '../constants';
 import { EnumRequestMethod } from '@/utils/request/constants';
 
-export interface ILog extends IReqLogData {
+export interface ILog extends ILogData, IReqLogData {}
+export interface ILogData {
   description: string;
   action: EnumLogAction;
+
   tags?: string[];
-  statusCode?: number;
   data?: Record<string, any>;
 }
 
@@ -29,6 +30,7 @@ export interface IReqLogData {
 
 export interface ILogRaw extends ILog {
   level: EnumLogLevel;
+  statusCode?: number;
 }
 
 export interface ILogOptions {

@@ -20,7 +20,7 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource, IsNull } from 'typeorm';
 
@@ -65,7 +65,7 @@ export class MagicLinkController {
     @Query()
     { code }: MagicLinkDto,
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
   ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {

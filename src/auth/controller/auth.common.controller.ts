@@ -18,7 +18,7 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 import { DataSource } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
@@ -33,7 +33,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 import { ReqJwtUser, Token } from '../decorators';
 import { LogTrace } from '@/log/decorators';
 import { ReqUser } from '@/user/decorators';
-import { RequestUserAgent } from '@/utils/request/decorators';
+import { ReqLogData, RequestUserAgent } from '@/utils/request/decorators';
 import { ClientResponse } from '@/utils/response/decorators';
 
 import {
@@ -76,13 +76,21 @@ export class AuthCommonController {
   @Post('/login')
   async login(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @Body()
     body: AuthLoginDto,
     @ReqUser()
     user: User,
   ): Promise<IResponseData> {
     const rememberMe = Boolean(body.rememberMe);
+
+    this.logService.error({
+      action: EnumLogAction.Test,
+      description:
+        'TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST',
+      tags: ['test1', 'test2'],
+      data: { error: { error: 'error' } },
+    });
 
     const isValid =
       body.password &&
@@ -149,7 +157,7 @@ export class AuthCommonController {
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @Body()
     { email, password, firstName, lastName, phoneNumber, title }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
@@ -237,7 +245,7 @@ export class AuthCommonController {
   @Post('/refresh')
   async refresh(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
     @ReqUser()
     reqUser: User,
     @ReqJwtUser()
@@ -322,7 +330,7 @@ export class AuthCommonController {
   @Post('/logout')
   async logout(
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
   ) {
     await this.helperCookieService.detachAccessToken(response);
     // TODO invalidate/blacklist refresh token

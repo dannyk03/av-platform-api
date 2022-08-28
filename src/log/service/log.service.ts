@@ -1,98 +1,164 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { Request } from 'express';
 import { EntityManager, Repository } from 'typeorm';
 
 import { Log } from '../entity';
 
-import { ILog, ILogRaw } from '../types/log.interface';
+import { ILogData, ILogRaw } from '../types';
+import { IRequestApp } from '@/utils/request/types';
+import { Optional } from 'utility-types';
 
 import { EnumLogLevel } from '../constants';
 import { ConnectionNames } from '@/database/constants';
+import { EnumRequestMethod } from '@/utils/request/constants';
 
 @Injectable()
 export class LogService {
   constructor(
     @InjectRepository(Log, ConnectionNames.Default)
     private readonly logRepository: Repository<Log>,
+    @Inject(REQUEST)
+    private readonly request: Request & IRequestApp,
   ) {}
 
   async info({
     transactionalEntityManager,
-    ...logData
-  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
-    const create = this.logRepository.create({
+    action,
+    description,
+    tags,
+    data,
+  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    return this.raw({
+      transactionalEntityManager,
       level: EnumLogLevel.Info,
-      ...logData,
+      action,
+      description,
+      tags,
+      data,
     });
-    return transactionalEntityManager
-      ? transactionalEntityManager.save(create)
-      : this.logRepository.save(create);
   }
 
   async debug({
     transactionalEntityManager,
-    ...logData
-  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
-    const create = this.logRepository.create({
+    action,
+    description,
+    tags,
+    data,
+  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    return this.raw({
+      transactionalEntityManager,
       level: EnumLogLevel.Debug,
-      ...logData,
+      action,
+      description,
+      tags,
+      data,
     });
-
-    return transactionalEntityManager
-      ? transactionalEntityManager.save(create)
-      : this.logRepository.save(create);
   }
 
   async warn({
     transactionalEntityManager,
-    ...logData
-  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
-    const create = this.logRepository.create({
+    action,
+    description,
+    tags,
+    data,
+  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    return this.raw({
+      transactionalEntityManager,
       level: EnumLogLevel.Warn,
-      ...logData,
+      action,
+      description,
+      tags,
+      data,
     });
-
-    return transactionalEntityManager
-      ? transactionalEntityManager.save(create)
-      : this.logRepository.save(create);
   }
+
   async error({
     transactionalEntityManager,
-    ...logData
-  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
-    const create = this.logRepository.create({
+    action,
+    description,
+    tags,
+    data,
+  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    return this.raw({
+      transactionalEntityManager,
       level: EnumLogLevel.Error,
-      ...logData,
+      action,
+      description,
+      tags,
+      data,
     });
-
-    return transactionalEntityManager
-      ? transactionalEntityManager.save(create)
-      : this.logRepository.save(create);
   }
 
   async fatal({
     transactionalEntityManager,
-    ...logData
-  }: ILog & { transactionalEntityManager?: EntityManager }): Promise<Log> {
-    const create = this.logRepository.create({
+    action,
+    description,
+    tags,
+    data,
+  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+    return this.raw({
+      transactionalEntityManager,
       level: EnumLogLevel.Fatal,
-      ...logData,
+      action,
+      description,
+      tags,
+      data,
     });
-
-    return transactionalEntityManager
-      ? transactionalEntityManager.save(create)
-      : this.logRepository.save(create);
   }
 
   async raw({
     transactionalEntityManager,
-    ...logData
-  }: ILogRaw & {
+    user = this.request.__user,
+    role = this.request.__user?.role,
+    path = this.request.path,
+    method = this.request.method as EnumRequestMethod,
+    params = this.request.params,
+    body = this.request.body,
+    correlationId = this.request.correlationId,
+    userAgent = this.request.userAgent,
+    version = this.request.version,
+    repoVersion = this.request.repoVersion,
+    action,
+    description,
+    statusCode,
+    tags,
+    data,
+    level,
+  }: Optional<
+    ILogRaw,
+    | 'user'
+    | 'role'
+    | 'path'
+    | 'method'
+    | 'params'
+    | 'body'
+    | 'correlationId'
+    | 'userAgent'
+    | 'version'
+    | 'repoVersion'
+  > & {
     transactionalEntityManager?: EntityManager;
   }): Promise<Log> {
     const create = this.logRepository.create({
-      ...logData,
+      user,
+      role,
+      path,
+      method,
+      params,
+      body,
+      correlationId,
+      userAgent,
+      version,
+      repoVersion,
+      action,
+      description,
+      statusCode,
+      tags,
+      data,
+      level,
     });
 
     return transactionalEntityManager

@@ -11,6 +11,7 @@ export interface IRequestApp extends Request {
   version: string;
   repoVersion: string;
   userAgent?: IResult;
+  user?: Record<string, any>;
   __user?: User;
   __class: string;
   __function: string;
