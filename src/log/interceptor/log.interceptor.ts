@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 
 import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
+import { options } from 'yargs';
 
 import { LogService } from '../service';
 import { HelperMaskService } from '@/utils/helper/service';
@@ -70,6 +71,7 @@ export class LogInterceptor implements NestInterceptor<any> {
           );
 
           await this.loggerService.raw({
+            mask: loggerOptions?.mask,
             level: loggerOptions.level || EnumLogLevel.Info,
             action: loggerAction,
             description: loggerOptions.description
@@ -80,10 +82,7 @@ export class LogInterceptor implements NestInterceptor<any> {
             correlationId,
             method: method as EnumRequestMethod,
             params,
-            body: await this.helperMaskService.maskBody({
-              body,
-              options: loggerOptions?.mask,
-            }),
+            body,
             path,
             statusCode,
             userAgent,

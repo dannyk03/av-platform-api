@@ -7,7 +7,9 @@ import { EntityManager, Repository } from 'typeorm';
 
 import { Log } from '../entity';
 
-import { ILogData, ILogRaw } from '../type';
+import { HelperMaskService } from '@/utils/helper/service';
+
+import { ILogData, ILogMask, ILogRaw } from '../type';
 import { IRequestApp } from '@/utils/request/type';
 import { Optional } from 'utility-types';
 
@@ -22,17 +24,23 @@ export class LogService {
     private readonly logRepository: Repository<Log>,
     @Inject(REQUEST)
     private readonly request: Request & IRequestApp,
+    private readonly helperMaskService: HelperMaskService,
   ) {}
 
   async info({
     transactionalEntityManager,
+    mask,
     action,
     description,
     tags,
     data,
-  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+  }: ILogData & {
+    transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
+  }): Promise<Log> {
     return this.raw({
       transactionalEntityManager,
+      mask,
       level: EnumLogLevel.Info,
       action,
       description,
@@ -43,13 +51,18 @@ export class LogService {
 
   async debug({
     transactionalEntityManager,
+    mask,
     action,
     description,
     tags,
     data,
-  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+  }: ILogData & {
+    transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
+  }): Promise<Log> {
     return this.raw({
       transactionalEntityManager,
+      mask,
       level: EnumLogLevel.Debug,
       action,
       description,
@@ -60,13 +73,18 @@ export class LogService {
 
   async warn({
     transactionalEntityManager,
+    mask,
     action,
     description,
     tags,
     data,
-  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+  }: ILogData & {
+    transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
+  }): Promise<Log> {
     return this.raw({
       transactionalEntityManager,
+      mask,
       level: EnumLogLevel.Warn,
       action,
       description,
@@ -77,13 +95,18 @@ export class LogService {
 
   async error({
     transactionalEntityManager,
+    mask,
     action,
     description,
     tags,
     data,
-  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+  }: ILogData & {
+    transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
+  }): Promise<Log> {
     return this.raw({
       transactionalEntityManager,
+      mask,
       level: EnumLogLevel.Error,
       action,
       description,
@@ -94,13 +117,18 @@ export class LogService {
 
   async fatal({
     transactionalEntityManager,
+    mask,
     action,
     description,
     tags,
     data,
-  }: ILogData & { transactionalEntityManager?: EntityManager }): Promise<Log> {
+  }: ILogData & {
+    transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
+  }): Promise<Log> {
     return this.raw({
       transactionalEntityManager,
+      mask,
       level: EnumLogLevel.Fatal,
       action,
       description,
@@ -111,6 +139,7 @@ export class LogService {
 
   async raw({
     transactionalEntityManager,
+    mask,
     user = this.request.__user,
     role = this.request.__user?.role,
     path = this.request.path,
@@ -143,6 +172,7 @@ export class LogService {
     | 'exec'
   > & {
     transactionalEntityManager?: EntityManager;
+    mask?: ILogMask;
   }): Promise<Log> {
     const create = this.logRepository.create({
       user,
@@ -150,7 +180,10 @@ export class LogService {
       path,
       method,
       params,
-      body,
+      body: await this.helperMaskService.maskBody({
+        body,
+        options: mask,
+      }),
       correlationId,
       userAgent,
       version,
