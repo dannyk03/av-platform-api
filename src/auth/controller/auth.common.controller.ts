@@ -151,7 +151,15 @@ export class AuthCommonController {
 
   @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['signup', 'auth', 'withEmail'],
+    mask: {
+      emailStrategyFields: ['email'],
+      passwordStrategyFields: ['password'],
+      phoneNumberStrategyFields: ['phoneNumber'],
+      jsonStrategyFields: ['firstName', 'lastName'],
+    },
+  })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
@@ -239,6 +247,9 @@ export class AuthCommonController {
 
   @ClientResponse('auth.refresh')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['refresh', 'auth', 'jwt'],
+  })
   @AuthRefreshJwtGuard()
   @Post('/refresh')
   async refresh(
@@ -273,6 +284,13 @@ export class AuthCommonController {
   }
 
   @ClientResponse('auth.changePassword')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['changePassword', 'auth'],
+    mask: {
+      passwordStrategyFields: ['oldPassword', 'newPassword'],
+    },
+  })
   @AuthChangePasswordGuard()
   @Patch('/change-password')
   async changePassword(
@@ -324,6 +342,9 @@ export class AuthCommonController {
 
   @ClientResponse('auth.logout')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['logout', 'auth'],
+  })
   @AuthLogoutGuard()
   @Post('/logout')
   async logout(

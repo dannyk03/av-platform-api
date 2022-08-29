@@ -34,11 +34,12 @@ export interface ILogRaw extends ILog {
 }
 
 export interface ILogMask {
-  basicStrategyFields?: string[];
   passwordStrategyFields?: string[];
   emailStrategyFields?: string[];
   phoneStrategyFields?: string[];
+  phoneNumberStrategyFields?: string[];
   creditCardStrategyFields?: string[];
+  jsonStrategyFields?: string[] | [number, string[]];
 }
 export interface ILogOptions {
   description?: string;
