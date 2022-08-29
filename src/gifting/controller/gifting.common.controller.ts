@@ -86,7 +86,7 @@ export class GiftingCommonController {
   })
   @Throttle(1, 5)
   @Post('/send')
-  async sendGiftSurvey(
+  async sendGift(
     @Body()
     { recipients, additionalData }: GiftSendDto,
     @ReqUser()
