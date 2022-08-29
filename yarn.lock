@@ -51,10 +51,10 @@
   dependencies:
     "@casl/ability" "^6.0.0"
 
-"@avo/type@^0.0.60":
-  version "0.0.60"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.60.tgz#f72e7d794aa366198c6c38a1e350b19f5ff84a34"
-  integrity sha512-adBl4OCXXbIt1txOx13PUkK0zrgzux/dWDqhBiN1NgYz+aOBnOVqY7211JrLGpXH0Vpe2UiZLGFGoQYjdV+pWg==
+"@avo/type@^0.0.61":
+  version "0.0.61"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.61.tgz#d1827ab5376ac6f80a7a71bb0b9c94acad344881"
+  integrity sha512-NM7Kqg2jpMZjSTWJ+uuGHPn4Q7FS1rKAVHhdKux8BHwp4o4HWIT3yRI/Ms6wkx0f4J5p/ldnGbqS3XQCnWN8Rw==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -5700,6 +5700,13 @@ makeerror@1.0.12:
   integrity sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==
   dependencies:
     tmpl "1.0.5"
+
+maskdata@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/maskdata/-/maskdata-1.1.10.tgz#28de7763d82e0939390712267101a8438c86b12f"
+  integrity sha512-m6sLr6LU8ReVD20jzqwyF/E2fSffiWjeETrWw2p1ae9uLV69gygM5kSEX/eAmz+SYldQH8/YMGb4s4QvlcB8LQ==
+  dependencies:
+    lodash "^4.17.21"
 
 md5@^2.2.1:
   version "2.3.0"

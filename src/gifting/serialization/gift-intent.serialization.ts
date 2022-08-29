@@ -21,6 +21,18 @@ import { Product } from '@/catalog/product/entity';
 
 import { ProductGetSerialization } from '@/catalog/product/serialization';
 
+// @Exclude()
+// class GiftUserSerialization implements IGiftUserGetSerialization {
+//   @Expose()
+//   readonly id: string;
+
+//   @Expose()
+//   readonly email: string;
+
+//   @Expose()
+//   readonly phoneNumber: string;
+// }
+
 @Exclude()
 class GiftIntentAdditionalDataSerialization
   implements IGiftIntentAdditionalDataGetSerialization
@@ -46,6 +58,7 @@ class GiftUserAdditionalDataSerialization {
   @Expose()
   readonly lastName: string;
 }
+
 @Exclude()
 class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
   @Expose()
@@ -90,28 +103,28 @@ class GiftSubmitGetSerialization implements IGiftSubmitGetSerialization {
 @Exclude()
 class GiftUserGetSerialization implements IGiftUserGetSerialization {
   @Expose()
-  @Type(() => String)
+  @Transform(({ obj }) => obj.user?.id)
   id: string;
 
   @Expose()
   @Transform(({ obj }) => obj.user?.email)
-  readonly email!: string;
+  readonly email: string;
 
   @Expose()
   @Transform(({ obj }) => obj.user?.phoneNumber)
-  readonly phoneNumber!: string;
+  readonly phoneNumber: string;
 
   @Expose()
   @Transform(({ obj }) => obj.user?.profile?.firstName)
-  readonly firstName!: string;
+  readonly firstName: string;
 
   @Expose()
   @Transform(({ obj }) => obj.user?.profile?.lastName)
-  readonly lastName!: string;
+  readonly lastName: string;
 
   @Expose()
   @Type(() => GiftUserAdditionalDataSerialization)
-  additionalData: GiftUserAdditionalDataSerialization;
+  readonly additionalData: GiftUserAdditionalDataSerialization;
 }
 
 @Exclude()
