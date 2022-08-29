@@ -21,18 +21,6 @@ import { Product } from '@/catalog/product/entity';
 
 import { ProductGetSerialization } from '@/catalog/product/serialization';
 
-// @Exclude()
-// class GiftUserSerialization implements IGiftUserGetSerialization {
-//   @Expose()
-//   readonly id: string;
-
-//   @Expose()
-//   readonly email: string;
-
-//   @Expose()
-//   readonly phoneNumber: string;
-// }
-
 @Exclude()
 class GiftIntentAdditionalDataSerialization
   implements IGiftIntentAdditionalDataGetSerialization
