@@ -57,7 +57,7 @@ export class HelperMaskService {
   }: {
     body: Record<string, any>;
     options: ILogMask;
-  }) {
+  }): Promise<Record<string, any>> {
     if (!options || isEmpty(body)) {
       return body;
     }

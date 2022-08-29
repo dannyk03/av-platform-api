@@ -80,7 +80,7 @@ export class LogInterceptor implements NestInterceptor<any> {
             correlationId,
             method: method as EnumRequestMethod,
             params,
-            body: this.helperMaskService.maskBody({
+            body: await this.helperMaskService.maskBody({
               body,
               options: loggerOptions?.mask,
             }),
