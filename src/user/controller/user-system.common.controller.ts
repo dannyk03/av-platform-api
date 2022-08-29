@@ -13,14 +13,11 @@ import { ConfigService } from '@nestjs/config';
 import { Action, Subjects } from '@avo/casl';
 import { IResponseData } from '@avo/type';
 
-import { User } from '../entity';
-
 import { UserService } from '../service';
 import { AclRoleService } from '@/access-control-list/role/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqUser } from '../decorator/user.decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -32,38 +29,16 @@ import { RequestParamGuard } from '@/utils/request/guard';
 import { UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
-import {
-  UserGetSerialization,
-  UserProfileGetSerialization,
-} from '../serialization';
+import { UserGetSerialization } from '../serialization';
 
 @Controller({
   version: '1',
-  path: 'user',
 })
-export class UserController {
+export class UserSystemCommonController {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly roleService: AclRoleService,
-    private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly paginationService: PaginationService,
   ) {}
-
-  @ClientResponse('user.profile', {
-    classSerialization: UserProfileGetSerialization,
-  })
-  @HttpCode(HttpStatus.OK)
-  @AclGuard({
-    relations: ['profile'],
-  })
-  @Get('/profile')
-  async getProfile(
-    @ReqUser()
-    reqUser: User,
-  ): Promise<IResponseData> {
-    return reqUser;
-  }
 
   @ClientResponsePaging('user.list', {
     classSerialization: UserGetSerialization,

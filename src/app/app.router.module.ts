@@ -10,6 +10,8 @@ import { RouterNetworkingModule } from '@/router/router.networking.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterTestModule } from '@/router/router.test.module';
+import { RouterUserModule } from '@/router/router.user.module';
+import { RouterUserSystemModule } from '@/router/router.user.system.module';
 import { RouterVendorModule } from '@/router/router.vendor.module';
 
 @Module({})
@@ -24,6 +26,8 @@ export class AppRouterModule {
         imports: [
           RouterCommonModule,
           RouterPublicModule,
+          RouterUserModule,
+          RouterUserSystemModule,
           RouterGiftingSystemModule,
           RouterGiftingModule,
           RouterCatalogModule,
@@ -38,17 +42,26 @@ export class AppRouterModule {
               module: RouterCommonModule,
             },
             {
-              path: '/gift',
-              module: RouterGiftingModule,
-            },
-            {
               path: '/system',
               children: [
                 {
                   path: '/gift',
                   module: RouterGiftingSystemModule,
                 },
+                {
+                  path: '/user',
+                  module: RouterUserSystemModule,
+                },
               ],
+            },
+
+            {
+              path: '/user',
+              module: RouterUserModule,
+            },
+            {
+              path: '/gift',
+              module: RouterGiftingModule,
             },
             {
               path: '/network',
