@@ -71,7 +71,13 @@ export class AuthCommonController {
 
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
+  @LogTrace(EnumLogAction.Login, {
+    tags: ['login', 'withEmail'],
+    mask: {
+      passwordStrategyFields: ['password'],
+      emailStrategyFields: ['email'],
+    },
+  })
   @LoginGuard()
   @Post('/login')
   async login(

@@ -11,6 +11,7 @@ import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
 
 import { LogService } from '../service';
+import { HelperMaskService } from '@/utils/helper/service';
 
 import { ILogOptions } from '../type/log.interface';
 import { IRequestApp } from '@/utils/request/type';
@@ -28,6 +29,7 @@ export class LogInterceptor implements NestInterceptor<any> {
   constructor(
     private readonly reflector: Reflector,
     private readonly loggerService: LogService,
+    private readonly helperMaskService: HelperMaskService,
   ) {}
 
   async intercept(
@@ -78,7 +80,10 @@ export class LogInterceptor implements NestInterceptor<any> {
             correlationId,
             method: method as EnumRequestMethod,
             params,
-            body,
+            body: this.helperMaskService.maskBody({
+              body,
+              options: loggerOptions?.mask,
+            }),
             path,
             statusCode,
             userAgent,

@@ -45,6 +45,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
           skipNullProperties: false,
           skipUndefinedProperties: false,
           skipMissingProperties: false,
+          whitelist: true,
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           enableDebugMessages: configService.get<boolean>('app.debug'),
           exceptionFactory: async (errors: ValidationError[]) => {
