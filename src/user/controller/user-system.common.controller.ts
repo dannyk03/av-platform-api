@@ -8,14 +8,11 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { Action, Subjects } from '@avo/casl';
 import { IResponseData } from '@avo/type';
 
 import { UserService } from '../service';
-import { AclRoleService } from '@/access-control-list/role/service';
-import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import {
