@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 
 import { isEmpty, isNumber, isString } from 'class-validator';
 import cloneDeep from 'lodash/cloneDeep';
-import isObject from 'lodash/isObject';
 import MaskData from 'maskdata';
 
 import { ILogMask } from '@/log/type';
