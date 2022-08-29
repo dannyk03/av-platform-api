@@ -214,7 +214,15 @@ export class AuthCommonController {
           },
         });
 
-        await transactionalEntityManager.save(signUpUser);
+        const saveUser = await transactionalEntityManager.save(signUpUser);
+        this.logService.info({
+          action: EnumLogAction.SignUp,
+          tags: ['signup', 'auth', 'withEmail'],
+          description: 'Create new user',
+          data: {
+            id: saveUser.id,
+          },
+        });
 
         const signUpEmailVerificationLink =
           await this.authSignUpVerificationLinkService.create({
@@ -232,6 +240,14 @@ export class AuthCommonController {
         });
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
+        this.logService.info({
+          action: EnumLogAction.SignUp,
+          tags: ['signup', 'auth', 'withEmail', 'magic-link'],
+          description: 'Create new signup email verification link',
+          data: {
+            id: signUpEmailVerificationLink.id,
+          },
+        });
 
         await this.helperCookieService.detachAccessToken(response);
 
