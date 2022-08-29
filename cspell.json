@@ -25,7 +25,8 @@
     "customerio",
     "trivago",
     "casl",
-    "upsert"
+    "upsert",
+    "maskdata"
   ],
   "ignorePaths": [
     "node_modules/**",

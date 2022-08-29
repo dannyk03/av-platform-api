@@ -272,7 +272,11 @@ export class GiftingCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/intent/:id')
-  async get(@Param('id') giftIntentId: string, @ReqUser() reqUser: User) {
+  async get(
+    @Param('id')
+    giftIntentId: string,
+    @ReqUser() reqUser: User,
+  ) {
     const getGiftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
@@ -313,10 +317,12 @@ export class GiftingCommonController {
   @RequestParamGuard(IdParamDto)
   @Post('/intent/submit/:id')
   async giftIntentSubmit(
-    @Body() { giftOptionIds, personalNote }: GiftOptionSubmitDto,
+    @Body()
+    { giftOptionIds, personalNote }: GiftOptionSubmitDto,
     @ReqUser()
     reqUser: User,
-    @Param('id') giftIntentId: string,
+    @Param('id')
+    giftIntentId: string,
   ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: {

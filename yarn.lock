@@ -5701,6 +5701,13 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
+maskdata@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/maskdata/-/maskdata-1.1.10.tgz#28de7763d82e0939390712267101a8438c86b12f"
+  integrity sha512-m6sLr6LU8ReVD20jzqwyF/E2fSffiWjeETrWw2p1ae9uLV69gygM5kSEX/eAmz+SYldQH8/YMGb4s4QvlcB8LQ==
+  dependencies:
+    lodash "^4.17.21"
+
 md5@^2.2.1:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/md5/-/md5-2.3.0.tgz#c3da9a6aae3a30b46b7b0c349b87b110dc3bda4f"
