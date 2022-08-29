@@ -9,6 +9,7 @@ export enum EnumLogLevel {
 export enum EnumLogAction {
   Test = 'TEST',
   Login = 'LOGIN',
+  SignupLoginMagic = 'SIGNUP_LOGIN_MAGIC',
   SignUp = 'SIGNUP',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',
@@ -26,9 +27,13 @@ export enum EnumLogAction {
 
   GiftSend = 'GIFT_SEND',
   GiftSubmit = 'GIFT_SUBMIT',
+  GiftConfirmMagic = 'GIFT_CONFIRM',
+  GiftReadyMagic = 'GIFT_READY',
   GiftStatusUpdate = 'GIFT_STATUS_UPDATE',
   GiftAddOption = 'ADD_GIFT_OPTION',
   GiftUpdateOption = 'UPDATE_GIFT_OPTION',
   GiftDeleteOption = 'DELETE_GIFT_OPTION',
   GiftUpsertOption = 'UPSERT_GIFT_OPTION',
+
+  OrganizationJoinMagic = 'ORG_JOIN_MAGIC',
 }
