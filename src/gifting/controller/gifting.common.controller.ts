@@ -40,6 +40,7 @@ import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { LogTrace } from '@/log/decorator';
 import { ReqUser } from '@/user/decorator';
 import {
   ClientResponse,
@@ -55,6 +56,7 @@ import { IdParamDto } from '@/utils/request/dto';
 import { GiftIntentGetSerialization } from '../serialization';
 
 import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
@@ -76,6 +78,9 @@ export class GiftingCommonController {
 
   @ClientResponse('gift.send')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftSend, {
+    tags: ['gifting', 'send'],
+  })
   @AclGuard({
     loadSensitiveAuthData: true,
   })
@@ -312,6 +317,9 @@ export class GiftingCommonController {
 
   @ClientResponse('gift.intent.submit')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftSubmit, {
+    tags: ['gifting', 'submit'],
+  })
   @Throttle(1, 5)
   @AclGuard()
   @RequestParamGuard(IdParamDto)

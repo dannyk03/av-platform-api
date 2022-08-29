@@ -33,6 +33,7 @@ import { ProductService } from '@/catalog/product/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { LogTrace } from '@/log/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -57,6 +58,7 @@ import {
 } from '../serialization';
 
 import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
@@ -136,6 +138,9 @@ export class GiftingSystemCommonController {
 
   @ClientResponse('gift.intent.status')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftStatusUpdate, {
+    tags: ['gifting', 'status'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -286,6 +291,9 @@ export class GiftingSystemCommonController {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftAddOption, {
+    tags: ['gifting'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -344,6 +352,9 @@ export class GiftingSystemCommonController {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftUpdateOption, {
+    tags: ['gifting'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -436,6 +447,9 @@ export class GiftingSystemCommonController {
     classSerialization: GiftGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftUpsertOption, {
+    tags: ['gifting'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -538,6 +552,9 @@ export class GiftingSystemCommonController {
 
   @ClientResponse('gift.intent.deleteGiftOption')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftDeleteOption, {
+    tags: ['gifting'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -562,23 +579,4 @@ export class GiftingSystemCommonController {
       deleted: affected,
     };
   }
-
-  // @ClientResponse('gift.intent.ready')
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Update,
-  //       subject: Subjects.GiftIntent,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @RequestParamGuard(IdParamDto)
-  // @Post('/intent/ready/:id')
-  // async giftIntentReady(
-  //   @Param('id') giftIntentId: string,
-  // ): Promise<IResponseData> {
-  //   return this.giftIntentService.notifyReady({ id: giftIntentId });
-  // }
 }

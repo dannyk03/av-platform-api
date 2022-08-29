@@ -30,6 +30,7 @@ import { UserService } from '@/user/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { LogTrace } from '@/log/decorator';
 import { ReqUser } from '@/user/decorator';
 import {
   ClientResponse,
@@ -51,6 +52,8 @@ import {
   SocialConnectionRequestGetSerialization,
 } from '../serialization';
 
+import { EnumLogAction } from '@/log/constant';
+
 @Controller({
   version: '1',
 })
@@ -68,6 +71,9 @@ export class NetworkingCommonController {
 
   @ClientResponse('networking.connectRequest')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SendConnectionRequest, {
+    tags: ['networking'],
+  })
   @AclGuard()
   @Post('/connect')
   async connect(
@@ -263,6 +269,10 @@ export class NetworkingCommonController {
   }
 
   @ClientResponse('networking.connectApprove')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.ApproveConnectionRequest, {
+    tags: ['networking'],
+  })
   @AclGuard()
   @Patch('/approve')
   async approve(
@@ -300,6 +310,10 @@ export class NetworkingCommonController {
   }
 
   @ClientResponse('networking.connectReject')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.RejectConnectionRequest, {
+    tags: ['networking'],
+  })
   @AclGuard()
   @Patch('/reject')
   async reject(
