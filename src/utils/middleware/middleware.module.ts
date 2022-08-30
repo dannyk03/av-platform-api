@@ -26,27 +26,26 @@ export class MiddlewareModule implements NestModule {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
   configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(
-        ...compact([
-          CorrelationIdMiddleware,
-          TimezoneMiddleware,
-          CompressionMiddleware,
-          CorsMiddleware,
+    const middlewares: any = [
+      CorrelationIdMiddleware,
+      TimezoneMiddleware,
+      CompressionMiddleware,
+      CorsMiddleware,
+      HelmetMiddleware,
+      CookieParserMiddleware,
+      ValidateCustomLanguageMiddleware,
+      UserAgentMiddleware,
+      ResponseTimeMiddleware,
+      TimestampMiddleware,
+      VersionMiddleware,
+    ];
 
-          HelmetMiddleware,
-          CookieParserMiddleware,
-          ValidateCustomLanguageMiddleware,
-          UserAgentMiddleware,
-          ResponseTimeMiddleware,
-          TimestampMiddleware,
-          VersionMiddleware,
-          ...(!this.isProduction && [
-            HttpDebuggerResponseMiddleware,
-            HttpDebuggerMiddleware,
-          ]),
-        ]),
-      )
-      .forRoutes('*');
+    if (!this.isProduction) {
+      middlewares.push([
+        HttpDebuggerResponseMiddleware,
+        HttpDebuggerMiddleware,
+      ]);
+    }
+    consumer.apply(...middlewares).forRoutes('*');
   }
 }

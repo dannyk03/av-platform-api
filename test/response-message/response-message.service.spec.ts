@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 
 import { ValidationError } from 'class-validator';
 
-import { CommonModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 
 import { ResponseMessageService } from '@/response-message/service';
 

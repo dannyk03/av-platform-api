@@ -4,8 +4,10 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Optional,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { ConfigService } from '@nestjs/config';
 
 import { IErrors, IMessage } from '@avo/type';
 
@@ -29,9 +31,13 @@ import { EnumErrorType } from '../constant';
 // The exception filter only catch HttpException
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
+  private readonly isProduction =
+    this.configService.get<boolean>('app.isProduction');
   constructor(
     private readonly responseMessageService: ResponseMessageService,
+    @Optional()
     private readonly debuggerService: DebuggerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async catch(exception: HttpException, host: ArgumentsHost): Promise<void> {
@@ -57,16 +63,18 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const { customLang } = ctx.getRequest<IRequestApp>();
 
     // Debugger
-    this.debuggerService.error(
-      request?.correlationId || ErrorHttpFilter.name,
-      {
-        description: exception.message,
-        class: __class,
-        function: __function,
-        path: __path,
-      },
-      exception,
-    );
+    if (!this.isProduction) {
+      this.debuggerService.error(
+        request?.correlationId || ErrorHttpFilter.name,
+        {
+          description: exception.message,
+          class: __class,
+          function: __function,
+          path: __path,
+        },
+        exception,
+      );
+    }
 
     // Restructure
     const response = exception.getResponse();
