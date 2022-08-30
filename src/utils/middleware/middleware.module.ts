@@ -1,4 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import compact from 'lodash/compact';
 
 import { CompressionMiddleware } from './compression/compression.middleware';
 import { CookieParserMiddleware } from './cookie-parser/cookie-parser.middleware';
@@ -18,22 +21,31 @@ import { VersionMiddleware } from './version/version.middleware';
 
 @Module({})
 export class MiddlewareModule implements NestModule {
+  readonly isProduction: boolean;
+  constructor(private readonly configService: ConfigService) {
+    this.isProduction = this.configService.get<boolean>('app.isProduction');
+  }
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(
-        CorrelationIdMiddleware,
-        TimezoneMiddleware,
-        CompressionMiddleware,
-        CorsMiddleware,
-        HttpDebuggerResponseMiddleware,
-        HttpDebuggerMiddleware,
-        HelmetMiddleware,
-        CookieParserMiddleware,
-        ValidateCustomLanguageMiddleware,
-        UserAgentMiddleware,
-        ResponseTimeMiddleware,
-        TimestampMiddleware,
-        VersionMiddleware,
+        ...compact([
+          CorrelationIdMiddleware,
+          TimezoneMiddleware,
+          CompressionMiddleware,
+          CorsMiddleware,
+
+          HelmetMiddleware,
+          CookieParserMiddleware,
+          ValidateCustomLanguageMiddleware,
+          UserAgentMiddleware,
+          ResponseTimeMiddleware,
+          TimestampMiddleware,
+          VersionMiddleware,
+          ...(!this.isProduction && [
+            HttpDebuggerResponseMiddleware,
+            HttpDebuggerMiddleware,
+          ]),
+        ]),
       )
       .forRoutes('*');
   }
