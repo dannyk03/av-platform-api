@@ -86,7 +86,7 @@ export class Log {
   method!: string;
 
   @Column({
-    length: 50,
+    length: 100,
     update: false,
   })
   path!: string;
@@ -105,7 +105,7 @@ export class Log {
   repoVersion!: string;
 
   @Column({
-    length: 50,
+    length: 100,
     update: false,
   })
   exec!: string;

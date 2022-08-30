@@ -15,6 +15,7 @@ import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
 
 import { DebuggerService } from '@/debugger/service';
+import { LogService } from '@/log/service';
 import { ResponseMessageService } from '@/response-message/service';
 
 import {
@@ -38,6 +39,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     @Optional()
     private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
+    private readonly logService: LogService,
   ) {}
 
   async catch(exception: HttpException, host: ArgumentsHost): Promise<void> {
@@ -61,6 +63,10 @@ export class ErrorHttpFilter implements ExceptionFilter {
 
     // message base in language
     const { customLang } = ctx.getRequest<IRequestApp>();
+
+    exception.message = (await this.responseMessageService.get(
+      exception.message,
+    )) as string;
 
     // Debugger
     if (!this.isProduction) {
@@ -132,6 +138,17 @@ export class ErrorHttpFilter implements ExceptionFilter {
       meta: resMetadata,
       data,
     };
+
+    await this.logService.error({
+      action: exception.name,
+      description: mapMessage as string,
+      data: {
+        error,
+        errors,
+        ...data,
+        exception,
+      },
+    });
 
     responseExpress
       .setHeader('x-custom-lang', reqCustomLang)
