@@ -23,13 +23,13 @@ import {
   OrganizationInviteController,
 } from '@/organization/controller';
 import { PaymentController } from '@/payment/controller';
-import { UserController } from '@/user/controller';
+import { UserCommonController } from '@/user/controller';
 
 @Module({
   controllers: [
     HealthController,
     AuthCommonController,
-    UserController,
+    UserCommonController,
     OrganizationController,
     OrganizationInviteController,
     PaymentController,
