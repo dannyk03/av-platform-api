@@ -33,7 +33,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 import { ReqJwtUser, Token } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 import { ReqUser } from '@/user/decorator';
-import { ReqLogData, RequestUserAgent } from '@/utils/request/decorator';
+import { RequestUserAgent } from '@/utils/request/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import {
@@ -65,7 +65,6 @@ export class AuthCommonController {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly helperCookieService: HelperCookieService,
-    private readonly logService: LogService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
   ) {}
 

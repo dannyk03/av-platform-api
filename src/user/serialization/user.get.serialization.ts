@@ -1,21 +1,17 @@
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import {
+  IUserAuthConfigGetSerialization,
+  IUserGetSerialization,
+  IUserOrganizationGetSerialization,
+  IUserRoleGetSerialization,
+} from '@avo/type';
 
-import { UserProfile } from '../entity';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 // implements IUserOrganizationGetSerialization
 @Exclude()
-export class UserOrganizationGetSerialization {
-  @Expose()
-  readonly id: string;
-
-  @Expose()
-  readonly name: string;
-
-  @Expose()
-  readonly isActive: boolean;
-}
-@Exclude()
-export class UserRoleGetSerialization {
+export class UserOrganizationGetSerialization
+  implements IUserOrganizationGetSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -27,18 +23,44 @@ export class UserRoleGetSerialization {
 }
 
 @Exclude()
-export class UserAuthConfigGetSerialization {
+export class UserRoleGetSerialization implements IUserRoleGetSerialization {
+  @Expose()
+  readonly id: string;
+
+  @Expose()
+  readonly name: string;
+
+  @Expose()
+  readonly isActive: boolean;
+}
+
+@Exclude()
+export class UserAuthConfigGetSerialization
+  implements IUserAuthConfigGetSerialization
+{
   @Expose()
   readonly emailVerifiedAt: Date;
 }
 
 // implements IUserGetSerialization
-export class UserGetSerialization {
+@Exclude()
+export class UserGetSerialization implements IUserGetSerialization {
+  @Expose()
   readonly id: string;
+
+  @Expose()
   readonly email: string;
+
+  @Expose()
   readonly phoneNumber: string;
+
+  @Expose()
   readonly isActive: boolean;
+
+  @Expose()
   readonly createdAt: Date;
+
+  @Expose()
   readonly updatedAt: Date;
 
   @Expose()
@@ -53,18 +75,15 @@ export class UserGetSerialization {
   @Transform(({ obj }) => obj.profile?.title)
   readonly title: string;
 
+  @Expose()
   @Type(() => UserOrganizationGetSerialization)
   readonly organization: UserOrganizationGetSerialization;
 
+  @Expose()
   @Type(() => UserRoleGetSerialization)
   readonly role: UserRoleGetSerialization;
 
+  @Expose()
   @Type(() => UserAuthConfigGetSerialization)
   readonly authConfig: UserAuthConfigGetSerialization;
-
-  @Exclude()
-  readonly deletedAt: Date;
-
-  @Exclude()
-  readonly profile: UserProfile;
 }
