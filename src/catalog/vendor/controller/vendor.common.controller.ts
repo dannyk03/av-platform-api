@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -268,6 +269,15 @@ export class VendorCommonController {
     @Param('id')
     id: string,
   ): Promise<IResponseData> {
-    return this.vendorService.get({ id });
+    const vendor = await this.vendorService.get({ id });
+
+    if (!vendor) {
+      throw new NotFoundException({
+        statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+        message: 'vendor.error.notFound',
+      });
+    }
+
+    return vendor;
   }
 }

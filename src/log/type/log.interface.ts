@@ -33,8 +33,17 @@ export interface ILogRaw extends ILog {
   exec: string;
 }
 
+export interface ILogMask {
+  passwordStrategyFields?: string[];
+  emailStrategyFields?: string[];
+  phoneStrategyFields?: string[];
+  phoneNumberStrategyFields?: string[];
+  creditCardStrategyFields?: string[];
+  jsonStrategyFields?: string[] | [number, string[]];
+}
 export interface ILogOptions {
   description?: string;
   tags?: string[];
   level?: EnumLogLevel;
+  mask?: ILogMask;
 }

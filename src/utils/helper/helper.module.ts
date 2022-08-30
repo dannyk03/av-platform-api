@@ -2,7 +2,6 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
-import { HelperPromiseService } from './service';
 import { HelperArrayService } from './service/helper.array.service';
 import { HelperCookieService } from './service/helper.cookie.service';
 import { HelperDateService } from './service/helper.date.service';
@@ -11,8 +10,10 @@ import { HelperFileService } from './service/helper.file.service';
 import { HelperGeoService } from './service/helper.geo.service';
 import { HelperHashService } from './service/helper.hash.service';
 import { HelperJwtService } from './service/helper.jwt.service';
+import { HelperMaskService } from './service/helper.mask.service';
 import { HelperPhoneNumberService } from './service/helper.mobile-number.service';
 import { HelperNumberService } from './service/helper.number.service';
+import { HelperPromiseService } from './service/helper.promise.service';
 import { HelperService } from './service/helper.service';
 import { HelperSlugService } from './service/helper.slug.service';
 import { HelperStringService } from './service/helper.string.service';
@@ -34,6 +35,7 @@ import { HelperStringService } from './service/helper.string.service';
     HelperPhoneNumberService,
     HelperCookieService,
     HelperPromiseService,
+    HelperMaskService,
   ],
   exports: [
     HelperService,
@@ -50,6 +52,7 @@ import { HelperStringService } from './service/helper.string.service';
     HelperPhoneNumberService,
     HelperCookieService,
     HelperPromiseService,
+    HelperMaskService,
   ],
   controllers: [],
   imports: [

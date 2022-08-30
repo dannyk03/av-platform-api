@@ -2,6 +2,8 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
   Query,
@@ -34,6 +36,7 @@ import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
+import { LogTrace } from '@/log/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { MagicLinkDto } from '../dto';
@@ -42,6 +45,7 @@ import { AuthUserLoginSerialization } from '@/auth/serialization';
 import { GiftIntentReadySerialization } from '@/gifting/serialization';
 
 import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({})
 export class MagicLinkController {
@@ -60,6 +64,10 @@ export class MagicLinkController {
   ) {}
 
   @ClientResponse('user.signUpSuccess')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignupLoginMagic, {
+    tags: ['signup', 'login', 'magic'],
+  })
   @Get('/signup')
   async signUpValidate(
     @Query()
@@ -149,6 +157,10 @@ export class MagicLinkController {
   }
 
   @ClientResponse('organization.inviteValid')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.OrganizationJoinMagic, {
+    tags: ['organization', 'join', 'magic'],
+  })
   @Get('/org/join')
   async orgJoinValidate(
     @Query()
@@ -181,6 +193,10 @@ export class MagicLinkController {
   }
 
   @ClientResponse('gift.confirm')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftConfirmMagic, {
+    tags: ['gifting', 'confirm', 'magic'],
+  })
   @Get('/confirm')
   async confirmSendGift(
     @Query()
@@ -286,6 +302,10 @@ export class MagicLinkController {
 
   @ClientResponse('gift.intent.ready', {
     classSerialization: GiftIntentReadySerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftReadyMagic, {
+    tags: ['gifting', 'ready', 'magic'],
   })
   @Throttle(1, 5)
   @Get('/ready')

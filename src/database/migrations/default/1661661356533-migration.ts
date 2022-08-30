@@ -6,7 +6,7 @@ export class migration1661661356533 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE "logs"
-            ADD "exec" character varying(30) NOT NULL
+            ADD "exec" character varying(50) NOT NULL
         `);
     await queryRunner.query(`
             ALTER TABLE "logs" DROP COLUMN "repo_version"

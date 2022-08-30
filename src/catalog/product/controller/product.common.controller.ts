@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -31,6 +32,7 @@ import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { LogTrace } from '@/log/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -44,6 +46,8 @@ import { ProductGetDto } from '../dto/product.get.dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { ProductGetSerialization } from '../serialization';
+
+import { EnumLogAction } from '@/log/constant';
 
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
 
@@ -62,6 +66,9 @@ export class ProductCommonController {
     classSerialization: ProductGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductCreate, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -223,6 +230,9 @@ export class ProductCommonController {
 
   @ClientResponse('product.delete')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductDelete, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -234,11 +244,24 @@ export class ProductCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Delete('/:id')
-  async deleteProduct(@Param('id') id: string): Promise<void> {
-    await this.productService.deleteProductBy({ id });
+  async deleteProduct(@Param('id') id: string): Promise<{ deleted: number }> {
+    const deleteProduct = await this.productService.deleteProductBy({ id });
+
+    if (!deleteProduct) {
+      throw new NotFoundException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    return { deleted: 1 };
   }
 
   @ClientResponse('product.active')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductActive, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -262,6 +285,10 @@ export class ProductCommonController {
   }
 
   @ClientResponse('product.inactive')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductInactive, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -288,6 +315,9 @@ export class ProductCommonController {
     classSerialization: ProductGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductUpdate, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {

@@ -70,7 +70,13 @@ export class AuthCommonController {
 
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.Login, { tags: ['login', 'withEmail'] })
+  @LogTrace(EnumLogAction.Login, {
+    tags: ['login', 'withEmail'],
+    mask: {
+      passwordStrategyFields: ['password'],
+      emailStrategyFields: ['email'],
+    },
+  })
   @LoginGuard()
   @Post('/login')
   async login(
@@ -144,7 +150,15 @@ export class AuthCommonController {
 
   @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignUp, { tags: ['signup', 'withEmail'] })
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['signup', 'auth', 'withEmail'],
+    mask: {
+      emailStrategyFields: ['email'],
+      passwordStrategyFields: ['password'],
+      phoneNumberStrategyFields: ['phoneNumber'],
+      jsonStrategyFields: ['firstName', 'lastName'],
+    },
+  })
   @Post('/signup')
   async signUp(
     @Res({ passthrough: true })
@@ -199,7 +213,15 @@ export class AuthCommonController {
           },
         });
 
-        await transactionalEntityManager.save(signUpUser);
+        const saveUser = await transactionalEntityManager.save(signUpUser);
+        this.logService.info({
+          action: EnumLogAction.SignUp,
+          tags: ['signup', 'auth', 'withEmail'],
+          description: 'Create new user',
+          data: {
+            id: saveUser.id,
+          },
+        });
 
         const signUpEmailVerificationLink =
           await this.authSignUpVerificationLinkService.create({
@@ -217,6 +239,14 @@ export class AuthCommonController {
         });
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
+        this.logService.info({
+          action: EnumLogAction.SignUp,
+          tags: ['signup', 'auth', 'withEmail', 'magic-link'],
+          description: 'Create new signup email verification link',
+          data: {
+            id: signUpEmailVerificationLink.id,
+          },
+        });
 
         await this.helperCookieService.detachAccessToken(response);
 
@@ -232,6 +262,9 @@ export class AuthCommonController {
 
   @ClientResponse('auth.refresh')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['refresh', 'auth', 'jwt'],
+  })
   @AuthRefreshJwtGuard()
   @Post('/refresh')
   async refresh(
@@ -266,6 +299,13 @@ export class AuthCommonController {
   }
 
   @ClientResponse('auth.changePassword')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['changePassword', 'auth'],
+    mask: {
+      passwordStrategyFields: ['oldPassword', 'newPassword'],
+    },
+  })
   @AuthChangePasswordGuard()
   @Patch('/change-password')
   async changePassword(
@@ -317,6 +357,9 @@ export class AuthCommonController {
 
   @ClientResponse('auth.logout')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['logout', 'auth'],
+  })
   @AuthLogoutGuard()
   @Post('/logout')
   async logout(

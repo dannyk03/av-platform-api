@@ -9,8 +9,10 @@ import { Reflector } from '@nestjs/core';
 
 import { Response } from 'express';
 import { Observable, tap } from 'rxjs';
+import { options } from 'yargs';
 
 import { LogService } from '../service';
+import { HelperMaskService } from '@/utils/helper/service';
 
 import { ILogOptions } from '../type/log.interface';
 import { IRequestApp } from '@/utils/request/type';
@@ -28,6 +30,7 @@ export class LogInterceptor implements NestInterceptor<any> {
   constructor(
     private readonly reflector: Reflector,
     private readonly loggerService: LogService,
+    private readonly helperMaskService: HelperMaskService,
   ) {}
 
   async intercept(
@@ -68,6 +71,7 @@ export class LogInterceptor implements NestInterceptor<any> {
           );
 
           await this.loggerService.raw({
+            mask: loggerOptions?.mask,
             level: loggerOptions.level || EnumLogLevel.Info,
             action: loggerAction,
             description: loggerOptions.description

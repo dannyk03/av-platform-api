@@ -105,7 +105,7 @@ export class Log {
   repoVersion!: string;
 
   @Column({
-    length: 30,
+    length: 50,
     update: false,
   })
   exec!: string;

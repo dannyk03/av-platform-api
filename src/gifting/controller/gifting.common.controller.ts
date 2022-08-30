@@ -40,6 +40,7 @@ import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { LogTrace } from '@/log/decorator';
 import { ReqUser } from '@/user/decorator';
 import {
   ClientResponse,
@@ -55,6 +56,7 @@ import { IdParamDto } from '@/utils/request/dto';
 import { GiftIntentGetSerialization } from '../serialization';
 
 import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
@@ -76,12 +78,15 @@ export class GiftingCommonController {
 
   @ClientResponse('gift.send')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftSend, {
+    tags: ['gifting', 'send'],
+  })
   @AclGuard({
     loadSensitiveAuthData: true,
   })
   @Throttle(1, 5)
   @Post('/send')
-  async sendGiftSurvey(
+  async sendGift(
     @Body()
     { recipients, additionalData }: GiftSendDto,
     @ReqUser()
@@ -272,7 +277,11 @@ export class GiftingCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/intent/:id')
-  async get(@Param('id') giftIntentId: string, @ReqUser() reqUser: User) {
+  async get(
+    @Param('id')
+    giftIntentId: string,
+    @ReqUser() reqUser: User,
+  ) {
     const getGiftIntent = await this.giftIntentService.findOne({
       where: {
         id: giftIntentId,
@@ -308,15 +317,20 @@ export class GiftingCommonController {
 
   @ClientResponse('gift.intent.submit')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftSubmit, {
+    tags: ['gifting', 'submit'],
+  })
   @Throttle(1, 5)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Post('/intent/submit/:id')
   async giftIntentSubmit(
-    @Body() { giftOptionIds, personalNote }: GiftOptionSubmitDto,
+    @Body()
+    { giftOptionIds, personalNote }: GiftOptionSubmitDto,
     @ReqUser()
     reqUser: User,
-    @Param('id') giftIntentId: string,
+    @Param('id')
+    giftIntentId: string,
   ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: {

@@ -127,7 +127,7 @@ export class ResponseDefaultInterceptor
             return {
               statusCode,
               message,
-              result: null,
+              result: typeof response === 'undefined' ? response : null,
             };
           },
         ),
