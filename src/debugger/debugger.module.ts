@@ -16,7 +16,7 @@ export class DebuggerModule {}
 @Module({})
 export class DebuggerModuleDynamic {
   static register(): DynamicModule {
-    if (process.env.APP_ENV === 'production') {
+    if (process.env.APP_ENV === 'production' && process.env.CI === 'false') {
       return {
         module: DebuggerModuleDynamic,
         providers: [],
