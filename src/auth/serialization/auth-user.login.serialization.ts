@@ -1,4 +1,3 @@
-import { AclRoleLoginSerialization } from '@acl/role';
 import { Exclude, Transform, plainToInstance } from 'class-transformer';
 
 import { UserAuthConfig } from '../entity';
@@ -7,6 +6,7 @@ import { AclRole } from '@acl/role/entity';
 
 import { AuthConfigLoginSerialization } from './auth-config.login.serialization';
 import { OrganizationLoginSerialization } from '@/organization/serialization/organization.login.serialization';
+import { AclRoleLoginSerialization } from '@acl/role/serialization';
 
 export class AuthUserLoginSerialization {
   readonly id: string;

@@ -11,8 +11,9 @@ import { isUUID } from 'class-validator';
 
 import { IReqOrganizationIdentifierCtx } from '../type/organization.interface';
 
-import { PermissionsStatusCodeError } from '@/access-control-list/ability';
-import { SYSTEM_ORGANIZATION_NAME } from '@/system';
+import { PermissionsStatusCodeError } from '@/access-control-list/ability/constant';
+import { SYSTEM_ORGANIZATION_NAME } from '@/system/constant';
+
 import { slugify } from '@/utils/helper';
 
 function throwForbiddenExceptionForCorruptedOrganizationCtx() {
@@ -26,6 +27,11 @@ export const ReqOrganizationIdentifierCtx = createParamDecorator(
   (_data: string, ctx: ExecutionContext): IReqOrganizationIdentifierCtx => {
     const request = ctx.switchToHttp().getRequest();
     const { query, body, __user } = request;
+
+    if (!__user.organization) {
+      throwForbiddenExceptionForCorruptedOrganizationCtx();
+    }
+
     const {
       id: reqUserOrganizationId,
       name: reqUserOrganizationName,

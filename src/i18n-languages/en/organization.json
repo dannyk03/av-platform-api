@@ -9,6 +9,7 @@
   "invite": "Invite succeed",
   "inviteValid": "Invite valid",
   "join": "Join succeed",
+  "changeRoleTo": "Role change to {roleName}",
   "error": {
     "notFound": "Organization not found",
     "inactive": "Organization not active",
@@ -16,6 +17,8 @@
     "ownerExists": "Organization owner exists",
     "systemOnly": "System only",
     "alreadyInvited": "User already invited",
-    "inviteInvalid": "Invite invalid"
+    "inviteInvalid": "Invite invalid",
+    "unprocessable": "Unprocessable",
+    "alreadyRole": "The user is already in the given role ({roleName})"
   }
 }

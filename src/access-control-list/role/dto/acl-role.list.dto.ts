@@ -6,7 +6,7 @@ import {
   ROLE_DEFAULT_PAGE,
   ROLE_DEFAULT_PER_PAGE,
   ROLE_DEFAULT_SORT,
-} from '../acl-role.constant';
+} from '../constant/acl-role.constant';
 
 import {
   PaginationAvailableSearch,
