@@ -16,7 +16,7 @@ aliases:
 jobs:
   build-lint-test:
     docker:
-      - image: cimg/node:18
+      - image: cimg/node:18.8
       - image: cimg/postgres:14.4
         environment:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
