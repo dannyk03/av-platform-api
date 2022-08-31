@@ -1,7 +1,6 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 
 import { WinstonModule } from 'nest-winston';
-import { boolean } from 'yargs';
 
 import { DebuggerOptionService, DebuggerService } from './service';
 
