@@ -26,7 +26,8 @@
     "trivago",
     "casl",
     "upsert",
-    "maskdata"
+    "maskdata",
+    "middlewares"
   ],
   "ignorePaths": [
     "node_modules/**",

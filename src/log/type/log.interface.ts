@@ -9,7 +9,7 @@ import { EnumRequestMethod } from '@/utils/request/constant';
 export interface ILog extends ILogData, IReqLogData {}
 export interface ILogData {
   description: string;
-  action: EnumLogAction;
+  action: EnumLogAction | string;
   tags?: string[];
   data?: Record<string, any>;
 }

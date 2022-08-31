@@ -5,7 +5,7 @@ import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 
-import { CommonModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 import { HealthModule } from '@/health/health.module';
 
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
