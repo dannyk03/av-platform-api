@@ -155,7 +155,7 @@ export class OrganizationInviteService {
 
     if (
       aclRole &&
-      alreadyExistingOrganizationInvite.organization.id ===
+      alreadyExistingOrganizationInvite?.organization.id ===
         aclRole.organization?.id
     ) {
       alreadyExistingOrganizationInvite.role = aclRole;
