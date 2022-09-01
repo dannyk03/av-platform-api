@@ -7,12 +7,8 @@ import {
 
 import { EnumRoleStatusCodeError } from '@avo/type';
 
-import { DebuggerService } from '@/debugger/service';
-
 @Injectable()
 export class ReqUserAclRoleActiveGuard implements CanActivate {
-  constructor(private readonly debuggerService: DebuggerService) {}
-
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const { __user } = ctx.switchToHttp().getRequest();
 

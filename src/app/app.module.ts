@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { AppRouterModule } from './app.router.module';
-import { CommonModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 import { JobsModule } from '@/jobs/jobs.module';
 
 @Module({

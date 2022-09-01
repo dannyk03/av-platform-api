@@ -4,12 +4,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { WinstonModule } from 'nest-winston';
-
 import { AuthModule } from '@/auth/auth.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { DatabaseModule } from '@/database/database.module';
-import { DebuggerModule } from '@/debugger/debugger.module';
+import { DebuggerModuleDynamic } from '@/debugger/debugger.module';
 import { LogModule } from '@/log/log.module';
 import { ResponseMessageModule } from '@/response-message/response-message.module';
 import { ErrorModule } from '@/utils/error/error.module';
@@ -20,7 +18,6 @@ import { RequestModule } from '@/utils/request/request.module';
 import { ResponseModule } from '@/utils/response/response.module';
 
 import { TypeOrmConfigService } from '@/database/service';
-import { DebuggerOptionService } from '@/debugger/service';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -37,12 +34,8 @@ import { ConfigDynamicModule } from '@/config';
   imports: [
     ConfigDynamicModule,
     CloudinaryModule,
-    WinstonModule.forRootAsync({
-      imports: [DebuggerModule],
-      inject: [DebuggerOptionService],
-      useFactory: (debuggerOptionService: DebuggerOptionService) =>
-        debuggerOptionService.createLogger(),
-    }),
+    DebuggerModuleDynamic.register(),
+
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       name: ConnectionNames.Default,
@@ -61,7 +54,6 @@ import { ConfigDynamicModule } from '@/config';
     }),
     DatabaseModule,
     HelperModule,
-    DebuggerModule,
     ResponseMessageModule,
     ErrorModule,
     PaginationModule,

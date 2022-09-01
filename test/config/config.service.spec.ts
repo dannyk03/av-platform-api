@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 
-import { CommonModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 
 describe('ConfigService', () => {
   let configService: ConfigService;

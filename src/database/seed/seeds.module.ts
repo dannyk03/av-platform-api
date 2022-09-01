@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
 
 import { AuthModule } from '@/auth/auth.module';
-import { CommonModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 import { CurrencyModule } from '@/currency/currency.module';
 import { DisplayLanguageModule } from '@/language/display-language/display-language.module';
 import { OrganizationModule } from '@/organization/organization.module';

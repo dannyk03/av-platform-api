@@ -346,6 +346,7 @@ export class ProductCommonController {
       price,
       shippingCost,
       vendorName,
+      taxCode,
     }: ProductUpdateDto,
   ): Promise<IResponseData> {
     const existingProduct = await this.productService.findOne({
@@ -394,6 +395,7 @@ export class ProductCommonController {
     isDefined(brand) && (existingProduct.brand = brand);
     isDefined(isActive) && (existingProduct.isActive = isActive);
     isDefined(vendorName) && (existingProduct.vendorName = vendorName);
+    isDefined(taxCode) && (existingProduct.taxCode = taxCode);
     isDefined(price) && (existingProduct.price = price);
     isDefined(shippingCost) && (existingProduct.shippingCost = shippingCost);
 

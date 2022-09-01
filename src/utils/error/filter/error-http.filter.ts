@@ -4,8 +4,10 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Optional,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { ConfigService } from '@nestjs/config';
 
 import { IErrors, IMessage } from '@avo/type';
 
@@ -13,6 +15,7 @@ import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
 
 import { DebuggerService } from '@/debugger/service';
+import { LogService } from '@/log/service';
 import { ResponseMessageService } from '@/response-message/service';
 
 import {
@@ -29,9 +32,14 @@ import { EnumErrorType } from '../constant';
 // The exception filter only catch HttpException
 @Catch(HttpException)
 export class ErrorHttpFilter implements ExceptionFilter {
+  private readonly isProduction =
+    this.configService.get<boolean>('app.isProduction');
   constructor(
     private readonly responseMessageService: ResponseMessageService,
+    @Optional()
     private readonly debuggerService: DebuggerService,
+    private readonly configService: ConfigService,
+    private readonly logService: LogService,
   ) {}
 
   async catch(exception: HttpException, host: ArgumentsHost): Promise<void> {
@@ -56,17 +64,23 @@ export class ErrorHttpFilter implements ExceptionFilter {
     // message base in language
     const { customLang } = ctx.getRequest<IRequestApp>();
 
+    exception.message = (await this.responseMessageService.get(
+      exception.message,
+    )) as string;
+
     // Debugger
-    this.debuggerService.error(
-      request?.correlationId || ErrorHttpFilter.name,
-      {
-        description: exception.message,
-        class: __class,
-        function: __function,
-        path: __path,
-      },
-      exception,
-    );
+    if (!this.isProduction) {
+      this.debuggerService.error(
+        request?.correlationId || ErrorHttpFilter.name,
+        {
+          description: exception.message,
+          class: __class,
+          function: __function,
+          path: __path,
+        },
+        exception,
+      );
+    }
 
     // Restructure
     const response = exception.getResponse();
@@ -124,6 +138,17 @@ export class ErrorHttpFilter implements ExceptionFilter {
       meta: resMetadata,
       data,
     };
+
+    await this.logService.error({
+      action: exception.name,
+      description: mapMessage as string,
+      data: {
+        error,
+        errors,
+        ...data,
+        exception,
+      },
+    });
 
     responseExpress
       .setHeader('x-custom-lang', reqCustomLang)
