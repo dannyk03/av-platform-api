@@ -94,6 +94,13 @@ export class ProductUpdateDto {
   @NormalizeStringInputTransform()
   vendorName?: string;
 
+  @IsNotEmpty()
+  @MaxLength(30)
+  @MinLength(1)
+  @IsOptional()
+  @NormalizeStringInputTransform()
+  taxCode?: string;
+
   @IsArray()
   @IsOptional()
   @IsUUID(undefined, { each: true })
