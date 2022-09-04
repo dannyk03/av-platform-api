@@ -1,6 +1,7 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import {
   plainToInstance,
 } from 'class-transformer';
 import { Response } from 'express';
+import isEmpty from 'lodash/isEmpty';
 import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
@@ -119,7 +121,7 @@ export class ResponseDefaultInterceptor
               return {
                 statusCode,
                 message,
-                meta,
+                ...(!isEmpty(meta) && { meta }),
                 result: serialization,
               };
             }

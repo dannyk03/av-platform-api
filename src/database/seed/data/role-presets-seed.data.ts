@@ -1,9 +1,10 @@
 import { AbilityVerb, Action, Subjects } from '@avo/casl';
 
-import { EnumOrganizationRole } from '@acl/role';
 import { DeepPartial } from 'typeorm';
 
 import { AclRole } from '@/access-control-list/role/entity';
+
+import { EnumOrganizationRole } from '@acl/role/constant';
 
 export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
   roles: [
@@ -112,7 +113,7 @@ export const rolePresetsSeedData: { roles: DeepPartial<AclRole>[] } = {
       },
     },
     {
-      name: EnumOrganizationRole.User,
+      name: EnumOrganizationRole.Basic,
       policy: {
         subjects: [],
       },

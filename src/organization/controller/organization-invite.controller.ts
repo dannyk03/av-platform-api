@@ -40,6 +40,7 @@ import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
+import { BASIC_ROLE_NAME } from '@/access-control-list/role/constant/acl-role.constant';
 import { ConnectionNames } from '@/database/constant';
 
 @Controller({
@@ -83,23 +84,27 @@ export class OrganizationInviteController {
     };
 
     const roleId = isUUID(role) ? role : undefined;
-    const roleSlug = !roleId ? this.helperSlugService.slugify(role) : undefined;
+    const roleSlug = !roleId
+      ? this.helperSlugService.slugify(role || BASIC_ROLE_NAME)
+      : undefined;
 
-    const existingRole = await this.aclRoleService.findOne({
-      where: {
-        ...organizationCtxFind,
-        ...(roleId ? { id: roleId } : { slug: roleSlug }),
-      },
-      relations: ['organization'],
-      select: {
-        organization: {
-          id: true,
-          isActive: true,
+    const existingRole =
+      (roleId || roleSlug) &&
+      (await this.aclRoleService.findOne({
+        where: {
+          ...organizationCtxFind,
+          ...(roleId ? { id: roleId } : { slug: roleSlug }),
         },
-      },
-    });
+        relations: ['organization'],
+        select: {
+          organization: {
+            id: true,
+            isActive: true,
+          },
+        },
+      }));
 
-    if (!existingRole) {
+    if ((roleId || roleSlug) && !existingRole) {
       throw new ForbiddenException({
         statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
         message: 'role.error.notFound',
@@ -131,7 +136,7 @@ export class OrganizationInviteController {
   ) {
     const existingInvite = await this.organizationInviteService.findOne({
       where: { code },
-      relations: ['role', 'organization'],
+      relations: ['role', 'organization', 'user'],
     });
 
     if (!existingInvite || existingInvite.usedAt) {
@@ -155,34 +160,16 @@ export class OrganizationInviteController {
       });
     }
 
-    const existingUser = await this.userService.findOne({
-      where: { email: existingInvite.email },
-      relations: ['authConfig', 'profile'],
-      select: {
-        authConfig: {
-          id: true,
-        },
-      },
-    });
-
     const { salt, passwordHash, passwordExpiredAt } =
       await this.authService.createPassword(password);
 
     await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        if (existingUser) {
-          existingUser.authConfig = {
-            ...existingUser.authConfig,
-            password: passwordHash,
-            salt,
-            passwordExpiredAt,
-            emailVerifiedAt: this.helperDateService.create(),
-          };
-
-          existingUser.profile.firstName = firstName;
-          existingUser.profile.lastName = lastName;
-          await transactionalEntityManager.save(existingUser);
+        if (existingInvite.user) {
+          existingInvite.user.organization = existingInvite.organization;
+          existingInvite.user.role = existingInvite.role;
+          await transactionalEntityManager.save(existingInvite.user);
         } else {
           const joinUser = await this.userService.create({
             email: existingInvite.email,

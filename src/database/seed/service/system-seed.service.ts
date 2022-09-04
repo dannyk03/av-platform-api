@@ -14,9 +14,8 @@ import { OrganizationService } from '@/organization/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 
+import { EnumSystemRole } from '@/access-control-list/role/constant';
 import { ConnectionNames } from '@/database/constant/database.constant';
-
-import { EnumSystemRole } from '@/access-control-list/role';
 
 import { systemSeedData } from '../data';
 

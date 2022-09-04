@@ -9,6 +9,7 @@
   "upload": "Upload success",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
+  "invite": "User invite success",
   "signUpSuccess": "Sign up succeed",
   "error": {
     "notFound": "User not found",

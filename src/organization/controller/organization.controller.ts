@@ -11,7 +11,6 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { Action, Subjects } from '@avo/casl';
 import { EnumOrganizationStatusCodeError, IResponseData } from '@avo/type';
 
-import { EnumOrganizationRole } from '@acl/role';
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
@@ -31,6 +30,7 @@ import { OrganizationCreateDto } from '../dto/organization.create.dto';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
+import { EnumOrganizationRole } from '@acl/role/constant';
 
 @Controller({
   version: '1',

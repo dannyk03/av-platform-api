@@ -19,9 +19,10 @@ import {
 } from '@avo/type';
 
 import { Response } from 'express';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { SocialConnectionRequest } from '@/networking/entity';
 import { User } from '@/user/entity';
 
 import { AuthService, AuthSignUpVerificationLinkService } from '../service';
@@ -216,6 +217,7 @@ export class AuthCommonController {
 
         const saveUser = await transactionalEntityManager.save(signUpUser);
         this.logService.info({
+          transactionalEntityManager,
           action: EnumLogAction.SignUp,
           tags: ['signup', 'auth', 'withEmail'],
           description: 'Create new user',
@@ -223,6 +225,13 @@ export class AuthCommonController {
             id: saveUser.id,
           },
         });
+
+        // Update connection requests with new signed-up User
+        transactionalEntityManager.update(
+          SocialConnectionRequest,
+          { tempAddresseeEmail: email, addresseeUser: IsNull() },
+          { addresseeUser: saveUser },
+        );
 
         const signUpEmailVerificationLink =
           await this.authSignUpVerificationLinkService.create({

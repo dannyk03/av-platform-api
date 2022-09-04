@@ -9,6 +9,7 @@ import { AuthModule } from '@/auth/auth.module';
 import { GiftModule } from '@/gifting/gift.module';
 import { HealthModule } from '@/health/health.module';
 import { MessagingModule } from '@/messaging/messaging.module';
+import { NetworkingModule } from '@/networking/networking.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { PaymentModule } from '@/payment/payment.module';
 import { UserModule } from '@/user/user.module';
@@ -29,7 +30,6 @@ import { UserCommonController } from '@/user/controller';
   controllers: [
     HealthController,
     AuthCommonController,
-    UserCommonController,
     OrganizationController,
     OrganizationInviteController,
     PaymentController,

@@ -10,13 +10,15 @@ import { AclRole } from '@acl/role/entity';
 export class OrganizationInviteLink extends BaseEntity<OrganizationInviteLink> {
   @Index()
   @Column({
-    unique: true,
     length: 50,
   })
   email!: string;
 
+  @ManyToOne(() => User, { nullable: true, onDelete: 'CASCADE' })
+  user?: User;
+
   @ManyToOne(() => User)
-  fromUser: User;
+  fromUser!: User;
 
   @Index()
   @Column({

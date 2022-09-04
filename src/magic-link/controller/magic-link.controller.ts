@@ -166,8 +166,8 @@ export class MagicLinkController {
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {
-    const existingInvite = await this.organizationInviteService.findOneBy({
-      code,
+    const existingInvite = await this.organizationInviteService.findOne({
+      where: { code },
     });
 
     if (!existingInvite) {
