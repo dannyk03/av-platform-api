@@ -1,20 +1,47 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 
-import { IResponseData } from '@avo/type';
+import {
+  EnumNetworkingConnectionRequestStatus,
+  IResponseData,
+} from '@avo/type';
 
 import { User } from '../entity';
 
+import { UserService } from '../service';
+import { EmailService } from '@/messaging/email/service';
+import { SocialConnectionRequestService } from '@/networking/service';
+import { HelperPromiseService } from '@/utils/helper/service';
+
 import { ReqUser } from '../decorator/user.decorator';
+import { LogTrace } from '@/log/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
 
+import { UserInviteDto } from '../dto';
+
 import { UserProfileGetSerialization } from '../serialization';
+
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
 })
 export class UserCommonController {
+  constructor(
+    private readonly userService: UserService,
+    private readonly emailService: EmailService,
+    private readonly helperPromiseService: HelperPromiseService,
+    private readonly socialConnectionRequestService: SocialConnectionRequestService,
+  ) {}
+
   @ClientResponse('user.profile', {
     classSerialization: UserProfileGetSerialization,
   })
@@ -30,93 +57,40 @@ export class UserCommonController {
     return reqUser;
   }
 
-  // @ClientResponse('networking.connectRequest')
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.SendConnectionRequest, {
-  //   tags: ['networking'],
-  // })
-  // @AclGuard()
-  // @Post('/invite')
-  // async connect(
-  //   @ReqUser()
-  //   reqUser: User,
-  //   @Body()
-  //   {
-  //     addressees,
-  //     personalNote: sharedPersonalNote,
-  //   }: SocialConnectionRequestDto,
-  // ): Promise<IResponseData> {
-  //   const promises = addressees.map(async ({ email, personalNote }) => {
-  //     if (email === reqUser.email) {
-  //       return Promise.reject(email);
-  //     }
+  @ClientResponse('user.invite')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SendConnectionRequest, {
+    tags: ['user', 'invite'],
+  })
+  @AclGuard()
+  @Post('/invite')
+  async generalInvite(
+    @ReqUser()
+    reqUser: User,
+    @Body()
+    { addressees, personalNote: sharedPersonalNote }: UserInviteDto,
+  ): Promise<IResponseData> {
+    const promises = addressees.map(async ({ email, personalNote }) => {
+      if (email === reqUser.email) {
+        return Promise.reject(email);
+      }
 
-  //     const [findExistingRequest, findBlockRequest] = await Promise.all([
-  //       this.socialConnectionRequestService.findSocialConnectionRequestByStatus(
-  //         {
-  //           fromEmail: reqUser.email,
-  //           toEmail: email,
-  //           status: [
-  //             EnumNetworkingConnectionRequestStatus.Approved,
-  //             EnumNetworkingConnectionRequestStatus.Pending,
-  //           ],
-  //         },
-  //       ),
-  //       this.socialConnectionRequestBlockService.findBlockRequest({
-  //         fromEmail: reqUser.email,
-  //         toEmail: email,
-  //       }),
-  //     ]);
+      const isEmailSent = await this.emailService.sendNetworkJoinInvite({
+        personalNote: personalNote || sharedPersonalNote,
+        fromUser: reqUser,
+        email,
+      });
 
-  //     if (findExistingRequest || findBlockRequest) {
-  //       return Promise.resolve(email);
-  //     }
+      if (isEmailSent) {
+        return Promise.resolve(email);
+      }
+      return Promise.reject(email);
+    });
 
-  //     const addresseeUser = await this.userService.findOneBy({ email });
+    const result = await Promise.allSettled(promises);
 
-  //     const createSocialConnectionRequest =
-  //       await this.socialConnectionRequestService.create({
-  //         personalNote: personalNote || sharedPersonalNote,
-  //         addressedUser: reqUser,
-  //         addresseeUser,
-  //         tempAddresseeEmail: addresseeUser ? null : email,
-  //       });
-
-  //     const saveSocialConnectionRequest =
-  //       await this.socialConnectionRequestService.save(
-  //         createSocialConnectionRequest,
-  //       );
-
-  //     if (saveSocialConnectionRequest) {
-  //       const isEmailSent = addresseeUser
-  //         ? await this.emailService.sendNetworkNewConnectionRequest({
-  //             personalNote: saveSocialConnectionRequest.personalNote,
-  //             fromUser: saveSocialConnectionRequest.addressedUser,
-  //             email:
-  //               saveSocialConnectionRequest.addresseeUser?.email ||
-  //               saveSocialConnectionRequest.tempAddresseeEmail,
-  //           })
-  //         : await this.emailService.sendNetworkJoinInvite({
-  //             personalNote: saveSocialConnectionRequest.personalNote,
-  //             fromUser: saveSocialConnectionRequest.addressedUser,
-  //             email:
-  //               saveSocialConnectionRequest.addresseeUser?.email ||
-  //               saveSocialConnectionRequest.tempAddresseeEmail,
-  //           });
-
-  //       if (isEmailSent) {
-  //         return Promise.resolve(email);
-  //       }
-  //       return Promise.reject(email);
-  //     } else {
-  //       return Promise.reject(email);
-  //     }
-  //   });
-
-  //   const result = await Promise.allSettled(promises);
-
-  //   return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
-  //     result,
-  //   );
-  // }
+    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
+      result,
+    );
+  }
 }
