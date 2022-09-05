@@ -232,10 +232,6 @@ export class OrganizationInviteController {
       });
     }
 
-    const organizationCtxFind: Record<string, any> = {
-      organization: { id, slug },
-    };
-
     const roleId = isUUID(role) ? role : undefined;
     const roleSlug = !roleId
       ? this.helperSlugService.slugify(role || BASIC_ROLE_NAME)
@@ -245,7 +241,7 @@ export class OrganizationInviteController {
       (roleId || roleSlug) &&
       (await this.aclRoleService.findOne({
         where: {
-          ...organizationCtxFind,
+          organization: { id, slug },
           ...(roleId ? { id: roleId } : { slug: roleSlug }),
         },
         relations: ['organization'],
@@ -265,7 +261,7 @@ export class OrganizationInviteController {
     }
 
     const organizationMember = await this.userService.findOne({
-      where: { email, ...organizationCtxFind },
+      where: { email, organization: { id, slug } },
     });
 
     if (!organizationMember) {
