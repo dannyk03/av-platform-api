@@ -9,19 +9,43 @@ export class UserProfile extends BaseEntity<UserProfile> {
     length: 30,
     nullable: true,
   })
-  firstName?: string;
+  firstName: string;
 
   @Column({
     length: 30,
     nullable: true,
   })
-  lastName?: string;
+  lastName: string;
 
   @Column({
-    length: 100,
+    length: 30,
     nullable: true,
   })
-  title?: string;
+  city?: string;
+
+  @Column({
+    length: 30,
+    nullable: true,
+  })
+  state?: string;
+
+  @Column({
+    length: 30,
+    nullable: true,
+  })
+  country?: string;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  personas?: object;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  dietary?: object;
 
   @OneToOne(() => User, (user) => user.authConfig, {
     orphanedRowAction: 'delete',

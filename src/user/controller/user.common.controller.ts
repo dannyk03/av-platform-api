@@ -7,10 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 
-import {
-  EnumNetworkingConnectionRequestStatus,
-  IResponseData,
-} from '@avo/type';
+import { IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
