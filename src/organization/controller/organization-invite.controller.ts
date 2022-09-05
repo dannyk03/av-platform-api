@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Query,
 } from '@nestjs/common';
@@ -36,6 +37,7 @@ import { AclGuard } from '@/auth/guard';
 
 import { IReqOrganizationIdentifierCtx } from '../type/organization.interface';
 
+import { OrganizationChangeRoleDto } from '../dto/organization.change-role.dto';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
@@ -187,7 +189,12 @@ export class OrganizationInviteController {
             role: existingInvite.role,
           });
 
-          await transactionalEntityManager.save(joinUser);
+          existingInvite.user = joinUser;
+
+          await Promise.all([
+            transactionalEntityManager.save(joinUser),
+            transactionalEntityManager.save(existingInvite),
+          ]);
         }
 
         const now = this.helperDateService.create();
@@ -196,5 +203,80 @@ export class OrganizationInviteController {
         await transactionalEntityManager.save(existingInvite);
       },
     );
+  }
+
+  @ClientResponse('organization.changeRole')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.OrganizationMember,
+      },
+    ],
+  })
+  @Post('/user/role')
+  async updateUserRole(
+    @ReqUser()
+    reqUser: User,
+    @Body()
+    { email, role }: OrganizationChangeRoleDto,
+    @ReqOrganizationIdentifierCtx()
+    { id, slug }: IReqOrganizationIdentifierCtx,
+  ): Promise<void> {
+    if (reqUser.email === email) {
+      throw new ForbiddenException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationSelfChangeRoleForbiddenError,
+        message: 'organization.error.selfChangeRole',
+      });
+    }
+
+    const organizationCtxFind: Record<string, any> = {
+      organization: { id, slug },
+    };
+
+    const roleId = isUUID(role) ? role : undefined;
+    const roleSlug = !roleId
+      ? this.helperSlugService.slugify(role || BASIC_ROLE_NAME)
+      : undefined;
+
+    const existingRole =
+      (roleId || roleSlug) &&
+      (await this.aclRoleService.findOne({
+        where: {
+          ...organizationCtxFind,
+          ...(roleId ? { id: roleId } : { slug: roleSlug }),
+        },
+        relations: ['organization'],
+        select: {
+          organization: {
+            id: true,
+            isActive: true,
+          },
+        },
+      }));
+
+    if ((roleId || roleSlug) && !existingRole) {
+      throw new NotFoundException({
+        statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
+        message: 'role.error.notFound',
+      });
+    }
+
+    const organizationMember = await this.userService.findOne({
+      where: { email, ...organizationCtxFind },
+    });
+
+    if (!organizationMember) {
+      throw new NotFoundException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationMemberNotFoundError,
+        message: 'organization.error.memberNotFound',
+      });
+    }
+
+    organizationMember.role = existingRole;
+    await this.userService.save(organizationMember);
   }
 }

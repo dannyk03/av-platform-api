@@ -66,17 +66,17 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-"@avo/casl@^0.0.24":
-  version "0.0.24"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.24.tgz#fc2872682e5794e4fe96233773aaf341b35580a2"
-  integrity sha512-moJvBgkumWyx2nFsiXSPw4hvf+HVT/5C5Fe5A84IZZSfIThw5cYORnCp+RrnfEF5XgowiykEQ62DpLc9TDUdgg==
+"@avo/casl@^0.0.25":
+  version "0.0.25"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/casl/-/@avo/casl-0.0.25.tgz#66bcbbe4329dbf60fc1b70aeece4e7b3b3a3508d"
+  integrity sha512-KXklHftiiJizbwQVK0S7iV7nw3cUrWe5a+uy09UX7YFn3kRpV4KmEyHYdwhRKXRNlDABXb0KQ9szKXkY0PM74w==
   dependencies:
     "@casl/ability" "^6.1.1"
 
-"@avo/type@^0.0.65":
-  version "0.0.65"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.65.tgz#21950cca10556e601315df619c71ac28844b3896"
-  integrity sha512-e89YV5D3c4N5ZI42g/AOiyFU6DWHjeUZDJ5yiFEM9eMmmp2sDqBrvrI+lLl5uRV6j0qGQpq21HsyRt9zVeavag==
+"@avo/type@^0.0.68":
+  version "0.0.68"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.68.tgz#d986393363cf0006e14b37ec2fb6d43c41c286dd"
+  integrity sha512-6XGB4jBMn6b63GqUerkyIoshnHYza2B/o3ykcwTbkjmuPIwZWq7Q0LZF+E18dKQA4mA1KoGWZUjBaliE+dMgQg==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
