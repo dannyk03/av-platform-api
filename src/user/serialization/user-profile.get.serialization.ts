@@ -21,34 +21,34 @@ export class UserProfileGetSerialization
   readonly isActive: boolean;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.firstName)
+  @Transform(({ obj }) => obj.profile?.firstName)
   readonly firstName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.lastName)
+  @Transform(({ obj }) => obj.profile?.lastName)
   readonly lastName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.photo)
+  @Transform(({ obj }) => obj.profile?.photo)
   readonly photo?: IAwsS3;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.city)
+  @Transform(({ obj }) => obj.profile?.city)
   readonly city?: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.state)
+  @Transform(({ obj }) => obj.profile?.state)
   readonly state?: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.country)
+  @Transform(({ obj }) => obj.profile?.country)
   readonly country?: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.personas)
+  @Transform(({ obj }) => obj.profile?.personas)
   readonly personas?: object;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.dietary)
+  @Transform(({ obj }) => obj.profile?.dietary)
   readonly dietary?: object;
 }

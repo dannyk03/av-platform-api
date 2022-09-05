@@ -40,7 +40,6 @@ import {
 import { AclGuard } from '@/auth/guard';
 
 import {
-  ConnectRequestUpdateDto,
   SocialConnectionListDto,
   SocialConnectionRequestApproveDto,
   SocialConnectionRequestDto,

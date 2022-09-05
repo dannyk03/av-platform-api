@@ -1,8 +1,4 @@
-import { IUserProfileGetSerialization } from '@avo/type';
-
-import { Exclude, Expose, Transform } from 'class-transformer';
-
-import { IAwsS3 } from '@/aws/type';
+import { Exclude } from 'class-transformer';
 
 import { UserProfileGetSerialization } from './user-profile.get.serialization';
 

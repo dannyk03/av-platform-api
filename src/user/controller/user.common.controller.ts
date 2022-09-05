@@ -13,7 +13,6 @@ import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
-import { UserService } from '../service';
 import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
 import { HelperPromiseService } from '@/utils/helper/service';
