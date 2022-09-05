@@ -1,19 +1,21 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
 } from '@nestjs/common';
 
-import { IResponseData } from '@avo/type';
+import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
 import { UserService } from '../service';
 import { EmailService } from '@/messaging/email/service';
-import { SocialConnectionRequestService } from '@/networking/service';
+import { SocialConnectionService } from '@/networking/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 
 import { ReqUser } from '../decorator/user.decorator';
@@ -21,10 +23,15 @@ import { LogTrace } from '@/log/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { UserInviteDto } from '../dto';
+import { IdParamDto } from '@/utils/request/dto';
 
-import { UserProfileGetSerialization } from '../serialization';
+import {
+  UserConnectionProfileGetSerialization,
+  UserProfileGetSerialization,
+} from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -33,10 +40,9 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class UserCommonController {
   constructor(
-    private readonly userService: UserService,
     private readonly emailService: EmailService,
     private readonly helperPromiseService: HelperPromiseService,
-    private readonly socialConnectionRequestService: SocialConnectionRequestService,
+    private readonly socialConnectionService: SocialConnectionService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -52,6 +58,42 @@ export class UserCommonController {
     reqUser: User,
   ): Promise<IResponseData> {
     return reqUser;
+  }
+
+  @ClientResponse('user.profile', {
+    classSerialization: UserConnectionProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    relations: ['profile'],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/profile/:id')
+  async getConnectionProfile(
+    @ReqUser()
+    reqUser: User,
+    @Param('id') connectionUserId: string,
+  ): Promise<IResponseData> {
+    const socialConnection = await this.socialConnectionService.findOne({
+      where: {
+        user1: {
+          id: connectionUserId,
+        },
+        user2: {
+          id: reqUser.id,
+        },
+      },
+      relations: ['user1', 'user1.profile'],
+    });
+
+    if (!socialConnection?.user1) {
+      throw new ForbiddenException({
+        statusCode: EnumUserStatusCodeError.UserProfileForbiddenError,
+        message: 'user.error.profileForbidden',
+      });
+    }
+
+    return socialConnection?.user1;
   }
 
   @ClientResponse('user.invite')

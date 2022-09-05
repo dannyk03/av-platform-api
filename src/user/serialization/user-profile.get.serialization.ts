@@ -1,9 +1,13 @@
+import { IUserProfileGetSerialization } from '@avo/type';
+
 import { Exclude, Expose, Transform } from 'class-transformer';
 
 import { IAwsS3 } from '@/aws/type';
 
 @Exclude()
-export class UserProfileGetSerialization {
+export class UserProfileGetSerialization
+  implements IUserProfileGetSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -25,10 +29,26 @@ export class UserProfileGetSerialization {
   readonly lastName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.title)
-  readonly title: string;
-
-  @Expose()
   @Transform(({ obj }) => obj.profile.photo)
   readonly photo?: IAwsS3;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile.city)
+  readonly city?: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile.state)
+  readonly state?: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile.country)
+  readonly country?: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile.personas)
+  readonly personas?: object;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile.dietary)
+  readonly dietary?: object;
 }
