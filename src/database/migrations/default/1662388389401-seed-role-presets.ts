@@ -4,16 +4,16 @@ import { MigrationInterface } from 'typeorm';
 
 import { SeedsModule } from '@/database/seed/seeds.module';
 
-import { SystemSeedService } from '@/database/seed/service';
+import { RolePresetsSeedService } from '@/database/seed/service';
 
-export class seed1660746030754 implements MigrationInterface {
-  name = 'seed1660746030754';
+export class seed1662388389401 implements MigrationInterface {
+  name = 'seed1662388389401';
 
   public async up(): Promise<void> {
     const app = await NestFactory.createApplicationContext(SeedsModule);
 
     try {
-      await app.get(SystemSeedService).insert();
+      await app.get(RolePresetsSeedService).insert();
       await app.close();
     } catch (error) {
       await app.close();
