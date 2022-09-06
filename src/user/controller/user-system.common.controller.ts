@@ -28,7 +28,6 @@ import { UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
-  UserConnectionProfileGetSerialization,
   UserGetSerialization,
   UserProfileGetSerialization,
 } from '../serialization';
@@ -182,7 +181,7 @@ export class UserSystemCommonController {
   async getUserProfile(@Param('id') userId: string): Promise<IResponseData> {
     const findUser = await this.userService.findOne({
       where: { id: userId },
-      relations: ['profile'],
+      relations: ['profile', 'profile.home', 'profile.shipping'],
     });
 
     if (!findUser) {
