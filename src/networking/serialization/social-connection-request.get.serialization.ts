@@ -10,6 +10,7 @@ export class SocialConnectionRequestGetSerialization
   implements ISocialConnectionRequestGetSerialization
 {
   @Expose()
+  @Transform(({ obj }) => obj.addressedUser?.id)
   readonly id: string;
 
   @Expose()
