@@ -54,25 +54,25 @@ export class SurveyPersonalShippingDto {
   @Type(() => String)
   readonly addressLine2: string;
 
-  @IsNotEmpty()
   @Length(1, 20)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
+  @IsNotEmpty()
   @Type(() => String)
   readonly city: string;
 
-  @IsNotEmpty()
   @IsOptional()
-  @Length(1, 20)
   @IsNotEmpty()
+  @IsNotEmpty()
+  @Length(1, 20)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state: string;
 
-  @IsNotEmpty()
   @Length(1, 20)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
+  @IsNotEmpty()
   @Type(() => String)
   readonly country: string;
 
