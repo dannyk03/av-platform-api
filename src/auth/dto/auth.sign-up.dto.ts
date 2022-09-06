@@ -39,6 +39,50 @@ export class SurveyPersonalAddressDto {
   @Type(() => String)
   readonly country: string;
 }
+export class SurveyPersonalShippingDto {
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly addressLine1: string;
+
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly addressLine2: string;
+
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly city: string;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly state: string;
+
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly country: string;
+
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly zipCode: string;
+}
 
 export class SurveyPersonalDto {
   @NormalizeEmail()
@@ -61,7 +105,11 @@ export class SurveyPersonalDto {
 
   @IsNotEmpty()
   @Type(() => SurveyPersonalAddressDto)
-  readonly address: SurveyPersonalAddressDto;
+  readonly home: SurveyPersonalAddressDto;
+
+  @IsNotEmpty()
+  @Type(() => SurveyPersonalShippingDto)
+  readonly shipping: SurveyPersonalShippingDto;
 
   @IsString()
   @IsOptional()

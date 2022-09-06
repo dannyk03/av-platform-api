@@ -49,7 +49,7 @@ export class UserCommonController {
   })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
-    relations: ['profile'],
+    relations: ['profile', 'profile.home', 'profile.shipping'],
   })
   @Get('/profile')
   async getProfile(

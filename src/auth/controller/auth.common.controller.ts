@@ -168,7 +168,7 @@ export class AuthCommonController {
     @Body()
     {
       password,
-      personal: { email, firstName, lastName, phoneNumber, address },
+      personal: { email, firstName, lastName, phoneNumber, home, shipping },
       personas,
       dietary,
     }: AuthSignUpDto,
@@ -212,7 +212,7 @@ export class AuthCommonController {
           isActive: true,
           email,
           phoneNumber,
-          profile: { firstName, lastName, ...address, personas, dietary },
+          profile: { firstName, lastName, home, shipping, personas, dietary },
           authConfig: {
             password: passwordHash,
             salt,
