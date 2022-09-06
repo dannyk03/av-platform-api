@@ -8,8 +8,6 @@ import { Exclude, Expose, Transform, plainToInstance } from 'class-transformer';
 
 import { IAwsS3 } from '@/aws/type';
 
-import { AclRoleLoginSerialization } from '@/access-control-list/role/serialization';
-
 @Exclude()
 export class UserProfileHomeGetSerialization
   implements IUserProfileHomeGetSerialization
