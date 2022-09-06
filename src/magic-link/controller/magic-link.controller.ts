@@ -131,7 +131,7 @@ export class MagicLinkController {
 
     // TODO: cache in redis safeData with user role and permission for next api calls
 
-    const rememberMe = true;
+    const rememberMe = false;
     const payloadAccessToken: Record<string, any> =
       await this.authService.createPayloadAccessToken(safeData, rememberMe);
 

@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -19,6 +20,7 @@ import {
 } from '@avo/type';
 
 import { isUUID } from 'class-validator';
+import { Response } from 'express';
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
@@ -26,7 +28,11 @@ import { User } from '@/user/entity';
 import { OrganizationInviteService } from '../service';
 import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
-import { HelperDateService, HelperSlugService } from '@/utils/helper/service';
+import {
+  HelperCookieService,
+  HelperDateService,
+  HelperSlugService,
+} from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
 
 import { ReqOrganizationIdentifierCtx } from '../decorator/organization.decorator';
@@ -41,6 +47,8 @@ import { OrganizationChangeRoleDto } from '../dto/organization.change-role.dto';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
+
+import { AuthUserLoginSerialization } from '@/auth/serialization';
 
 import { BASIC_ROLE_NAME } from '@/access-control-list/role/constant/acl-role.constant';
 import { ConnectionNames } from '@/database/constant';
@@ -60,6 +68,7 @@ export class OrganizationInviteController {
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
+    private readonly helperCookieService: HelperCookieService,
   ) {}
 
   @ClientResponse('organization.invite')
@@ -131,6 +140,8 @@ export class OrganizationInviteController {
   @HttpCode(HttpStatus.OK)
   @Post('/join')
   async join(
+    @Res({ passthrough: true })
+    response: Response,
     @Query()
     { code }: MagicLinkDto,
     @Body()
@@ -165,7 +176,7 @@ export class OrganizationInviteController {
     const { salt, passwordHash, passwordExpiredAt } =
       await this.authService.createPassword(password);
 
-    await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         if (existingInvite.user) {
@@ -201,6 +212,39 @@ export class OrganizationInviteController {
         existingInvite.usedAt = now;
 
         await transactionalEntityManager.save(existingInvite);
+
+        const safeData: AuthUserLoginSerialization =
+          await this.authService.serializationLogin(existingInvite.user);
+
+        // TODO: cache in redis safeData with user role and permission for next api calls
+
+        const rememberMe = false;
+        const payloadAccessToken: Record<string, any> =
+          await this.authService.createPayloadAccessToken(safeData, rememberMe);
+
+        const payloadRefreshToken: Record<string, any> =
+          await this.authService.createPayloadRefreshToken(
+            safeData,
+            rememberMe,
+            {
+              loginDate: payloadAccessToken.loginDate,
+            },
+          );
+
+        const accessToken: string = await this.authService.createAccessToken(
+          payloadAccessToken,
+        );
+
+        const refreshToken: string = await this.authService.createRefreshToken(
+          payloadRefreshToken,
+          false,
+        );
+
+        await this.helperCookieService.attachAccessToken(response, accessToken);
+
+        return {
+          refreshToken,
+        };
       },
     );
   }
