@@ -20,7 +20,6 @@ export const systemSeedData: {
   systemAdmin: {
     profile: {
       firstName: 'SystemAdmin',
-      title: 'God',
     },
   },
   roles: [

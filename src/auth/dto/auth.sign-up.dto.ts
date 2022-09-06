@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  Allow,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -15,7 +16,31 @@ import {
 } from '@/utils/request/transform';
 import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
-export class AuthSignUpDto {
+export class SurveyPersonalAddressDto {
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly city: string;
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly state: string;
+
+  @IsNotEmpty()
+  @Length(1, 20)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly country: string;
+}
+
+export class SurveyPersonalDto {
   @NormalizeEmail()
   readonly email!: string;
 
@@ -34,6 +59,10 @@ export class AuthSignUpDto {
   @Type(() => String)
   readonly lastName?: string;
 
+  @IsNotEmpty()
+  @Type(() => SurveyPersonalAddressDto)
+  readonly address: SurveyPersonalAddressDto;
+
   @IsString()
   @IsOptional()
   @EmptyStringToUndefinedTransform()
@@ -42,14 +71,18 @@ export class AuthSignUpDto {
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly phoneNumber?: string;
+}
 
-  @IsString()
-  @IsOptional()
-  @EmptyStringToUndefinedTransform()
-  @Length(2, 50)
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly title?: string;
+export class AuthSignUpDto {
+  @IsNotEmpty()
+  @Type(() => SurveyPersonalDto)
+  readonly personal: SurveyPersonalDto;
+
+  @Allow()
+  readonly personas: object;
+
+  @Allow()
+  readonly dietary: object;
 
   @IsNotEmpty()
   @MaxLength(30)

@@ -166,7 +166,12 @@ export class AuthCommonController {
     @Res({ passthrough: true })
     response: Response,
     @Body()
-    { email, password, firstName, lastName, phoneNumber, title }: AuthSignUpDto,
+    {
+      password,
+      personal: { email, firstName, lastName, phoneNumber, address },
+      personas,
+      dietary,
+    }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
   ) {
     const expiresInDays = this.configService.get<number>(
@@ -207,7 +212,7 @@ export class AuthCommonController {
           isActive: true,
           email,
           phoneNumber,
-          profile: { firstName, lastName, title },
+          profile: { firstName, lastName, ...address, personas, dietary },
           authConfig: {
             password: passwordHash,
             salt,
