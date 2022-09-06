@@ -10,8 +10,6 @@ aliases:
       branches:
         only:
           - master
-          - main
-          - circleci-config-update-tag-build
 
 jobs:
   build-lint-test:
