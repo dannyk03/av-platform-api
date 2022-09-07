@@ -102,7 +102,7 @@ export class AuthCommonController {
     if (!isValid) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
-        message: 'auth.error.notMatch',
+        message: 'auth.error.badRequest',
       });
     }
 
