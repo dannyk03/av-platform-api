@@ -141,6 +141,36 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
+  async sendResetPassword({
+    email,
+    firstName,
+    path = '/reset-password',
+  }: {
+    email: string;
+    // emailTemplatePayload: ResetPasswordMessageData; // TODO: consider if best to use the type here or just internally
+    firstName: string;
+    path?: string;
+  }): Promise<boolean> {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Add server url to payload
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendResetPassword.toString(),
+      to: [email],
+      emailTemplatePayload: {
+        user: {
+          firstName: firstName,
+        },
+        resetPasswordLink: '', // TODO: add link here
+      },
+      identifier: { id: email },
+    });
+    console.log({ email, firstName });
+    return sendResult.status === EmailStatus.success;
+  }
+
   async sendGiftSurvey({
     recipientEmail,
     senderEmail,

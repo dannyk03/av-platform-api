@@ -2,12 +2,13 @@ export enum EmailTemplate {
   // ================= MVP =================
   // - gift option select
   SendGiftSelection = 'Gift Selection',
-  // - reset password
-  SendResetPassword = 'Reset Password',
   // - verify email
   SendSignUpEmailVerification = 'Email Verification',
   // - gift is on the way (sender)
   SendSenderGiftIsOnItsWay = "Gift is on it's Way - Sender",
+  // - reset password
+  SendResetPassword = 'Reset Password',
+
   // - gift delivered (sender)
   SendSenderGiftDelivered = 'Gift Delivered - Sender',
   // - gift delivered (recipient)
@@ -123,4 +124,11 @@ export type GiftShippedMessageData = {
   shippedGiftDetails: ShippedGiftDetails;
   shippingDetails: GiftShippingDetails;
   sendAnotherGiftUrl: string;
+};
+
+export type ResetPasswordMessageData = {
+  user: {
+    firstName: string;
+  };
+  resetPasswordLink: string;
 };
