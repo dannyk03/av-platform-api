@@ -1,14 +1,36 @@
 export enum EmailTemplate {
-  SendOrganizationInvite = 'SendOrganizationInvite',
-  SendNetworkInvite = 'SendNetworkInvite',
-  SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest',
-  SendSignUpEmailVerification = 'Email Verification',
-  SendGiftSurvey = 'Survey Confirmation',
-  SendGiftConfirm = 'SendGiftConfirm',
+  // ================= MVP =================
+  // - gift option select
   SendGiftSelection = 'Gift Selection',
-  SendGiftShipped = 'SendGiftShipped',
-  SendRecipientGiftShipped = 'Gift Shipped - Recipient',
-  SendSenderGiftShipped = 'Gift Shipped - Sender',
+  // - reset password
+  SendResetPassword = 'Reset Password',
+  // - verify email
+  SendSignUpEmailVerification = 'Email Verification',
+  // - gift is on the way (sender)
+  SendSenderGiftIsOnItsWay = "Gift is on it's Way - Sender",
+  // - gift delivered (sender)
+  SendSenderGiftDelivered = 'Gift Delivered - Sender',
+  // - gift delivered (recipient)
+  SendRecipientGiftDelivered = 'Gift Delivered - Recipient',
+  // - connection request accepted
+  SendConnectionRequestAccepted = 'Send Connection Request Accepted',
+  // - connection request - user in the system
+  SendConnectionRequestExistingUser = 'Connection Request - Existing User',
+  // - connection request - user isn't in the system
+  SendConnectionRequestNewUser = 'Connection Request - New User',
+  // - invatation for the survey
+  SendSurveyInvatation = 'Survey Invatation',
+  //- survey completed
+  SendSurveyCompleted = 'Survey Completed',
+  // ================= MVP =================
+
+  SendOrganizationInvite = 'SendOrganizationInvite',
+  SendGiftConfirm = 'SendGiftConfirm',
+  SendGiftShipped = 'SendGiftShipped', // TODO: verify the context
+  SendNetworkInvite = 'SendNetworkInvite', // TODO: verify the context
+  SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest', // TODO: verify the context
+  SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
+  SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
 }
 
 export enum EmailStatus {
