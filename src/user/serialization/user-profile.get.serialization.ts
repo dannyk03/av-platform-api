@@ -1,8 +1,49 @@
-import { IUserProfileGetSerialization } from '@avo/type';
+import {
+  IUserProfileGetSerialization,
+  IUserProfileHomeGetSerialization,
+  IUserProfileShippingGetSerialization,
+} from '@avo/type';
 
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, plainToInstance } from 'class-transformer';
 
 import { IAwsS3 } from '@/aws/type';
+
+@Exclude()
+export class UserProfileHomeGetSerialization
+  implements IUserProfileHomeGetSerialization
+{
+  @Expose()
+  readonly city?: string;
+
+  @Expose()
+  readonly state?: string;
+
+  @Expose()
+  readonly country?: string;
+}
+
+@Exclude()
+export class UserProfileShippingGetSerialization
+  implements IUserProfileShippingGetSerialization
+{
+  @Expose()
+  addressLine1?: string;
+
+  @Expose()
+  addressLine2?: string;
+
+  @Expose()
+  city?: string;
+
+  @Expose()
+  state?: string;
+
+  @Expose()
+  zipCode?: string;
+
+  @Expose()
+  country?: string;
+}
 
 @Exclude()
 export class UserProfileGetSerialization
@@ -33,16 +74,19 @@ export class UserProfileGetSerialization
   readonly photo?: IAwsS3;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile?.city)
-  readonly city?: string;
+  @Transform(({ obj }) =>
+    plainToInstance(UserProfileHomeGetSerialization, obj?.profile?.home),
+  )
+  readonly home: IUserProfileHomeGetSerialization;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile?.state)
-  readonly state?: string;
-
-  @Expose()
-  @Transform(({ obj }) => obj.profile?.country)
-  readonly country?: string;
+  @Transform(({ obj }) =>
+    plainToInstance(
+      UserProfileShippingGetSerialization,
+      obj?.profile?.shipping,
+    ),
+  )
+  readonly shipping: IUserProfileShippingGetSerialization;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.personas)

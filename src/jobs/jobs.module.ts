@@ -1,6 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
+import { JobsRouterModule } from './router';
+
 @Module({})
 export class JobsModule {
   static register(): DynamicModule {
@@ -10,7 +12,7 @@ export class JobsModule {
         controllers: [],
         providers: [],
         exports: [],
-        imports: [ScheduleModule.forRoot()],
+        imports: [ScheduleModule.forRoot(), JobsRouterModule],
       };
     }
 

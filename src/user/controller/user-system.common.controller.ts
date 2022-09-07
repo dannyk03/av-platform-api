@@ -4,13 +4,14 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Query,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
-import { IResponseData } from '@avo/type';
+import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
 import { UserService } from '../service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -26,7 +27,10 @@ import { RequestParamGuard } from '@/utils/request/guard';
 import { UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
-import { UserGetSerialization } from '../serialization';
+import {
+  UserGetSerialization,
+  UserProfileGetSerialization,
+} from '../serialization';
 
 @Controller({
   version: '1',
@@ -157,5 +161,36 @@ export class UserSystemCommonController {
     return {
       updated: affected,
     };
+  }
+
+  @ClientResponse('user.profile', {
+    classSerialization: UserProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Read,
+        subject: Subjects.User,
+      },
+    ],
+    systemOnly: true,
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/profile/:id')
+  async getUserProfile(@Param('id') userId: string): Promise<IResponseData> {
+    const findUser = await this.userService.findOne({
+      where: { id: userId },
+      relations: ['profile', 'profile.home', 'profile.shipping'],
+    });
+
+    if (!findUser) {
+      throw new NotFoundException({
+        statusCode: EnumUserStatusCodeError.UserNotFoundError,
+        message: 'user.error.notFound',
+      });
+    }
+
+    return findUser;
   }
 }
