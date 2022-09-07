@@ -252,6 +252,11 @@ export class GiftIntentService {
 
     const emailSent = await this.emailService.sendGiftShipped({
       email:
+        /*
+        TODO:
+          1. verify if there's an option the email is empty
+          2. there should also be a mail for the sender  
+      */
         giftIntent.recipient?.user?.email ||
         giftIntent.recipient?.additionalData['email'],
     });

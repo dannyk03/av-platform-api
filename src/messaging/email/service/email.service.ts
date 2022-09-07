@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { GiftIntent } from '@/gifting/entity';
+import { GiftIntent, GiftSubmit } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
@@ -9,6 +9,11 @@ import { CustomerIOService } from '../../customer-io/service/customer-io.service
 import {
   EmailStatus,
   EmailTemplate,
+  GiftOption,
+  GiftOptionSelectMessageData,
+  GiftShippedMessageData,
+  GiftShippingDetails,
+  ShippedGiftDetails,
   SignUpEmailVerificationMessageData,
 } from '../email.constant';
 
@@ -201,13 +206,33 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    // TODO: Verify template parameters
+    const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
+      (giftOption) => ({
+        productName: giftOption.products[0].displayOptions[0].name,
+        description: giftOption.products[0].displayOptions[0].description,
+        brand: giftOption.products[0].brand,
+        imageUrl: giftOption.products[0].displayOptions[0].images[0].secureUrl,
+      }),
+    );
+
+    const payload: GiftOptionSelectMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      giftOptions,
+      giftSelectUrl: '', // TODO: When action url is ready update here
+    };
+
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftOptions.toString(),
+      template: EmailTemplate.SendGiftSelection.toString(),
       to: [email],
-      emailTemplatePayload: { path, code },
+      emailTemplatePayload: payload,
       identifier: { id: email },
     });
+
     console.log({
       path,
       email,
@@ -229,6 +254,59 @@ export class EmailService {
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftShipped.toString(),
+      to: [email],
+      emailTemplatePayload: { path },
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGiftShippedToSender({
+    email,
+    path = '/shipped',
+    giftIntent,
+  }: {
+    email: string;
+    path?: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+
+    const shippedGiftDetails: ShippedGiftDetails = {
+      productName:
+        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
+      imageUrl:
+        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0]
+          .images[0].secureUrl,
+      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure
+      personalNote: '', // TODO: verify we save this
+    };
+
+    const shippingDetails: GiftShippingDetails = {
+      shippingAddress: '', // TODO: verify we save this
+      ETA: '', // TODO: verify we save this
+    };
+
+    const payload: GiftShippedMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      shippedGiftDetails,
+      shippingDetails,
+      sendAnotherGiftUrl: '', // TODO: When action url is ready update here
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSenderGiftShipped.toString(),
       to: [email],
       emailTemplatePayload: { path },
       identifier: { id: email },

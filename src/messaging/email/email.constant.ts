@@ -5,8 +5,10 @@ export enum EmailTemplate {
   SendSignUpEmailVerification = 'Email Verification',
   SendGiftSurvey = 'Survey Confirmation',
   SendGiftConfirm = 'SendGiftConfirm',
-  SendGiftOptions = 'SendGiftOptions',
+  SendGiftSelection = 'Gift Selection',
   SendGiftShipped = 'SendGiftShipped',
+  SendRecipientGiftShipped = 'Gift Shipped - Recipient',
+  SendSenderGiftShipped = 'Gift Shipped - Sender',
 }
 
 export enum EmailStatus {
@@ -61,10 +63,9 @@ export type SignUpEmailVerificationMessageData = {
 
 export type GiftOption = {
   productName: string;
+  brand: string;
   description: string;
   imageUrl: string;
-  currency: string;
-  price: string;
 };
 
 export type GiftOptionSelectMessageData = {
@@ -76,4 +77,28 @@ export type GiftOptionSelectMessageData = {
   };
   giftOptions: GiftOption[];
   giftSelectUrl: string;
+};
+
+export type ShippedGiftDetails = {
+  productName: string;
+  imageUrl: string;
+  formattedPrice: string;
+  personalNote: string;
+};
+
+export type GiftShippingDetails = {
+  shippingAddress: string;
+  ETA: string;
+};
+
+export type GiftShippedMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  shippedGiftDetails: ShippedGiftDetails;
+  shippingDetails: GiftShippingDetails;
+  sendAnotherGiftUrl: string;
 };
