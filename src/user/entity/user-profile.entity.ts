@@ -1,5 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
+import { UserProfileHome } from './user-profile-home.entity';
+import { UserProfileShipping } from './user-profile-shipping.entity';
 import { User } from './user.entity';
 import { BaseEntity } from '@/database/entity';
 
@@ -17,23 +19,25 @@ export class UserProfile extends BaseEntity<UserProfile> {
   })
   lastName: string;
 
-  @Column({
-    length: 30,
-    nullable: true,
-  })
-  city?: string;
+  @OneToOne(
+    () => UserProfileHome,
+    (userProfileHome) => userProfileHome.userProfile,
+    {
+      cascade: true,
+      nullable: true,
+    },
+  )
+  home: UserProfileHome;
 
-  @Column({
-    length: 30,
-    nullable: true,
-  })
-  state?: string;
-
-  @Column({
-    length: 30,
-    nullable: true,
-  })
-  country?: string;
+  @OneToOne(
+    () => UserProfileShipping,
+    (userProfileShipping) => userProfileShipping.userProfile,
+    {
+      cascade: true,
+      nullable: true,
+    },
+  )
+  shipping: UserProfileShipping;
 
   @Column({
     type: 'jsonb',

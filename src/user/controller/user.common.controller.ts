@@ -49,7 +49,7 @@ export class UserCommonController {
   })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
-    relations: ['profile'],
+    relations: ['profile', 'profile.home', 'profile.shipping'],
   })
   @Get('/profile')
   async getProfile(
@@ -82,7 +82,12 @@ export class UserCommonController {
           id: reqUser.id,
         },
       },
-      relations: ['user1', 'user1.profile'],
+      relations: [
+        'user1',
+        'user1.profile',
+        'user1.profile.home',
+        'user1.profile.shipping',
+      ],
     });
 
     if (!socialConnection?.user1) {
