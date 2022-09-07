@@ -284,8 +284,8 @@ export class EmailService {
       imageUrl:
         giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0]
           .images[0].secureUrl,
-      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure
-      personalNote: '', // TODO: verify we save this
+      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
+      personalNote: giftIntent.giftSubmit[0].personalNote,
     };
 
     const shippingDetails: GiftShippingDetails = {
@@ -306,7 +306,7 @@ export class EmailService {
     };
 
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendSenderGiftShipped.toString(),
+      template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
       emailTemplatePayload: { path },
       identifier: { id: email },
