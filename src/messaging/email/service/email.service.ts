@@ -10,10 +10,10 @@ import {
   EmailStatus,
   EmailTemplate,
   GiftDetails,
-  GiftIsOnItsWayMessageDat,
   GiftOption,
   GiftOptionSelectMessageData,
   GiftShippingDetails,
+  GiftStatusUpdateMessageData,
   SignUpEmailVerificationMessageData,
 } from '../email.constant';
 
@@ -295,19 +295,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftShippedToSender({
-    email,
-    path = '/shipped',
-    giftIntent,
-  }: {
-    email: string;
-    path?: string;
-    giftIntent: GiftIntent;
-  }): Promise<boolean> {
-    if (!this.isProduction) {
-      return true;
-    }
-
+  getGiftStatusUpdateMessageData(giftIntent: GiftIntent) {
     const giftDetails: GiftDetails = {
       productName:
         giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
@@ -323,7 +311,7 @@ export class EmailService {
       ETA: '', // TODO: verify we save this
     };
 
-    const payload: GiftIsOnItsWayMessageDat = {
+    const data: GiftStatusUpdateMessageData = {
       recipient: {
         firstName: giftIntent.recipient.user.profile.firstName,
       },
@@ -335,10 +323,25 @@ export class EmailService {
       sendAnotherGiftUrl: '', // TODO: When action url is ready update here
     };
 
+    return data;
+  }
+
+  async sendGiftShippedToSender({
+    email,
+    path = '/shipped',
+    giftIntent,
+  }: {
+    email: string;
+    path?: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
       identifier: { id: email },
     });
     console.log({
