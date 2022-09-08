@@ -10,6 +10,7 @@
 [![Jest][jest-shield]][ref-jest]
 [![Yarn][yarn-shield]][ref-yarn]
 [![Docker][docker-shield]][ref-docker]
+[![Swagger][swagger-shield]][ref-swagger]
 
 # AVO Platform API
 
@@ -85,6 +86,7 @@ Version of the main packages and main tools.
 - Support CI/CD with CircleCI
 - Husky GitHook For Check Source Code, and Run Test Before Commit 🐶
 - Linter with EsLint for Typescript
+- Swagger for API Documentation
 - Etc.
 
 ## Prerequisites
@@ -133,6 +135,7 @@ Version of the main packages and main tools.
 [jest-shield]: https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white
 [yarn-shield]: https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white
 [docker-shield]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+[swagger-shield]: https://img.shields.io/badge/swagger-00E400?style=for-the-badge&logo=swagger&logoColor=black
 
 <!-- Reference -->
 
@@ -144,4 +147,5 @@ Version of the main packages and main tools.
 [ref-jwt]: https://jwt.io
 [ref-jest]: https://jestjs.io/docs/getting-started
 [ref-docker]: https://docs.docker.com
+[ref-swagger]: https://swagger.io
 [ref-yarn]: https://yarnpkg.com
