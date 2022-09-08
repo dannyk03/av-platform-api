@@ -102,7 +102,7 @@ export type GiftOptionSelectMessageData = {
   giftSelectUrl: string;
 };
 
-export type ShippedGiftDetails = {
+export type GiftDetails = {
   productName: string;
   imageUrl: string;
   formattedPrice: string;
@@ -121,7 +121,7 @@ export type GiftShippedMessageData = {
   sender: {
     firstName: string;
   };
-  shippedGiftDetails: ShippedGiftDetails;
+  giftDetails: GiftDetails;
   shippingDetails: GiftShippingDetails;
   sendAnotherGiftUrl: string;
 };

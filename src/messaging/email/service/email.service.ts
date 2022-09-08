@@ -9,11 +9,11 @@ import { CustomerIOService } from '../../customer-io/service/customer-io.service
 import {
   EmailStatus,
   EmailTemplate,
+  GiftDetails,
   GiftOption,
   GiftOptionSelectMessageData,
   GiftShippedMessageData,
   GiftShippingDetails,
-  ShippedGiftDetails,
   SignUpEmailVerificationMessageData,
 } from '../email.constant';
 
@@ -308,7 +308,7 @@ export class EmailService {
       return true;
     }
 
-    const shippedGiftDetails: ShippedGiftDetails = {
+    const giftDetails: GiftDetails = {
       productName:
         giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
       imageUrl:
@@ -330,7 +330,7 @@ export class EmailService {
       sender: {
         firstName: giftIntent.sender.user.profile.firstName,
       },
-      shippedGiftDetails,
+      giftDetails,
       shippingDetails,
       sendAnotherGiftUrl: '', // TODO: When action url is ready update here
     };
