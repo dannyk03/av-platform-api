@@ -7,36 +7,48 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
+  IsString,
   IsUUID,
   Length,
   MaxLength,
+  Min,
 } from 'class-validator';
 
-import { ProductCurrency, ProductDisplayLanguage, ProductSKU } from '@/catalog';
+import {
+  ProductCurrency,
+  ProductDisplayLanguage,
+  ProductSKU,
+} from '@/catalog/decorator';
+
 import {
   ArrayTransform,
-  NormalizeStringInput,
+  BooleanStringTransform,
+  NormalizeStringInputTransform,
+  ToLowerCaseTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class ProductCreateDto {
   @IsNotEmpty()
   @Length(3, 30)
   @ProductSKU()
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   @Type(() => String)
   readonly sku!: string;
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly brand?: string;
 
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name!: string;
 
+  @IsOptional()
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly description!: string;
 
   @ProductDisplayLanguage()
@@ -45,26 +57,34 @@ export class ProductCreateDto {
 
   @IsArray()
   @IsOptional()
+  @IsString({ each: true })
+  @UniqueArrayByTransform()
   @ArrayTransform()
-  @NormalizeStringInput({ each: true })
+  @ToLowerCaseTransform({ each: true })
+  @NormalizeStringInputTransform({ each: true })
   keywords?: string[];
 
   @IsBoolean()
   @IsOptional()
+  @BooleanStringTransform()
   isActive?: boolean;
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   price!: number;
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
+  @IsPositive()
+  @Min(0)
   @Type(() => Number)
   shippingCost!: number;
 
   @MaxLength(200)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly taxCode!: string;
 
   @ProductCurrency()
@@ -73,6 +93,11 @@ export class ProductCreateDto {
 
   @IsNotEmpty()
   @IsUUID()
+  @IsOptional()
   @Type(() => String)
   vendorId!: string;
+
+  @IsNotEmpty()
+  @MaxLength(30)
+  vendorName?: string;
 }

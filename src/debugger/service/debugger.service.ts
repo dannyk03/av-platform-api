@@ -16,6 +16,7 @@ export class DebuggerService {
       correlationId,
       class: log.class,
       function: log.function,
+      path: log.path,
       data,
     });
   }
@@ -25,6 +26,17 @@ export class DebuggerService {
       correlationId,
       class: log.class,
       function: log.function,
+      path: log.path,
+      data,
+    });
+  }
+
+  warn(correlationId: string, log: IDebuggerLog, data?: any): void {
+    this.logger.warn(log.description, {
+      correlationId,
+      class: log.class,
+      function: log.function,
+      path: log.path,
       data,
     });
   }
@@ -34,6 +46,7 @@ export class DebuggerService {
       correlationId,
       class: log.class,
       function: log.function,
+      path: log.path,
       data,
     });
   }

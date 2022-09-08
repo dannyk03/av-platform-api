@@ -16,10 +16,11 @@ import { ProductImage } from '../entity';
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ICreateImages, ISaveImages } from '../product-image.interface';
+import { ConnectionNames } from '@/database/constant';
 
 import { CloudinarySubject } from '@/cloudinary';
-import { ConnectionNames } from '@/database';
+
+import { ICreateImages, ISaveImages } from '../product-image.interface';
 
 @Injectable()
 export class ProductImageService {
@@ -70,6 +71,7 @@ export class ProductImageService {
 
     return this.productImageRepository.remove(deleteImage);
   }
+
   async deleteBulkById(ids: string[]) {
     const deleteImages = await this.productImageRepository.find({
       where: {

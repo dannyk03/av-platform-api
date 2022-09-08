@@ -10,8 +10,10 @@ import { HelperFileService } from './service/helper.file.service';
 import { HelperGeoService } from './service/helper.geo.service';
 import { HelperHashService } from './service/helper.hash.service';
 import { HelperJwtService } from './service/helper.jwt.service';
+import { HelperMaskService } from './service/helper.mask.service';
 import { HelperPhoneNumberService } from './service/helper.mobile-number.service';
 import { HelperNumberService } from './service/helper.number.service';
+import { HelperPromiseService } from './service/helper.promise.service';
 import { HelperService } from './service/helper.service';
 import { HelperSlugService } from './service/helper.slug.service';
 import { HelperStringService } from './service/helper.string.service';
@@ -32,6 +34,8 @@ import { HelperStringService } from './service/helper.string.service';
     HelperJwtService,
     HelperPhoneNumberService,
     HelperCookieService,
+    HelperPromiseService,
+    HelperMaskService,
   ],
   exports: [
     HelperService,
@@ -47,6 +51,8 @@ import { HelperStringService } from './service/helper.string.service';
     HelperJwtService,
     HelperPhoneNumberService,
     HelperCookieService,
+    HelperPromiseService,
+    HelperMaskService,
   ],
   controllers: [],
   imports: [

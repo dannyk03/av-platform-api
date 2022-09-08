@@ -16,23 +16,23 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import capitalize from 'lodash/capitalize';
 
 import {
-  IPaginationFilterDateOptions,
-  IPaginationFilterOptions,
-  IPaginationFilterStringOptions,
-} from './pagination.interface';
+  PAGINATION_DEFAULT_AVAILABLE_SORT,
+  PAGINATION_DEFAULT_PAGE,
+  PAGINATION_DEFAULT_PER_PAGE,
+  PAGINATION_DEFAULT_SORT,
+} from './pagination.constant';
 
 import { RequestAddDatePipe } from '@/utils/request/pipe';
 
 import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
-  PAGINATION_DEFAULT_AVAILABLE_SORT,
-  PAGINATION_DEFAULT_MAX_PER_PAGE,
-  PAGINATION_DEFAULT_PAGE,
-  PAGINATION_DEFAULT_PER_PAGE,
-  PAGINATION_DEFAULT_SORT,
-} from './pagination.constant';
+  IPaginationFilterDateOptions,
+  IPaginationFilterOptions,
+  IPaginationFilterStringOptions,
+} from './pagination.interface';
 
 export function PaginationSearch(): any {
   return applyDecorators(
@@ -168,7 +168,7 @@ export function PaginationFilterEnum<T>(
     IsEnum(cEnum as object, { each: true }),
     Transform(({ value }) =>
       value
-        ? value.split(',').map((val: string) => defaultEnum[val])
+        ? value.split(',').map((val: string) => defaultEnum[capitalize(val)])
         : defaultValue,
     ),
   );

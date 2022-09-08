@@ -1,6 +1,14 @@
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
+  ROLE_DEFAULT_AVAILABLE_SEARCH,
+  ROLE_DEFAULT_AVAILABLE_SORT,
+  ROLE_DEFAULT_PAGE,
+  ROLE_DEFAULT_PER_PAGE,
+  ROLE_DEFAULT_SORT,
+} from '../constant/acl-role.constant';
+
+import {
   PaginationAvailableSearch,
   PaginationAvailableSort,
   PaginationPage,
@@ -8,14 +16,6 @@ import {
   PaginationSearch,
   PaginationSort,
 } from '@/utils/pagination';
-
-import {
-  ROLE_DEFAULT_AVAILABLE_SEARCH,
-  ROLE_DEFAULT_AVAILABLE_SORT,
-  ROLE_DEFAULT_PAGE,
-  ROLE_DEFAULT_PER_PAGE,
-  ROLE_DEFAULT_SORT,
-} from '../acl-role.constant';
 
 export class AclRoleListDto implements IPaginationList {
   @PaginationSearch()

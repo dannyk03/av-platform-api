@@ -10,7 +10,8 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { EnumRequestStatusCodeError } from '@avo/type';
 
-import { RequestControllerGuard } from './guard/request.controller.guard';
+import { ExecMetaGuard } from './guard/exec-meta.guard';
+
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import { RangeTupleConstraint } from './validation';
 import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
@@ -31,6 +32,10 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
   controllers: [],
   providers: [
     {
+      provide: APP_GUARD,
+      useClass: ExecMetaGuard,
+    },
+    {
       provide: APP_PIPE,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -40,6 +45,7 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
           skipNullProperties: false,
           skipUndefinedProperties: false,
           skipMissingProperties: false,
+          whitelist: true,
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           enableDebugMessages: configService.get<boolean>('app.debug'),
           exceptionFactory: async (errors: ValidationError[]) => {
@@ -55,10 +61,6 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
     {
       provide: APP_INTERCEPTOR,
       useClass: RequestTimestampInterceptor,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RequestControllerGuard,
     },
     IsPasswordStrongConstraint,
     IsPasswordMediumConstraint,

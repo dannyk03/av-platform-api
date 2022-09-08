@@ -1,6 +1,7 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
+import { User } from '@/user/entity';
 
 @Entity()
 export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
@@ -24,14 +25,10 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   })
   emailVerifiedAt?: Date;
 
-  @Index()
-  @Column({
-    unique: true,
-    length: 21,
-    nullable: true,
+  @OneToOne(() => User, (user) => user.authConfig, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
   })
-  loginCode?: string;
-
-  @Column({ nullable: true })
-  loginCodeExpiredAt?: Date;
+  @JoinColumn()
+  user: User;
 }

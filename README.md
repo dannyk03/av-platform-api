@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="avonow.com" target="_blank"><img src="https://res.cloudinary.com/avonow/image/upload/v1657264726/nextgen/platform-api.png" width="320" alt="platform-api" /></a>
+  <a href="avonow.com" target="_blank"><img src="https://res.cloudinary.com/avonow/image/upload/v1662615810/github/platform_api.png" width="520" alt="platform-api" /></a>
 </p>
 
 [![NestJs][nestjs-shield]][ref-nestjs]
@@ -17,7 +17,7 @@ Platform-API is a [NestJS](http://nestjs.com) project with [PostgreSQL](https://
 
 Made with following (WIP)
 
-- [nodejs-best-practice](https://github.com/goldbergyoni/nodebestpractices)
+- [nodejs-best-practice][ref-nodejs-best-practice]
 - [The Twelve-Factor App](https://12factor.net)
 - [Microservice Architecture](https://microservices.io)
 - NestJS Best Practice.
@@ -121,13 +121,6 @@ Version of the main packages and main tools.
 
   ```bash
   docker compose --profile dev up --build --force-recreate --renew-anon-volumes
-  ```
-
-- (split terminal) Run the seed ONLY ONCE (will throw error on next time - nothing critical) (root):
-
-  ```bash
-  docker compose exec platform-api sh
-  yarn seed
   ```
 
 <!-- BADGE LINKS -->

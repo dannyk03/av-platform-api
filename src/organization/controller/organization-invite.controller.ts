@@ -4,41 +4,58 @@ import {
   ForbiddenException,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { Action, Subjects } from '@avo/casl';
 import {
   EnumOrganizationStatusCodeError,
   EnumRoleStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import { isUUID } from 'class-validator';
+import { Response } from 'express';
 import { DataSource } from 'typeorm';
+
+import { User } from '@/user/entity';
 
 import { OrganizationInviteService } from '../service';
 import { AuthService } from '@/auth/service';
 import { UserService } from '@/user/service';
-import { HelperDateService, HelperSlugService } from '@/utils/helper/service';
+import {
+  HelperCookieService,
+  HelperDateService,
+  HelperSlugService,
+} from '@/utils/helper/service';
 import { AclRoleService } from '@acl/role/service';
 
-import { ReqOrganizationIdentifierCtx } from '../organization.decorator';
+import { ReqOrganizationIdentifierCtx } from '../decorator/organization.decorator';
+import { ReqUser } from '@/user/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
+import { AclGuard } from '@/auth/guard';
+
+import { IReqOrganizationIdentifierCtx } from '../type/organization.interface';
+
+import { OrganizationChangeRoleDto } from '../dto/organization.change-role.dto';
 import { OrganizationInviteDto } from '../dto/organization.invite.dto';
 import { OrganizationJoinDto } from '../dto/organization.join.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
-import { IReqOrganizationIdentifierCtx } from '../organization.interface';
+import { AuthUserLoginSerialization } from '@/auth/serialization';
 
-import { AclGuard } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { Response } from '@/utils/response';
+import { BASIC_ROLE_NAME } from '@/access-control-list/role/constant/acl-role.constant';
+import { ConnectionNames } from '@/database/constant';
 
 @Controller({
   version: '1',
-  path: 'organization',
+  path: 'org',
 })
 export class OrganizationInviteController {
   constructor(
@@ -50,9 +67,11 @@ export class OrganizationInviteController {
     private readonly authService: AuthService,
     private readonly helperSlugService: HelperSlugService,
     private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
+    private readonly helperCookieService: HelperCookieService,
   ) {}
 
-  @Response('organization.invite')
+  @ClientResponse('organization.invite')
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -64,49 +83,65 @@ export class OrganizationInviteController {
   })
   @Post('/invite')
   async invite(
+    @ReqUser()
+    reqUser: User,
     @Body()
     { email, role }: OrganizationInviteDto,
     @ReqOrganizationIdentifierCtx()
     { id, slug }: IReqOrganizationIdentifierCtx,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     const organizationCtxFind: Record<string, any> = {
       organization: { id, slug },
     };
 
     const roleId = isUUID(role) ? role : undefined;
-    const roleSlug = !roleId ? this.helperSlugService.slugify(role) : undefined;
+    const roleSlug = !roleId
+      ? this.helperSlugService.slugify(role || BASIC_ROLE_NAME)
+      : undefined;
 
-    const existingRole = await this.aclRoleService.findOne({
-      where: {
-        ...organizationCtxFind,
-        ...(roleId ? { id: roleId } : { slug: roleSlug }),
-      },
-      relations: ['organization'],
-      select: {
-        organization: {
-          id: true,
-          isActive: true,
+    const existingRole =
+      (roleId || roleSlug) &&
+      (await this.aclRoleService.findOne({
+        where: {
+          ...organizationCtxFind,
+          ...(roleId ? { id: roleId } : { slug: roleSlug }),
         },
-      },
-    });
+        relations: ['organization'],
+        select: {
+          organization: {
+            id: true,
+            isActive: true,
+          },
+        },
+      }));
 
-    if (!existingRole) {
+    if ((roleId || roleSlug) && !existingRole) {
       throw new ForbiddenException({
         statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
         message: 'role.error.notFound',
       });
     }
 
-    await this.organizationInviteService.invite({
+    const result = await this.organizationInviteService.invite({
       email,
       aclRole: existingRole,
+      fromUser: reqUser,
     });
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return result;
+    }
   }
 
-  @Response('organization.join')
+  @ClientResponse('organization.join')
   @HttpCode(HttpStatus.OK)
   @Post('/join')
   async join(
+    @Res({ passthrough: true })
+    response: Response,
     @Query()
     { code }: MagicLinkDto,
     @Body()
@@ -114,7 +149,7 @@ export class OrganizationInviteController {
   ) {
     const existingInvite = await this.organizationInviteService.findOne({
       where: { code },
-      relations: ['role', 'organization'],
+      relations: ['role', 'organization', 'user'],
     });
 
     if (!existingInvite || existingInvite.usedAt) {
@@ -138,36 +173,16 @@ export class OrganizationInviteController {
       });
     }
 
-    const existingUser = await this.userService.findOne({
-      where: { email: existingInvite.email },
-      relations: ['authConfig'],
-      select: {
-        authConfig: {
-          id: true,
-        },
-      },
-    });
-
     const { salt, passwordHash, passwordExpiredAt } =
       await this.authService.createPassword(password);
 
-    await this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        if (existingUser) {
-          existingUser.authConfig = {
-            ...existingUser.authConfig,
-            password: passwordHash,
-            salt,
-            passwordExpiredAt,
-            emailVerifiedAt: this.helperDateService.create(),
-          };
-
-          await transactionalEntityManager.save({
-            ...existingUser,
-            firstName,
-            lastName,
-          });
+        if (existingInvite.user) {
+          existingInvite.user.organization = existingInvite.organization;
+          existingInvite.user.role = existingInvite.role;
+          await transactionalEntityManager.save(existingInvite.user);
         } else {
           const joinUser = await this.userService.create({
             email: existingInvite.email,
@@ -177,18 +192,131 @@ export class OrganizationInviteController {
               salt,
               passwordExpiredAt,
             },
+            profile: {
+              firstName,
+              lastName,
+            },
             organization: existingInvite.organization,
             role: existingInvite.role,
           });
 
-          await transactionalEntityManager.save(joinUser);
+          existingInvite.user = joinUser;
+
+          await Promise.all([
+            transactionalEntityManager.save(joinUser),
+            transactionalEntityManager.save(existingInvite),
+          ]);
         }
 
         const now = this.helperDateService.create();
         existingInvite.usedAt = now;
 
         await transactionalEntityManager.save(existingInvite);
+
+        const safeData: AuthUserLoginSerialization =
+          await this.authService.serializationLogin(existingInvite.user);
+
+        // TODO: cache in redis safeData with user role and permission for next api calls
+
+        const rememberMe = false;
+        const payloadAccessToken: Record<string, any> =
+          await this.authService.createPayloadAccessToken(safeData, rememberMe);
+
+        const payloadRefreshToken: Record<string, any> =
+          await this.authService.createPayloadRefreshToken(
+            safeData,
+            rememberMe,
+            {
+              loginDate: payloadAccessToken.loginDate,
+            },
+          );
+
+        const accessToken: string = await this.authService.createAccessToken(
+          payloadAccessToken,
+        );
+
+        const refreshToken: string = await this.authService.createRefreshToken(
+          payloadRefreshToken,
+          false,
+        );
+
+        await this.helperCookieService.attachAccessToken(response, accessToken);
+
+        return {
+          refreshToken,
+        };
       },
     );
+  }
+
+  @ClientResponse('organization.changeRole')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard({
+    abilities: [
+      {
+        action: Action.Update,
+        subject: Subjects.OrganizationMember,
+      },
+    ],
+  })
+  @Post('/user/role')
+  async updateUserRole(
+    @ReqUser()
+    reqUser: User,
+    @Body()
+    { email, role }: OrganizationChangeRoleDto,
+    @ReqOrganizationIdentifierCtx()
+    { id, slug }: IReqOrganizationIdentifierCtx,
+  ): Promise<void> {
+    if (reqUser.email === email) {
+      throw new ForbiddenException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationSelfChangeRoleForbiddenError,
+        message: 'organization.error.selfChangeRole',
+      });
+    }
+
+    const roleId = isUUID(role) ? role : undefined;
+    const roleSlug = !roleId
+      ? this.helperSlugService.slugify(role || BASIC_ROLE_NAME)
+      : undefined;
+
+    const existingRole =
+      (roleId || roleSlug) &&
+      (await this.aclRoleService.findOne({
+        where: {
+          organization: { id, slug },
+          ...(roleId ? { id: roleId } : { slug: roleSlug }),
+        },
+        relations: ['organization'],
+        select: {
+          organization: {
+            id: true,
+            isActive: true,
+          },
+        },
+      }));
+
+    if ((roleId || roleSlug) && !existingRole) {
+      throw new NotFoundException({
+        statusCode: EnumRoleStatusCodeError.RoleNotFoundError,
+        message: 'role.error.notFound',
+      });
+    }
+
+    const organizationMember = await this.userService.findOne({
+      where: { email, organization: { id, slug } },
+    });
+
+    if (!organizationMember) {
+      throw new NotFoundException({
+        statusCode:
+          EnumOrganizationStatusCodeError.OrganizationMemberNotFoundError,
+        message: 'organization.error.memberNotFound',
+      });
+    }
+
+    organizationMember.role = existingRole;
+    await this.userService.save(organizationMember);
   }
 }

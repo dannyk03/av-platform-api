@@ -5,22 +5,24 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  IsObject,
+  IsNumber,
   IsOptional,
+  IsPositive,
+  IsString,
   IsUUID,
-  Length,
   MaxLength,
-  ValidateNested,
+  Min,
+  MinLength,
 } from 'class-validator';
 
-import {
-  ProductDisplayLanguage,
-  ProductSKU,
-} from '@/catalog/catalog.decorator';
+import { ProductDisplayLanguage } from '@/catalog/decorator/catalog.decorator';
 
 import {
   ArrayTransform,
-  NormalizeStringInput,
+  BooleanStringTransform,
+  NormalizeStringInputTransform,
+  ToLowerCaseTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class ProductUpdateDisplayDto {
@@ -30,46 +32,96 @@ export class ProductUpdateDisplayDto {
 
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
-  @NormalizeStringInput()
-  readonly description!: string;
+  @NormalizeStringInputTransform()
+  readonly description?: string;
 
   @IsArray()
   @IsOptional()
   @ArrayTransform()
-  @NormalizeStringInput({ each: true })
-  keywords?: string[];
+  @NormalizeStringInputTransform({ each: true })
+  readonly keywords?: string[];
 }
 
 export class ProductUpdateDto {
-  @IsNotEmpty()
-  @IsUUID()
-  @Type(() => String)
-  readonly id: string;
-
-  @Length(3, 30)
-  @ProductSKU()
-  @IsOptional()
-  @IsNotEmpty()
-  @NormalizeStringInput()
-  @Type(() => String)
-  readonly sku?: string;
-
   @IsOptional()
   @MaxLength(30)
-  @NormalizeStringInput()
+  @MinLength(1)
+  @NormalizeStringInputTransform()
   readonly brand?: string;
 
   @IsBoolean()
   @IsOptional()
-  isActive?: boolean;
+  @BooleanStringTransform()
+  readonly isActive?: boolean;
 
-  @IsObject()
+  @ProductDisplayLanguage()
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ProductUpdateDisplayDto)
-  readonly display: ProductUpdateDisplayDto;
+  language: EnumDisplayLanguage;
+
+  @IsOptional()
+  @MaxLength(50)
+  @MinLength(1)
+  @NormalizeStringInputTransform()
+  readonly name?: string;
+
+  @MaxLength(200)
+  @IsOptional()
+  @NormalizeStringInputTransform()
+  readonly description?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  @ArrayTransform()
+  @UniqueArrayByTransform()
+  @NormalizeStringInputTransform({ each: true })
+  @ToLowerCaseTransform({ each: true })
+  readonly keywords?: string[];
+
+  @IsNotEmpty()
+  @IsUUID()
+  @IsOptional()
+  vendorId?: string;
+
+  @IsNotEmpty()
+  @MaxLength(30)
+  @MinLength(1)
+  @IsOptional()
+  @NormalizeStringInputTransform()
+  vendorName?: string;
+
+  @IsNotEmpty()
+  @MaxLength(30)
+  @MinLength(1)
+  @IsOptional()
+  @NormalizeStringInputTransform()
+  taxCode?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsUUID(undefined, { each: true })
+  @UniqueArrayByTransform()
+  @ArrayTransform()
+  deleteImageIds?: string[];
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @IsOptional()
+  @IsPositive()
+  @Min(0)
+  @Type(() => Number)
+  shippingCost?: number;
+
+  @IsNumber({ allowNaN: false })
+  @IsNotEmpty()
+  @IsOptional()
+  @IsOptional()
+  @IsPositive()
+  @Min(0)
+  @Type(() => Number)
+  price?: number;
 }

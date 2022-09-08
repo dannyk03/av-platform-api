@@ -11,7 +11,7 @@ import { useContainer } from 'class-validator';
 
 import { AppModule } from '@/app/app.module';
 
-import { ConnectionNames } from './database';
+import { ConnectionNames } from './database/constant';
 
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule, {
@@ -43,8 +43,10 @@ async function bootstrap() {
       { path: 'health/cloudinary', method: RequestMethod.GET },
       { path: 'confirm', method: RequestMethod.GET },
       { path: 'signup', method: RequestMethod.GET },
-      { path: 'join', method: RequestMethod.GET },
       { path: 'ready', method: RequestMethod.GET },
+      { path: 'join', method: RequestMethod.GET },
+      { path: 'org/join', method: RequestMethod.GET },
+      { path: 'network/join', method: RequestMethod.GET },
     ],
   });
 

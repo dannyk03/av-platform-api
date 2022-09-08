@@ -11,3 +11,5 @@ export * from './helper.service';
 export * from './helper.slug.service';
 export * from './helper.string.service';
 export * from './helper.cookie.service';
+export * from './helper.promise.service';
+export * from './helper.mask.service';

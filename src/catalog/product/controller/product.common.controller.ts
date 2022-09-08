@@ -6,10 +6,12 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
+  UnprocessableEntityException,
   UploadedFiles,
 } from '@nestjs/common';
 
@@ -21,23 +23,33 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
+import { isDefined } from 'class-validator';
 import compact from 'lodash/compact';
+import flatMap from 'lodash/flatMap';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ProductListSerialization } from '../serialization';
+import { LogTrace } from '@/log/decorator';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
+
+import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
-import { IdParamDto } from '@/utils/request/dto/id-param.dto';
+import { IdParamDto } from '@/utils/request/dto';
 
-import { AclGuard } from '@/auth';
+import { ProductGetSerialization } from '../serialization';
+
+import { EnumLogAction } from '@/log/constant';
+
 import { EnumFileType, UploadFileMultiple } from '@/utils/file';
-import { RequestParamGuard } from '@/utils/request';
-import { Response, ResponsePaging } from '@/utils/response';
 
 @Controller({
   version: '1',
@@ -50,8 +62,13 @@ export class ProductCommonController {
     private readonly paginationService: PaginationService,
   ) {}
 
-  @Response('product.create')
+  @ClientResponse('product.create', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductCreate, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -61,7 +78,7 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
   @Post()
   async create(
     @UploadedFiles() images: Express.Multer.File[],
@@ -79,6 +96,7 @@ export class ProductCommonController {
       taxCode,
       shippingCost,
       vendorId,
+      vendorName,
     }: ProductCreateDto,
   ): Promise<IResponseData> {
     const checkProductExists = await this.productService.checkExistsBy({ sku });
@@ -90,22 +108,26 @@ export class ProductCommonController {
       });
     }
 
-    const checkVendorExists = await this.vendorService.checkExistsBy({
-      id: vendorId,
-    });
+    const checkVendorExists =
+      vendorId &&
+      (await this.vendorService.checkExistsBy({
+        id: vendorId,
+      }));
 
-    if (!checkVendorExists) {
+    if (vendorId && !checkVendorExists) {
       throw new BadRequestException({
         statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
         message: 'vendor.error.notFound',
       });
     }
 
-    const saveImages = await this.productImageService.createImages({
-      images,
-      language,
-      subFolder: sku,
-    });
+    const saveImages =
+      images &&
+      (await this.productImageService.createImages({
+        images,
+        language,
+        subFolder: sku,
+      }));
 
     const createProduct = await this.productService.create({
       brand,
@@ -113,10 +135,8 @@ export class ProductCommonController {
       price,
       isActive,
       taxCode,
+      vendorName,
       shippingCost,
-      vendor: {
-        id: vendorId,
-      },
       currency: {
         code: currency,
       },
@@ -126,16 +146,23 @@ export class ProductCommonController {
           keywords: [...new Set(keywords)],
           name,
           description,
-          images: compact(saveImages),
+          images: saveImages ? compact(saveImages) : null,
         },
       ],
+      ...(vendorId && {
+        vendor: {
+          id: vendorId,
+        },
+      }),
     });
 
-    const createdProduct = await this.productService.save(createProduct);
-    return this.productService.serialization(createdProduct);
+    const saveProduct = await this.productService.save(createProduct);
+    return saveProduct;
   }
 
-  @ResponsePaging('product.list')
+  @ClientResponsePaging('product.list', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
     abilities: [
@@ -190,9 +217,6 @@ export class ProductCommonController {
       perPage,
     );
 
-    const data: ProductListSerialization[] =
-      await this.productService.serializationList(products);
-
     return {
       totalData,
       totalPage,
@@ -200,12 +224,15 @@ export class ProductCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data,
+      data: products,
     };
   }
 
-  @Response('product.delete')
+  @ClientResponse('product.delete')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductDelete, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -217,11 +244,24 @@ export class ProductCommonController {
   })
   @RequestParamGuard(IdParamDto)
   @Delete('/:id')
-  async deleteProduct(@Param('id') id: string): Promise<void> {
-    await this.productService.deleteProductBy({ id });
+  async deleteProduct(@Param('id') id: string): Promise<{ deleted: number }> {
+    const deleteProduct = await this.productService.deleteProductBy({ id });
+
+    if (!deleteProduct) {
+      throw new NotFoundException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    return { deleted: 1 };
   }
 
-  @Response('product.active')
+  @ClientResponse('product.active')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductActive, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -240,11 +280,15 @@ export class ProductCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 
-  @Response('product.inactive')
+  @ClientResponse('product.inactive')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductInactive, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -263,12 +307,17 @@ export class ProductCommonController {
     });
 
     return {
-      affected,
+      updated: affected,
     };
   }
 
-  @Response('product.update')
+  @ClientResponse('product.update', {
+    classSerialization: ProductGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductUpdate, {
+    tags: ['catalog', 'product'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -278,26 +327,129 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @Patch()
+  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
+  @RequestParamGuard(IdParamDto)
+  @Patch('/:id')
   async update(
+    @UploadedFiles() images: Express.Multer.File[],
+    @Param('id') id: string,
     @Body()
-    body: ProductUpdateDto,
-  ): Promise<void> {
-    const updateRes = await this.productService.update(body);
+    {
+      vendorId,
+      deleteImageIds,
+      language,
+      description,
+      brand,
+      isActive,
+      keywords,
+      name,
+      price,
+      shippingCost,
+      vendorName,
+      taxCode,
+    }: ProductUpdateDto,
+  ): Promise<IResponseData> {
+    const existingProduct = await this.productService.findOne({
+      where: {
+        id,
+        displayOptions: {
+          language: {
+            isoCode: language,
+          },
+        },
+      },
+      relations: [
+        'displayOptions',
+        'displayOptions.images',
+        'displayOptions.language',
+      ],
+    });
 
-    await this.productService.serialization(updateRes);
+    if (!existingProduct) {
+      throw new BadRequestException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    const existingVendor =
+      vendorId &&
+      (await this.vendorService.findOne({
+        where: { id: vendorId },
+        select: {
+          id: true,
+        },
+      }));
+
+    if (vendorId && !existingVendor) {
+      throw new BadRequestException({
+        statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+        message: 'vendor.error.notFound',
+      });
+    }
+
+    const displayOptionByLang = existingProduct.displayOptions.find(
+      (opt) => opt?.language?.isoCode === language,
+    );
+
+    isDefined(brand) && (existingProduct.brand = brand);
+    isDefined(isActive) && (existingProduct.isActive = isActive);
+    isDefined(vendorName) && (existingProduct.vendorName = vendorName);
+    isDefined(taxCode) && (existingProduct.taxCode = taxCode);
+    isDefined(price) && (existingProduct.price = price);
+    isDefined(shippingCost) && (existingProduct.shippingCost = shippingCost);
+
+    isDefined(description) && (displayOptionByLang.description = description);
+    isDefined(name) && (displayOptionByLang.name = name);
+    isDefined(keywords) && (displayOptionByLang.keywords = keywords);
+
+    const existingImagesIdsOld = flatMap(displayOptionByLang.images, 'id');
+    if (deleteImageIds) {
+      displayOptionByLang.images = displayOptionByLang.images?.filter(
+        (img) => !deleteImageIds?.includes(img.id),
+      );
+    }
+
+    const saveImages =
+      images &&
+      (await this.productImageService.createImages({
+        images,
+        language,
+        subFolder: existingProduct.sku,
+      }));
+
+    if (saveImages) {
+      displayOptionByLang.images = [
+        ...displayOptionByLang.images,
+        ...compact(saveImages),
+      ];
+    }
+
+    // Assign new vendor
+    if (existingVendor) {
+      existingProduct.vendor = existingVendor;
+    }
+
+    // Delete images from Cloudinary
+    const idsToDeleteFromCloudinary = deleteImageIds?.filter((id) =>
+      existingImagesIdsOld.includes(id),
+    );
+
+    if (idsToDeleteFromCloudinary?.length) {
+      await this.productImageService.deleteBulkById(idsToDeleteFromCloudinary);
+    }
+
+    // Save Updated
+    const updateProduct = await this.productService.save(existingProduct);
+
+    return updateProduct;
   }
 
-  @Response('product.get')
-  @HttpCode(HttpStatus.OK)
-  @AclGuard({
-    abilities: [
-      {
-        action: Action.Read,
-        subject: Subjects.Product,
-      },
-    ],
+  @ClientResponse('product.get', {
+    classSerialization: ProductGetSerialization,
   })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id')
   async get(
@@ -307,6 +459,13 @@ export class ProductCommonController {
   ): Promise<IResponseData> {
     const getProduct = await this.productService.get({ id, language });
 
-    return this.productService.serialization(getProduct);
+    if (!getProduct) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumProductStatusCodeError.ProductNotFoundError,
+        message: 'product.error.notFound',
+      });
+    }
+
+    return getProduct;
   }
 }

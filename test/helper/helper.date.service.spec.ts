@@ -5,11 +5,12 @@ import { HelperModule } from '@/utils/helper/helper.module';
 
 import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 
-import { ConfigDynamicModule } from '@/config';
 import {
   EnumHelperDateDiff,
   EnumHelperDateFormat,
 } from '@/utils/helper/helper.constant';
+
+import { ConfigDynamicModule } from '@/config';
 
 describe('HelperDateService', () => {
   let helperDateService: HelperDateService;

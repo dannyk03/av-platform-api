@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { CommandModule, CommandService } from 'nestjs-command';
 
-import { SeedsModule } from './database/seeds/seeds.module';
+import { SeedsModule } from './database/seed/seeds.module';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(SeedsModule, {

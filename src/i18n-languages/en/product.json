@@ -1,0 +1,18 @@
+{
+  "list": "List product success",
+  "get": "Get product success",
+  "create": "Create product success",
+  "delete": "Delete product success",
+  "update": "Update product success",
+  "inactive": "Inactive succeed",
+  "active": "Active succeed",
+  "imageDelete": "Image delete success",
+  "imageAdd": "Image add success",
+  "updateImage": "Image update success",
+  "error": {
+    "notFound": "Product not found.",
+    "inactive": "Product not active",
+    "exists": "Product exists",
+    "image": "Image not found"
+  }
+}

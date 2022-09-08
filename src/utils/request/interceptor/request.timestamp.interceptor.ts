@@ -14,9 +14,9 @@ import { Observable } from 'rxjs';
 
 import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
-import { IRequestApp } from '../request.interface';
+import { IRequestApp } from '../type';
 
-import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../request.constant';
+import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../constant';
 
 @Injectable()
 export class RequestTimestampInterceptor
@@ -87,7 +87,7 @@ export class RequestTimestampInterceptor
       } else {
         const newTimestamp = xTimestamp || currentTimestamp.toString();
         request.headers['x-timestamp'] = newTimestamp;
-        request.timestamp = newTimestamp;
+        request.timestamp = this.helperNumberService.create(newTimestamp);
       }
     }
 

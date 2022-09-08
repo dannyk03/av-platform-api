@@ -4,9 +4,9 @@ import { ProductImage } from '@/catalog/product-image/entity';
 import { Product } from '@/catalog/product/entity';
 import { DisplayLanguage } from '@/language/display-language/entity';
 
-import { ProductImageListSerialization } from '@/catalog/product-image/serialization';
+import { ProductImageGetSerialization } from '@/catalog/product-image/serialization';
 
-export class ProductDisplayOptionListSerialization {
+export class ProductDisplayOptionGetSerialization {
   readonly name: string;
   readonly description: string;
   readonly keywords!: string[];
@@ -17,10 +17,10 @@ export class ProductDisplayOptionListSerialization {
 
   @Transform(({ value: images }) =>
     images?.map((image: ProductImage) =>
-      plainToInstance(ProductImageListSerialization, image),
+      plainToInstance(ProductImageGetSerialization, image),
     ),
   )
-  readonly images: ProductImageListSerialization;
+  readonly images: ProductImageGetSerialization;
 
   @Exclude()
   readonly id: string;

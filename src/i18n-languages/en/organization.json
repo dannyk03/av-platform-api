@@ -1,0 +1,26 @@
+{
+  "list": "List organization success",
+  "get": "Get organization success",
+  "create": "Create organization success",
+  "delete": "Delete organization success",
+  "update": "Update organization success",
+  "inactive": "Inactive succeed",
+  "active": "Active succeed",
+  "invite": "Invite succeed",
+  "inviteValid": "Invite valid",
+  "join": "Join succeed",
+  "changeRoleTo": "Role change to {roleName}",
+  "changeRole": "Organization member change role success",
+  "error": {
+    "notFound": "Organization not found",
+    "inactive": "Organization not active",
+    "exists": "Organization already exists",
+    "ownerExists": "Organization owner exists",
+    "systemOnly": "System only",
+    "alreadyInvited": "User already invited",
+    "inviteInvalid": "Invite invalid",
+    "unprocessable": "Unprocessable",
+    "alreadyRole": "The user is already in the given role ({roleName})",
+    "memberNotFound": "Organization member not found"
+  }
+}

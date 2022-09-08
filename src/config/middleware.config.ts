@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 import ms from 'ms';
 
-import { EnumRequestMethod } from '@/utils/request';
+import { EnumRequestMethod } from '@/utils/request/constant';
 
 export default registerAs(
   'middleware',
@@ -44,8 +44,8 @@ export default registerAs(
       ],
     },
     rateLimit: {
-      resetTime: '0.25', // secs
-      maxRequestPerIp: 1, // max request per reset time
+      resetTime: '0.5', // secs
+      maxRequestPerIp: 2, // max request per reset time
     },
     timestamp: {
       toleranceTimeInMs: process.env.MIDDLEWARE_TOLERANCE_TIMESTAMP

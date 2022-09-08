@@ -2,6 +2,7 @@
   "version": "0.2",
   "language": "en",
   "words": [
+    "avonow",
     "nestjs",
     "cloudinary",
     "streamifier",
@@ -24,7 +25,13 @@
     "unnest",
     "customerio",
     "trivago",
-    "casl"
+    "casl",
+    "upsert",
+    "maskdata",
+    "middlewares",
+    "alphanum",
+    "typeorm",
+    "tlds"
   ],
   "ignorePaths": [
     "node_modules/**",

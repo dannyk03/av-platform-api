@@ -2,6 +2,8 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  HttpCode,
+  HttpStatus,
   InternalServerErrorException,
   NotFoundException,
   Query,
@@ -13,14 +15,14 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumGiftIntentStatusCodeError,
-  EnumGiftStatusCodeError,
+  EnumGiftingStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumOrganizationStatusCodeError,
   EnumUserStatusCodeError,
   IResponseData,
 } from '@avo/type';
 
-import { Response as ExpressResponse } from 'express';
+import { Response } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource, IsNull } from 'typeorm';
 
@@ -29,16 +31,21 @@ import {
   GiftIntentConfirmationLinkService,
   GiftIntentReadyLinkService,
   GiftIntentService,
-} from '@/gifting/gift/service';
+} from '@/gifting/service';
+import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
+import { LogTrace } from '@/log/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
+
 import { MagicLinkDto } from '../dto';
 
-import { AuthUserLoginSerialization } from '@/auth';
-import { ConnectionNames } from '@/database';
-import { EmailService } from '@/messaging/email';
-import { Response } from '@/utils/response';
+import { AuthUserLoginSerialization } from '@/auth/serialization';
+import { GiftIntentReadySerialization } from '@/gifting/serialization';
+
+import { ConnectionNames } from '@/database/constant';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({})
 export class MagicLinkController {
@@ -56,13 +63,17 @@ export class MagicLinkController {
     private readonly authService: AuthService,
   ) {}
 
-  @Response('user.signUpSuccess')
+  @ClientResponse('user.signUpSuccess')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignupLoginMagic, {
+    tags: ['signup', 'login', 'magic'],
+  })
   @Get('/signup')
   async signUpValidate(
     @Query()
     { code }: MagicLinkDto,
     @Res({ passthrough: true })
-    response: ExpressResponse,
+    response: Response,
   ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
@@ -120,7 +131,7 @@ export class MagicLinkController {
 
     // TODO: cache in redis safeData with user role and permission for next api calls
 
-    const rememberMe = true;
+    const rememberMe = false;
     const payloadAccessToken: Record<string, any> =
       await this.authService.createPayloadAccessToken(safeData, rememberMe);
 
@@ -145,14 +156,18 @@ export class MagicLinkController {
     };
   }
 
-  @Response('organization.inviteValid')
-  @Get('/join')
-  async joinValidate(
+  @ClientResponse('organization.inviteValid')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.OrganizationJoinMagic, {
+    tags: ['organization', 'join', 'magic'],
+  })
+  @Get('/org/join')
+  async orgJoinValidate(
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {
-    const existingInvite = await this.organizationInviteService.findOneBy({
-      code,
+    const existingInvite = await this.organizationInviteService.findOne({
+      where: { code },
     });
 
     if (!existingInvite) {
@@ -177,7 +192,11 @@ export class MagicLinkController {
     }
   }
 
-  @Response('gift.confirm')
+  @ClientResponse('gift.confirm')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftConfirmMagic, {
+    tags: ['gifting', 'confirm', 'magic'],
+  })
   @Get('/confirm')
   async confirmSendGift(
     @Query()
@@ -198,7 +217,8 @@ export class MagicLinkController {
 
     if (!existingGiftSendConfirmationLink) {
       throw new NotFoundException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkNotFoundError,
+        statusCode:
+          EnumGiftingStatusCodeError.GiftConfirmationLinkNotFoundError,
         message: 'gift.error.code',
       });
     }
@@ -215,7 +235,7 @@ export class MagicLinkController {
       existingGiftSendConfirmationLink.usedAt
     ) {
       throw new ForbiddenException({
-        statusCode: EnumGiftStatusCodeError.GiftConfirmationLinkExpiredError,
+        statusCode: EnumGiftingStatusCodeError.GiftConfirmationLinkExpiredError,
         message: 'gift.error.verificationLink',
       });
     }
@@ -227,7 +247,7 @@ export class MagicLinkController {
 
     if (uniqueSenders.length > 1) {
       throw new UnprocessableEntityException({
-        statusCode: EnumGiftStatusCodeError.GiftSendersLimitError,
+        statusCode: EnumGiftingStatusCodeError.GiftSendersLimitError,
         message: 'gift.error.senders',
       });
     }
@@ -264,7 +284,7 @@ export class MagicLinkController {
               });
 
               if (sent) {
-                giftIntent.sentAt = this.helperDateService.create();
+                giftIntent.confirmedAt = this.helperDateService.create();
                 transactionalEntityManager.save(giftIntent);
               } else {
                 throw new InternalServerErrorException({
@@ -280,7 +300,13 @@ export class MagicLinkController {
     );
   }
 
-  @Response('gift.intent.ready')
+  @ClientResponse('gift.intent.ready', {
+    classSerialization: GiftIntentReadySerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GiftReadyMagic, {
+    tags: ['gifting', 'ready', 'magic'],
+  })
   @Throttle(1, 5)
   @Get('/ready')
   async giftIntentReadyValidate(
@@ -323,8 +349,6 @@ export class MagicLinkController {
       });
     }
 
-    return this.giftIntentService.serializationGiftIntentReady(
-      existingReadyLink.giftIntent,
-    );
+    return existingReadyLink.giftIntent;
   }
 }

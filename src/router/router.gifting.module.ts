@@ -2,15 +2,16 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { ProductModule } from '@/catalog/product/product.module';
-import { GiftModule } from '@/gifting/gift/gift.module';
+import { GiftModule } from '@/gifting/gift.module';
 import { MessagingModule } from '@/messaging/messaging.module';
+import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 
-import { GiftCommonController } from '@/gifting/gift/controller';
+import { GiftingCommonController } from '@/gifting/controller';
 
 @Module({
-  controllers: [GiftCommonController],
+  controllers: [GiftingCommonController],
   providers: [],
   exports: [],
   imports: [
@@ -20,6 +21,7 @@ import { GiftCommonController } from '@/gifting/gift/controller';
     AclRoleModule,
     UserModule,
     ProductModule,
+    NetworkingModule,
   ],
 })
 export class RouterGiftingModule {}

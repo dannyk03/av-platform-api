@@ -13,7 +13,7 @@ import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { Vendor } from '@/catalog/vendor/entity';
 import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
-import { Gift } from '@/gifting/gift/entity';
+import { Gift } from '@/gifting/entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -52,10 +52,16 @@ export class Product extends BaseEntity<Product> {
   shippingCost!: number;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.products, {
-    onDelete: 'CASCADE',
+    nullable: true,
   })
   @JoinColumn()
   vendor: Vendor;
+
+  @Column({
+    length: 30,
+    nullable: true,
+  })
+  vendorName: string;
 
   @ManyToOne(() => Currency)
   @JoinColumn()

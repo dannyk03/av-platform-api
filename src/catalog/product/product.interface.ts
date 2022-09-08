@@ -22,10 +22,8 @@ export interface IProductUpdate {
   sku?: string;
   brand?: string;
   isActive?: boolean;
-  display?: {
-    name?: string;
-    description?: string;
-    keywords?: string[];
-    language: EnumDisplayLanguage;
-  };
+  name?: string;
+  description?: string;
+  keywords?: string[];
+  language: EnumDisplayLanguage;
 }

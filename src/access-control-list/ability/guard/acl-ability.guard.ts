@@ -8,12 +8,12 @@ import { Reflector } from '@nestjs/core';
 
 import { defineAbilities } from '@avo/casl';
 
-import { IReqAclAbility } from '@acl/acl.interface';
+import { IReqAclAbility } from '@/access-control-list/type/acl.interface';
 
 import {
   ABILITY_META_KEY,
   PermissionsStatusCodeError,
-} from '../acl-ability.constant';
+} from '../constant/acl-ability.constant';
 
 @Injectable()
 export class AclAbilityGuard implements CanActivate {

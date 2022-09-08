@@ -12,7 +12,10 @@ import {
   EnumUserStatusCodeError,
 } from '@avo/type';
 
-import { SYSTEM_ONLY_META_KEY, SYSTEM_ORGANIZATION_NAME } from '@/system';
+import {
+  SYSTEM_ONLY_META_KEY,
+  SYSTEM_ORGANIZATION_NAME,
+} from '@/system/constant';
 
 @Injectable()
 export class ReqUserSystemOnlyGuard implements CanActivate {

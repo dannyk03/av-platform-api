@@ -10,7 +10,7 @@ import {
 
 import { Currency } from '../entity';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class CurrencyService {

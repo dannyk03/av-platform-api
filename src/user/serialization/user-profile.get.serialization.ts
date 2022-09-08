@@ -1,9 +1,54 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import {
+  IUserProfileGetSerialization,
+  IUserProfileHomeGetSerialization,
+  IUserProfileShippingGetSerialization,
+} from '@avo/type';
 
-import { IAwsS3Response } from '@/aws/aws.interface';
+import { Exclude, Expose, Transform, plainToInstance } from 'class-transformer';
+
+import { IAwsS3 } from '@/aws/type';
 
 @Exclude()
-export class UserProfileGetSerialization {
+export class UserProfileHomeGetSerialization
+  implements IUserProfileHomeGetSerialization
+{
+  @Expose()
+  readonly city?: string;
+
+  @Expose()
+  readonly state?: string;
+
+  @Expose()
+  readonly country?: string;
+}
+
+@Exclude()
+export class UserProfileShippingGetSerialization
+  implements IUserProfileShippingGetSerialization
+{
+  @Expose()
+  addressLine1?: string;
+
+  @Expose()
+  addressLine2?: string;
+
+  @Expose()
+  city?: string;
+
+  @Expose()
+  state?: string;
+
+  @Expose()
+  zipCode?: string;
+
+  @Expose()
+  country?: string;
+}
+
+@Exclude()
+export class UserProfileGetSerialization
+  implements IUserProfileGetSerialization
+{
   @Expose()
   readonly id: string;
 
@@ -17,18 +62,57 @@ export class UserProfileGetSerialization {
   readonly isActive: boolean;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.firstName)
+  @Transform(({ obj }) => obj.profile?.firstName)
   readonly firstName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.lastName)
+  @Transform(({ obj }) => obj.profile?.lastName)
   readonly lastName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.title)
-  readonly title: string;
+  @Transform(({ obj }) => obj.profile?.photo)
+  readonly photo?: IAwsS3;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile.photo)
-  readonly photo?: IAwsS3Response;
+  @Transform(({ obj }) => obj.profile?.birthMonth)
+  readonly birthMonth: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.birthDay)
+  readonly birthDay: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.workAnniversaryMonth)
+  readonly workAnniversaryMonth: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.workAnniversaryDay)
+  readonly workAnniversaryDay: string;
+
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(UserProfileHomeGetSerialization, obj?.profile?.home),
+  )
+  readonly home: IUserProfileHomeGetSerialization;
+
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(
+      UserProfileShippingGetSerialization,
+      obj?.profile?.shipping,
+    ),
+  )
+  readonly shipping: IUserProfileShippingGetSerialization;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)
+  readonly kidFriendlyActivities?: object;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.personas)
+  readonly personas?: object;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.dietary)
+  readonly dietary?: object;
 }

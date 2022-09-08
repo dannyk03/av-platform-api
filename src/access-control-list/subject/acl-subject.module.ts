@@ -5,7 +5,7 @@ import { AclSubject } from './entity';
 
 import { AclSubjectService } from './service';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AclSubject], ConnectionNames.Default)],

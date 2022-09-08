@@ -1,1 +1,1 @@
-export * from './product-image.list.serialization';
+export * from './product-image.get.serialization';

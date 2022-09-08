@@ -5,9 +5,13 @@ import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
+import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
+import { RouterNetworkingModule } from '@/router/router.networking.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterTestModule } from '@/router/router.test.module';
+import { RouterUserModule } from '@/router/router.user.module';
+import { RouterUserSystemModule } from '@/router/router.user.system.module';
 import { RouterVendorModule } from '@/router/router.vendor.module';
 
 @Module({})
@@ -22,10 +26,14 @@ export class AppRouterModule {
         imports: [
           RouterCommonModule,
           RouterPublicModule,
+          RouterUserModule,
+          RouterUserSystemModule,
+          RouterGiftingSystemModule,
           RouterGiftingModule,
           RouterCatalogModule,
           RouterProductModule,
           RouterVendorModule,
+          RouterNetworkingModule,
           RouterCallbackModule,
           RouterTestModule,
           RouterModule.register([
@@ -34,8 +42,30 @@ export class AppRouterModule {
               module: RouterCommonModule,
             },
             {
+              path: '/system',
+              children: [
+                {
+                  path: '/gift',
+                  module: RouterGiftingSystemModule,
+                },
+                {
+                  path: '/user',
+                  module: RouterUserSystemModule,
+                },
+              ],
+            },
+
+            {
+              path: '/user',
+              module: RouterUserModule,
+            },
+            {
               path: '/gift',
               module: RouterGiftingModule,
+            },
+            {
+              path: '/network',
+              module: RouterNetworkingModule,
             },
             {
               path: '/catalog',

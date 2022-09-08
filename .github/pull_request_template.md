@@ -1,6 +1,6 @@
 | Env Vars Change |           Ticket           |
 | :-------------: | :------------------------: |
-|     Yes/No      | [Link](<ticket link here>) |
+|    Yes / No     | [Link](<ticket link here>) |
 
 ### Description
 

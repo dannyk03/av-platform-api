@@ -11,7 +11,7 @@ import { IResult } from 'ua-parser-js';
 import { User } from '@/user/entity';
 import { AclRole } from '@acl/role/entity';
 
-import { EnumLogAction, EnumLogLevel } from '../log.constant';
+import { EnumLogAction, EnumLogLevel } from '../constant';
 
 @Entity()
 export class Log {
@@ -62,7 +62,7 @@ export class Log {
     type: 'varchar',
     array: true,
     length: 20,
-    nullable: true,
+    default: [],
     update: false,
   })
   tags?: string[];
@@ -86,10 +86,10 @@ export class Log {
   method!: string;
 
   @Column({
-    length: 50,
+    length: 100,
     update: false,
   })
-  originalUrl!: string;
+  path!: string;
 
   @Column({
     length: 3,
@@ -97,6 +97,24 @@ export class Log {
     update: false,
   })
   version!: string;
+
+  @Column({
+    length: 15,
+    update: false,
+  })
+  repoVersion!: string;
+
+  @Column({
+    length: 100,
+    update: false,
+  })
+  exec!: string;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  data?: object;
 
   @CreateDateColumn({
     update: false,

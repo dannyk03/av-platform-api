@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { CoreModule } from '@/core/core.module';
+import { CommonModule } from '@/common/common.module';
 
 import { PaginationService } from '@/utils/pagination/service';
 
@@ -9,7 +9,7 @@ describe('PaginationService', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CoreModule],
+      imports: [CommonModule],
     }).compile();
 
     paginationService = moduleRef.get<PaginationService>(PaginationService);

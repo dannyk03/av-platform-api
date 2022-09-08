@@ -2,7 +2,8 @@ import { registerAs } from '@nestjs/config';
 
 import { DataSourceOptions } from 'typeorm';
 
-import { ConnectionNames } from '@/database';
+import { ConnectionNames } from '@/database/constant';
+
 import { TypeormSnakeCaseNamingStrategy } from '@/database/naming-strategy';
 
 export default registerAs(
@@ -25,9 +26,9 @@ export default registerAs(
           `/../database/migrations/${ConnectionNames.Default}/**/*{.ts,.js}`,
       ],
       namingStrategy: new TypeormSnakeCaseNamingStrategy(),
-      migrationsRun: true,
+      migrationsTransactionMode: 'each',
+      migrationsRun: false,
       synchronize: false, // Don't change never!!!
-      // autoLoadEntities: true,
     },
   }),
 );

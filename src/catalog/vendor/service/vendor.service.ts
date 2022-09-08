@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumVendorStatusCodeError } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import {
   Brackets,
@@ -19,11 +18,9 @@ import { Vendor } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { VendorListSerialization } from '../serialization';
+import { ConnectionNames } from '@/database/constant';
 
 import { IVendorSearch, IVendorUpdate } from '../vendor.interface';
-
-import { ConnectionNames } from '@/database';
 
 @Injectable()
 export class VendorService {
@@ -183,13 +180,5 @@ export class VendorService {
     }
 
     return searchBuilder.getMany();
-  }
-
-  async serialization(data: Vendor): Promise<VendorListSerialization> {
-    return plainToInstance(VendorListSerialization, data);
-  }
-
-  async serializationList(data: Vendor[]): Promise<VendorListSerialization[]> {
-    return plainToInstance(VendorListSerialization, data);
   }
 }

@@ -11,9 +11,9 @@ import {
 import { createReadStream } from 'streamifier';
 import util from 'util';
 
-import { UploadCloudinaryImage } from '../cloudinary.interface';
-
 import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
+
+import { UploadCloudinaryImage } from '../cloudinary.interface';
 
 @Injectable()
 export class CloudinaryService {

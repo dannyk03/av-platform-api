@@ -6,7 +6,7 @@ import { AclController } from '@acl/controller';
 import { AclRoleController } from '@acl/role/controller';
 
 import { AuthModule } from '@/auth/auth.module';
-import { GiftModule } from '@/gifting/gift/gift.module';
+import { GiftModule } from '@/gifting/gift.module';
 import { HealthModule } from '@/health/health.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { OrganizationModule } from '@/organization/organization.module';
@@ -23,13 +23,11 @@ import {
   OrganizationInviteController,
 } from '@/organization/controller';
 import { PaymentController } from '@/payment/controller';
-import { UserController } from '@/user/controller';
 
 @Module({
   controllers: [
     HealthController,
     AuthCommonController,
-    UserController,
     OrganizationController,
     OrganizationInviteController,
     PaymentController,

@@ -4,9 +4,10 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "response-message/languages/**/*",
-        "watchAssets": true
+        "include": "i18n-languages/**/*",
+        "outDir": "dist/src"
       }
-    ]
+    ],
+    "watchAssets": true
   }
 }

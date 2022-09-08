@@ -4,8 +4,6 @@ import {
   Injectable,
   NestInterceptor,
   RequestTimeoutException,
-  Type,
-  mixin,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
@@ -13,46 +11,21 @@ import { Reflector } from '@nestjs/core';
 import { EnumStatusCodeError } from '@avo/type';
 
 import ms from 'ms';
-import { Observable, TimeoutError, throwError } from 'rxjs';
-import { catchError, timeout } from 'rxjs/operators';
+import {
+  Observable,
+  TimeoutError,
+  catchError,
+  throwError,
+  timeout,
+} from 'rxjs';
 
-import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from '../response.constant';
-
-export function ResponseTimeoutInterceptor(
-  seconds: string,
-): Type<NestInterceptor> {
-  @Injectable()
-  class MixinResponseTimeoutInterceptor
-    implements NestInterceptor<Promise<any>>
-  {
-    async intercept(
-      context: ExecutionContext,
-      next: CallHandler,
-    ): Promise<Observable<Promise<any> | string>> {
-      if (context.getType() === 'http') {
-        return next.handle().pipe(
-          timeout(ms(seconds)),
-          catchError((err) => {
-            if (err instanceof TimeoutError) {
-              throw new RequestTimeoutException({
-                statusCode: EnumStatusCodeError.RequestTimeout,
-                message: 'http.clientError.requestTimeOut',
-              });
-            }
-            return throwError(() => err);
-          }),
-        );
-      }
-
-      return next.handle();
-    }
-  }
-
-  return mixin(MixinResponseTimeoutInterceptor);
-}
+import {
+  RESPONSE_CUSTOM_TIMEOUT_META_KEY,
+  RESPONSE_CUSTOM_TIMEOUT_VALUE_META_KEY,
+} from '../constant';
 
 @Injectable()
-export class ResponseTimeoutDefaultInterceptor
+export class ResponseTimeoutInterceptor
   implements NestInterceptor<Promise<any>>
 {
   constructor(
@@ -70,23 +43,30 @@ export class ResponseTimeoutDefaultInterceptor
         context.getHandler(),
       );
 
-      if (!customTimeout) {
-        const defaultTimeout: number = this.configService.get<number>(
-          'middleware.timeout.in',
-        );
-        return next.handle().pipe(
-          timeout(defaultTimeout),
-          catchError((err) => {
-            if (err instanceof TimeoutError) {
-              throw new RequestTimeoutException({
-                statusCode: EnumStatusCodeError.RequestTimeout,
-                message: 'http.clientError.requestTimeOut',
-              });
-            }
-            return throwError(() => err);
-          }),
-        );
-      }
+      const defaultTimeout: number = this.configService.get<number>(
+        'middleware.timeout.in',
+      );
+      return next.handle().pipe(
+        timeout(
+          customTimeout
+            ? ms(
+                this.reflector.get<string>(
+                  RESPONSE_CUSTOM_TIMEOUT_VALUE_META_KEY,
+                  context.getHandler(),
+                ),
+              )
+            : defaultTimeout,
+        ),
+        catchError((err) => {
+          if (err instanceof TimeoutError) {
+            throw new RequestTimeoutException({
+              statusCode: EnumStatusCodeError.RequestTimeout,
+              message: 'http.clientError.requestTimeOut',
+            });
+          }
+          return throwError(() => err);
+        }),
+      );
     }
 
     return next.handle();

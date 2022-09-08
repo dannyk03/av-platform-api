@@ -14,7 +14,7 @@ aliases:
 jobs:
   build-lint-test:
     docker:
-      - image: cimg/node:17.9
+      - image: cimg/node:18.8
       - image: cimg/postgres:14.4
         environment:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
@@ -25,11 +25,27 @@ jobs:
       APP_PORT: 8080
       APP_VERSIONING: true
       APP_HTTP_ON: true
+      APP_JOB_ON: false
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_NAME: avo-test
+      APP_MODE: secure
+      APP_LANGUAGE: en
+      APP_TZ: Asia/Jerusalem
+      APP_VERSION: 1
+      MIDDLEWARE_TOLERANCE_TIMESTAMP: 5m
+      MIDDLEWARE_TIMEOUT: 30s
+      AUTH_SYSTEM_ADMIN_EMAIL: testadmin@avonow.com
+      AUTH_SYSTEM_ADMIN_INITIAL_PASS: Avo12345!
+      AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: 123456
+      AUTH_JWT_ACCESS_TOKEN_EXPIRED: 30m
+      AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: 01101231
+      AUTH_JWT_REFRESH_TOKEN_EXPIRED: 7d
+      AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: 30d
+      AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: 30m
     steps:
       - checkout
       - node/install-packages:
@@ -66,6 +82,7 @@ workflows:
             - ci-migrations-job
             - jfrog-platform
             - cloudinary
+            - customerio
       - build-and-push-image:
           context:
             - eu-ecr

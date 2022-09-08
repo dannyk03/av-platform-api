@@ -1,9 +1,8 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumProductStatusCodeError } from '@avo/type';
+import { EnumDisplayLanguage, EnumProductStatusCodeError } from '@avo/type';
 
-import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'class-validator';
 import flatMap from 'lodash/flatMap';
 import {
@@ -21,16 +20,15 @@ import { Product } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
 
-import { ProductListSerialization } from '../serialization';
+import { ConnectionNames } from '@/database/constant';
+
+import { IPaginationOptions } from '@/utils/pagination';
 
 import {
   IGetProduct,
   IProductSearch,
   IProductUpdate,
 } from '../product.interface';
-
-import { ConnectionNames } from '@/database';
-import { IPaginationOptions } from '@/utils/pagination';
 
 @Injectable()
 export class ProductService {
@@ -63,8 +61,24 @@ export class ProductService {
     return this.productRepository.find({ where: find, ...options });
   }
 
-  async findAllByIds(ids?: string[]): Promise<Product[]> {
-    return this.productRepository.find({ where: { id: In(ids) } });
+  async findAllByIds({
+    productIds,
+    lang = EnumDisplayLanguage.En,
+  }: {
+    productIds: string[];
+    lang: EnumDisplayLanguage;
+  }): Promise<Product[]> {
+    return this.productRepository.find({
+      where: {
+        id: In(productIds),
+        displayOptions: {
+          language: {
+            isoCode: lang,
+          },
+        },
+      },
+      relations: ['displayOptions', 'displayOptions.images'],
+    });
   }
 
   async checkExistsBy(find: FindOptionsWhere<Product>) {
@@ -241,7 +255,10 @@ export class ProductService {
     sku,
     brand,
     isActive,
-    display: { language, ...restDisplay },
+    language,
+    name,
+    description,
+    keywords,
   }: IProductUpdate): Promise<any> {
     const getProduct = await this.get({ id, language: language });
 
@@ -251,19 +268,11 @@ export class ProductService {
 
     getProduct.displayOptions[0] = {
       ...getProduct.displayOptions[0],
-      ...restDisplay,
+      name,
+      description,
+      keywords,
     };
 
     return this.productRepository.save(getProduct);
-  }
-
-  async serialization(data: Product): Promise<ProductListSerialization> {
-    return plainToInstance(ProductListSerialization, data);
-  }
-
-  async serializationList(
-    data: Product[],
-  ): Promise<ProductListSerialization[]> {
-    return plainToInstance(ProductListSerialization, data);
   }
 }

@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import * as path from 'path';
 import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
+import path from 'path';
 
 import { ResponseMessageService } from './service';
 
@@ -21,7 +21,7 @@ import { EnumMessageLanguage } from './response-message.constant';
           {},
         ),
         loaderOptions: {
-          path: path.join(__dirname, '/languages/'),
+          path: path.join(__dirname, '../i18n-languages'),
           watch: true,
         },
       }),

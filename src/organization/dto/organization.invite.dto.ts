@@ -1,18 +1,19 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 import {
   NormalizeEmail,
-  NormalizeStringInput,
+  NormalizeStringInputTransform,
 } from '@/utils/request/transform';
 
 export class OrganizationInviteDto {
   @NormalizeEmail()
   readonly email: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @MaxLength(30)
-  @NormalizeStringInput()
+  @MaxLength(36)
+  @NormalizeStringInputTransform()
   // Can be role.slug or role.id
-  readonly role: string;
+  readonly role?: string;
 }
