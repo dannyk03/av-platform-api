@@ -10,9 +10,9 @@ import {
   EmailStatus,
   EmailTemplate,
   GiftDetails,
+  GiftIsOnItsWayMessageDat,
   GiftOption,
   GiftOptionSelectMessageData,
-  GiftShippedMessageData,
   GiftShippingDetails,
   SignUpEmailVerificationMessageData,
 } from '../email.constant';
@@ -323,7 +323,7 @@ export class EmailService {
       ETA: '', // TODO: verify we save this
     };
 
-    const payload: GiftShippedMessageData = {
+    const payload: GiftIsOnItsWayMessageDat = {
       recipient: {
         firstName: giftIntent.recipient.user.profile.firstName,
       },
@@ -338,7 +338,7 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: payload,
       identifier: { id: email },
     });
     console.log({

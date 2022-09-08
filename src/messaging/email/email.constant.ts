@@ -114,7 +114,7 @@ export type GiftShippingDetails = {
   ETA: string;
 };
 
-export type GiftShippedMessageData = {
+export type GiftIsOnItsWayMessageDat = {
   recipient: {
     firstName: string;
   };
