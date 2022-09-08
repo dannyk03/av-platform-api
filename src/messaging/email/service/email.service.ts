@@ -326,7 +326,7 @@ export class EmailService {
     return data;
   }
 
-  async sendGiftShippedToSender({
+  async sendSenderTheGiftIsOnItsWay({
     email,
     path = '/shipped',
     giftIntent,
