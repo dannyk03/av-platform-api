@@ -74,6 +74,22 @@ export class UserProfileGetSerialization
   readonly photo?: IAwsS3;
 
   @Expose()
+  @Transform(({ obj }) => obj.profile?.birthMonth)
+  readonly birthMonth: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.birthDay)
+  readonly birthDay: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.workAnniversaryMonth)
+  readonly workAnniversaryMonth: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.workAnniversaryDay)
+  readonly workAnniversaryDay: string;
+
+  @Expose()
   @Transform(({ obj }) =>
     plainToInstance(UserProfileHomeGetSerialization, obj?.profile?.home),
   )
@@ -87,6 +103,10 @@ export class UserProfileGetSerialization
     ),
   )
   readonly shipping: IUserProfileShippingGetSerialization;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)
+  readonly kidFriendlyActivities?: object;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.personas)
