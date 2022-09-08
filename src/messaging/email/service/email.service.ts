@@ -9,6 +9,7 @@ import { CustomerIOService } from '../../customer-io/service/customer-io.service
 import {
   EmailStatus,
   EmailTemplate,
+  GiftDeliveredToRecipientMessageData,
   GiftDetails,
   GiftOption,
   GiftOptionSelectMessageData,
@@ -365,6 +366,45 @@ export class EmailService {
       template: EmailTemplate.SendSenderGiftDelivered.toString(),
       to: [email],
       emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendRecipientTheGiftWasDelivered({
+    email,
+    giftIntent,
+  }: {
+    email: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+
+    const shippingDetails: GiftShippingDetails = {
+      shippingAddress: '', // TODO: verify we save this
+      ETA: '', // TODO: verify we save this
+    };
+
+    const payload: GiftDeliveredToRecipientMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      shippingDetails: shippingDetails,
+      actionUrl: '', // TODO: Add here the relevant url
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendRecipientGiftDelivered.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
       identifier: { id: email },
     });
     console.log({

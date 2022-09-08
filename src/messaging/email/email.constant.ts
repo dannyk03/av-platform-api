@@ -126,6 +126,17 @@ export type GiftStatusUpdateMessageData = {
   sendAnotherGiftUrl: string;
 };
 
+export type GiftDeliveredToRecipientMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  shippingDetails: GiftShippingDetails;
+  actionUrl: string;
+};
+
 export type ResetPasswordMessageData = {
   user: {
     firstName: string;
