@@ -350,4 +350,26 @@ export class EmailService {
     });
     return sendResult.status === EmailStatus.success;
   }
+
+  async sendSenderTheGiftWasDelivered({
+    email,
+    giftIntent,
+  }: {
+    email: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSenderGiftDelivered.toString(),
+      to: [email],
+      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
 }
