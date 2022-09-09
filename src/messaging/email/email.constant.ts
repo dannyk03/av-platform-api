@@ -8,11 +8,11 @@ export enum EmailTemplate {
   SendSenderGiftIsOnItsWay = "Gift is on it's Way - Sender",
   // - reset password
   SendResetPassword = 'Reset Password',
-
   // - gift delivered (sender)
   SendSenderGiftDelivered = 'Gift Delivered - Sender',
   // - gift delivered (recipient)
   SendRecipientGiftDelivered = 'Gift Delivered - Recipient',
+
   // - connection request accepted
   SendConnectionRequestAccepted = 'Send Connection Request Accepted',
   // - connection request - user in the system
