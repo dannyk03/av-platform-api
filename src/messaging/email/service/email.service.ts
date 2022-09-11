@@ -7,6 +7,7 @@ import { User } from '@/user/entity';
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
 import {
+  ConnectionRequestExistingUserMessageData,
   ConnectionRequestMessageData,
   EmailStatus,
   EmailTemplate,
@@ -481,6 +482,41 @@ export class EmailService {
       receivingUserName,
       connectionId,
     });
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendConnectionRequestExistingUser({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload: ConnectionRequestExistingUserMessageData = {
+      requestingUser: {
+        firstName: requestingUserName,
+      },
+      receivingUser: {
+        firstName: receivingUserName,
+      },
+      connectionApproveLink: '',
+      connectionRejectLink: '',
+    };
 
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestNewUser.toString(),

@@ -16,9 +16,9 @@ export enum EmailTemplate {
   SendConnectionRequestAccepted = 'Send Connection Request Accepted',
   // - connection request - user isn't in the system
   SendConnectionRequestNewUser = 'Connection Request - New User',
-
   // - connection request - user in the system
   SendConnectionRequestExistingUser = 'Connection Request - Existing User',
+
   // - invatation for the survey
   SendSurveyInvatation = 'Survey Invatation',
   //- survey completed
@@ -152,4 +152,15 @@ export type ConnectionRequestMessageData = {
     firstName: string;
   };
   connectionViewLink: string;
+};
+
+export type ConnectionRequestExistingUserMessageData = {
+  requestingUser: {
+    firstName: string;
+  };
+  receivingUser: {
+    firstName: string;
+  };
+  connectionApproveLink: string;
+  connectionRejectLink: string;
 };
