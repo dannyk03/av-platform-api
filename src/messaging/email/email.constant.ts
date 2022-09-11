@@ -12,13 +12,13 @@ export enum EmailTemplate {
   SendSenderGiftDelivered = 'Gift Delivered - Sender',
   // - gift delivered (recipient)
   SendRecipientGiftDelivered = 'Gift Delivered - Recipient',
-
   // - connection request accepted
   SendConnectionRequestAccepted = 'Send Connection Request Accepted',
-  // - connection request - user in the system
-  SendConnectionRequestExistingUser = 'Connection Request - Existing User',
   // - connection request - user isn't in the system
   SendConnectionRequestNewUser = 'Connection Request - New User',
+
+  // - connection request - user in the system
+  SendConnectionRequestExistingUser = 'Connection Request - Existing User',
   // - invatation for the survey
   SendSurveyInvatation = 'Survey Invatation',
   //- survey completed
@@ -142,4 +142,14 @@ export type ResetPasswordMessageData = {
     firstName: string;
   };
   resetPasswordLink: string;
+};
+
+export type ConnectionRequestMessageData = {
+  requestingUser: {
+    firstName: string;
+  };
+  receivingUser: {
+    firstName: string;
+  };
+  connectionViewLink: string;
 };

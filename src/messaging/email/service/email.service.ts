@@ -7,6 +7,7 @@ import { User } from '@/user/entity';
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
 import {
+  ConnectionRequestMessageData,
   EmailStatus,
   EmailTemplate,
   GiftDeliveredToRecipientMessageData,
@@ -409,6 +410,87 @@ export class EmailService {
     });
     console.log({
       email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  getConnectionRequestMessageData({
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }) {
+    const payload: ConnectionRequestMessageData = {
+      requestingUser: {
+        firstName: requestingUserName,
+      },
+      receivingUser: {
+        firstName: receivingUserName,
+      },
+      connectionViewLink: '', // TODO: add / build here using `connectionId`
+    };
+    return payload;
+  }
+
+  async sendConnectionRequestAccepted({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload = this.getConnectionRequestMessageData({
+      requestingUserName,
+      receivingUserName,
+      connectionId,
+    });
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestAccepted.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendConnectionRequestNewUser({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload = this.getConnectionRequestMessageData({
+      requestingUserName,
+      receivingUserName,
+      connectionId,
+    });
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
     });
     return sendResult.status === EmailStatus.success;
   }
