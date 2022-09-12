@@ -18,6 +18,8 @@ import {
   GiftShippingDetails,
   GiftStatusUpdateMessageData,
   SignUpEmailVerificationMessageData,
+  SurveyCompletedMessageData,
+  SurveyInvatationMessageData,
 } from '../email.constant';
 
 @Injectable()
@@ -520,6 +522,75 @@ export class EmailService {
 
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyInvatation({
+    email,
+    inviteeUserName,
+    inviterUserName,
+    personalNote,
+  }: {
+    email: string;
+    inviteeUserName: string;
+    inviterUserName: string;
+    personalNote: string;
+  }): Promise<boolean> {
+    const payload: SurveyInvatationMessageData = {
+      inviteeUser: {
+        firstName: inviteeUserName,
+      },
+      inviterUser: {
+        firstName: inviterUserName,
+      },
+      surveyLink: '',
+      personalNote: '',
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftSurvey.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyCompleted({
+    email,
+    inviteeUserName,
+    inviterUserName,
+    profileId,
+  }: {
+    email: string;
+    inviteeUserName: string;
+    inviterUserName: string;
+    profileId: string;
+  }): Promise<boolean> {
+    const payload: SurveyCompletedMessageData = {
+      inviteeUser: {
+        firstName: inviteeUserName,
+      },
+      inviterUser: {
+        firstName: inviterUserName,
+      },
+      profileViewLink: '',
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSurveyCompleted.toString(),
       to: [email],
       emailTemplatePayload: payload,
       identifier: { id: email },

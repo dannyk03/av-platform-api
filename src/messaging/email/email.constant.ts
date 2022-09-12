@@ -18,7 +18,6 @@ export enum EmailTemplate {
   SendConnectionRequestNewUser = 'Connection Request - New User',
   // - connection request - user in the system
   SendConnectionRequestExistingUser = 'Connection Request - Existing User',
-
   // - invatation for the survey
   SendSurveyInvatation = 'Survey Invatation',
   //- survey completed
@@ -163,4 +162,25 @@ export type ConnectionRequestExistingUserMessageData = {
   };
   connectionApproveLink: string;
   connectionRejectLink: string;
+};
+
+export type SurveyInvatationMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    firstName: string;
+  };
+  personalNote: string;
+  surveyLink: string;
+};
+
+export type SurveyCompletedMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    firstName: string;
+  };
+  profileViewLink: string;
 };
