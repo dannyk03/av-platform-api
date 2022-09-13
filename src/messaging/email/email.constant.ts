@@ -18,11 +18,11 @@ export enum EmailTemplate {
   SendConnectionRequestNewUser = 'Connection Request - New User',
   // - connection request - user in the system
   SendConnectionRequestExistingUser = 'Connection Request - Existing User',
-  // - invatation for the survey
-  SendSurveyInvatation = 'Survey Invatation',
   //- survey completed
-  SendSurveyCompleted = 'Survey Completed',
+  SendSurveyCompleted = 'Survey Completed', // sent to all pending inviters (excluding the admin from the MVP)
   // ================= MVP =================
+  // - invatation for the survey
+  SendSurveyInvatation = 'Survey Invatation', // start the chain, without connecitons, sent from admin
 
   SendOrganizationInvite = 'SendOrganizationInvite',
   SendGiftConfirm = 'SendGiftConfirm',
