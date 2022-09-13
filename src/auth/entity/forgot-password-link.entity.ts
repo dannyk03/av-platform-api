@@ -1,4 +1,11 @@
-import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
 import { BaseEntity } from '@/database/entity';
@@ -26,4 +33,8 @@ export class ForgotPasswordLink extends BaseEntity<ForgotPasswordLink> {
 
   @Column({ nullable: true })
   expiresAt?: Date;
+
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
+  @JoinColumn()
+  user!: User;
 }

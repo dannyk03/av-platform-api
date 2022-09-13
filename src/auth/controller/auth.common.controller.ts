@@ -415,10 +415,10 @@ export class AuthCommonController {
     tags: ['forgotPassword', 'auth'],
   })
   @Post('/forgot')
-  async forgotPassword(
+  async forgotPasswordRequest(
     @Body() { email }: AuthForgotPasswordRequestDto,
   ): Promise<IResponseData> {
-    const user = await this.userService.findOne({
+    const findUser = await this.userService.findOne({
       where: {
         email,
       },
@@ -428,7 +428,7 @@ export class AuthCommonController {
       },
     });
 
-    if (!user) {
+    if (!findUser) {
       this.logService.error({
         action: EnumLogAction.ForgotPassword,
         description: 'Forgot password attempt',
@@ -442,6 +442,7 @@ export class AuthCommonController {
       await this.forgotPasswordLinkService.create({
         email,
         expiresAt: this.helperDateService.forwardInMinutes(60),
+        user: findUser,
       });
 
     const saveForgotPasswordLink = await this.forgotPasswordLinkService.save(
