@@ -21,7 +21,6 @@ import {
 } from '@avo/type';
 
 import { Response } from 'express';
-import { any } from 'joi';
 import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
