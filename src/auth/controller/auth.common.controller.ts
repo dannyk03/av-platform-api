@@ -467,22 +467,6 @@ export class AuthCommonController {
     if (!(isProduction || isSecureMode)) {
       return { code: saveForgotPasswordLink.code };
     }
-
-    // const checkPasswordExpired: boolean =
-    //   await this.authService.checkPasswordExpired(
-    //     user.authConfig.passwordExpiredAt,
-    //   );
-
-    // if (checkPasswordExpired) {
-    //   return {
-    //     metadata: {
-    //       statusCode: EnumAuthStatusCodeError.AuthPasswordExpiredError,
-    //       message: 'auth.error.passwordExpired',
-    //     },
-    //     accessToken,
-    //     refreshToken,
-    //   };
-    // }
   }
 
   @ClientResponse('auth.forgotPasswordSet')
