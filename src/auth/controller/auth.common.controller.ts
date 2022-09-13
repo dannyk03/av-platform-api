@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Patch,
   Post,
@@ -14,11 +15,13 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumAuthStatusCodeError,
+  EnumMessagingStatusCodeError,
   EnumUserStatusCodeError,
   IResponseData,
 } from '@avo/type';
 
 import { Response } from 'express';
+import { any } from 'joi';
 import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
@@ -46,6 +49,7 @@ import {
 
 import { AuthChangePasswordDto, AuthSignUpDto } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
+import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
@@ -150,6 +154,45 @@ export class AuthCommonController {
     };
   }
 
+  @ClientResponse('auth.signUpResendEmail')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['signup', 'auth', 'resend', 'email'],
+  })
+  @Post('/signup-resend')
+  async signUpResendEmail(@Body() { email }: AuthResendSignupEmailDto) {
+    const findAuthSignUpVerificationLink =
+      await this.authSignUpVerificationLinkService.findOne({
+        where: { user: { email } },
+      });
+
+    if (!findAuthSignUpVerificationLink) {
+      return;
+    }
+
+    const emailSent = await this.emailService.resendSignUpEmailVerification({
+      email: findAuthSignUpVerificationLink.email,
+      code: findAuthSignUpVerificationLink.code,
+      expiresAt: findAuthSignUpVerificationLink.expiresAt,
+      firstName: findAuthSignUpVerificationLink.user?.profile?.firstName,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+      });
+    }
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return { code: findAuthSignUpVerificationLink.code };
+    }
+  }
+
   @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.SignUp, {
@@ -185,7 +228,7 @@ export class AuthCommonController {
       dietary,
     }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
-  ) {
+  ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
@@ -203,7 +246,7 @@ export class AuthCommonController {
     if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
-        message: 'user.error.emailExists',
+        message: 'auth.error.badRequest',
       });
     }
 
