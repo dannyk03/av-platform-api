@@ -22,6 +22,24 @@ export class EmailService {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
 
+  async sendForgotPassword({ email, code }: { email: string; code: string }) {
+    const path = '/forgot';
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendNetworkInvite.toString(),
+      to: [email],
+      emailTemplatePayload: { email, code },
+      identifier: { id: email },
+    });
+    console.log({ email, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
   async sendNetworkJoinInvite({
     email,
     fromUser,
