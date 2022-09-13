@@ -37,4 +37,6 @@ export enum EnumLogAction {
   GiftUpsertOption = 'UPSERT_GIFT_OPTION',
 
   OrganizationJoinMagic = 'ORG_JOIN_MAGIC',
+
+  UserProfileRequest = 'USER_PROFILE_REQUEST',
 }
