@@ -49,7 +49,7 @@ export class EmailService {
     fromUser: User;
     personalNote: string;
   }) {
-    // const path = `/network/join?from=${fromUser.email}`;
+    // const path = `/network/join?ref=${fromUser.email}`;
     // Temporary for local development
     if (!this.isProduction) {
       return true;
@@ -59,10 +59,10 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { from: fromUser.email, personalNote },
+      emailTemplatePayload: { ref: fromUser.email, personalNote },
       identifier: { id: email },
     });
-    console.log({ email, from: fromUser.email });
+    console.log({ email, ref: fromUser.email });
     return sendResult.status === EmailStatus.success;
   }
 
