@@ -1,12 +1,36 @@
 export enum EmailTemplate {
-  SendOrganizationInvite = 'SendOrganizationInvite',
-  SendNetworkInvite = 'SendNetworkInvite',
-  SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest',
+  // ================= MVP =================
+  // - gift option select
+  SendGiftSelection = 'Gift Selection',
+  // - verify email
   SendSignUpEmailVerification = 'Email Verification',
-  SendGiftSurvey = 'Survey Confirmation',
+  // - gift is on the way (sender)
+  SendSenderGiftIsOnItsWay = "Gift is on it's Way - Sender",
+  // - reset password
+  SendResetPassword = 'Reset Password',
+  // - gift delivered (sender)
+  SendSenderGiftDelivered = 'Gift Delivered - Sender',
+  // - gift delivered (recipient)
+  SendRecipientGiftDelivered = 'Gift Delivered - Recipient',
+  // - connection request accepted
+  SendConnectionRequestAccepted = 'Send Connection Request Accepted',
+  // - connection request - user isn't in the system
+  SendConnectionRequestNewUser = 'Connection Request - New User',
+  // - connection request - user in the system
+  SendConnectionRequestExistingUser = 'Connection Request - Existing User',
+  //- survey completed
+  SendSurveyCompleted = 'Survey Completed', // sent to all pending inviters (excluding the admin from the MVP)
+  // ================= MVP =================
+  // - invatation for the survey
+  SendSurveyInvatation = 'Survey Invatation', // start the chain, without connecitons, sent from admin
+
+  SendOrganizationInvite = 'SendOrganizationInvite',
   SendGiftConfirm = 'SendGiftConfirm',
-  SendGiftOptions = 'SendGiftOptions',
-  SendGiftShipped = 'SendGiftShipped',
+  SendGiftShipped = 'SendGiftShipped', // TODO: verify the context
+  SendNetworkInvite = 'SendNetworkInvite', // TODO: verify the context
+  SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest', // TODO: verify the context
+  SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
+  SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
   SendSurveyCompletedToInviter = 'SendSurveyCompletedToInviter',
 }
 
@@ -62,10 +86,9 @@ export type SignUpEmailVerificationMessageData = {
 
 export type GiftOption = {
   productName: string;
+  brand: string;
   description: string;
   imageUrl: string;
-  currency: string;
-  price: string;
 };
 
 export type GiftOptionSelectMessageData = {
@@ -77,4 +100,88 @@ export type GiftOptionSelectMessageData = {
   };
   giftOptions: GiftOption[];
   giftSelectUrl: string;
+};
+
+export type GiftDetails = {
+  productName: string;
+  imageUrl: string;
+  formattedPrice: string;
+  personalNote: string;
+};
+
+export type GiftShippingDetails = {
+  shippingAddress: string;
+  ETA: string;
+};
+
+export type GiftStatusUpdateMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  giftDetails: GiftDetails;
+  shippingDetails: GiftShippingDetails;
+  sendAnotherGiftUrl: string;
+};
+
+export type GiftDeliveredToRecipientMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
+  };
+  shippingDetails: GiftShippingDetails;
+  actionUrl: string;
+};
+
+export type ResetPasswordMessageData = {
+  user: {
+    firstName: string;
+  };
+  resetPasswordLink: string;
+};
+
+export type ConnectionRequestMessageData = {
+  requestingUser: {
+    firstName: string;
+  };
+  receivingUser: {
+    firstName: string;
+  };
+  connectionViewLink: string;
+};
+
+export type ConnectionRequestExistingUserMessageData = {
+  requestingUser: {
+    firstName: string;
+  };
+  receivingUser: {
+    firstName: string;
+  };
+  connectionApproveLink: string;
+  connectionRejectLink: string;
+};
+
+export type SurveyInvatationMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    firstName: string;
+  };
+  personalNote: string;
+  surveyLink: string;
+};
+
+export type SurveyCompletedMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    firstName: string;
+  };
+  profileViewLink: string;
 };
