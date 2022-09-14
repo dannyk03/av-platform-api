@@ -62,7 +62,7 @@ import {
   AuthForgotPasswordRequestDto,
   AuthForgotPasswordSetDto,
   AuthSignUpDto,
-  AuthSignUpFromDto,
+  AuthSignUpRefDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
@@ -246,7 +246,7 @@ export class AuthCommonController {
       personas,
       dietary,
     }: AuthSignUpDto,
-    @Query() { from }: AuthSignUpFromDto,
+    @Query() { ref }: AuthSignUpRefDto,
     @RequestUserAgent() userAgent: IResult,
   ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
@@ -347,13 +347,13 @@ export class AuthCommonController {
         }
 
         // Find the connection request that led to the registered user
-        if (from) {
+        if (ref) {
           const socialConnectionRequest =
             await this.socialConnectionRequestService.findOne({
               where: {
                 status: EnumNetworkingConnectionRequestStatus.Pending,
                 addresserUser: {
-                  email: from,
+                  email: ref,
                 },
                 tempAddresseeEmail: saveUser.email,
               },

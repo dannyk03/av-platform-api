@@ -3,9 +3,9 @@ import { IsOptional } from 'class-validator';
 
 import { NormalizeEmail } from '@/utils/request/transform';
 
-export class AuthSignUpFromDto {
+export class AuthSignUpRefDto {
   @IsOptional()
   @NormalizeEmail()
   @Type(() => String)
-  readonly from: string;
+  readonly ref: string;
 }
