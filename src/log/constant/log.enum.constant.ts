@@ -12,6 +12,7 @@ export enum EnumLogAction {
   SignupLoginMagic = 'SIGNUP_LOGIN_MAGIC',
   SignUp = 'SIGNUP',
   ForgotPassword = 'FORGOT_PASSWORD',
+  Refresh = 'REFRESH',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',
 
@@ -37,4 +38,6 @@ export enum EnumLogAction {
   GiftUpsertOption = 'UPSERT_GIFT_OPTION',
 
   OrganizationJoinMagic = 'ORG_JOIN_MAGIC',
+
+  UserProfileRequest = 'USER_PROFILE_REQUEST',
 }

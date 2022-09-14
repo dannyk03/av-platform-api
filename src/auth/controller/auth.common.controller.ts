@@ -91,7 +91,7 @@ export class AuthCommonController {
     tags: ['login', 'withEmail'],
     mask: {
       passwordStrategyFields: ['password'],
-      emailStrategyFields: ['email'],
+      // emailStrategyFields: ['email'],
     },
   })
   @LoginGuard()
@@ -170,10 +170,10 @@ export class AuthCommonController {
   @LogTrace(EnumLogAction.SignUp, {
     tags: ['signup', 'auth', 'withEmail'],
     mask: {
-      emailStrategyFields: ['email'],
+      // emailStrategyFields: ['personal.email'],
       passwordStrategyFields: ['password'],
-      phoneNumberStrategyFields: ['phoneNumber'],
-      jsonStrategyFields: ['firstName', 'lastName'],
+      phoneNumberStrategyFields: ['personal.phoneNumber'],
+      jsonStrategyFields: ['personal.firstName', 'personal.lastName'],
     },
   })
   @Post('/signup')
@@ -316,7 +316,7 @@ export class AuthCommonController {
 
   @ClientResponse('auth.refresh')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignUp, {
+  @LogTrace(EnumLogAction.Refresh, {
     tags: ['refresh', 'auth', 'jwt'],
   })
   @AuthRefreshJwtGuard()
