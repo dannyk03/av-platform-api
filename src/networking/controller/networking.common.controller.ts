@@ -117,7 +117,7 @@ export class NetworkingCommonController {
       const createSocialConnectionRequest =
         await this.socialConnectionRequestService.create({
           personalNote: personalNote || sharedPersonalNote,
-          addressedUser: reqUser,
+          addresserUser: reqUser,
           addresseeUser,
           tempAddresseeEmail: addresseeUser ? null : email,
         });
@@ -131,14 +131,14 @@ export class NetworkingCommonController {
         const isEmailSent = addresseeUser
           ? await this.emailService.sendNetworkNewConnectionRequest({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addressedUser,
+              fromUser: saveSocialConnectionRequest.addresserUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
             })
           : await this.emailService.sendNetworkJoinInvite({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addressedUser,
+              fromUser: saveSocialConnectionRequest.addresserUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,

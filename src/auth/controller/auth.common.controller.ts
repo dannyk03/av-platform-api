@@ -305,25 +305,25 @@ export class AuthCommonController {
             await this.socialConnectionRequestService.findOne({
               where: {
                 status: EnumNetworkingConnectionRequestStatus.Pending,
-                addressedUser: {
+                addresserUser: {
                   email: from,
                 },
                 tempAddresseeEmail: saveUser.email,
               },
-              relations: ['addressedUser'],
+              relations: ['addresserUser'],
             });
 
           if (socialConnectionRequest) {
             // Auto approve connection request
             const createSocialConnection1 =
               await this.socialConnectionService.create({
-                user1: socialConnectionRequest.addressedUser,
+                user1: socialConnectionRequest.addresserUser,
                 user2: saveUser,
               });
             const createSocialConnection2 =
               await this.socialConnectionService.create({
                 user1: saveUser,
-                user2: socialConnectionRequest.addressedUser,
+                user2: socialConnectionRequest.addresserUser,
               });
 
             await transactionalEntityManager.save([
@@ -338,7 +338,7 @@ export class AuthCommonController {
 
             if (saveSocialConnectionRequest) {
               await this.emailService.surveyCompletedAfterInvite({
-                invitedUser: socialConnectionRequest.addressedUser,
+                inviterUser: socialConnectionRequest.addresserUser,
                 inviteeUser: saveUser,
               });
             }

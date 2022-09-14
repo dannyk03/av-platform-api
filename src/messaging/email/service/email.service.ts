@@ -242,10 +242,10 @@ export class EmailService {
 
   async surveyCompletedAfterInvite({
     inviteeUser,
-    invitedUser, // user who invited
+    inviterUser, // user who invited
   }: {
     inviteeUser: User;
-    invitedUser: User;
+    inviterUser: User;
   }) {
     // const path = `/network/join?from=${fromUser.email}`;
     // Temporary for local development
@@ -255,10 +255,10 @@ export class EmailService {
 
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendNetworkInvite.toString(),
-      to: [invitedUser.email],
+      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
+      to: [inviterUser.email],
       emailTemplatePayload: {},
-      identifier: { id: invitedUser.email },
+      identifier: { id: inviterUser.email },
     });
 
     return sendResult.status === EmailStatus.success;
