@@ -17,6 +17,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import {
   EnumAuthStatusCodeError,
   EnumMessagingStatusCodeError,
+  EnumNetworkingConnectionRequestStatus,
   EnumUserStatusCodeError,
   IResponseData,
 } from '@avo/type';
@@ -36,6 +37,10 @@ import {
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
+import {
+  SocialConnectionRequestService,
+  SocialConnectionService,
+} from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
@@ -57,6 +62,7 @@ import {
   AuthForgotPasswordRequestDto,
   AuthForgotPasswordSetDto,
   AuthSignUpDto,
+  AuthSignUpFromDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
@@ -83,6 +89,8 @@ export class AuthCommonController {
     private readonly helperCookieService: HelperCookieService,
     private readonly logService: LogService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
+    private readonly socialConnectionService: SocialConnectionService,
+    private readonly socialConnectionRequestService: SocialConnectionRequestService,
     private readonly forgotPasswordLinkService: ForgotPasswordLinkService,
   ) {}
 
@@ -227,7 +235,6 @@ export class AuthCommonController {
         email,
         firstName,
         lastName,
-        phoneNumber,
         birthMonth,
         birthDay,
         workAnniversaryMonth,
@@ -239,6 +246,7 @@ export class AuthCommonController {
       personas,
       dietary,
     }: AuthSignUpDto,
+    @Query() { from }: AuthSignUpFromDto,
     @RequestUserAgent() userAgent: IResult,
   ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
@@ -246,7 +254,7 @@ export class AuthCommonController {
     );
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
-    const checkExist = await this.userService.checkExist(email, phoneNumber);
+    const checkExist = await this.userService.checkExist(email);
 
     if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
@@ -278,7 +286,6 @@ export class AuthCommonController {
         const signUpUser = await this.userService.create({
           isActive: true,
           email,
-          phoneNumber,
           profile: {
             firstName,
             lastName,
@@ -311,7 +318,7 @@ export class AuthCommonController {
         });
 
         // Update connection requests with new signed-up User
-        transactionalEntityManager.update(
+        await transactionalEntityManager.update(
           SocialConnectionRequest,
           { tempAddresseeEmail: email, addresseeUser: IsNull() },
           { addresseeUser: saveUser },
@@ -325,12 +332,65 @@ export class AuthCommonController {
             expiresAt: this.helperDateService.forwardInDays(expiresInDays),
           });
 
-        await this.emailService.sendSignUpEmailVerification({
+        const emailSent = await this.emailService.sendSignUpEmailVerification({
           email,
           code: signUpEmailVerificationLink.code,
           expiresInDays,
           firstName: signUpUser.profile.firstName,
         });
+
+        if (!emailSent) {
+          throw new InternalServerErrorException({
+            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+            message: 'messaging.error.email.send',
+          });
+        }
+
+        // Find the connection request that led to the registered user
+        if (from) {
+          const socialConnectionRequest =
+            await this.socialConnectionRequestService.findOne({
+              where: {
+                status: EnumNetworkingConnectionRequestStatus.Pending,
+                addresserUser: {
+                  email: from,
+                },
+                tempAddresseeEmail: saveUser.email,
+              },
+              relations: ['addresserUser'],
+            });
+
+          if (socialConnectionRequest) {
+            // Auto approve connection request
+            const createSocialConnection1 =
+              await this.socialConnectionService.create({
+                user1: socialConnectionRequest.addresserUser,
+                user2: saveUser,
+              });
+            const createSocialConnection2 =
+              await this.socialConnectionService.create({
+                user1: saveUser,
+                user2: socialConnectionRequest.addresserUser,
+              });
+
+            await transactionalEntityManager.save([
+              createSocialConnection1,
+              createSocialConnection2,
+            ]);
+
+            socialConnectionRequest.status =
+              EnumNetworkingConnectionRequestStatus.Approved;
+            const saveSocialConnectionRequest =
+              await transactionalEntityManager.save(socialConnectionRequest);
+
+            if (saveSocialConnectionRequest) {
+              await this.emailService.surveyCompletedAToInviter({
+                inviterUser: socialConnectionRequest.addresserUser,
+                inviteeUser: saveUser,
+              });
+            }
+          }
+        }
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
         this.logService.info({

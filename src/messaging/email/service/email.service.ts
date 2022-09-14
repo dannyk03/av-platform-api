@@ -49,7 +49,7 @@ export class EmailService {
     fromUser: User;
     personalNote: string;
   }) {
-    const path = '/network/join';
+    // const path = `/network/join?from=${fromUser.email}`;
     // Temporary for local development
     if (!this.isProduction) {
       return true;
@@ -59,10 +59,10 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { from: fromUser.email, path, personalNote },
+      emailTemplatePayload: { from: fromUser.email, personalNote },
       identifier: { id: email },
     });
-    console.log({ email, path });
+    console.log({ email, from: fromUser.email });
     return sendResult.status === EmailStatus.success;
   }
 
@@ -283,6 +283,30 @@ export class EmailService {
       path,
       email,
     });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async surveyCompletedAToInviter({
+    inviteeUser,
+    inviterUser,
+  }: {
+    inviteeUser: User;
+    inviterUser: User;
+  }) {
+    // const path = `/network/join?from=${fromUser.email}`;
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
+      to: [inviterUser.email],
+      emailTemplatePayload: {},
+      identifier: { id: inviterUser.email },
+    });
+
     return sendResult.status === EmailStatus.success;
   }
 }

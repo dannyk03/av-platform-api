@@ -6,31 +6,31 @@ import { BaseEntity } from '@/database/entity';
 @Entity()
 export class UserProfileShipping extends BaseEntity<UserProfileShipping> {
   @Column({
-    length: 60,
+    length: 100,
     nullable: true,
   })
   addressLine1?: string;
 
   @Column({
-    length: 60,
+    length: 100,
     nullable: true,
   })
   addressLine2?: string;
 
   @Column({
-    length: 30,
+    length: 50,
     nullable: true,
   })
   city?: string;
 
   @Column({
-    length: 30,
+    length: 50,
     nullable: true,
   })
   state?: string;
 
   @Column({
-    length: 20,
+    length: 30,
     nullable: true,
   })
   zipCode?: string;

@@ -7,6 +7,7 @@ export enum EmailTemplate {
   SendGiftConfirm = 'SendGiftConfirm',
   SendGiftOptions = 'SendGiftOptions',
   SendGiftShipped = 'SendGiftShipped',
+  SendSurveyCompletedToInviter = 'SendSurveyCompletedToInviter',
 }
 
 export enum EmailStatus {

@@ -32,8 +32,7 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { UserInviteDto } from '../dto';
-import { UserListDto } from '../dto';
+import { UserInviteDto, UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
