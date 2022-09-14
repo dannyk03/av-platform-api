@@ -9,16 +9,18 @@
   "upload": "Upload success",
   "inactive": "Inactive succeed",
   "active": "Active succeed",
+  "invite": "User invite success",
   "signUpSuccess": "Sign up succeed",
   "error": {
     "notFound": "User not found",
     "inactive": "User not active",
-    "emailExists": "Email user used",
+    "emailExists": "The email has already been taken",
     "phoneNumberExists": "User phone number already used",
     "active": "User status active invalid",
     "exists": "User exists",
     "code": "Invalid sign up code",
     "signUpLink": "Invalid sign up link",
-    "verified": "User email not verified"
+    "verified": "User email not verified",
+    "profileForbidden": "User profile forbidden"
   }
 }

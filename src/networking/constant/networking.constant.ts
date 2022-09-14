@@ -8,7 +8,7 @@ export const CONNECT_REQUEST_DEFAULT_AVAILABLE_SEARCH = ['from'];
 
 export const ConnectRequestOrderByNestingAliasMap = {
   createdAt: 'socialConnectionRequest.createdAt',
-  from: 'socialConnectionRequest.addressedUser.email',
+  from: 'socialConnectionRequest.addresserUser.email',
 };
 
 // Connection
@@ -21,5 +21,5 @@ export const CONNECTIONS_DEFAULT_AVAILABLE_SEARCH = ['email'];
 
 export const ConnectionsOrderByNestingAliasMap = {
   createdAt: 'socialConnection.createdAt',
-  email: 'socialConnection.addressedUser.email',
+  email: 'socialConnection.addresserUser.email',
 };

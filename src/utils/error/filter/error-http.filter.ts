@@ -133,7 +133,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const resResponse: IErrorHttpFilter = {
       statusCode: statusCode || statusHttp,
       message: mapMessage,
-      error: error && Object.keys(error).length ? error : undefined,
+      error: error && Object.keys(error).length ? error : exception.message,
       errors: errors as IErrors[] | IErrorsImport[],
       meta: resMetadata,
       data,

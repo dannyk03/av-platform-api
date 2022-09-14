@@ -7,6 +7,7 @@ export class SocialConnectionGetSerialization
   implements ISocialConnectionGetSerialization
 {
   @Expose()
+  @Transform(({ obj }) => obj.user2?.id)
   readonly id: string;
 
   @Expose()

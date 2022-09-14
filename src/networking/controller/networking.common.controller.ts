@@ -40,10 +40,11 @@ import {
 import { AclGuard } from '@/auth/guard';
 
 import {
-  ConnectRequestUpdateDto,
   SocialConnectionListDto,
+  SocialConnectionRequestApproveDto,
   SocialConnectionRequestDto,
   SocialConnectionRequestListDto,
+  SocialConnectionRequestRejectDto,
 } from '../dto';
 import { EmailQueryParamOptionalDto } from '@/utils/request/dto';
 
@@ -116,7 +117,7 @@ export class NetworkingCommonController {
       const createSocialConnectionRequest =
         await this.socialConnectionRequestService.create({
           personalNote: personalNote || sharedPersonalNote,
-          addressedUser: reqUser,
+          addresserUser: reqUser,
           addresseeUser,
           tempAddresseeEmail: addresseeUser ? null : email,
         });
@@ -130,14 +131,14 @@ export class NetworkingCommonController {
         const isEmailSent = addresseeUser
           ? await this.emailService.sendNetworkNewConnectionRequest({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addressedUser,
+              fromUser: saveSocialConnectionRequest.addresserUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
             })
           : await this.emailService.sendNetworkJoinInvite({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addressedUser,
+              fromUser: saveSocialConnectionRequest.addresserUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
@@ -279,14 +280,14 @@ export class NetworkingCommonController {
     @Query()
     { email }: EmailQueryParamOptionalDto,
     @Body()
-    { socialConnectionRequestIds }: ConnectRequestUpdateDto,
+    { userIds }: SocialConnectionRequestApproveDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrIds(
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrUserIds(
         {
           email,
-          socialConnectionRequestIds,
+          userIds,
           reqUserId: reqUser.id,
         },
       );
@@ -320,14 +321,14 @@ export class NetworkingCommonController {
     @Query()
     { email }: EmailQueryParamOptionalDto,
     @Body()
-    { socialConnectionRequestIds }: ConnectRequestUpdateDto,
+    { userIds }: SocialConnectionRequestRejectDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrIds(
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrUserIds(
         {
           email,
-          socialConnectionRequestIds,
+          userIds,
           reqUserId: reqUser.id,
         },
       );

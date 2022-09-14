@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MessagingModule } from '@/messaging/messaging.module';
+import { UserModule } from '@/user/user.module';
 
 import { Organization, OrganizationInviteLink } from './entity';
 
@@ -16,6 +17,7 @@ import { ConnectionNames } from '@/database/constant';
       ConnectionNames.Default,
     ),
     MessagingModule,
+    UserModule,
   ],
   exports: [OrganizationService, OrganizationInviteService],
   providers: [OrganizationService, OrganizationInviteService],

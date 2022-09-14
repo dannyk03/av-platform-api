@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="avonow.com" target="_blank"><img src="https://res.cloudinary.com/avonow/image/upload/v1657264726/nextgen/platform-api.png" width="320" alt="platform-api" /></a>
+  <a href="avonow.com" target="_blank"><img src="https://res.cloudinary.com/avonow/image/upload/v1662615810/github/platform_api.png" width="520" alt="platform-api" /></a>
 </p>
 
 [![NestJs][nestjs-shield]][ref-nestjs]

@@ -1,12 +1,12 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 
-import { EnumUserStatusCodeError } from '@avo/type';
+import { EnumAuthStatusCodeError, EnumUserStatusCodeError } from '@avo/type';
 
 @Injectable()
 export class ReqUserActiveGuard implements CanActivate {
@@ -14,9 +14,9 @@ export class ReqUserActiveGuard implements CanActivate {
     const { __user } = ctx.switchToHttp().getRequest();
 
     if (!__user) {
-      throw new NotFoundException({
-        statusCode: EnumUserStatusCodeError.UserNotFoundError,
-        message: 'user.error.notFound',
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
+        message: 'auth.error.badRequest',
       });
     } else if (!__user.isActive) {
       throw new ForbiddenException({

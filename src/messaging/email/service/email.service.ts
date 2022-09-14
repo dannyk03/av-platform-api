@@ -601,4 +601,73 @@ export class EmailService {
     });
     return sendResult.status === EmailStatus.success;
   }
+
+  async sendForgotPassword({ email, code }: { email: string; code: string }) {
+    const path = '/forgot';
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendNetworkInvite.toString(),
+      to: [email],
+      emailTemplatePayload: { email, code },
+      identifier: { id: email },
+    });
+    console.log({ email, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyCompletedToInviter({
+    inviteeUser,
+    inviterUser,
+  }: {
+    inviteeUser: User;
+    inviterUser: User;
+  }) {
+    // const path = `/network/join?from=${fromUser.email}`;
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
+      to: [inviterUser.email],
+      emailTemplatePayload: {},
+      identifier: { id: inviterUser.email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+  async resendSignUpEmailVerification({
+    email,
+    firstName,
+    code,
+    expiresAt,
+    path = '/signup-resend',
+  }: {
+    email: string;
+    firstName: string;
+    code: string;
+    expiresAt: Date;
+    path?: string;
+  }): Promise<boolean> {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Add server url to payload
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendResetPassword.toString(),
+      to: [email],
+      emailTemplatePayload: { path, activationCode: code, user: { firstName } },
+      identifier: { id: email },
+    });
+    console.log({ email, code, expiresAt, path });
+    return sendResult.status === EmailStatus.success;
+  }
 }

@@ -131,7 +131,7 @@ export class MagicLinkController {
 
     // TODO: cache in redis safeData with user role and permission for next api calls
 
-    const rememberMe = true;
+    const rememberMe = false;
     const payloadAccessToken: Record<string, any> =
       await this.authService.createPayloadAccessToken(safeData, rememberMe);
 
@@ -166,8 +166,8 @@ export class MagicLinkController {
     @Query()
     { code }: MagicLinkDto,
   ): Promise<void> {
-    const existingInvite = await this.organizationInviteService.findOneBy({
-      code,
+    const existingInvite = await this.organizationInviteService.findOne({
+      where: { code },
     });
 
     if (!existingInvite) {

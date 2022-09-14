@@ -9,6 +9,7 @@ import { AuthModule } from '@/auth/auth.module';
 import { GiftModule } from '@/gifting/gift.module';
 import { HealthModule } from '@/health/health.module';
 import { MessagingModule } from '@/messaging/messaging.module';
+import { NetworkingModule } from '@/networking/networking.module';
 import { OrganizationModule } from '@/organization/organization.module';
 import { PaymentModule } from '@/payment/payment.module';
 import { UserModule } from '@/user/user.module';
@@ -23,13 +24,11 @@ import {
   OrganizationInviteController,
 } from '@/organization/controller';
 import { PaymentController } from '@/payment/controller';
-import { UserCommonController } from '@/user/controller';
 
 @Module({
   controllers: [
     HealthController,
     AuthCommonController,
-    UserCommonController,
     OrganizationController,
     OrganizationInviteController,
     PaymentController,
@@ -53,6 +52,7 @@ import { UserCommonController } from '@/user/controller';
     PaymentModule,
     MessagingModule,
     GiftModule,
+    NetworkingModule,
   ],
 })
 export class RouterCommonModule {}
