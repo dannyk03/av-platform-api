@@ -6,6 +6,7 @@ import {
   IsString,
   Length,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 
 import {
@@ -149,16 +150,19 @@ export class SurveyPersonalDto {
   readonly kidFriendlyActivities: object;
 
   @IsNotEmpty()
+  @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
   readonly home: SurveyPersonalAddressDto;
 
   @IsNotEmpty()
+  @ValidateNested()
   @Type(() => SurveyPersonalShippingDto)
   readonly shipping: SurveyPersonalShippingDto;
 }
 
 export class AuthSignUpDto {
   @IsNotEmpty()
+  @ValidateNested()
   @Type(() => SurveyPersonalDto)
   readonly personal: SurveyPersonalDto;
 
