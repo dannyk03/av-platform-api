@@ -227,7 +227,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftReadyForSubmit({
+  async sendGiftOptionSelect({
     giftIntent,
     email,
     code,
@@ -258,7 +258,7 @@ export class EmailService {
         firstName: giftIntent.sender.user.profile.firstName,
       },
       giftOptions,
-      giftSelectUrl: '', // TODO: When action url is ready update here
+      giftSelectUrl: `gifts/select/${giftIntent.id}`,
     };
 
     const sendResult = await this.customerIOService.sendEmail({

@@ -183,7 +183,7 @@ export class GiftIntentService {
 
         const saveReadyLink = await transactionalEntityManager.save(readyLink);
 
-        const emailSent = await this.emailService.sendGiftReadyForSubmit({
+        const emailSent = await this.emailService.sendGiftOptionSelect({
           giftIntent,
           email:
             giftIntent.recipient?.user?.email ||
