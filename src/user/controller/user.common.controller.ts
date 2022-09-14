@@ -1,12 +1,10 @@
 import {
-  Body,
   Controller,
   ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Param,
-  Post,
 } from '@nestjs/common';
 
 import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
@@ -24,7 +22,6 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { UserInviteDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
@@ -48,6 +45,9 @@ export class UserCommonController {
     classSerialization: UserProfileGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UserProfileRequest, {
+    tags: ['user', 'profile'],
+  })
   @AclGuard({
     relations: ['profile', 'profile.home', 'profile.shipping'],
   })
@@ -63,6 +63,9 @@ export class UserCommonController {
     classSerialization: UserConnectionProfileGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UserProfileRequest, {
+    tags: ['user', 'profile'],
+  })
   @AclGuard({
     relations: ['profile'],
   })
@@ -98,42 +101,5 @@ export class UserCommonController {
     }
 
     return socialConnection?.user1;
-  }
-
-  @ClientResponse('user.invite')
-  @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SendConnectionRequest, {
-    tags: ['user', 'invite'],
-  })
-  @AclGuard()
-  @Post('/invite')
-  async generalInvite(
-    @ReqUser()
-    reqUser: User,
-    @Body()
-    { addressees, personalNote: sharedPersonalNote }: UserInviteDto,
-  ): Promise<IResponseData> {
-    const promises = addressees.map(async ({ email, personalNote }) => {
-      if (email === reqUser.email) {
-        return Promise.reject(email);
-      }
-
-      const isEmailSent = await this.emailService.sendNetworkJoinInvite({
-        personalNote: personalNote || sharedPersonalNote,
-        fromUser: reqUser,
-        email,
-      });
-
-      if (isEmailSent) {
-        return Promise.resolve(email);
-      }
-      return Promise.reject(email);
-    });
-
-    const result = await Promise.allSettled(promises);
-
-    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
-      result,
-    );
   }
 }

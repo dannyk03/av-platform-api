@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SignUpEmailVerificationLink, UserAuthConfig } from './entity';
+import {
+  ResetPasswordLink,
+  SignUpEmailVerificationLink,
+  UserAuthConfig,
+} from './entity';
 
-import { AuthService, AuthSignUpVerificationLinkService } from './service';
+import {
+  AuthService,
+  AuthSignUpVerificationLinkService,
+  ResetPasswordLinkService,
+} from './service';
 
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
@@ -13,7 +21,7 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [UserAuthConfig, SignUpEmailVerificationLink],
+      [UserAuthConfig, SignUpEmailVerificationLink, ResetPasswordLink],
       ConnectionNames.Default,
     ),
   ],
@@ -22,12 +30,14 @@ import { ConnectionNames } from '@/database/constant';
     JwtStrategy,
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
+    ResetPasswordLinkService,
   ],
   exports: [
     AuthService,
     JwtStrategy,
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
+    ResetPasswordLinkService,
   ],
   controllers: [],
 })
