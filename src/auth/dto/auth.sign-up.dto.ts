@@ -103,15 +103,15 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly lastName?: string;
 
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  @EmptyStringToUndefinedTransform()
-  @Length(10, 20)
-  @IsPhoneNumber()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly phoneNumber?: string;
+  // @IsString()
+  // @IsOptional()
+  // @IsNotEmpty()
+  // @EmptyStringToUndefinedTransform()
+  // @Length(10, 20)
+  // @IsPhoneNumber()
+  // @NormalizeStringInputTransform()
+  // @Type(() => String)
+  // readonly phoneNumber?: string;
 
   @IsString()
   @IsOptional()

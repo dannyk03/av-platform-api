@@ -235,7 +235,6 @@ export class AuthCommonController {
         email,
         firstName,
         lastName,
-        phoneNumber,
         birthMonth,
         birthDay,
         workAnniversaryMonth,
