@@ -8,7 +8,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { ForgotPasswordLink } from '../entity';
+import { ResetPasswordLink } from '../entity';
 
 import { HelperHashService } from '@/utils/helper/service';
 
@@ -17,33 +17,33 @@ import { ConnectionNames } from '@/database/constant';
 @Injectable()
 export class ForgotPasswordLinkService {
   constructor(
-    @InjectRepository(ForgotPasswordLink, ConnectionNames.Default)
-    private forgotPasswordLinkRepository: Repository<ForgotPasswordLink>,
+    @InjectRepository(ResetPasswordLink, ConnectionNames.Default)
+    private forgotPasswordLinkRepository: Repository<ResetPasswordLink>,
     private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
-    props: DeepPartial<Omit<ForgotPasswordLink, 'code'>>,
-  ): Promise<ForgotPasswordLink> {
+    props: DeepPartial<Omit<ResetPasswordLink, 'code'>>,
+  ): Promise<ResetPasswordLink> {
     return this.forgotPasswordLinkRepository.create({
       ...props,
       code: await this.helperHashService.magicCode(),
     });
   }
 
-  async save(data: ForgotPasswordLink): Promise<ForgotPasswordLink> {
-    return this.forgotPasswordLinkRepository.save<ForgotPasswordLink>(data);
+  async save(data: ResetPasswordLink): Promise<ResetPasswordLink> {
+    return this.forgotPasswordLinkRepository.save<ResetPasswordLink>(data);
   }
 
   async findOneBy(
-    find: FindOptionsWhere<ForgotPasswordLink>,
-  ): Promise<ForgotPasswordLink> {
+    find: FindOptionsWhere<ResetPasswordLink>,
+  ): Promise<ResetPasswordLink> {
     return this.forgotPasswordLinkRepository.findOneBy(find);
   }
 
   async findOne(
-    find: FindOneOptions<ForgotPasswordLink>,
-  ): Promise<ForgotPasswordLink> {
+    find: FindOneOptions<ResetPasswordLink>,
+  ): Promise<ResetPasswordLink> {
     return this.forgotPasswordLinkRepository.findOne(find);
   }
 }

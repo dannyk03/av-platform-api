@@ -4,7 +4,7 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-export class ForgotPasswordLink extends BaseEntity<ForgotPasswordLink> {
+export class ResetPasswordLink extends BaseEntity<ResetPasswordLink> {
   @Index()
   @Column({
     length: 50,

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
-  ForgotPasswordLink,
+  ResetPasswordLink,
   SignUpEmailVerificationLink,
   UserAuthConfig,
 } from './entity';
@@ -21,7 +21,7 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [UserAuthConfig, SignUpEmailVerificationLink, ForgotPasswordLink],
+      [UserAuthConfig, SignUpEmailVerificationLink, ResetPasswordLink],
       ConnectionNames.Default,
     ),
   ],
