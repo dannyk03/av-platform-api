@@ -1,12 +1,10 @@
 import {
-  Body,
   Controller,
   ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Param,
-  Post,
 } from '@nestjs/common';
 
 import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
@@ -24,7 +22,6 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { UserInviteDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
