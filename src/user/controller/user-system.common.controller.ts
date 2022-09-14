@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -7,15 +8,22 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
 import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
+import { User } from '../entity';
+
 import { UserService } from '../service';
+import { EmailService } from '@/messaging/email/service';
+import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { ReqUser } from '../decorator';
+import { LogTrace } from '@/log/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -24,6 +32,7 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { UserInviteDto } from '../dto';
 import { UserListDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
@@ -32,6 +41,8 @@ import {
   UserProfileGetSerialization,
 } from '../serialization';
 
+import { EnumLogAction } from '@/log/constant';
+
 @Controller({
   version: '1',
 })
@@ -39,6 +50,8 @@ export class UserSystemCommonController {
   constructor(
     private readonly userService: UserService,
     private readonly paginationService: PaginationService,
+    private readonly emailService: EmailService,
+    private readonly helperPromiseService: HelperPromiseService,
   ) {}
 
   @ClientResponsePaging('user.list', {
@@ -192,5 +205,44 @@ export class UserSystemCommonController {
     }
 
     return findUser;
+  }
+
+  @ClientResponse('user.invite')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SendConnectionRequest, {
+    tags: ['user', 'invite'],
+  })
+  @AclGuard({
+    systemOnly: true,
+  })
+  @Post('/invite')
+  async generalInvite(
+    @ReqUser()
+    reqUser: User,
+    @Body()
+    { addressees, personalNote: sharedPersonalNote }: UserInviteDto,
+  ): Promise<IResponseData> {
+    const promises = addressees.map(async ({ email, personalNote }) => {
+      if (email === reqUser.email) {
+        return Promise.reject(email);
+      }
+
+      const isEmailSent = await this.emailService.sendNetworkJoinInvite({
+        personalNote: personalNote || sharedPersonalNote,
+        fromUser: reqUser,
+        email,
+      });
+
+      if (isEmailSent) {
+        return Promise.resolve(email);
+      }
+      return Promise.reject(email);
+    });
+
+    const result = await Promise.allSettled(promises);
+
+    return this.helperPromiseService.mapPromiseBasedResultToResponseReport(
+      result,
+    );
   }
 }

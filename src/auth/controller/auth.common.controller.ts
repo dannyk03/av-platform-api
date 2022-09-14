@@ -59,6 +59,7 @@ import {
   AuthSignUpDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
+import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
 import { MagicLinkDto } from '@/magic-link/dto';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
@@ -91,7 +92,7 @@ export class AuthCommonController {
     tags: ['login', 'withEmail'],
     mask: {
       passwordStrategyFields: ['password'],
-      emailStrategyFields: ['email'],
+      // emailStrategyFields: ['email'],
     },
   })
   @LoginGuard()
@@ -165,15 +166,54 @@ export class AuthCommonController {
     };
   }
 
+  @ClientResponse('auth.signUpResendEmail')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['signup', 'auth', 'resend', 'email'],
+  })
+  @Post('/signup-resend')
+  async signUpResendEmail(@Body() { email }: AuthResendSignupEmailDto) {
+    const findAuthSignUpVerificationLink =
+      await this.authSignUpVerificationLinkService.findOne({
+        where: { user: { email } },
+      });
+
+    if (!findAuthSignUpVerificationLink) {
+      return;
+    }
+
+    const emailSent = await this.emailService.resendSignUpEmailVerification({
+      email: findAuthSignUpVerificationLink.email,
+      code: findAuthSignUpVerificationLink.code,
+      expiresAt: findAuthSignUpVerificationLink.expiresAt,
+      firstName: findAuthSignUpVerificationLink.user?.profile?.firstName,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+      });
+    }
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return { code: findAuthSignUpVerificationLink.code };
+    }
+  }
+
   @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.SignUp, {
     tags: ['signup', 'auth', 'withEmail'],
     mask: {
-      emailStrategyFields: ['email'],
+      // emailStrategyFields: ['personal.email'],
       passwordStrategyFields: ['password'],
-      phoneNumberStrategyFields: ['phoneNumber'],
-      jsonStrategyFields: ['firstName', 'lastName'],
+      phoneNumberStrategyFields: ['personal.phoneNumber'],
+      jsonStrategyFields: ['personal.firstName', 'personal.lastName'],
     },
   })
   @Post('/signup')
@@ -200,7 +240,7 @@ export class AuthCommonController {
       dietary,
     }: AuthSignUpDto,
     @RequestUserAgent() userAgent: IResult,
-  ) {
+  ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
@@ -218,7 +258,7 @@ export class AuthCommonController {
     if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
-        message: 'user.error.emailExists',
+        message: 'auth.error.badRequest',
       });
     }
 
@@ -316,7 +356,7 @@ export class AuthCommonController {
 
   @ClientResponse('auth.refresh')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignUp, {
+  @LogTrace(EnumLogAction.Refresh, {
     tags: ['refresh', 'auth', 'jwt'],
   })
   @AuthRefreshJwtGuard()
