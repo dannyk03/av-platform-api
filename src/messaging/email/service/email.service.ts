@@ -286,7 +286,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async surveyCompletedAToInviter({
+  async sendSurveyCompletedAToInviter({
     inviteeUser,
     inviterUser,
   }: {

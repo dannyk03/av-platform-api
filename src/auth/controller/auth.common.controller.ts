@@ -384,7 +384,7 @@ export class AuthCommonController {
               await transactionalEntityManager.save(socialConnectionRequest);
 
             if (saveSocialConnectionRequest) {
-              await this.emailService.surveyCompletedAToInviter({
+              await this.emailService.sendSurveyCompletedAToInviter({
                 inviterUser: socialConnectionRequest.addresserUser,
                 inviteeUser: saveUser,
               });
