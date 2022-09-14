@@ -11,7 +11,7 @@ export enum EnumLogAction {
   Login = 'LOGIN',
   SignupLoginMagic = 'SIGNUP_LOGIN_MAGIC',
   SignUp = 'SIGNUP',
-  ForgotPassword = 'FORGOT_PASSWORD',
+  ResetPassword = 'RESET_PASSWORD',
   Refresh = 'REFRESH',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',

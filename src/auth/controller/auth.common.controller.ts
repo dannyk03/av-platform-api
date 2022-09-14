@@ -33,7 +33,7 @@ import { User } from '@/user/entity';
 import {
   AuthService,
   AuthSignUpVerificationLinkService,
-  ForgotPasswordLinkService,
+  ResetPasswordLinkService,
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
@@ -59,8 +59,8 @@ import {
 
 import {
   AuthChangePasswordDto,
-  AuthForgotPasswordRequestDto,
-  AuthForgotPasswordSetDto,
+  AuthResetPasswordRequestDto,
+  AuthResetPasswordSetDto,
   AuthSignUpDto,
   AuthSignUpRefDto,
 } from '../dto';
@@ -91,7 +91,7 @@ export class AuthCommonController {
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
-    private readonly forgotPasswordLinkService: ForgotPasswordLinkService,
+    private readonly resetPasswordLinkService: ResetPasswordLinkService,
   ) {}
 
   @ClientResponse('auth.login')
@@ -520,49 +520,53 @@ export class AuthCommonController {
     await this.userService.updatePassword(user.id, password);
   }
 
-  @ClientResponse('auth.forgotPassword')
+  @ClientResponse('auth.resetPassword')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.ForgotPassword, {
-    tags: ['forgotPassword', 'auth'],
+  @LogTrace(EnumLogAction.ResetPassword, {
+    tags: ['resetPassword', 'auth'],
   })
-  @Post('/forgot')
-  async forgotPasswordRequest(
-    @Body() { email }: AuthForgotPasswordRequestDto,
+  @Post('/reset')
+  async resetPasswordRequest(
+    @Body() { email }: AuthResetPasswordRequestDto,
   ): Promise<IResponseData> {
     const findUser = await this.userService.findOne({
       where: {
         email,
       },
+      relations: ['profile'],
       select: {
         id: true,
         email: true,
+        profile: {
+          firstName: true,
+        },
       },
     });
 
     if (!findUser) {
       this.logService.error({
-        action: EnumLogAction.ForgotPassword,
-        description: 'Forgot password attempt',
-        tags: ['forgotPassword'],
+        action: EnumLogAction.ResetPassword,
+        description: 'Reset password attempt',
+        tags: ['resetPassword'],
         data: { error: 'User does not exist' },
       });
       return;
     }
 
-    const createForgotPasswordLink =
-      await this.forgotPasswordLinkService.create({
-        email,
-        expiresAt: this.helperDateService.forwardInMinutes(60),
-        user: findUser,
-      });
+    const createResetPasswordLink = await this.resetPasswordLinkService.create({
+      email,
+      expiresAt: this.helperDateService.forwardInMinutes(60),
+      user: findUser,
+    });
 
-    const saveForgotPasswordLink = await this.forgotPasswordLinkService.save(
-      createForgotPasswordLink,
+    const saveResetPasswordLink = await this.resetPasswordLinkService.save(
+      createResetPasswordLink,
     );
 
-    const emailSent = await this.emailService.sendForgotPassword({
-      email: saveForgotPasswordLink.email,
-      code: saveForgotPasswordLink.code,
+    const emailSent = await this.emailService.sendResetPassword({
+      email: saveResetPasswordLink.email,
+      firstName: saveResetPasswordLink.user?.profile?.firstName,
+      code: saveResetPasswordLink.code,
     });
 
     if (!emailSent) {
@@ -576,30 +580,30 @@ export class AuthCommonController {
     const isProduction = this.configService.get<boolean>('app.isProduction');
     const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
     if (!(isProduction || isSecureMode)) {
-      return { code: saveForgotPasswordLink.code };
+      return { code: saveResetPasswordLink.code };
     }
   }
 
-  @ClientResponse('auth.forgotPasswordSet')
+  @ClientResponse('auth.resetPasswordSet')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.ForgotPassword, {
-    tags: ['forgotPassword', 'set', 'auth'],
+  @LogTrace(EnumLogAction.ResetPassword, {
+    tags: ['resetPassword', 'set', 'auth'],
     mask: {
       passwordStrategyFields: ['password'],
     },
   })
-  @Patch('/forgot')
-  async forgotPasswordSet(
+  @Patch('/reset')
+  async resetPasswordSet(
     @Query()
     { code }: MagicLinkDto,
-    @Body() { password }: AuthForgotPasswordSetDto,
+    @Body() { password }: AuthResetPasswordSetDto,
   ): Promise<void> {
-    const existingForgotPasswordLink =
-      await this.forgotPasswordLinkService.findOne({
+    const existingResetPasswordLink =
+      await this.resetPasswordLinkService.findOne({
         where: { code },
       });
 
-    if (!existingForgotPasswordLink) {
+    if (!existingResetPasswordLink) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthBadRequestError,
         message: 'auth.error.badRequest',
@@ -608,14 +612,14 @@ export class AuthCommonController {
 
     const now = this.helperDateService.create();
     const expiresAt =
-      existingForgotPasswordLink.expiresAt &&
+      existingResetPasswordLink.expiresAt &&
       this.helperDateService.create({
-        date: existingForgotPasswordLink.expiresAt,
+        date: existingResetPasswordLink.expiresAt,
       });
 
-    if ((expiresAt && now > expiresAt) || existingForgotPasswordLink.usedAt) {
+    if ((expiresAt && now > expiresAt) || existingResetPasswordLink.usedAt) {
       throw new BadRequestException({
-        statusCode: EnumAuthStatusCodeError.AuthForgotPasswordLinkExpired,
+        statusCode: EnumAuthStatusCodeError.AuthResetPasswordLinkExpired,
         message: 'auth.error.badRequest',
       });
     }
@@ -627,7 +631,7 @@ export class AuthCommonController {
           await this.authService.createPassword(password);
 
         const findUser = await this.userService.findOneBy({
-          email: existingForgotPasswordLink.email,
+          email: existingResetPasswordLink.email,
         });
 
         await transactionalEntityManager.update(
@@ -635,9 +639,9 @@ export class AuthCommonController {
           { user: findUser },
           { salt, password: passwordHash, passwordExpiredAt },
         );
-        existingForgotPasswordLink.usedAt = this.helperDateService.create();
+        existingResetPasswordLink.usedAt = this.helperDateService.create();
 
-        transactionalEntityManager.save(existingForgotPasswordLink);
+        transactionalEntityManager.save(existingResetPasswordLink);
       },
     );
   }

@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 
 import { NormalizeStringInputTransform } from '@/utils/request/transform';
 
-export class AuthForgotPasswordRequestDto {
+export class AuthResetPasswordRequestDto {
   @IsNotEmpty()
   @IsEmail()
   @NormalizeStringInputTransform()

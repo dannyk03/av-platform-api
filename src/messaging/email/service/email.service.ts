@@ -149,9 +149,11 @@ export class EmailService {
   async sendResetPassword({
     email,
     firstName,
-    path = '/reset-password',
+    code,
+    path = `/reset-password?code=${code}`,
   }: {
     email: string;
+    code: string;
     // emailTemplatePayload: ResetPasswordMessageData; // TODO: consider if best to use the type here or just internally
     firstName: string;
     path?: string;
@@ -165,6 +167,7 @@ export class EmailService {
       template: EmailTemplate.SendResetPassword.toString(),
       to: [email],
       emailTemplatePayload: {
+        code,
         user: {
           firstName: firstName,
         },
@@ -599,24 +602,6 @@ export class EmailService {
       email,
       payload,
     });
-    return sendResult.status === EmailStatus.success;
-  }
-
-  async sendForgotPassword({ email, code }: { email: string; code: string }) {
-    const path = '/forgot';
-    // Temporary for local development
-    if (!this.isProduction) {
-      return true;
-    }
-
-    // TODO: Verify template parameters
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendNetworkInvite.toString(),
-      to: [email],
-      emailTemplatePayload: { email, code },
-      identifier: { id: email },
-    });
-    console.log({ email, path });
     return sendResult.status === EmailStatus.success;
   }
 

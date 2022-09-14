@@ -15,35 +15,35 @@ import { HelperHashService } from '@/utils/helper/service';
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
-export class ForgotPasswordLinkService {
+export class ResetPasswordLinkService {
   constructor(
     @InjectRepository(ResetPasswordLink, ConnectionNames.Default)
-    private forgotPasswordLinkRepository: Repository<ResetPasswordLink>,
+    private resetPasswordLinkRepository: Repository<ResetPasswordLink>,
     private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
     props: DeepPartial<Omit<ResetPasswordLink, 'code'>>,
   ): Promise<ResetPasswordLink> {
-    return this.forgotPasswordLinkRepository.create({
+    return this.resetPasswordLinkRepository.create({
       ...props,
       code: await this.helperHashService.magicCode(),
     });
   }
 
   async save(data: ResetPasswordLink): Promise<ResetPasswordLink> {
-    return this.forgotPasswordLinkRepository.save<ResetPasswordLink>(data);
+    return this.resetPasswordLinkRepository.save<ResetPasswordLink>(data);
   }
 
   async findOneBy(
     find: FindOptionsWhere<ResetPasswordLink>,
   ): Promise<ResetPasswordLink> {
-    return this.forgotPasswordLinkRepository.findOneBy(find);
+    return this.resetPasswordLinkRepository.findOneBy(find);
   }
 
   async findOne(
     find: FindOneOptions<ResetPasswordLink>,
   ): Promise<ResetPasswordLink> {
-    return this.forgotPasswordLinkRepository.findOne(find);
+    return this.resetPasswordLinkRepository.findOne(find);
   }
 }
