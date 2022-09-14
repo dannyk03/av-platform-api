@@ -24,15 +24,16 @@ export class HelperCookieService {
     return response.cookie(this.accessTokenCookieName, accessToken, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'strict',
+      sameSite: 'none',
       httpOnly: true,
     });
   }
+
   async detachAccessToken(response: Response) {
     return response.cookie(this.accessTokenCookieName, undefined, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperDateService.create(),
-      sameSite: 'strict',
+      sameSite: 'none',
       httpOnly: true,
     });
   }
