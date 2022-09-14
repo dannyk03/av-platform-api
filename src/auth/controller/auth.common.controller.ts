@@ -190,12 +190,23 @@ export class AuthCommonController {
       return;
     }
 
-    const emailSent = await this.emailService.resendSignUpEmailVerification({
+    const expiresInDays = this.configService.get<number>(
+      'user.signUpCodeExpiresInDays',
+    );
+
+    const emailSent = await this.emailService.sendSignUpEmailVerification({
       email: findAuthSignUpVerificationLink.email,
       code: findAuthSignUpVerificationLink.code,
-      expiresAt: findAuthSignUpVerificationLink.expiresAt,
       firstName: findAuthSignUpVerificationLink.user?.profile?.firstName,
+      expiresInDays,
     });
+
+    findAuthSignUpVerificationLink.expiresAt =
+      this.helperDateService.forwardInDays(expiresInDays);
+
+    await this.authSignUpVerificationLinkService.save(
+      findAuthSignUpVerificationLink,
+    );
 
     if (!emailSent) {
       throw new InternalServerErrorException({
