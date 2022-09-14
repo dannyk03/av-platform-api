@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EnumUserStatusCodeError } from '@avo/type';
 
 import { isNumber } from 'class-validator';
+import set from 'lodash/set';
 import {
   Brackets,
   DeepPartial,
@@ -66,10 +67,19 @@ export class UserService {
     id: string,
     { salt, passwordHash, passwordExpiredAt }: IAuthPassword,
   ): Promise<User> {
-    const user: User = await this.userRepository.findOneBy({ id });
-    user.authConfig.password = passwordHash;
-    user.authConfig.passwordExpiredAt = passwordExpiredAt;
-    user.authConfig.salt = salt;
+    const user: User = await this.userRepository.findOne({
+      where: { id },
+      relations: ['authConfig'],
+      select: {
+        authConfig: {
+          id: true,
+        },
+      },
+    });
+
+    set(user, 'authConfig.password', passwordHash);
+    set(user, 'authConfig.passwordExpiredAt', passwordExpiredAt);
+    set(user, 'authConfig.salt', salt);
 
     return this.userRepository.save(user);
   }

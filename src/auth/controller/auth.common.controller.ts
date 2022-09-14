@@ -26,10 +26,15 @@ import { Response } from 'express';
 import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
 
+import { UserAuthConfig } from '../entity';
 import { SocialConnectionRequest } from '@/networking/entity';
 import { User } from '@/user/entity';
 
-import { AuthService, AuthSignUpVerificationLinkService } from '../service';
+import {
+  AuthService,
+  AuthSignUpVerificationLinkService,
+  ForgotPasswordLinkService,
+} from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
 import {
@@ -54,10 +59,14 @@ import {
 
 import {
   AuthChangePasswordDto,
+  AuthForgotPasswordRequestDto,
+  AuthForgotPasswordSetDto,
   AuthSignUpDto,
   AuthSignUpFromDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
+import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
+import { MagicLinkDto } from '@/magic-link/dto';
 
 import { AuthUserLoginSerialization } from '../serialization/auth-user.login.serialization';
 
@@ -82,6 +91,7 @@ export class AuthCommonController {
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
+    private readonly forgotPasswordLinkService: ForgotPasswordLinkService,
   ) {}
 
   @ClientResponse('auth.login')
@@ -164,6 +174,45 @@ export class AuthCommonController {
     };
   }
 
+  @ClientResponse('auth.signUpResendEmail')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignUp, {
+    tags: ['signup', 'auth', 'resend', 'email'],
+  })
+  @Post('/signup-resend')
+  async signUpResendEmail(@Body() { email }: AuthResendSignupEmailDto) {
+    const findAuthSignUpVerificationLink =
+      await this.authSignUpVerificationLinkService.findOne({
+        where: { user: { email } },
+      });
+
+    if (!findAuthSignUpVerificationLink) {
+      return;
+    }
+
+    const emailSent = await this.emailService.resendSignUpEmailVerification({
+      email: findAuthSignUpVerificationLink.email,
+      code: findAuthSignUpVerificationLink.code,
+      expiresAt: findAuthSignUpVerificationLink.expiresAt,
+      firstName: findAuthSignUpVerificationLink.user?.profile?.firstName,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+      });
+    }
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode: boolean =
+      this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return { code: findAuthSignUpVerificationLink.code };
+    }
+  }
+
   @ClientResponse('auth.signUp')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.SignUp, {
@@ -200,7 +249,7 @@ export class AuthCommonController {
     }: AuthSignUpDto,
     @Query() { from }: AuthSignUpFromDto,
     @RequestUserAgent() userAgent: IResult,
-  ) {
+  ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
@@ -218,7 +267,7 @@ export class AuthCommonController {
     if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
-        message: 'user.error.emailExists',
+        message: 'auth.error.badRequest',
       });
     }
 
@@ -460,6 +509,125 @@ export class AuthCommonController {
     const password = await this.authService.createPassword(body.newPassword);
 
     await this.userService.updatePassword(user.id, password);
+  }
+
+  @ClientResponse('auth.forgotPassword')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.ForgotPassword, {
+    tags: ['forgotPassword', 'auth'],
+  })
+  @Post('/forgot')
+  async forgotPasswordRequest(
+    @Body() { email }: AuthForgotPasswordRequestDto,
+  ): Promise<IResponseData> {
+    const findUser = await this.userService.findOne({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+
+    if (!findUser) {
+      this.logService.error({
+        action: EnumLogAction.ForgotPassword,
+        description: 'Forgot password attempt',
+        tags: ['forgotPassword'],
+        data: { error: 'User does not exist' },
+      });
+      return;
+    }
+
+    const createForgotPasswordLink =
+      await this.forgotPasswordLinkService.create({
+        email,
+        expiresAt: this.helperDateService.forwardInMinutes(60),
+        user: findUser,
+      });
+
+    const saveForgotPasswordLink = await this.forgotPasswordLinkService.save(
+      createForgotPasswordLink,
+    );
+
+    const emailSent = await this.emailService.sendForgotPassword({
+      email: saveForgotPasswordLink.email,
+      code: saveForgotPasswordLink.code,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+      });
+    }
+
+    // For local development/testing
+    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
+    if (!(isProduction || isSecureMode)) {
+      return { code: saveForgotPasswordLink.code };
+    }
+  }
+
+  @ClientResponse('auth.forgotPasswordSet')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.SignupLoginMagic, {
+    tags: ['forgotPassword', 'set', 'auth'],
+  })
+  @Patch('/forgot')
+  async forgotPasswordSet(
+    @Query()
+    { code }: MagicLinkDto,
+    @Body() { password }: AuthForgotPasswordSetDto,
+  ): Promise<void> {
+    const existingForgotPasswordLink =
+      await this.forgotPasswordLinkService.findOne({
+        where: { code },
+      });
+
+    if (!existingForgotPasswordLink) {
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthBadRequestError,
+        message: 'auth.error.badRequest',
+      });
+    }
+
+    const now = this.helperDateService.create();
+    const expiresAt =
+      existingForgotPasswordLink.expiresAt &&
+      this.helperDateService.create({
+        date: existingForgotPasswordLink.expiresAt,
+      });
+
+    if ((expiresAt && now > expiresAt) || existingForgotPasswordLink.usedAt) {
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthForgotPasswordLinkExpired,
+        message: 'auth.error.badRequest',
+      });
+    }
+
+    return this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const { salt, passwordHash, passwordExpiredAt } =
+          await this.authService.createPassword(password);
+
+        const findUser = await this.userService.findOneBy({
+          email: existingForgotPasswordLink.email,
+        });
+
+        await transactionalEntityManager.update(
+          UserAuthConfig,
+          { user: findUser },
+          { salt, password: passwordHash, passwordExpiredAt },
+        );
+        existingForgotPasswordLink.usedAt = this.helperDateService.create();
+
+        transactionalEntityManager.save(existingForgotPasswordLink);
+      },
+    );
   }
 
   @ClientResponse('auth.logout')

@@ -22,6 +22,24 @@ export class EmailService {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
 
+  async sendForgotPassword({ email, code }: { email: string; code: string }) {
+    const path = '/forgot';
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendNetworkInvite.toString(),
+      to: [email],
+      emailTemplatePayload: { email, code },
+      identifier: { id: email },
+    });
+    console.log({ email, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
   async sendNetworkJoinInvite({
     email,
     fromUser,
@@ -133,6 +151,34 @@ export class EmailService {
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async resendSignUpEmailVerification({
+    email,
+    firstName,
+    code,
+    expiresAt,
+    path = '/signup-resend',
+  }: {
+    email: string;
+    firstName: string;
+    code: string;
+    expiresAt: Date;
+    path?: string;
+  }): Promise<boolean> {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Add server url to payload
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSignUpEmailVerification.toString(),
+      to: [email],
+      emailTemplatePayload: { path, activationCode: code, user: { firstName } },
+      identifier: { id: email },
+    });
+    console.log({ email, code, expiresAt, path });
     return sendResult.status === EmailStatus.success;
   }
 
