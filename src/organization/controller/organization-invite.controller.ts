@@ -173,7 +173,7 @@ export class OrganizationInviteController {
       });
     }
 
-    const { salt, passwordHash, passwordExpiredAt } =
+    const { passwordHash, passwordExpiredAt } =
       await this.authService.createPassword(password);
 
     return this.defaultDataSource.transaction(
@@ -189,7 +189,6 @@ export class OrganizationInviteController {
             authConfig: {
               password: passwordHash,
               emailVerifiedAt: this.helperDateService.create(),
-              salt,
               passwordExpiredAt,
             },
             profile: {
