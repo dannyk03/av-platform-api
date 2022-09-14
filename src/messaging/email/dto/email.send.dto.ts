@@ -30,7 +30,7 @@ export class SendEmailDto {
     | GiftSurveyMessageData
     | SignUpEmailVerificationMessageData
     | GiftOptionSelectMessageData
-    | any;
+    | any; // TODO: add here all the types instead.
 
   @IsObject()
   @IsOptional()
