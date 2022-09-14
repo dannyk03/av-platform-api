@@ -571,8 +571,11 @@ export class AuthCommonController {
 
   @ClientResponse('auth.forgotPasswordSet')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.SignupLoginMagic, {
+  @LogTrace(EnumLogAction.ForgotPassword, {
     tags: ['forgotPassword', 'set', 'auth'],
+    mask: {
+      passwordStrategyFields: ['password'],
+    },
   })
   @Patch('/forgot')
   async forgotPasswordSet(
