@@ -1,11 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsOptional } from 'class-validator';
-
-import { NormalizeEmail } from '@/utils/request/transform';
+import { IsOptional, IsUUID } from 'class-validator';
 
 export class AuthSignUpRefDto {
   @IsOptional()
-  @NormalizeEmail()
+  @IsUUID()
   @Type(() => String)
   readonly ref: string;
 }

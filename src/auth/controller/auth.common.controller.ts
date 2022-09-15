@@ -370,7 +370,7 @@ export class AuthCommonController {
               where: {
                 status: EnumNetworkingConnectionRequestStatus.Pending,
                 addresserUser: {
-                  email: ref,
+                  id: ref,
                 },
                 tempAddresseeEmail: saveUser.email,
               },
