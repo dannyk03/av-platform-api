@@ -183,5 +183,4 @@ export type SurveyCompletedMessageData = {
   inviterUser: {
     firstName: string;
   };
-  profileViewLink: string;
 };

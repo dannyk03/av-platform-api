@@ -587,7 +587,6 @@ export class EmailService {
       inviterUser: {
         firstName: inviterUser.profile.firstName,
       },
-      profileViewLink: '',
     };
 
     const sendResult = await this.customerIOService.sendEmail({
