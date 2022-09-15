@@ -582,11 +582,11 @@ export class EmailService {
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {
         firstName: inviteeUser.profile.firstName,
+        id: inviteeUser.id,
       },
       inviterUser: {
         firstName: inviterUser.profile.firstName,
       },
-      profileViewLink: '',
     };
 
     const sendResult = await this.customerIOService.sendEmail({
