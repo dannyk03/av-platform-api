@@ -17,7 +17,6 @@ export class ReqUserActiveGuard implements CanActivate {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.badRequest',
-        error: { meta: { class: ReqUserActiveGuard.name } },
       });
     } else if (!__user.isActive) {
       throw new ForbiddenException({
