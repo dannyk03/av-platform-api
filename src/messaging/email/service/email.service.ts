@@ -571,61 +571,34 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendSurveyCompleted({
-    email,
-    inviteeUserName,
-    inviterUserName,
-    profileId,
+  async sendSurveyCompletedToInviter({
+    inviteeUser,
+    inviterUser,
+    profileId
   }: {
-    email: string;
-    inviteeUserName: string;
-    inviterUserName: string;
+    inviteeUser: User;
+    inviterUser: User;
     profileId: string;
   }): Promise<boolean> {
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {
-        firstName: inviteeUserName,
+        firstName: inviteeUser.profile.firstName,
       },
       inviterUser: {
-        firstName: inviterUserName,
+        firstName: inviterUser.profile.firstName,
       },
       profileViewLink: '',
     };
 
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSurveyCompleted.toString(),
-      to: [email],
+      to: [ inviterUser.email ],
       emailTemplatePayload: payload,
-      identifier: { id: email },
-    });
-    console.log({
-      email,
-      payload,
-    });
-    return sendResult.status === EmailStatus.success;
-  }
-
-  async sendSurveyCompletedToInviter({
-    inviteeUser,
-    inviterUser,
-  }: {
-    inviteeUser: User;
-    inviterUser: User;
-  }) {
-    // const path = `/network/join?from=${fromUser.email}`;
-    // Temporary for local development
-    if (!this.isProduction) {
-      return true;
-    }
-
-    // TODO: Verify template parameters
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
-      to: [inviterUser.email],
-      emailTemplatePayload: {},
       identifier: { id: inviterUser.email },
     });
-
+    console.log({
+      payload,
+    });
     return sendResult.status === EmailStatus.success;
   }
 }
