@@ -571,61 +571,33 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendSurveyCompleted({
-    email,
-    inviteeUserName,
-    inviterUserName,
-    profileId,
-  }: {
-    email: string;
-    inviteeUserName: string;
-    inviterUserName: string;
-    profileId: string;
-  }): Promise<boolean> {
-    const payload: SurveyCompletedMessageData = {
-      inviteeUser: {
-        firstName: inviteeUserName,
-      },
-      inviterUser: {
-        firstName: inviterUserName,
-      },
-      profileViewLink: '',
-    };
-
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendSurveyCompleted.toString(),
-      to: [email],
-      emailTemplatePayload: payload,
-      identifier: { id: email },
-    });
-    console.log({
-      email,
-      payload,
-    });
-    return sendResult.status === EmailStatus.success;
-  }
-
   async sendSurveyCompletedToInviter({
     inviteeUser,
     inviterUser,
   }: {
     inviteeUser: User;
     inviterUser: User;
-  }) {
-    // const path = `/network/join?from=${fromUser.email}`;
-    // Temporary for local development
-    if (!this.isProduction) {
-      return true;
-    }
+  }): Promise<boolean> {
+    // const path = {{SERVER}}/api/v1/user/profile/:userId
+    const payload: SurveyCompletedMessageData = {
+      inviteeUser: {
+        firstName: inviteeUser.profile.firstName,
+      },
+      inviterUser: {
+        firstName: inviterUser.profile.firstName,
+      },
+      profileViewLink: '',
+    };
 
-    // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
+      template: EmailTemplate.SendSurveyCompleted.toString(),
       to: [inviterUser.email],
-      emailTemplatePayload: {},
+      emailTemplatePayload: payload,
       identifier: { id: inviterUser.email },
     });
-
+    console.log({
+      payload,
+    });
     return sendResult.status === EmailStatus.success;
   }
 }
