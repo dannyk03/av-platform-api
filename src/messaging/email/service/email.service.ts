@@ -51,7 +51,7 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { ref: fromUser.email, personalNote },
+      emailTemplatePayload: { ref: fromUser.id, personalNote },
       identifier: { id: email },
     });
     console.log({ email, ref: fromUser.id });
