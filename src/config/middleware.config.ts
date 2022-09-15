@@ -15,7 +15,7 @@ export default registerAs(
         EnumRequestMethod.PATCH,
         EnumRequestMethod.POST,
       ],
-      allowOrigin: [/avonow\.com$/], // allow only subdomain
+      allowOrigin: ['*.avonow.com', '*.netlify.app'], // allow only subdomain
       // allowOrigin: [/avonow\.com(\:\d{1,4})?$/], // allow all subdomain, and all port
       allowHeader: [
         'Accept',
