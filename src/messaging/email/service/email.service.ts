@@ -41,7 +41,7 @@ export class EmailService {
     fromUser: User;
     personalNote: string;
   }) {
-    // const path = `/network/join?ref=${fromUser.email}`;
+    // const path = `/network/join?ref=${fromUser.id}`;
     // Temporary for local development
     if (!this.isProduction) {
       return true;
@@ -51,10 +51,10 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { ref: fromUser.email, personalNote },
+      emailTemplatePayload: { ref: fromUser.id, personalNote },
       identifier: { id: email },
     });
-    console.log({ email, ref: fromUser.email });
+    console.log({ email, ref: fromUser.id });
     return sendResult.status === EmailStatus.success;
   }
 
@@ -67,8 +67,8 @@ export class EmailService {
     fromUser: User;
     personalNote?: string;
   }) {
-    const approvePath = `/network/approve?email=${fromUser.email}`;
-    const rejectPath = `/network/reject?email=${fromUser.email}`;
+    const approvePath = `/network/approve?ref=${fromUser.id}`;
+    const rejectPath = `/network/reject?ref=${fromUser.id}`;
     // Temporary for local development
     if (!this.isProduction) {
       return true;

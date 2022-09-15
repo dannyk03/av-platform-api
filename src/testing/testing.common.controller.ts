@@ -81,6 +81,7 @@ export class TestingCommonController {
       timezone,
     });
     return {
+      id: reqUser.id,
       email: reqUser.email,
       userAgent,
       date: newDate,
