@@ -46,7 +46,7 @@ import {
   SocialConnectionRequestListDto,
   SocialConnectionRequestRejectDto,
 } from '../dto';
-import { EmailQueryParamOptionalDto } from '@/utils/request/dto';
+import { RefQueryParamOptionalDto } from '@/utils/request/dto';
 
 import {
   SocialConnectionGetSerialization,
@@ -278,15 +278,15 @@ export class NetworkingCommonController {
   @Patch('/approve')
   async approve(
     @Query()
-    { email }: EmailQueryParamOptionalDto,
+    { ref }: RefQueryParamOptionalDto,
     @Body()
     { userIds }: SocialConnectionRequestApproveDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrUserIds(
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
         {
-          email,
+          userId: ref,
           userIds,
           reqUserId: reqUser.id,
         },
@@ -319,15 +319,15 @@ export class NetworkingCommonController {
   @Patch('/reject')
   async reject(
     @Query()
-    { email }: EmailQueryParamOptionalDto,
+    { ref }: RefQueryParamOptionalDto,
     @Body()
     { userIds }: SocialConnectionRequestRejectDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByEmailOrUserIds(
+      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
         {
-          email,
+          userId: ref,
           userIds,
           reqUserId: reqUser.id,
         },
