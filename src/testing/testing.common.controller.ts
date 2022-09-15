@@ -6,6 +6,7 @@ import {
   UnprocessableEntityException,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 
 import { EnumRequestStatusCodeError, IResponseData } from '@avo/type';
@@ -39,12 +40,13 @@ export class TestingCommonController {
     private readonly helperService: HelperService,
     private readonly helperDateService: HelperDateService,
     private readonly logService: LogService,
+    private readonly configService: ConfigService,
   ) {}
   @ClientResponse('test.ping')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.Test, { tags: ['test'] })
   @Get()
-  async hello(
+  async test(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
   ): Promise<IResponseData> {
@@ -62,6 +64,7 @@ export class TestingCommonController {
         date: newDate,
         timezone: timezone,
       }),
+      repoVersion: this.configService.get('app.repoVersion'),
     };
   }
 
