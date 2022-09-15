@@ -29,6 +29,8 @@ async function bootstrap() {
     'app.versioning.prefix',
   );
 
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
+
   const logger = new Logger();
   process.env.TZ = tz;
   process.env.NODE_ENV = env;
