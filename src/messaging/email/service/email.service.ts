@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { GiftIntent } from '@/gifting/entity';
+import { GiftIntent, GiftSubmit } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
 
 import {
+  ConnectionRequestExistingUserMessageData,
+  ConnectionRequestMessageData,
   EmailStatus,
   EmailTemplate,
+  GiftDeliveredToRecipientMessageData,
+  GiftDetails,
+  GiftOption,
+  GiftOptionSelectMessageData,
+  GiftShippingDetails,
+  GiftStatusUpdateMessageData,
   SignUpEmailVerificationMessageData,
+  SurveyCompletedMessageData,
+  SurveyInvatationMessageData,
 } from '../email.constant';
 
 @Injectable()
@@ -31,7 +41,7 @@ export class EmailService {
     fromUser: User;
     personalNote: string;
   }) {
-    const path = '/network/join';
+    // const path = `/network/join?ref=${fromUser.email}`;
     // Temporary for local development
     if (!this.isProduction) {
       return true;
@@ -41,10 +51,10 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { from: fromUser.email, path, personalNote },
+      emailTemplatePayload: { ref: fromUser.email, personalNote },
       identifier: { id: email },
     });
-    console.log({ email, path });
+    console.log({ email, ref: fromUser.email });
     return sendResult.status === EmailStatus.success;
   }
 
@@ -136,6 +146,39 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
+  async sendResetPassword({
+    email,
+    firstName,
+    code,
+    path = `/reset-password?code=${code}`,
+  }: {
+    email: string;
+    code: string;
+    // emailTemplatePayload: ResetPasswordMessageData; // TODO: consider if best to use the type here or just internally
+    firstName: string;
+    path?: string;
+  }): Promise<boolean> {
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+    // TODO: Add server url to payload
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendResetPassword.toString(),
+      to: [email],
+      emailTemplatePayload: {
+        code,
+        user: {
+          firstName: firstName,
+        },
+        resetPasswordLink: '', // TODO: add link here
+      },
+      identifier: { id: email },
+    });
+    console.log({ email, firstName });
+    return sendResult.status === EmailStatus.success;
+  }
+
   async sendGiftSurvey({
     recipientEmail,
     senderEmail,
@@ -187,7 +230,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftReadyForSubmit({
+  async sendGiftOptionSelect({
     giftIntent,
     email,
     code,
@@ -201,13 +244,33 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    // TODO: Verify template parameters
+    const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
+      (giftOption) => ({
+        productName: giftOption.products[0].displayOptions[0].name,
+        description: giftOption.products[0].displayOptions[0].description,
+        brand: giftOption.products[0].brand,
+        imageUrl: giftOption.products[0].displayOptions[0].images[0].secureUrl,
+      }),
+    );
+
+    const payload: GiftOptionSelectMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      giftOptions,
+      giftSelectUrl: `gifts/select/${giftIntent.id}`,
+    };
+
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftOptions.toString(),
+      template: EmailTemplate.SendGiftSelection.toString(),
       to: [email],
-      emailTemplatePayload: { path, code },
+      emailTemplatePayload: payload,
       identifier: { id: email },
     });
+
     console.log({
       path,
       email,
@@ -237,6 +300,332 @@ export class EmailService {
       path,
       email,
     });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  getGiftStatusUpdateMessageData(giftIntent: GiftIntent) {
+    const giftDetails: GiftDetails = {
+      productName:
+        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
+      imageUrl:
+        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0]
+          .images[0].secureUrl,
+      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
+      personalNote: giftIntent.giftSubmit[0].personalNote,
+    };
+
+    const shippingDetails: GiftShippingDetails = {
+      shippingAddress: '', // TODO: verify we save this
+      ETA: '', // TODO: verify we save this
+    };
+
+    const data: GiftStatusUpdateMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      giftDetails,
+      shippingDetails,
+      sendAnotherGiftUrl: '', // TODO: When action url is ready update here
+    };
+
+    return data;
+  }
+
+  async sendSenderTheGiftIsOnItsWay({
+    email,
+    path = '/shipped',
+    giftIntent,
+  }: {
+    email: string;
+    path?: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
+      to: [email],
+      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      identifier: { id: email },
+    });
+    console.log({
+      path,
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSenderTheGiftWasDelivered({
+    email,
+    giftIntent,
+  }: {
+    email: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSenderGiftDelivered.toString(),
+      to: [email],
+      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendRecipientTheGiftWasDelivered({
+    email,
+    giftIntent,
+  }: {
+    email: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
+
+    const shippingDetails: GiftShippingDetails = {
+      shippingAddress: '', // TODO: verify we save this
+      ETA: '', // TODO: verify we save this
+    };
+
+    const payload: GiftDeliveredToRecipientMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      shippingDetails: shippingDetails,
+      actionUrl: '', // TODO: Add here the relevant url
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendRecipientGiftDelivered.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  getConnectionRequestMessageData({
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }) {
+    const payload: ConnectionRequestMessageData = {
+      requestingUser: {
+        firstName: requestingUserName,
+      },
+      receivingUser: {
+        firstName: receivingUserName,
+      },
+      connectionViewLink: '', // TODO: add / build here using `connectionId`
+    };
+    return payload;
+  }
+
+  async sendConnectionRequestAccepted({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload = this.getConnectionRequestMessageData({
+      requestingUserName,
+      receivingUserName,
+      connectionId,
+    });
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestAccepted.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendConnectionRequestNewUser({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload = this.getConnectionRequestMessageData({
+      requestingUserName,
+      receivingUserName,
+      connectionId,
+    });
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendConnectionRequestExistingUser({
+    email,
+    requestingUserName,
+    receivingUserName,
+    connectionId,
+  }: {
+    email: string;
+    requestingUserName: string;
+    receivingUserName: string;
+    connectionId: string;
+  }): Promise<boolean> {
+    const payload: ConnectionRequestExistingUserMessageData = {
+      requestingUser: {
+        firstName: requestingUserName,
+      },
+      receivingUser: {
+        firstName: receivingUserName,
+      },
+      connectionApproveLink: '',
+      connectionRejectLink: '',
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyInvatation({
+    email,
+    inviteeUserName,
+    inviterUserName,
+    personalNote,
+  }: {
+    email: string;
+    inviteeUserName: string;
+    inviterUserName: string;
+    personalNote: string;
+  }): Promise<boolean> {
+    const payload: SurveyInvatationMessageData = {
+      inviteeUser: {
+        firstName: inviteeUserName,
+      },
+      inviterUser: {
+        firstName: inviterUserName,
+      },
+      surveyLink: '',
+      personalNote: '',
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGiftSurvey.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyCompleted({
+    email,
+    inviteeUserName,
+    inviterUserName,
+    profileId,
+  }: {
+    email: string;
+    inviteeUserName: string;
+    inviterUserName: string;
+    profileId: string;
+  }): Promise<boolean> {
+    const payload: SurveyCompletedMessageData = {
+      inviteeUser: {
+        firstName: inviteeUserName,
+      },
+      inviterUser: {
+        firstName: inviterUserName,
+      },
+      profileViewLink: '',
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSurveyCompleted.toString(),
+      to: [email],
+      emailTemplatePayload: payload,
+      identifier: { id: email },
+    });
+    console.log({
+      email,
+      payload,
+    });
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendSurveyCompletedToInviter({
+    inviteeUser,
+    inviterUser,
+  }: {
+    inviteeUser: User;
+    inviterUser: User;
+  }) {
+    // const path = `/network/join?from=${fromUser.email}`;
+    // Temporary for local development
+    if (!this.isProduction) {
+      return true;
+    }
+
+    // TODO: Verify template parameters
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSurveyCompletedToInviter.toString(),
+      to: [inviterUser.email],
+      emailTemplatePayload: {},
+      identifier: { id: inviterUser.email },
+    });
+
     return sendResult.status === EmailStatus.success;
   }
 }

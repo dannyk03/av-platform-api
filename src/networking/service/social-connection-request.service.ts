@@ -81,7 +81,7 @@ export class SocialConnectionRequestService {
 
     const find = {
       where: {
-        addressedUser: {
+        addresserUser: {
           ...(email && { email }),
           ...(userIds && {
             id: In(userIds),
@@ -92,9 +92,9 @@ export class SocialConnectionRequestService {
           id: reqUserId,
         },
       },
-      relations: ['addressedUser', 'addresseeUser'],
+      relations: ['addresserUser', 'addresseeUser'],
       select: {
-        addressedUser: {
+        addresserUser: {
           id: true,
           email: true,
         },
@@ -127,8 +127,8 @@ export class SocialConnectionRequestService {
       .createQueryBuilder('socialConnectionRequest')
       .setParameters({ fromEmail, toEmail })
       .leftJoinAndSelect(
-        'socialConnectionRequest.addressedUser',
-        'addressedUser',
+        'socialConnectionRequest.addresserUser',
+        'addresserUser',
       )
       .leftJoinAndSelect(
         'socialConnectionRequest.addresseeUser',
@@ -137,7 +137,7 @@ export class SocialConnectionRequestService {
       .where('socialConnectionRequest.status IN(:...status)', {
         status,
       })
-      .andWhere('addressedUser.email = :fromEmail')
+      .andWhere('addresserUser.email = :fromEmail')
       .andWhere(
         new Brackets((qb) => {
           qb.where('addresseeUser.email = :toEmail').orWhere(
@@ -152,7 +152,7 @@ export class SocialConnectionRequestService {
     search,
     status,
     addresseeEmail,
-    extraDataForAddressedUser = false,
+    extraDataForaddresserUser = false,
   }: ISocialConnectionRequestSearch): Promise<
     SelectQueryBuilder<SocialConnectionRequest>
   > {
@@ -163,8 +163,8 @@ export class SocialConnectionRequestService {
         'addresseeUser',
       )
       .leftJoinAndSelect(
-        'socialConnectionRequest.addressedUser',
-        'addressedUser',
+        'socialConnectionRequest.addresserUser',
+        'addresserUser',
       )
       .setParameters({ status, addresseeEmail })
       .where(
@@ -175,10 +175,10 @@ export class SocialConnectionRequestService {
         }),
       );
 
-    if (extraDataForAddressedUser) {
+    if (extraDataForaddresserUser) {
       builder.leftJoinAndSelect(
-        'addressedUser.profile',
-        'addressedUserProfile',
+        'addresserUser.profile',
+        'addresserUserProfile',
       );
     }
 
@@ -190,7 +190,7 @@ export class SocialConnectionRequestService {
 
     if (search) {
       builder.setParameters({ search, likeSearch: `%${search}%` });
-      builder.andWhere('addressedUser.email ILIKE :likeSearch');
+      builder.andWhere('addresserUser.email ILIKE :likeSearch');
     }
 
     return builder;
@@ -217,7 +217,7 @@ export class SocialConnectionRequestService {
     options,
   }: ISocialConnectionRequestSearch): Promise<SocialConnectionRequest[]> {
     const searchBuilder = await this.getListSearchBuilder({
-      extraDataForAddressedUser: true,
+      extraDataForaddresserUser: true,
       search,
       status,
       addresseeEmail,

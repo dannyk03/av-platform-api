@@ -19,6 +19,36 @@ export class UserProfile extends BaseEntity<UserProfile> {
   })
   lastName: string;
 
+  @Column({
+    length: 2,
+    nullable: true,
+  })
+  birthMonth: string;
+
+  @Column({
+    length: 2,
+    nullable: true,
+  })
+  birthDay: string;
+
+  @Column({
+    length: 2,
+    nullable: true,
+  })
+  workAnniversaryMonth: string;
+
+  @Column({
+    length: 2,
+    nullable: true,
+  })
+  workAnniversaryDay: string;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  kidFriendlyActivities?: object;
+
   @OneToOne(
     () => UserProfileHome,
     (userProfileHome) => userProfileHome.userProfile,

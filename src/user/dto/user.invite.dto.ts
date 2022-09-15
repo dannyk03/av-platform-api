@@ -3,7 +3,6 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -12,11 +11,12 @@ import {
 
 import {
   ArrayTransform,
+  NormalizeEmail,
   UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class UserInviteAddresseeDtoDto {
-  @IsEmail()
+  @NormalizeEmail()
   @IsNotEmpty()
   readonly email: string;
 

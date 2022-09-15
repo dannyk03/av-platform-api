@@ -18,7 +18,7 @@ import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
   @IsNotEmpty()
-  @Length(1, 20)
+  @Length(1, 50)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
@@ -26,14 +26,14 @@ export class SurveyPersonalAddressDto {
 
   @IsNotEmpty()
   @IsOptional()
-  @Length(1, 20)
+  @Length(1, 50)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state: string;
 
   @IsNotEmpty()
-  @Length(1, 20)
+  @Length(1, 50)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
@@ -48,13 +48,13 @@ export class SurveyPersonalShippingDto {
   readonly addressLine1: string;
 
   @IsNotEmpty()
-  @Length(1, 20)
+  @Length(1, 100)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine2: string;
 
-  @Length(1, 20)
+  @Length(1, 50)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @IsNotEmpty()
@@ -64,12 +64,12 @@ export class SurveyPersonalShippingDto {
   @IsOptional()
   @IsNotEmpty()
   @IsNotEmpty()
-  @Length(1, 20)
+  @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state: string;
 
-  @Length(1, 20)
+  @Length(1, 30)
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @IsNotEmpty()
@@ -89,19 +89,64 @@ export class SurveyPersonalDto {
   readonly email!: string;
 
   @IsNotEmpty()
+  @IsOptional()
   @Length(1, 20)
-  @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
 
   @IsString()
   @IsNotEmpty()
-  @Length(1, 20)
-  @IsNotEmpty()
+  @IsOptional()
+  @Length(1, 30)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
+
+  // @IsString()
+  // @IsOptional()
+  // @IsNotEmpty()
+  // @EmptyStringToUndefinedTransform()
+  // @Length(10, 20)
+  // @IsPhoneNumber()
+  // @NormalizeStringInputTransform()
+  // @Type(() => String)
+  // readonly phoneNumber?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(2)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly birthMonth?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(2)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly birthDay?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(2)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly workAnniversaryMonth?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  @MaxLength(2)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly workAnniversaryDay?: string;
+
+  @Allow()
+  readonly kidFriendlyActivities: object;
 
   @IsNotEmpty()
   @Type(() => SurveyPersonalAddressDto)
@@ -110,15 +155,6 @@ export class SurveyPersonalDto {
   @IsNotEmpty()
   @Type(() => SurveyPersonalShippingDto)
   readonly shipping: SurveyPersonalShippingDto;
-
-  @IsString()
-  @IsOptional()
-  @EmptyStringToUndefinedTransform()
-  @Length(10, 20)
-  @IsPhoneNumber()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly phoneNumber?: string;
 }
 
 export class AuthSignUpDto {

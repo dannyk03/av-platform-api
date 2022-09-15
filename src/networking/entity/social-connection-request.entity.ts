@@ -9,7 +9,7 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Unique('uq_addressed_addressee_social_connection_request', [
-  'addressedUser',
+  'addresserUser',
   'addresseeUser',
   'tempAddresseeEmail',
   'status',
@@ -18,7 +18,7 @@ import { User } from '@/user/entity';
 export class SocialConnectionRequest extends BaseEntity<SocialConnectionRequest> {
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
-  addressedUser!: User;
+  addresserUser!: User;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn()

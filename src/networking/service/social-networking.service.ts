@@ -31,7 +31,7 @@ export class SocialNetworkingService {
       async (transactionalEntityManager) => {
         return Promise.allSettled(
           connectionRequests.map(async (connectionRequest) => {
-            const { addressedUser } = connectionRequest;
+            const { addresserUser } = connectionRequest;
 
             connectionRequest.status =
               EnumNetworkingConnectionRequestStatus.Rejected;
@@ -41,9 +41,9 @@ export class SocialNetworkingService {
             );
 
             if (updateConnectRequest) {
-              return Promise.resolve(addressedUser.email);
+              return Promise.resolve(addresserUser.email);
             }
-            return Promise.reject(addressedUser.email);
+            return Promise.reject(addresserUser.email);
           }),
         );
       },
@@ -58,17 +58,17 @@ export class SocialNetworkingService {
       async (transactionalEntityManager) => {
         return Promise.allSettled(
           connectionRequests.map(async (connectionRequest) => {
-            const { addressedUser, addresseeUser } = connectionRequest;
+            const { addresserUser, addresseeUser } = connectionRequest;
 
             const createSocialConnection1 =
               await this.socialConnectionService.create({
-                user1: addressedUser,
+                user1: addresserUser,
                 user2: addresseeUser,
               });
             const createSocialConnection2 =
               await this.socialConnectionService.create({
                 user1: addresseeUser,
-                user2: addressedUser,
+                user2: addresserUser,
               });
 
             connectionRequest.status =
@@ -83,9 +83,9 @@ export class SocialNetworkingService {
               ]);
 
             if (updateSocialConnection) {
-              return Promise.resolve(addressedUser.email);
+              return Promise.resolve(addresserUser.email);
             }
-            return Promise.reject(addressedUser.email);
+            return Promise.reject(addresserUser.email);
           }),
         );
       },

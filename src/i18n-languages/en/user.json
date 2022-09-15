@@ -14,7 +14,7 @@
   "error": {
     "notFound": "User not found",
     "inactive": "User not active",
-    "emailExists": "Email user used",
+    "emailExists": "The email has already been taken",
     "phoneNumberExists": "User phone number already used",
     "active": "User status active invalid",
     "exists": "User exists",
