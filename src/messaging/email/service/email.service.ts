@@ -574,13 +574,11 @@ export class EmailService {
   async sendSurveyCompletedToInviter({
     inviteeUser,
     inviterUser,
-    profileId,
   }: {
     inviteeUser: User;
     inviterUser: User;
-    profileId: string;
   }): Promise<boolean> {
-    // const path = `/network/join?from=${fromUser.email}`;
+    // const path = {{SERVER}}/api/v1/user/profile/:userId
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {
         firstName: inviteeUser.profile.firstName,
