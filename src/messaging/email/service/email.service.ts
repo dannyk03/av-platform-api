@@ -582,6 +582,7 @@ export class EmailService {
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {
         firstName: inviteeUser.profile.firstName,
+        id: inviteeUser.id,
       },
       inviterUser: {
         firstName: inviterUser.profile.firstName,
