@@ -127,13 +127,6 @@ export class AuthCommonController {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.badRequest',
-        error: {
-          meta: {
-            class: AuthCommonController.name,
-            bodyPassword: body.password,
-            authPassword: user.authConfig?.password,
-          },
-        },
       });
     }
 
