@@ -18,71 +18,69 @@ import {
 import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
-  @IsNotEmpty()
   @Length(1, 50)
+  @IsOptional()
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly city: string;
+  readonly city?: string;
+
+  @IsOptional()
+  @Length(1, 100)
+  @IsNotEmpty()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly state?: string;
 
   @IsNotEmpty()
   @IsOptional()
-  @Length(1, 50)
-  @IsNotEmpty()
+  @Length(1, 100)
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly state: string;
-
-  @IsNotEmpty()
-  @Length(1, 50)
-  @IsNotEmpty()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly country: string;
+  readonly country?: string;
 }
 export class SurveyPersonalShippingDto {
   @IsNotEmpty()
-  @Length(1, 20)
-  @IsNotEmpty()
+  @IsOptional()
+  @Length(1, 200)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine1: string;
 
   @IsNotEmpty()
+  @IsOptional()
+  @Length(1, 200)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly addressLine2?: string;
+
   @Length(1, 100)
   @IsNotEmpty()
+  @IsOptional()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly addressLine2: string;
-
-  @Length(1, 50)
-  @IsNotEmpty()
-  @NormalizeStringInputTransform()
-  @IsNotEmpty()
-  @Type(() => String)
-  readonly city: string;
+  readonly city?: string;
 
   @IsOptional()
   @IsNotEmpty()
+  @Length(1, 100)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly state?: string;
+
+  @Length(1, 100)
   @IsNotEmpty()
+  @IsOptional()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly country?: string;
+
+  @IsNotEmpty()
+  @IsOptional()
   @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly state: string;
-
-  @Length(1, 30)
-  @IsNotEmpty()
-  @NormalizeStringInputTransform()
-  @IsNotEmpty()
-  @Type(() => String)
-  readonly country: string;
-
-  @IsNotEmpty()
-  @Length(1, 20)
-  @IsNotEmpty()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly zipCode: string;
+  readonly zipCode?: string;
 }
 
 export class SurveyPersonalDto {
@@ -90,19 +88,17 @@ export class SurveyPersonalDto {
   readonly email!: string;
 
   @IsNotEmpty()
-  @IsOptional()
-  @Length(1, 20)
+  @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly firstName?: string;
+  readonly firstName: string;
 
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
-  @Length(1, 30)
+  @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly lastName?: string;
+  readonly lastName: string;
 
   @IsString()
   @IsOptional()
