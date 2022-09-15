@@ -24,7 +24,7 @@ export class HelperCookieService {
     return response.cookie(this.accessTokenCookieName, accessToken, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
-      sameSite: 'none',
+      sameSite: this.isProduction ? 'none' : 'strict',
       httpOnly: true,
     });
   }
@@ -33,7 +33,7 @@ export class HelperCookieService {
     return response.cookie(this.accessTokenCookieName, undefined, {
       secure: this.isSecureMode && this.isProduction,
       expires: this.helperDateService.create(),
-      sameSite: 'none',
+      sameSite: this.isProduction ? 'none' : 'strict',
       httpOnly: true,
     });
   }
