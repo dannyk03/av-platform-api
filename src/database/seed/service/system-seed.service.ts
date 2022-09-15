@@ -57,7 +57,7 @@ export class SystemSeedService {
 
           await transactionalEntityManager.save(systemOrganization);
 
-          const { salt, passwordHash } = await this.authService.createPassword(
+          const { passwordHash } = await this.authService.createPassword(
             process.env.AUTH_SYSTEM_ADMIN_INITIAL_PASS,
           );
 
@@ -67,7 +67,6 @@ export class SystemSeedService {
             phoneNumber: '+00000000000',
             authConfig: {
               password: passwordHash,
-              salt,
               passwordExpiredAt: this.helperDateService.forwardInDays(365 * 10),
               emailVerifiedAt: this.helperDateService.create(),
             },

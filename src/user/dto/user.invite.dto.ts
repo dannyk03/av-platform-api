@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
 
 import {
@@ -34,6 +35,7 @@ export class UserInviteDto {
   @IsNotEmpty({ each: true })
   @UniqueArrayByTransform('email')
   @ArrayTransform()
+  @ValidateNested()
   @Type(() => UserInviteAddresseeDtoDto)
   readonly addressees: UserInviteAddresseeDtoDto[];
 

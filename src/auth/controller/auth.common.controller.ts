@@ -127,6 +127,13 @@ export class AuthCommonController {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
         message: 'auth.error.badRequest',
+        error: {
+          meta: {
+            class: AuthCommonController.name,
+            bodyPassword: body.password,
+            authPassword: user.authConfig?.password,
+          },
+        },
       });
     }
 
@@ -291,7 +298,7 @@ export class AuthCommonController {
     return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        const { salt, passwordHash, passwordExpiredAt } =
+        const { passwordHash, passwordExpiredAt } =
           await this.authService.createPassword(password);
 
         const signUpUser = await this.userService.create({
@@ -312,7 +319,6 @@ export class AuthCommonController {
           },
           authConfig: {
             password: passwordHash,
-            salt,
             passwordExpiredAt,
           },
         });
@@ -627,7 +633,7 @@ export class AuthCommonController {
     return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        const { salt, passwordHash, passwordExpiredAt } =
+        const { passwordHash, passwordExpiredAt } =
           await this.authService.createPassword(password);
 
         const findUser = await this.userService.findOneBy({
@@ -637,7 +643,7 @@ export class AuthCommonController {
         await transactionalEntityManager.update(
           UserAuthConfig,
           { user: findUser },
-          { salt, password: passwordHash, passwordExpiredAt },
+          { password: passwordHash, passwordExpiredAt },
         );
         existingResetPasswordLink.usedAt = this.helperDateService.create();
 

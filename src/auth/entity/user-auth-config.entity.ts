@@ -11,12 +11,6 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   })
   password?: string;
 
-  @Column({
-    length: 100,
-    nullable: true,
-  })
-  salt?: string;
-
   @Column({ nullable: true })
   passwordExpiredAt?: Date;
 
