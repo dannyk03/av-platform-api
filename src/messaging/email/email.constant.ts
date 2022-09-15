@@ -31,7 +31,6 @@ export enum EmailTemplate {
   SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest', // TODO: verify the context
   SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
-  SendSurveyCompletedToInviter = 'SendSurveyCompletedToInviter',
 }
 
 export enum EmailStatus {
