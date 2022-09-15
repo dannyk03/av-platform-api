@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestApplication, NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { useContainer } from 'class-validator';
 
@@ -60,6 +61,16 @@ async function bootstrap() {
       prefix: versioningPrefix,
     });
   }
+
+  // Swagger
+  const config = new DocumentBuilder()
+    .setTitle('Platform API')
+    .setDescription('Platform API swagger docs')
+    .setVersion(configService.get<string>('app.repoVersion'))
+    .addTag('api')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   // Listen
   await app.listen(port, host);
