@@ -178,9 +178,9 @@ export type SurveyInvatationMessageData = {
 export type SurveyCompletedMessageData = {
   inviteeUser: {
     firstName: string;
+    id: string;
   };
   inviterUser: {
     firstName: string;
   };
-  profileViewLink: string;
 };
