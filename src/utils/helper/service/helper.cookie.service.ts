@@ -22,7 +22,7 @@ export class HelperCookieService {
 
   async attachAccessToken(response: Response, accessToken: string) {
     return response.cookie(this.accessTokenCookieName, accessToken, {
-      secure: this.isSecureMode && this.isProduction,
+      secure: this.isProduction,
       expires: this.helperJwtService.getJwtExpiresDate(accessToken),
       sameSite: 'none',
       httpOnly: true,
@@ -31,7 +31,7 @@ export class HelperCookieService {
 
   async detachAccessToken(response: Response) {
     return response.cookie(this.accessTokenCookieName, undefined, {
-      secure: this.isSecureMode && this.isProduction,
+      secure: this.isProduction,
       expires: this.helperDateService.create(),
       sameSite: 'none',
       httpOnly: true,
