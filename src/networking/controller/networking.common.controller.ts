@@ -132,11 +132,9 @@ export class NetworkingCommonController {
           ? await this.emailService.sendConnectionRequestNewUser({
               personalNote: saveSocialConnectionRequest.personalNote,
               requestingUser: saveSocialConnectionRequest.addresserUser,
-              receivingUser: saveSocialConnectionRequest.addresseeUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
-              connectionId: saveSocialConnectionRequest.id,
             })
           : await this.emailService.sendConnectionRequestExistingUser({
               personalNote: saveSocialConnectionRequest.personalNote,
