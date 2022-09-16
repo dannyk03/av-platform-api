@@ -189,6 +189,9 @@ export class EmailService {
     senderEmail: string;
     path?: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftSurvey.toString(),
@@ -458,6 +461,9 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     const payload = this.getConnectionRequestAcceptedMessageData({
       requestingUserName,
       receivingUserName,
@@ -487,6 +493,9 @@ export class EmailService {
     requestingUser: User;
     personalNote: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     const payload: ConnectionRequestNewUserMessageData = {
       requestingUser: {
         firstName: requestingUser.profile.firstName,
@@ -520,6 +529,9 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     const payload: ConnectionRequestExistingUserMessageData = {
       requestingUser: {
         firstName: requestingUser.profile.firstName,
@@ -556,6 +568,9 @@ export class EmailService {
     inviterUserName: string;
     personalNote: string;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     const payload: SurveyInvatationMessageData = {
       inviteeUser: {
         firstName: inviteeUserName,
@@ -587,6 +602,9 @@ export class EmailService {
     inviteeUser: User;
     inviterUser: User;
   }): Promise<boolean> {
+    if (!this.isProduction) {
+      return true;
+    }
     // const path = {{SERVER}}/api/v1/user/profile/:userId
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {

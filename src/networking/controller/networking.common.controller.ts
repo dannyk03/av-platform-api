@@ -128,7 +128,7 @@ export class NetworkingCommonController {
         );
 
       if (saveSocialConnectionRequest) {
-        const isEmailSent = addresseeUser
+        const isEmailSent = !addresseeUser
           ? await this.emailService.sendConnectionRequestNewUser({
               personalNote: saveSocialConnectionRequest.personalNote,
               requestingUser: saveSocialConnectionRequest.addresserUser,
