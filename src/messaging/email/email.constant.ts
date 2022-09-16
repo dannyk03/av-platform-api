@@ -151,6 +151,7 @@ export type ConnectionRequestMessageData = {
     firstName: string;
   };
   connectionViewLink: string;
+  personalNote: string;
 };
 
 export type ConnectionRequestExistingUserMessageData = {
@@ -162,6 +163,7 @@ export type ConnectionRequestExistingUserMessageData = {
   };
   connectionApproveLink: string;
   connectionRejectLink: string;
+  connectionId: string;
 };
 
 export type SurveyInvatationMessageData = {
