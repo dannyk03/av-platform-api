@@ -152,7 +152,7 @@ export class SocialConnectionRequestService {
     search,
     status,
     addresseeEmail,
-    extraDataForaddresserUser = false,
+    extraDataForAddresserUser = false,
   }: ISocialConnectionRequestSearch): Promise<
     SelectQueryBuilder<SocialConnectionRequest>
   > {
@@ -175,7 +175,7 @@ export class SocialConnectionRequestService {
         }),
       );
 
-    if (extraDataForaddresserUser) {
+    if (extraDataForAddresserUser) {
       builder.leftJoinAndSelect(
         'addresserUser.profile',
         'addresserUserProfile',
@@ -217,7 +217,7 @@ export class SocialConnectionRequestService {
     options,
   }: ISocialConnectionRequestSearch): Promise<SocialConnectionRequest[]> {
     const searchBuilder = await this.getListSearchBuilder({
-      extraDataForaddresserUser: true,
+      extraDataForAddresserUser: true,
       search,
       status,
       addresseeEmail,
