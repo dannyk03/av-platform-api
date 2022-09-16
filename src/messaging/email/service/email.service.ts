@@ -9,6 +9,7 @@ import { CustomerIOService } from '../../customer-io/service/customer-io.service
 import {
   ConnectionRequestExistingUserMessageData,
   ConnectionRequestMessageData,
+  ConnectionRequestNewUserMessageData,
   EmailStatus,
   EmailTemplate,
   GiftDeliveredToRecipientMessageData,
@@ -420,7 +421,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  getConnectionRequestMessageData({
+  getConnectionRequestAcceptedMessageData({
     requestingUserName,
     receivingUserName,
     connectionId,
@@ -457,7 +458,7 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    const payload = this.getConnectionRequestMessageData({
+    const payload = this.getConnectionRequestAcceptedMessageData({
       requestingUserName,
       receivingUserName,
       connectionId,
@@ -480,22 +481,18 @@ export class EmailService {
   async sendConnectionRequestNewUser({
     email,
     requestingUser,
-    receivingUser,
-    connectionId,
     personalNote,
   }: {
     email: string;
     requestingUser: User;
-    receivingUser: User;
-    connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    const payload = this.getConnectionRequestMessageData({
-      requestingUserName: requestingUser.profile.firstName,
-      receivingUserName: receivingUser.profile.firstName,
-      connectionId,
+    const payload: ConnectionRequestNewUserMessageData = {
+      requestingUser: {
+        firstName: requestingUser.profile.firstName,
+      },
       personalNote,
-    });
+    };
 
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestNewUser.toString(),

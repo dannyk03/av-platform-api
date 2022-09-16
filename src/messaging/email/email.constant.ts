@@ -154,6 +154,13 @@ export type ConnectionRequestMessageData = {
   personalNote: string;
 };
 
+export type ConnectionRequestNewUserMessageData = {
+  requestingUser: {
+    firstName: string;
+  };
+  personalNote: string;
+};
+
 export type ConnectionRequestExistingUserMessageData = {
   requestingUser: {
     firstName: string;
