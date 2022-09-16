@@ -7,7 +7,7 @@ export interface ISocialConnectionRequestSearch {
   status?: EnumNetworkingConnectionRequestStatus[];
   addresseeEmail: string;
   options?: IPaginationOptions;
-  extraDataForaddresserUser?: boolean;
+  extraDataForAddresserUser?: boolean;
 }
 export interface ISocialConnectionSearch {
   search?: string;
