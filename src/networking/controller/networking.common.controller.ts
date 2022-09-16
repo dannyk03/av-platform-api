@@ -129,19 +129,23 @@ export class NetworkingCommonController {
 
       if (saveSocialConnectionRequest) {
         const isEmailSent = addresseeUser
-          ? await this.emailService.sendNetworkNewConnectionRequest({
+          ? await this.emailService.sendConnectionRequestNewUser({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addresserUser,
+              requestingUser: saveSocialConnectionRequest.addresserUser,
+              receivingUser: saveSocialConnectionRequest.addresseeUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
+              connectionId: saveSocialConnectionRequest.id,
             })
-          : await this.emailService.sendNetworkJoinInvite({
+          : await this.emailService.sendConnectionRequestExistingUser({
               personalNote: saveSocialConnectionRequest.personalNote,
-              fromUser: saveSocialConnectionRequest.addresserUser,
+              requestingUser: saveSocialConnectionRequest.addresserUser,
+              receivingUser: saveSocialConnectionRequest.addresseeUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
+              connectionId: saveSocialConnectionRequest.id,
             });
 
         if (isEmailSent) {

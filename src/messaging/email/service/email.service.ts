@@ -424,10 +424,12 @@ export class EmailService {
     requestingUserName,
     receivingUserName,
     connectionId,
+    personalNote,
   }: {
     requestingUserName: string;
     receivingUserName: string;
     connectionId: string;
+    personalNote: string;
   }) {
     const payload: ConnectionRequestMessageData = {
       requestingUser: {
@@ -436,6 +438,7 @@ export class EmailService {
       receivingUser: {
         firstName: receivingUserName,
       },
+      personalNote,
       connectionViewLink: '', // TODO: add / build here using `connectionId`
     };
     return payload;
@@ -446,16 +449,19 @@ export class EmailService {
     requestingUserName,
     receivingUserName,
     connectionId,
+    personalNote,
   }: {
     email: string;
     requestingUserName: string;
     receivingUserName: string;
     connectionId: string;
+    personalNote: string;
   }): Promise<boolean> {
     const payload = this.getConnectionRequestMessageData({
       requestingUserName,
       receivingUserName,
       connectionId,
+      personalNote,
     });
 
     const sendResult = await this.customerIOService.sendEmail({
@@ -473,19 +479,22 @@ export class EmailService {
 
   async sendConnectionRequestNewUser({
     email,
-    requestingUserName,
-    receivingUserName,
+    requestingUser,
+    receivingUser,
     connectionId,
+    personalNote,
   }: {
     email: string;
-    requestingUserName: string;
-    receivingUserName: string;
+    requestingUser: User;
+    receivingUser: User;
     connectionId: string;
+    personalNote: string;
   }): Promise<boolean> {
     const payload = this.getConnectionRequestMessageData({
-      requestingUserName,
-      receivingUserName,
+      requestingUserName: requestingUser.profile.firstName,
+      receivingUserName: receivingUser.profile.firstName,
       connectionId,
+      personalNote,
     });
 
     const sendResult = await this.customerIOService.sendEmail({
@@ -503,28 +512,31 @@ export class EmailService {
 
   async sendConnectionRequestExistingUser({
     email,
-    requestingUserName,
-    receivingUserName,
+    requestingUser,
+    receivingUser,
     connectionId,
+    personalNote,
   }: {
     email: string;
-    requestingUserName: string;
-    receivingUserName: string;
+    requestingUser: User;
+    receivingUser: User;
     connectionId: string;
+    personalNote: string;
   }): Promise<boolean> {
     const payload: ConnectionRequestExistingUserMessageData = {
       requestingUser: {
-        firstName: requestingUserName,
+        firstName: requestingUser.profile.firstName,
       },
       receivingUser: {
-        firstName: receivingUserName,
+        firstName: receivingUser.profile.firstName,
       },
       connectionApproveLink: '',
       connectionRejectLink: '',
+      connectionId,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendConnectionRequestNewUser.toString(),
+      template: EmailTemplate.SendConnectionRequestExistingUser.toString(),
       to: [email],
       emailTemplatePayload: payload,
       identifier: { id: email },
