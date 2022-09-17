@@ -23,6 +23,13 @@ export class SocialConnectionGetSerialization
   readonly lastName: string;
 
   @Expose()
+  @Transform(({ obj }) => {
+    const personas = obj?.user2?.profile?.personas;
+    return personas ? [...new Set(Object.keys(personas))] : null;
+  })
+  readonly personas: string[];
+
+  @Expose()
   @Transform(({ obj }) => obj.user2?.profile?.title)
   readonly title: string;
 
