@@ -10,6 +10,7 @@ import {
   Brackets,
   DeepPartial,
   DeleteResult,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -47,6 +48,10 @@ export class UserService {
 
   async findOne(find: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(find);
+  }
+
+  async find(find: FindManyOptions<User>): Promise<User[]> {
+    return this.userRepository.find(find);
   }
 
   async findOneBy(
