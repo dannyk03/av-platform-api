@@ -86,6 +86,13 @@ export class NetworkingCommonController {
       personalNote: sharedPersonalNote,
     }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
+    const requestingUserWithProfile = (
+      await this.userService.find({
+        where: { id: reqUser.id },
+        relations: ['profile'],
+      })
+    )[0];
+
     const promises = addressees.map(async ({ email, personalNote }) => {
       if (email === reqUser.email) {
         return Promise.reject(email);
@@ -131,14 +138,14 @@ export class NetworkingCommonController {
         const isEmailSent = !addresseeUser
           ? await this.emailService.sendConnectionRequestNewUser({
               personalNote: saveSocialConnectionRequest.personalNote,
-              requestingUser: saveSocialConnectionRequest.addresserUser,
+              requestingUser: requestingUserWithProfile,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
             })
           : await this.emailService.sendConnectionRequestExistingUser({
               personalNote: saveSocialConnectionRequest.personalNote,
-              requestingUser: saveSocialConnectionRequest.addresserUser,
+              requestingUser: requestingUserWithProfile,
               receivingUser: saveSocialConnectionRequest.addresseeUser,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
