@@ -192,4 +192,5 @@ export type SurveyCompletedMessageData = {
   inviterUser: {
     firstName: string;
   };
+  socialConnectionRequestId: string;
 };

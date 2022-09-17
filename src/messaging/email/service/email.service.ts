@@ -598,9 +598,11 @@ export class EmailService {
   async sendSurveyCompletedToInviter({
     inviteeUser,
     inviterUser,
+    socialConnectionRequestId,
   }: {
     inviteeUser: User;
     inviterUser: User;
+    socialConnectionRequestId: string;
   }): Promise<boolean> {
     if (!this.isProduction) {
       return true;
@@ -614,6 +616,7 @@ export class EmailService {
       inviterUser: {
         firstName: inviterUser.profile.firstName,
       },
+      socialConnectionRequestId,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
