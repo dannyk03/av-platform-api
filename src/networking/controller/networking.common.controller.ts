@@ -86,13 +86,10 @@ export class NetworkingCommonController {
       personalNote: sharedPersonalNote,
     }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
-    // TODO: change to findOne
-    const requestingUserWithProfile = (
-      await this.userService.find({
-        where: { id: reqUser.id },
-        relations: ['profile'],
-      })
-    )[0];
+    const requestingUserWithProfile = await this.userService.findOne({
+      where: { id: reqUser.id },
+      relations: ['profile'],
+    });
 
     const promises = addressees.map(async ({ email, personalNote }) => {
       if (email === reqUser.email) {
@@ -135,24 +132,33 @@ export class NetworkingCommonController {
           createSocialConnectionRequest,
         );
 
+      let isEmailSent;
       if (saveSocialConnectionRequest) {
-        const isEmailSent = !addresseeUser
-          ? await this.emailService.sendConnectionRequestNewUser({
+        if (!addresseeUser) {
+          isEmailSent = await this.emailService.sendConnectionRequestNewUser({
+            personalNote: saveSocialConnectionRequest.personalNote,
+            requestingUser: requestingUserWithProfile,
+            email:
+              saveSocialConnectionRequest.addresseeUser?.email ||
+              saveSocialConnectionRequest.tempAddresseeEmail,
+          });
+        } else {
+          const receivingUserWithProfile = await this.userService.findOne({
+            where: { id: saveSocialConnectionRequest.addresseeUser.id },
+            relations: ['profile'],
+          });
+
+          isEmailSent =
+            await this.emailService.sendConnectionRequestExistingUser({
               personalNote: saveSocialConnectionRequest.personalNote,
               requestingUser: requestingUserWithProfile,
-              email:
-                saveSocialConnectionRequest.addresseeUser?.email ||
-                saveSocialConnectionRequest.tempAddresseeEmail,
-            })
-          : await this.emailService.sendConnectionRequestExistingUser({
-              personalNote: saveSocialConnectionRequest.personalNote,
-              requestingUser: requestingUserWithProfile,
-              receivingUser: saveSocialConnectionRequest.addresseeUser,
+              receivingUser: receivingUserWithProfile,
               email:
                 saveSocialConnectionRequest.addresseeUser?.email ||
                 saveSocialConnectionRequest.tempAddresseeEmail,
               connectionId: saveSocialConnectionRequest.id,
             });
+        }
 
         if (isEmailSent) {
           return Promise.resolve(email);
