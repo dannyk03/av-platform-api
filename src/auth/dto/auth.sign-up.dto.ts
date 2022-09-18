@@ -136,7 +136,7 @@ export class SurveyPersonalDto {
   @Allow()
   readonly kidFriendlyActivities: object;
 
-  // @IsNotEmpty()
+  @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
   readonly home: SurveyPersonalAddressDto;
