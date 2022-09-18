@@ -86,6 +86,7 @@ export class NetworkingCommonController {
       personalNote: sharedPersonalNote,
     }: SocialConnectionRequestDto,
   ): Promise<IResponseData> {
+    // TODO: change to findOne
     const requestingUserWithProfile = (
       await this.userService.find({
         where: { id: reqUser.id },
