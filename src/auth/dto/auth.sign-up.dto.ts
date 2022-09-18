@@ -18,66 +18,57 @@ import {
 import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
-  @Length(1, 50)
+  @MaxLength(50)
   @IsOptional()
-  @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly city?: string;
 
   @IsOptional()
-  @Length(1, 100)
-  @IsNotEmpty()
+  @MaxLength(100)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state?: string;
 
-  @IsNotEmpty()
   @IsOptional()
-  @Length(1, 100)
+  @MaxLength(100)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly country?: string;
 }
 export class SurveyPersonalShippingDto {
-  @IsNotEmpty()
   @IsOptional()
-  @Length(1, 200)
+  @MaxLength(200)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine1: string;
 
-  @IsNotEmpty()
   @IsOptional()
-  @Length(1, 200)
+  @MaxLength(200)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine2?: string;
 
-  @Length(1, 100)
-  @IsNotEmpty()
+  @MaxLength(100)
   @IsOptional()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly city?: string;
 
   @IsOptional()
-  @IsNotEmpty()
-  @Length(1, 100)
+  @MaxLength(100)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state?: string;
 
-  @Length(1, 100)
-  @IsNotEmpty()
+  @MaxLength(100)
   @IsOptional()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly country?: string;
 
-  @IsNotEmpty()
   @IsOptional()
-  @Length(1, 50)
+  @MaxLength(50)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly zipCode?: string;
@@ -145,7 +136,7 @@ export class SurveyPersonalDto {
   @Allow()
   readonly kidFriendlyActivities: object;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
   readonly home: SurveyPersonalAddressDto;
