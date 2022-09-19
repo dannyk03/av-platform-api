@@ -456,8 +456,6 @@ export class AuthCommonController {
       payloadAccessToken,
     );
 
-    // await this.helperCookieService.attachAccessToken(response, accessToken);
-
     return {
       accessToken,
       refreshToken,
