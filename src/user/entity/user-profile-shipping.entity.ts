@@ -36,7 +36,7 @@ export class UserProfileShipping extends BaseEntity<UserProfileShipping> {
   zipCode?: string;
 
   @Column({
-    length: 30,
+    length: 50,
     nullable: true,
   })
   country?: string;
