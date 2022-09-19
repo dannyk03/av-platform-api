@@ -44,10 +44,6 @@ export class AuthService {
       'auth.jwt.accessToken.notBeforeExpirationTime',
     );
 
-    this.guestAccessTokenExpirationTime = this.configService.get<string>(
-      'auth.jwt.guestAccessToken.expirationTime',
-    );
-
     this.refreshTokenSecretToken = this.configService.get<string>(
       'auth.jwt.refreshToken.secretKey',
     );
