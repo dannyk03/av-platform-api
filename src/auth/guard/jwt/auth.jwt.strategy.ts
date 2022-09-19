@@ -10,8 +10,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        JwtStrategy.fromCookie,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
+        JwtStrategy.fromCookie,
       ]),
       ignoreExpiration: false,
       jsonWebTokenOptions: {

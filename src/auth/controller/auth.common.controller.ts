@@ -167,9 +167,10 @@ export class AuthCommonController {
       };
     }
 
-    await this.helperCookieService.attachAccessToken(response, accessToken);
+    // await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
+      accessToken,
       refreshToken,
     };
   }
@@ -454,8 +455,6 @@ export class AuthCommonController {
     const accessToken: string = await this.authService.createAccessToken(
       payloadAccessToken,
     );
-
-    await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       accessToken,
