@@ -153,6 +153,7 @@ export class MagicLinkController {
 
     return {
       refreshToken,
+      accessToken,
     };
   }
 

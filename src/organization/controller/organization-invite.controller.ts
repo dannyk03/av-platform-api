@@ -242,6 +242,7 @@ export class OrganizationInviteController {
         await this.helperCookieService.attachAccessToken(response, accessToken);
 
         return {
+          accessToken,
           refreshToken,
         };
       },

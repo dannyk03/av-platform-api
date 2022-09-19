@@ -170,6 +170,7 @@ export class AuthCommonController {
     await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
+      accessToken,
       refreshToken,
     };
   }
