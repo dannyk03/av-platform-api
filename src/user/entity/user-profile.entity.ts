@@ -8,13 +8,13 @@ import { BaseEntity } from '@/database/entity';
 @Entity()
 export class UserProfile extends BaseEntity<UserProfile> {
   @Column({
-    length: 30,
+    length: 50,
     nullable: true,
   })
   firstName: string;
 
   @Column({
-    length: 30,
+    length: 50,
     nullable: true,
   })
   lastName: string;

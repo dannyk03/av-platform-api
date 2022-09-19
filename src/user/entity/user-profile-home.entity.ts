@@ -6,19 +6,19 @@ import { BaseEntity } from '@/database/entity';
 @Entity()
 export class UserProfileHome extends BaseEntity<UserProfileHome> {
   @Column({
-    length: 30,
+    length: 70,
     nullable: true,
   })
   city?: string;
 
   @Column({
-    length: 30,
+    length: 70,
     nullable: true,
   })
   state?: string;
 
   @Column({
-    length: 30,
+    length: 70,
     nullable: true,
   })
   country?: string;
