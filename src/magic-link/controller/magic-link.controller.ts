@@ -149,7 +149,7 @@ export class MagicLinkController {
       false,
     );
 
-    await this.helperCookieService.attachAccessToken(response, accessToken);
+    // await this.helperCookieService.attachAccessToken(response, accessToken);
 
     return {
       refreshToken,
