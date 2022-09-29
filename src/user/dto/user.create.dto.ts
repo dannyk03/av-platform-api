@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -16,6 +18,7 @@ import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class UserCreateDto {
   @NormalizeEmail()
+  @ApiProperty()
   readonly email: string;
 
   @MaxLength(30)
@@ -23,6 +26,7 @@ export class UserCreateDto {
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly firstName?: string;
 
   @MaxLength(30)
@@ -30,6 +34,7 @@ export class UserCreateDto {
   @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly lastName?: string;
 
   @IsOptional()
@@ -38,15 +43,18 @@ export class UserCreateDto {
   @MaxLength(14)
   @IsPhoneNumber()
   @NormalizeStringInputTransform()
+  @ApiProperty({ required: false })
   readonly phoneNumber?: string;
 
   @IsNotEmpty()
   @NormalizeStringInputTransform()
+  @ApiProperty()
   readonly role: string;
 
   @IsNotEmpty()
   @IsPasswordStrong()
   @TrimTransform()
   @Type(() => String)
+  @ApiProperty()
   readonly password: string;
 }

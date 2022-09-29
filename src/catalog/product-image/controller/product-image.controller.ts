@@ -9,6 +9,7 @@ import {
   UnprocessableEntityException,
   UploadedFiles,
 } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Action, Subjects } from '@avo/casl';
 import { EnumProductStatusCodeError, IResponseData } from '@avo/type';

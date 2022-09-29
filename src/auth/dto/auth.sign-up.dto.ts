@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import {
   Allow,
@@ -131,19 +133,23 @@ export class SurveyPersonalDto {
   @MaxLength(2)
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
   @Allow()
+  @ApiProperty()
   readonly kidFriendlyActivities: object;
 
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
+  @ApiProperty()
   readonly home: SurveyPersonalAddressDto;
 
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalShippingDto)
+  @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
 }
 
@@ -151,18 +157,22 @@ export class AuthSignUpDto {
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalDto)
+  @ApiProperty()
   readonly personal: SurveyPersonalDto;
 
   @Allow()
+  @ApiProperty()
   readonly personas: object;
 
   @Allow()
+  @ApiProperty()
   readonly dietary: object;
 
   @IsNotEmpty()
   @MaxLength(30)
   @IsPasswordStrong()
   @TrimTransform()
+  @ApiProperty({ required: false })
   @Type(() => String)
   readonly password!: string;
 }

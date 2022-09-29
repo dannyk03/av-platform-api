@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -21,5 +23,6 @@ export class SocialConnectionRequestApproveDto {
   @UniqueArrayByTransform()
   @ArrayTransform()
   @IsOptional()
+  @ApiProperty()
   userIds: string[];
 }

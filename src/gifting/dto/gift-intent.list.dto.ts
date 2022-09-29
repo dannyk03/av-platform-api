@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import {
   EnumDisplayLanguage,
   IPaginationList,
@@ -27,18 +29,22 @@ import {
 
 export class GiftIntentListDto implements IPaginationList {
   @PaginationSearch()
+  @ApiProperty()
   readonly search: string;
 
   @PaginationMultiSearch()
+  @ApiProperty()
   readonly keywords: string[];
 
   @PaginationAvailableSearch(GIFT_INTENT_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
   @PaginationPage(GIFT_INTENT_DEFAULT_PAGE)
+  @ApiProperty({ default: GIFT_INTENT_DEFAULT_PAGE })
   readonly page: number;
 
   @PaginationPerPage(GIFT_INTENT_DEFAULT_PER_PAGE)
+  @ApiProperty({ default: GIFT_INTENT_DEFAULT_PER_PAGE })
   readonly perPage: number;
 
   @PaginationSort(

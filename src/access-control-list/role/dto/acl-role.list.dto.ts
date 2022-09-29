@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
 import {
@@ -19,15 +21,18 @@ import {
 
 export class AclRoleListDto implements IPaginationList {
   @PaginationSearch()
+  @ApiProperty()
   readonly search: string;
 
   @PaginationAvailableSearch(ROLE_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
   @PaginationPage(ROLE_DEFAULT_PAGE)
+  @ApiProperty({ default: ROLE_DEFAULT_PAGE })
   readonly page: number;
 
   @PaginationPerPage(ROLE_DEFAULT_PER_PAGE)
+  @ApiProperty({ default: ROLE_DEFAULT_PER_PAGE })
   readonly perPage: number;
 
   @PaginationSort(ROLE_DEFAULT_SORT, ROLE_DEFAULT_AVAILABLE_SORT)
