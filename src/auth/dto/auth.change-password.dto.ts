@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 
@@ -9,10 +11,12 @@ export class AuthChangePasswordDto {
   @IsNotEmpty()
   @TrimTransform()
   @Type(() => String)
+  @ApiProperty()
   readonly newPassword: string;
 
   @IsNotEmpty()
   @TrimTransform()
   @Type(() => String)
+  @ApiProperty()
   readonly oldPassword: string;
 }

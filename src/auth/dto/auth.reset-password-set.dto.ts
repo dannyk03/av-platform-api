@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import { IsNotEmpty, MaxLength } from 'class-validator';
 
@@ -10,5 +12,6 @@ export class AuthResetPasswordSetDto {
   @IsPasswordStrong()
   @TrimTransform()
   @Type(() => String)
+  @ApiProperty()
   readonly password!: string;
 }

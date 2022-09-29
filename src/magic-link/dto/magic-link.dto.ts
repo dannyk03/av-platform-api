@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { EnumDisplayLanguage } from '@avo/type';
 
 import { Type } from 'class-transformer';
@@ -12,9 +14,11 @@ export class MagicLinkDto {
   @Length(21, 21)
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty()
   readonly code: string;
 
   @ProductDisplayLanguage()
   @IsOptional()
+  @ApiProperty()
   readonly lang: EnumDisplayLanguage;
 }
