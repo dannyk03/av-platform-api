@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { EnumDisplayLanguage } from '@avo/type';
 
 import {
@@ -24,9 +26,11 @@ export class GiftOptionCreateDto {
   @IsUUID(undefined, { each: true })
   @UniqueArrayByTransform()
   @ArrayTransform()
+  @ApiProperty()
   readonly productIds!: string[];
 
   @ProductDisplayLanguage()
   @IsOptional()
+  @ApiProperty({ required: false })
   readonly lang?: EnumDisplayLanguage;
 }

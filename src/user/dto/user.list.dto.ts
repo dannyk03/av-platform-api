@@ -28,15 +28,14 @@ export class UserListDto implements IPaginationList {
   readonly search: string;
 
   @PaginationAvailableSearch(USER_DEFAULT_AVAILABLE_SEARCH)
-  @ApiProperty()
   readonly availableSearch: string[];
 
   @PaginationPage(USER_DEFAULT_PAGE)
-  @ApiProperty()
+  @ApiProperty({ default: USER_DEFAULT_PAGE })
   readonly page: number;
 
   @PaginationPerPage(USER_DEFAULT_PER_PAGE)
-  @ApiProperty()
+  @ApiProperty({ default: USER_DEFAULT_PER_PAGE })
   readonly perPage: number;
 
   @PaginationSort(

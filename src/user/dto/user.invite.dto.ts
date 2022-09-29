@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -19,12 +21,14 @@ import {
 export class UserInviteAddresseeDtoDto {
   @NormalizeEmail()
   @IsNotEmpty()
+  @ApiProperty()
   readonly email: string;
 
   @IsOptional()
   @IsString()
   @MaxLength(500)
   @Type(() => String)
+  @ApiProperty()
   readonly personalNote?: string;
 }
 
@@ -37,11 +41,13 @@ export class UserInviteDto {
   @ArrayTransform()
   @ValidateNested()
   @Type(() => UserInviteAddresseeDtoDto)
+  @ApiProperty()
   readonly addressees: UserInviteAddresseeDtoDto[];
 
   @IsOptional()
   @IsString()
   @MaxLength(500)
   @Type(() => String)
+  @ApiProperty()
   readonly personalNote?: string;
 }

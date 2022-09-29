@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { EnumCurrency, EnumDisplayLanguage } from '@avo/type';
 
 import { Type } from 'class-transformer';
@@ -35,24 +37,29 @@ export class ProductCreateDto {
   @ProductSKU()
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly sku!: string;
 
   @IsOptional()
   @MaxLength(30)
   @NormalizeStringInputTransform()
+  @ApiProperty({ required: false })
   readonly brand?: string;
 
   @MaxLength(30)
   @NormalizeStringInputTransform()
+  @ApiProperty({ required: false })
   readonly name!: string;
 
   @IsOptional()
   @MaxLength(200)
   @NormalizeStringInputTransform()
+  @ApiProperty({ required: false })
   readonly description!: string;
 
   @ProductDisplayLanguage()
   @IsOptional()
+  @ApiProperty({ required: false })
   language!: EnumDisplayLanguage;
 
   @IsArray()
@@ -62,11 +69,13 @@ export class ProductCreateDto {
   @ArrayTransform()
   @ToLowerCaseTransform({ each: true })
   @NormalizeStringInputTransform({ each: true })
+  @ApiProperty({ required: false })
   keywords?: string[];
 
   @IsBoolean()
   @IsOptional()
   @BooleanStringTransform()
+  @ApiProperty({ required: false })
   isActive?: boolean;
 
   @IsNumber({ allowNaN: false })
@@ -74,6 +83,7 @@ export class ProductCreateDto {
   @IsPositive()
   @Min(0)
   @Type(() => Number)
+  @ApiProperty({ required: false })
   price!: number;
 
   @IsNumber({ allowNaN: false })
@@ -81,23 +91,28 @@ export class ProductCreateDto {
   @IsPositive()
   @Min(0)
   @Type(() => Number)
+  @ApiProperty({ required: false })
   shippingCost!: number;
 
   @MaxLength(200)
   @NormalizeStringInputTransform()
+  @ApiProperty({ required: false })
   readonly taxCode!: string;
 
   @ProductCurrency()
   @IsOptional()
+  @ApiProperty({ required: false })
   currency?: EnumCurrency;
 
   @IsNotEmpty()
   @IsUUID()
   @IsOptional()
   @Type(() => String)
+  @ApiProperty({ required: false })
   vendorId!: string;
 
   @IsNotEmpty()
   @MaxLength(30)
+  @ApiProperty({ required: false })
   vendorName?: string;
 }

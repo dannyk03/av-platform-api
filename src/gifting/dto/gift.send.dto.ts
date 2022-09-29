@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { EnumCurrency, EnumOccasion } from '@avo/type';
 
 import { Transform, Type } from 'class-transformer';
@@ -71,6 +73,7 @@ export class GiftAdditionalDataDto {
   @Min(0)
   @Max(999)
   @Type(() => Number)
+  @ApiProperty()
   readonly minPrice: number;
 
   @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
@@ -79,14 +82,17 @@ export class GiftAdditionalDataDto {
   @MinGreaterThan('minPrice')
   @Type(() => Number)
   @IsNotEmpty()
+  @ApiProperty()
   readonly maxPrice: number;
 
   @IsNotEmpty()
   @IsEnum(EnumCurrency)
+  @ApiProperty()
   readonly currency: EnumCurrency;
 
   @IsNotEmpty()
   @IsEnum(EnumOccasion)
+  @ApiProperty()
   readonly occasion: EnumOccasion;
 }
 
@@ -101,6 +107,7 @@ export class GiftSendDto {
     return isArray(value) ? value : [value];
   })
   @Type(() => GiftSendRecipientDto)
+  @ApiProperty()
   readonly recipients: GiftSendRecipientDto[];
 
   // @IsObject()
@@ -112,5 +119,6 @@ export class GiftSendDto {
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => GiftAdditionalDataDto)
+  @ApiProperty()
   readonly additionalData: GiftAdditionalDataDto;
 }
