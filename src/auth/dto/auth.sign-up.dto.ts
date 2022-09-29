@@ -133,19 +133,23 @@ export class SurveyPersonalDto {
   @MaxLength(2)
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
   @Allow()
+  @ApiProperty()
   readonly kidFriendlyActivities: object;
 
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
+  @ApiProperty()
   readonly home: SurveyPersonalAddressDto;
 
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalShippingDto)
+  @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
 }
 
@@ -168,7 +172,7 @@ export class AuthSignUpDto {
   @MaxLength(30)
   @IsPasswordStrong()
   @TrimTransform()
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Type(() => String)
   readonly password!: string;
 }

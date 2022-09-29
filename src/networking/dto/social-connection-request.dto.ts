@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -37,11 +39,13 @@ export class SocialConnectionRequestDto {
   @ArrayTransform()
   @ValidateNested()
   @Type(() => SocialConnectionAddresseeDto)
+  @ApiProperty()
   readonly addressees: SocialConnectionAddresseeDto[];
 
   @IsOptional()
   @IsString()
   @MaxLength(500)
   @Type(() => String)
+  @ApiProperty({ required: false })
   readonly personalNote?: string;
 }
