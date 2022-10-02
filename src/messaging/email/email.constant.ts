@@ -159,6 +159,7 @@ export type ConnectionRequestNewUserMessageData = {
     firstName: string;
   };
   personalNote: string;
+  connectionId: string;
 };
 
 export type ConnectionRequestExistingUserMessageData = {

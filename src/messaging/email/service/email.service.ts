@@ -488,10 +488,12 @@ export class EmailService {
     email,
     requestingUser,
     personalNote,
+    connectionId,
   }: {
     email: string;
     requestingUser: User;
     personalNote: string;
+    connectionId: string;
   }): Promise<boolean> {
     if (!this.isProduction) {
       return true;
@@ -501,6 +503,7 @@ export class EmailService {
         firstName: requestingUser.profile.firstName,
       },
       personalNote,
+      connectionId,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
