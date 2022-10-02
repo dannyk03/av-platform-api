@@ -393,8 +393,13 @@ export class AuthCommonController {
               await transactionalEntityManager.save(socialConnectionRequest);
 
             if (saveSocialConnectionRequest) {
+              const inviterUserWithProfile = await this.userService.findOne({
+                where: { id: socialConnectionRequest.addresserUser.id },
+                relations: ['profile'],
+              });
+
               await this.emailService.sendSurveyCompletedToInviter({
-                inviterUser: socialConnectionRequest.addresserUser,
+                inviterUser: inviterUserWithProfile,
                 inviteeUser: saveUser,
                 socialConnectionRequestId: saveSocialConnectionRequest.id,
               });
