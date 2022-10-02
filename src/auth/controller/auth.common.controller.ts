@@ -363,9 +363,7 @@ export class AuthCommonController {
             await this.socialConnectionRequestService.findOne({
               where: {
                 status: EnumNetworkingConnectionRequestStatus.Pending,
-                addresserUser: {
-                  id: ref,
-                },
+                id: ref,
                 tempAddresseeEmail: saveUser.email,
               },
               relations: ['addresserUser'],
