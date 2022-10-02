@@ -141,6 +141,7 @@ export class NetworkingCommonController {
             email:
               saveSocialConnectionRequest.addresseeUser?.email ||
               saveSocialConnectionRequest.tempAddresseeEmail,
+            connectionId: saveSocialConnectionRequest.id,
           });
         } else {
           const receivingUserWithProfile = await this.userService.findOne({
