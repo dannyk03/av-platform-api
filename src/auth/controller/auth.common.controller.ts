@@ -255,6 +255,7 @@ export class AuthCommonController {
         home,
         shipping,
         funFacts,
+        desiredSkills,
       },
       personas,
       dietary,
@@ -312,6 +313,7 @@ export class AuthCommonController {
             workAnniversaryDay,
             kidFriendlyActivities,
             funFacts,
+            desiredSkills,
           },
           authConfig: {
             password: passwordHash,

@@ -119,4 +119,8 @@ export class UserProfileGetSerialization
   @Expose()
   @Transform(({ obj }) => obj.profile?.funFacts)
   readonly funFacts?: string[];
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.desiredSkills)
+  readonly desiredSkills?: string[];
 }

@@ -158,6 +158,12 @@ export class SurveyPersonalDto {
   @MaxLength(500, { each: true })
   @ApiProperty()
   readonly funFacts: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(200, { each: true })
+  @ApiProperty()
+  readonly desiredSkills: string[];
 }
 
 export class AuthSignUpDto {

@@ -52,6 +52,14 @@ export class UserProfile extends BaseEntity<UserProfile> {
   funFacts: string[];
 
   @Column({
+    type: 'varchar',
+    length: 100,
+    array: true,
+    default: [],
+  })
+  desiredSkills: string[];
+
+  @Column({
     type: 'jsonb',
     nullable: true,
   })
