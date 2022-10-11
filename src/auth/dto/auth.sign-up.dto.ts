@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   Allow,
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -151,6 +152,12 @@ export class SurveyPersonalDto {
   @Type(() => SurveyPersonalShippingDto)
   @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
+
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(500, { each: true })
+  @ApiProperty()
+  readonly funFacts: string[];
 }
 
 export class AuthSignUpDto {
