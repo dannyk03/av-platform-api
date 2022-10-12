@@ -41,7 +41,7 @@ export class RolePresetsSeedService {
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
           try {
-            const rolePresets = await Promise.all(
+            await Promise.all(
               rolePresetsSeedData.roles.map(async (role: AclRole) => {
                 const { policy } = role;
                 const policySubjects = await Promise.all(
@@ -75,11 +75,16 @@ export class RolePresetsSeedService {
                   policy: policyEntity,
                 });
 
-                return transactionalEntityManager.save(roleEntity);
+                const existsRolePreset =
+                  await this.aclRolePresetService.findOneBy({
+                    name: roleEntity.name,
+                  });
+
+                return existsRolePreset
+                  ? Promise.resolve(null)
+                  : transactionalEntityManager.save(roleEntity);
               }),
             );
-
-            await transactionalEntityManager.save(rolePresets);
           } catch (err) {
             throw new Error(err.message);
           }

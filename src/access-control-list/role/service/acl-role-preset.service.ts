@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
 import { AclRolePreset } from '../entity';
 
@@ -28,5 +28,11 @@ export class AclRolePresetService {
     return this.aclRolePresetRepository.find({
       relations: ['policy', 'policy.subjects', 'policy.subjects.abilities'],
     });
+  }
+
+  async findOneBy(
+    find: FindOptionsWhere<AclRolePreset>,
+  ): Promise<AclRolePreset> {
+    return this.aclRolePresetRepository.findOneBy(find);
   }
 }

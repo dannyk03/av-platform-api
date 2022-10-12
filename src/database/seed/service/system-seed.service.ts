@@ -42,6 +42,14 @@ export class SystemSeedService {
     }
 
     try {
+      const existsSystemOrg = await this.organizationService.findBy({
+        name: systemSeedData.organization.name,
+      });
+
+      if (existsSystemOrg) {
+        return;
+      }
+
       await this.defaultDataSource.transaction(
         'SERIALIZABLE',
         async (transactionalEntityManager) => {
