@@ -153,12 +153,14 @@ export class SurveyPersonalDto {
   @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
 
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @MaxLength(500, { each: true })
   @ApiProperty()
   readonly funFacts: string[];
 
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @MaxLength(200, { each: true })
