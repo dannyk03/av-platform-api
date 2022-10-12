@@ -73,10 +73,10 @@
   dependencies:
     "@casl/ability" "^6.1.1"
 
-"@avo/type@^0.0.79":
-  version "0.0.79"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.79.tgz#23723f56f2130f36098ba1e45b72f9af1663b3c2"
-  integrity sha512-kgkvUEpbnBvozCut3ww8xXWmA1YZOMFXlDv1e5IoYt3i7iedPh5wnXO96uzS34cGqbkr2xqoex2r7n01kItP0Q==
+"@avo/type@^0.0.80":
+  version "0.0.80"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.80.tgz#17e6a2aa45d01e7b91bb5495596765f63ebe0131"
+  integrity sha512-fO4iFeObgW1I+fBOHBqb0DGi1yXV4kNPaGl8hByoXeIxYC0G6sPgFSiGO3xWr3VSFEx3Tp129VKujLkkvhKnUA==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -6019,7 +6019,7 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-locter@^0.3.1:
+locter@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/locter/-/locter-0.3.2.tgz#6cb60e0ab6a7904e3c941d3eedd535566efe4c4d"
   integrity sha512-+mHgnARlKkuIXGLw0o52c0PLzhG/gTcWzsMtkfZ80zri6TYlYd/jomMz48WWTn3lFBnieUvIanZ9nXbsI04ICQ==
@@ -8069,13 +8069,13 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typeorm-extension@^2.1.13:
-  version "2.1.13"
-  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-2.1.13.tgz#9fd8fd3d54e10b6ad2222780b1ad73346e7c06b1"
-  integrity sha512-bY4D3MrDG2w/tFqhbfLtBzuwN/eRuiUVgsVoXFvDe39zpG8xGQQ6XZQfB1rwUbqvcYsXUZVCXAUKy7lT0ih9dg==
+typeorm-extension@^2.1.14:
+  version "2.1.14"
+  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-2.1.14.tgz#484cfcc324816ecc0a4a190106b5e7041bc979e3"
+  integrity sha512-UYZ2do8aMlL3AxYfga/VedLGU0At0wIX4oOEQpA+pTs3xzRfhCvbpGySISrppLZasAVbY0uIpnxGJnbOqRXWgg==
   dependencies:
     "@faker-js/faker" "^7.5.0"
-    locter "^0.3.1"
+    locter "^0.3.2"
     rapiq "^0.0.6"
     reflect-metadata "^0.1.13"
     yargs "^17.6.0"
