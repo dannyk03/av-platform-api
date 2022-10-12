@@ -6,8 +6,8 @@ import { SeedsModule } from '@/database/seed/seeds.module';
 
 import { SystemSeedService } from '@/database/seed/service';
 
-export class seed1665493242695 implements MigrationInterface {
-  name = 'seed1665493242695';
+export class seed1665493242697 implements MigrationInterface {
+  name = 'seed1665493242697';
 
   public async up(): Promise<void> {
     const app = await NestFactory.createApplicationContext(SeedsModule);
