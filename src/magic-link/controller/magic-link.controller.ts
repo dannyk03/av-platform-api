@@ -7,7 +7,6 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Query,
-  Res,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
@@ -22,7 +21,6 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response } from 'express';
 import uniqBy from 'lodash/uniqBy';
 import { DataSource, IsNull } from 'typeorm';
 
@@ -30,11 +28,10 @@ import { AuthService, AuthSignUpVerificationLinkService } from '@/auth/service';
 import {
   GiftIntentConfirmationLinkService,
   GiftIntentReadyLinkService,
-  GiftIntentService,
 } from '@/gifting/service';
 import { EmailService } from '@/messaging/email/service';
 import { OrganizationInviteService } from '@/organization/service';
-import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
+import { HelperDateService } from '@/utils/helper/service';
 
 import { LogTrace } from '@/log/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
@@ -54,11 +51,9 @@ export class MagicLinkController {
     private defaultDataSource: DataSource,
     private readonly authSignUpVerificationService: AuthSignUpVerificationLinkService,
     private readonly helperDateService: HelperDateService,
-    private readonly helperCookieService: HelperCookieService,
     private readonly organizationInviteService: OrganizationInviteService,
     private readonly giftIntentConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly giftIntentReadyLinkService: GiftIntentReadyLinkService,
-    private readonly giftIntentService: GiftIntentService,
     private readonly emailService: EmailService,
     private readonly authService: AuthService,
   ) {}
@@ -72,8 +67,6 @@ export class MagicLinkController {
   async signUpValidate(
     @Query()
     { code }: MagicLinkDto,
-    @Res({ passthrough: true })
-    response: Response,
   ): Promise<IResponseData> {
     const existingSignUpLink = await this.authSignUpVerificationService.findOne(
       {
@@ -107,7 +100,7 @@ export class MagicLinkController {
         date: existingSignUpLink.expiresAt,
       });
 
-    if ((expiresAt && now > expiresAt) || existingSignUpLink.usedAt) {
+    if (expiresAt && now > expiresAt) {
       throw new ForbiddenException({
         statusCode: EnumUserStatusCodeError.UserSignUpLinkExpired,
         message: 'user.error.signUpLink',
