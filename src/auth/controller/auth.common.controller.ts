@@ -125,8 +125,8 @@ export class AuthCommonController {
 
     if (!isValid) {
       throw new BadRequestException({
-        statusCode: EnumAuthStatusCodeError.AuthPasswordNotMatchError,
-        message: 'auth.error.badRequest',
+        statusCode: EnumAuthStatusCodeError.AuthWrongCredentialsError,
+        message: 'auth.error.wrongCredentials',
       });
     }
 
@@ -280,7 +280,7 @@ export class AuthCommonController {
     if (checkExist.email) {
       throw new BadRequestException({
         statusCode: EnumUserStatusCodeError.UserEmailExistsError,
-        message: 'auth.error.badRequest',
+        message: 'auth.error.emailTaken',
       });
     }
 
@@ -526,7 +526,7 @@ export class AuthCommonController {
     await this.userService.updatePassword(user.id, password);
   }
 
-  @ClientResponse('auth.resetPassword')
+  @ClientResponse('auth.resetPasswordRequest')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.ResetPassword, {
     tags: ['resetPassword', 'auth'],

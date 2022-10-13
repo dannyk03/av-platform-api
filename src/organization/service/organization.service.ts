@@ -38,8 +38,10 @@ export class OrganizationService {
     return this.organizationRepository.findOne({ ...find });
   }
 
-  async findBy(find?: FindOptionsWhere<Organization>): Promise<Organization[]> {
-    return this.organizationRepository.findBy({ ...find });
+  async findOneBy(
+    find?: FindOptionsWhere<Organization>,
+  ): Promise<Organization> {
+    return this.organizationRepository.findOneBy({ ...find });
   }
 
   async checkExistsByName(name: string): Promise<boolean> {
