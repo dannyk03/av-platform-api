@@ -42,7 +42,7 @@ export class SystemSeedService {
     }
 
     try {
-      const existsSystemOrg = await this.organizationService.findBy({
+      const existsSystemOrg = await this.organizationService.findOneBy({
         name: systemSeedData.organization.name,
       });
 
