@@ -14,6 +14,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumNetworkingConnectionType } from '@avo/type';
 import {
   EnumAuthStatusCodeError,
   EnumMessagingStatusCodeError,
@@ -260,7 +261,7 @@ export class AuthCommonController {
       personas,
       dietary,
     }: AuthSignUpDto,
-    @Query() { ref }: AuthSignUpRefDto,
+    @Query() { ref, type }: AuthSignUpRefDto,
     @RequestUserAgent() userAgent: IResult,
   ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
@@ -363,51 +364,56 @@ export class AuthCommonController {
 
         // Find the connection request that led to the registered user
         if (ref) {
-          const socialConnectionRequest =
-            await this.socialConnectionRequestService.findOne({
-              where: {
-                status: EnumNetworkingConnectionRequestStatus.Pending,
-                id: ref,
-                tempAddresseeEmail: saveUser.email,
-              },
-              relations: ['addresserUser'],
-            });
-
-          if (socialConnectionRequest) {
-            // Auto approve connection request
-            const createSocialConnection1 =
-              await this.socialConnectionService.create({
-                user1: socialConnectionRequest.addresserUser,
-                user2: saveUser,
-              });
-            const createSocialConnection2 =
-              await this.socialConnectionService.create({
-                user1: saveUser,
-                user2: socialConnectionRequest.addresserUser,
+          if (type == EnumNetworkingConnectionType.ConnectionRequest) {
+            const socialConnectionRequest =
+              await this.socialConnectionRequestService.findOne({
+                where: {
+                  status: EnumNetworkingConnectionRequestStatus.Pending,
+                  id: ref,
+                  tempAddresseeEmail: saveUser.email,
+                },
+                relations: ['addresserUser'],
               });
 
-            await transactionalEntityManager.save([
-              createSocialConnection1,
-              createSocialConnection2,
-            ]);
+            if (socialConnectionRequest) {
+              // Auto approve connection request
+              const createSocialConnection1 =
+                await this.socialConnectionService.create({
+                  user1: socialConnectionRequest.addresserUser,
+                  user2: saveUser,
+                });
+              const createSocialConnection2 =
+                await this.socialConnectionService.create({
+                  user1: saveUser,
+                  user2: socialConnectionRequest.addresserUser,
+                });
 
-            socialConnectionRequest.status =
-              EnumNetworkingConnectionRequestStatus.Approved;
-            const saveSocialConnectionRequest =
-              await transactionalEntityManager.save(socialConnectionRequest);
+              await transactionalEntityManager.save([
+                createSocialConnection1,
+                createSocialConnection2,
+              ]);
 
-            if (saveSocialConnectionRequest) {
-              const inviterUserWithProfile = await this.userService.findOne({
-                where: { id: socialConnectionRequest.addresserUser.id },
-                relations: ['profile'],
-              });
+              socialConnectionRequest.status =
+                EnumNetworkingConnectionRequestStatus.Approved;
+              const saveSocialConnectionRequest =
+                await transactionalEntityManager.save(socialConnectionRequest);
 
-              await this.emailService.sendSurveyCompletedToInviter({
-                inviterUser: inviterUserWithProfile,
-                inviteeUser: saveUser,
-                socialConnectionRequestId: saveSocialConnectionRequest.id,
-              });
+              if (saveSocialConnectionRequest) {
+                const inviterUserWithProfile = await this.userService.findOne({
+                  where: { id: socialConnectionRequest.addresserUser.id },
+                  relations: ['profile'],
+                });
+
+                await this.emailService.sendSurveyCompletedToInviter({
+                  inviterUser: inviterUserWithProfile,
+                  inviteeUser: saveUser,
+                  socialConnectionRequestId: saveSocialConnectionRequest.id,
+                });
+              }
             }
+          } else if (type == EnumNetworkingConnectionType.ShareableLink) {
+            // find the user that shared the link
+            // add a connection in social_connection_requests between him and the signing up user
           }
         }
 
