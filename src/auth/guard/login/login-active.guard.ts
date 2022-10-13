@@ -8,6 +8,7 @@ import {
 import { EnumAuthStatusCodeError } from '@avo/type';
 
 import { isEmail } from 'class-validator';
+import normalizeEmail from 'validator/lib/normalizeEmail';
 
 import { UserService } from '@/user/service';
 
@@ -20,8 +21,9 @@ export class UserLoginPutToRequestGuard implements CanActivate {
     const { body, user: maybeUser } = request;
 
     const email = isEmail(body.email)
-      ? body.email.toLowerCase()
-      : maybeUser.email;
+      ? normalizeEmail(body.email)
+      : normalizeEmail(maybeUser.email);
+
     const requestUser = email
       ? await this.userService.findOne({
           where: { email },
