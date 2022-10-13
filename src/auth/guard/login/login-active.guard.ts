@@ -1,4 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+} from '@nestjs/common';
+
+import { EnumAuthStatusCodeError } from '@avo/type';
 
 import { isEmail } from 'class-validator';
 import normalizeEmail from 'validator/lib/normalizeEmail';
@@ -43,6 +50,13 @@ export class UserLoginPutToRequestGuard implements CanActivate {
           },
         })
       : null;
+
+    if (!requestUser) {
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthWrongCredentialsError,
+        message: 'auth.error.wrongCredentials',
+      });
+    }
 
     request.__user = requestUser;
 
