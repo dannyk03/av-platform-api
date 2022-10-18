@@ -12,7 +12,11 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity/user.entity';
 
 @Entity()
-export class InavatationLink extends BaseEntity<InavatationLink> {
+export class InvatationLink extends BaseEntity<InvatationLink> {
+  @OneToOne(() => User, (user) => user.invatationLink, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user!: User;
 }

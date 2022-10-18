@@ -7,6 +7,7 @@ import {
   OneToOne,
 } from 'typeorm';
 
+import { InvatationLink } from '../../networking/entity/invatation-link.entity';
 import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
@@ -53,6 +54,11 @@ export class User extends BaseEntity<User> {
     cascade: true,
   })
   profile: UserProfile;
+
+  @OneToOne(() => InvatationLink, (invatationLink) => invatationLink.user, {
+    cascade: true,
+  })
+  invatationLink: InvatationLink;
 
   @BeforeInsert()
   beforeInsert() {
