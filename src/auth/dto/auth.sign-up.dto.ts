@@ -98,7 +98,6 @@ export class SurveyPersonalDto {
   @IsOptional()
   @IsNotEmpty()
   @EmptyStringToUndefinedTransform()
-  @Length(10, 20)
   @IsPhoneNumber()
   @NormalizeStringInputTransform()
   @Type(() => String)
