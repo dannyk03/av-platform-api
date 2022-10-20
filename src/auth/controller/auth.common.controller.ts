@@ -245,6 +245,7 @@ export class AuthCommonController {
       password,
       personal: {
         email,
+        phoneNumber,
         firstName,
         lastName,
         birthMonth,
@@ -268,7 +269,7 @@ export class AuthCommonController {
     );
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
-    const checkExist = await this.userService.checkExist(email);
+    const checkExist = await this.userService.checkExist(email, phoneNumber);
 
     if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
@@ -300,6 +301,7 @@ export class AuthCommonController {
         const signUpUser = await this.userService.create({
           isActive: true,
           email,
+          phoneNumber,
           profile: {
             firstName,
             lastName,
