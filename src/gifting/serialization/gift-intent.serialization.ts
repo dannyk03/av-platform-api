@@ -53,6 +53,9 @@ class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
   readonly id: string;
 
   @Expose()
+  readonly matchReason: string | null;
+
+  @Expose()
   @Transform(({ value: products }) =>
     products?.map(
       (product: Product): ProductGetSerialization =>

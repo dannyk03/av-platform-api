@@ -1,16 +1,16 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1666514744096 implements MigrationInterface {
-  name = 'migration1666514744096';
+export class migration1666539746789 implements MigrationInterface {
+  name = 'migration1666539746789';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE "gifts"
-            ADD "recipient_match_reason" character varying(1000)
+            ADD "match_reason" character varying(1000)
         `);
     await queryRunner.query(`
             ALTER TABLE "gift_submits"
-            ADD "sender_submit_reason" character varying(1000)
+            ADD "submit_reason" character varying(1000)
         `);
     await queryRunner.query(`
             ALTER TABLE "gift_submits" DROP COLUMN "personal_note"
@@ -44,10 +44,10 @@ export class migration1666514744096 implements MigrationInterface {
             ADD "personal_note" character varying(500) NOT NULL
         `);
     await queryRunner.query(`
-            ALTER TABLE "gift_submits" DROP COLUMN "sender_submit_reason"
+            ALTER TABLE "gift_submits" DROP COLUMN "submit_reason"
         `);
     await queryRunner.query(`
-            ALTER TABLE "gifts" DROP COLUMN "recipient_match_reason"
+            ALTER TABLE "gifts" DROP COLUMN "match_reason"
         `);
   }
 }

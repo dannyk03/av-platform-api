@@ -24,5 +24,5 @@ export class GiftSubmit extends BaseEntity<GiftSubmit> {
     length: 1000,
     nullable: true,
   })
-  senderSubmitReason?: string;
+  submitReason?: string;
 }

@@ -44,5 +44,5 @@ export class Gift extends BaseEntity<Gift> {
     length: 1000,
     nullable: true,
   })
-  recipientMatchReason?: string;
+  matchReason?: string;
 }
