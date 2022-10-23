@@ -297,15 +297,15 @@ export class NetworkingCommonController {
     @Query()
     { ref }: RefQueryParamOptionalDto,
     @Body()
-    { userIds }: SocialConnectionRequestApproveDto,
+    { connectionRequestIds }: SocialConnectionRequestApproveDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
+      await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
         {
-          userId: ref,
-          userIds,
+          connectionRequestId: ref,
           reqUserId: reqUser.id,
+          connectionRequestIds,
         },
       );
 
@@ -338,15 +338,15 @@ export class NetworkingCommonController {
     @Query()
     { ref }: RefQueryParamOptionalDto,
     @Body()
-    { userIds }: SocialConnectionRequestRejectDto,
+    { connectionRequestIds }: SocialConnectionRequestRejectDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
+      await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
         {
-          userId: ref,
-          userIds,
+          connectionRequestId: ref,
           reqUserId: reqUser.id,
+          connectionRequestIds,
         },
       );
 
