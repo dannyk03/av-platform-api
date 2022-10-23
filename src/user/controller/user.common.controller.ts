@@ -46,10 +46,15 @@ export class UserCommonController {
   })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.UserProfileRequest, {
-    tags: ['user', 'profile'],
+    tags: ['user', 'profile', 'invitationLink'],
   })
   @AclGuard({
-    relations: ['profile', 'profile.home', 'profile.shipping'],
+    relations: [
+      'profile',
+      'profile.home',
+      'profile.shipping',
+      'invitationLink',
+    ],
   })
   @Get('/profile')
   async getProfile(
