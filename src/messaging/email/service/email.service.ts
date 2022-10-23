@@ -20,7 +20,7 @@ import {
   GiftStatusUpdateMessageData,
   SignUpEmailVerificationMessageData,
   SurveyCompletedMessageData,
-  SurveyInvatationMessageData,
+  SurveyInvitationMessageData,
 } from '../email.constant';
 
 @Injectable()
@@ -560,7 +560,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendSurveyInvatation({
+  async sendSurveyInvitation({
     email,
     inviteeUserName,
     inviterUserName,
@@ -574,7 +574,7 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    const payload: SurveyInvatationMessageData = {
+    const payload: SurveyInvitationMessageData = {
       inviteeUser: {
         firstName: inviteeUserName,
       },

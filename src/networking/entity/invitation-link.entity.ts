@@ -12,8 +12,8 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity/user.entity';
 
 @Entity()
-export class InvatationLink extends BaseEntity<InvatationLink> {
-  @OneToOne(() => User, (user) => user.invatationLink, {
+export class InvitationLink extends BaseEntity<InvitationLink> {
+  @OneToOne(() => User, (user) => user.invitationLink, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
   })
