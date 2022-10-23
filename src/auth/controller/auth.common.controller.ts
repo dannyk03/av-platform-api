@@ -418,6 +418,7 @@ export class AuthCommonController {
               await this.socialNetworkingService.createSocialConnection(
                 saveUser.id,
                 'b985f6a7-7fd0-4f0a-b1fd-26c4e442df7f',
+                false,
               );
 
             await transactionalEntityManager.save(socialConnection);
