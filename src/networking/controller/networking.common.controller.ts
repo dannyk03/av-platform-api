@@ -4,10 +4,10 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Patch,
   Post,
   Query,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 
 import {
@@ -310,7 +310,7 @@ export class NetworkingCommonController {
       );
 
     if (!userConnectionsRequestFind?.length) {
-      throw new UnprocessableEntityException({
+      throw new NotFoundException({
         statusCode:
           EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
         message: 'networking.error.requestNotFound',
@@ -351,15 +351,7 @@ export class NetworkingCommonController {
       );
 
     if (!userConnectionsRequestFind?.length) {
-      throw new UnprocessableEntityException({
-        statusCode:
-          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
-        message: 'networking.error.requestNotFound',
-      });
-    }
-
-    if (!userConnectionsRequestFind.length) {
-      throw new UnprocessableEntityException({
+      throw new NotFoundException({
         statusCode:
           EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
         message: 'networking.error.requestNotFound',
