@@ -4,12 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '@/user/user.module';
 
 import {
+  InvitationLink,
   SocialConnection,
   SocialConnectionRequest,
   SocialConnectionRequestBlock,
 } from './entity';
 
 import {
+  InvitationLinkService,
   SocialConnectionRequestBlockService,
   SocialConnectionRequestService,
   SocialConnectionService,
@@ -21,7 +23,12 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [SocialConnection, SocialConnectionRequest, SocialConnectionRequestBlock],
+      [
+        SocialConnection,
+        SocialConnectionRequest,
+        SocialConnectionRequestBlock,
+        InvitationLink,
+      ],
       ConnectionNames.Default,
     ),
     UserModule,
@@ -29,12 +36,14 @@ import { ConnectionNames } from '@/database/constant';
 
   exports: [
     SocialNetworkingService,
+    InvitationLinkService,
     SocialConnectionService,
     SocialConnectionRequestService,
     SocialConnectionRequestBlockService,
   ],
   providers: [
     SocialNetworkingService,
+    InvitationLinkService,
     SocialConnectionService,
     SocialConnectionRequestService,
     SocialConnectionRequestBlockService,

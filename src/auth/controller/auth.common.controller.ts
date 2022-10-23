@@ -43,6 +43,7 @@ import {
   SocialConnectionService,
   SocialNetworkingService,
 } from '@/networking/service';
+import { InvitationLinkService } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
@@ -85,6 +86,7 @@ export class AuthCommonController {
     private defaultDataSource: DataSource,
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
+    private readonly invitationLinkService: InvitationLinkService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
@@ -414,18 +416,19 @@ export class AuthCommonController {
               }
             }
           } else if (type == EnumNetworkingConnectionType.ShareableLink) {
+            const invitationLink = await this.invitationLinkService.findOne({
+              where: { id: 'd4798ab1-5b2c-47fb-aca3-c6bf02128e01' },
+              relations: ['user'],
+            });
+
             const socialConnection =
               await this.socialNetworkingService.createSocialConnection(
                 saveUser.id,
-                'b985f6a7-7fd0-4f0a-b1fd-26c4e442df7f',
+                ref,
                 false,
               );
 
             await transactionalEntityManager.save(socialConnection);
-            // find the user that shared the link
-            // the users: saveUser + the user with the link
-            // load the invite link by {ref} and get the inviter id
-            // add a connection in social_connection_requests between him and the signing up user
           }
         }
 
