@@ -16,7 +16,13 @@ export class GiftSubmit extends BaseEntity<GiftSubmit> {
   gifts!: Gift[];
 
   @Column({
-    length: 500,
+    length: 1000,
   })
   personalNote?: string;
+
+  @Column({
+    length: 1000,
+    nullable: true,
+  })
+  senderSubmitReason?: string;
 }

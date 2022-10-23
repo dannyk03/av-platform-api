@@ -1,4 +1,11 @@
-import { Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 
 import { GiftIntent } from './gift-intent.entity';
 import { GiftSubmit } from './gift-submit.entity';
@@ -32,4 +39,10 @@ export class Gift extends BaseEntity<Gift> {
   })
   @JoinColumn()
   giftSubmit?: GiftSubmit;
+
+  @Column({
+    length: 1000,
+    nullable: true,
+  })
+  recipientMatchReason?: string;
 }
