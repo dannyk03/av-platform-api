@@ -66,12 +66,15 @@ export class SocialConnectionRequestService {
     return this.socialConnectionRequestRepository.find(find);
   }
 
-  async findPendingSocialConnectionRequestByUserIdOrUserIds({
-    userId,
+  async findPendingConnectionRequestByRequestIdsOrRequestId({
+    connectionRequestId,
     reqUserId,
-    userIds,
+    connectionRequestIds,
   }): Promise<SocialConnectionRequest[] | null> {
-    if ((userIds && userId) || !(userIds || userId)) {
+    if (
+      (connectionRequestIds && connectionRequestId) ||
+      !(connectionRequestIds || connectionRequestId)
+    ) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumNetworkingStatusCodeError.NetworkingConnectionRequestsUnprocessableError,
@@ -81,12 +84,10 @@ export class SocialConnectionRequestService {
 
     const find = {
       where: {
-        addresserUser: {
-          ...(userId && { id: userId }),
-          ...(userIds && {
-            id: In(userIds),
-          }),
-        },
+        ...(connectionRequestId && { id: connectionRequestId }),
+        ...(connectionRequestIds && {
+          id: In(connectionRequestIds),
+        }),
         status: EnumNetworkingConnectionRequestStatus.Pending,
         addresseeUser: {
           id: reqUserId,
@@ -105,9 +106,9 @@ export class SocialConnectionRequestService {
       },
     };
 
-    const userConnectionsRequestFind = userIds
+    const userConnectionsRequestFind = connectionRequestIds
       ? await this.find(find)
-      : userId
+      : connectionRequestId
       ? compact([await this.findOne(find)])
       : null;
 
