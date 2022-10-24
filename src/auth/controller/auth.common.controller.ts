@@ -344,6 +344,12 @@ export class AuthCommonController {
           { addresseeUser: saveUser },
         );
 
+        const signUpUserInvitationLink =
+          await this.invitationLinkService.create({
+            user: signUpUser,
+          });
+        await transactionalEntityManager.save(signUpUserInvitationLink);
+
         const signUpEmailVerificationLink =
           await this.authSignUpVerificationLinkService.create({
             email,
