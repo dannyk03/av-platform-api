@@ -423,14 +423,14 @@ export class AuthCommonController {
             }
           } else if (type == EnumNetworkingConnectionType.ShareableLink) {
             const invitationLink = await this.invitationLinkService.findOne({
-              where: { id: 'd4798ab1-5b2c-47fb-aca3-c6bf02128e01' },
+              where: { id: ref },
               relations: ['user'],
             });
 
             const socialConnection =
               await this.socialNetworkingService.createSocialConnection(
                 saveUser.id,
-                ref,
+                invitationLink.user.id,
                 false,
               );
 
