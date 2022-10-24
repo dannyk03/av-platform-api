@@ -13,8 +13,7 @@ export class AuthSignUpRefDto {
   readonly ref: string;
 
   @IsOptional()
-  @IsEnum(EnumNetworkingConnectionType)
-  @Type(() => String)
+  @Type(() => Number)
   @ApiProperty()
   readonly type: EnumNetworkingConnectionType;
 }
