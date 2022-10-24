@@ -1,13 +1,20 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   MaxLength,
 } from 'class-validator';
 
-import { UniqueArrayByTransform } from '@/utils/request/transform';
+import {
+  EmptyStringToUndefinedTransform,
+  NormalizeStringInputTransform,
+  UniqueArrayByTransform,
+} from '@/utils/request/transform';
 
 export class GiftOptionSubmitDto {
   @IsArray()
@@ -15,6 +22,15 @@ export class GiftOptionSubmitDto {
   @UniqueArrayByTransform()
   @IsUUID(undefined, { each: true })
   readonly giftOptionIds!: string[];
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(1000)
+  @EmptyStringToUndefinedTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  @ApiProperty()
+  readonly submitReason?: string;
 
   @IsString()
   @IsNotEmpty()

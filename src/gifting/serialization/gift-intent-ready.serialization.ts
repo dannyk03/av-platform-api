@@ -83,6 +83,9 @@ class GiftOptionSerialization {
   readonly id: string;
 
   @Expose()
+  readonly matchReason: string;
+
+  @Expose()
   @Transform(({ value: products }) =>
     products?.map((product: Product) =>
       plainToInstance(ProductListReadySerialization, product),

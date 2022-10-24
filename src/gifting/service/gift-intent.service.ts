@@ -86,7 +86,8 @@ export class GiftIntentService {
         .leftJoinAndSelect('giftIntent.giftSubmit', 'giftSubmit')
         .leftJoinAndSelect('giftIntent.giftOptions', 'giftOptions')
         .leftJoinAndSelect('giftOptions.products', 'giftProducts')
-        .leftJoinAndSelect('giftProducts.displayOptions', 'displayOptions');
+        .leftJoinAndSelect('giftProducts.displayOptions', 'displayOptions')
+        .leftJoinAndSelect('displayOptions.images', 'images');
     }
 
     if (ownerId) {

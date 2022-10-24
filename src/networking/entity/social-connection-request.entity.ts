@@ -31,7 +31,7 @@ export class SocialConnectionRequest extends BaseEntity<SocialConnectionRequest>
   tempAddresseeEmail?: string;
 
   @Column({
-    length: 500,
+    length: 1000,
     nullable: true,
   })
   personalNote?: string;

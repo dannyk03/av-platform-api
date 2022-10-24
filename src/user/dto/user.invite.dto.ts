@@ -26,7 +26,7 @@ export class UserInviteAddresseeDtoDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(1000)
   @Type(() => String)
   @ApiProperty()
   readonly personalNote?: string;
@@ -46,7 +46,7 @@ export class UserInviteDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(1000)
   @Type(() => String)
   @ApiProperty()
   readonly personalNote?: string;
