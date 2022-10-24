@@ -26,7 +26,7 @@ import {
 import flatMap from 'lodash/flatMap';
 import { DataSource, In, IsNull, Not } from 'typeorm';
 
-import { GiftIntentConfirmationLink } from '../entity';
+import { GiftIntent, GiftIntentConfirmationLink } from '../entity';
 import { User } from '@/user/entity';
 
 import {
@@ -299,9 +299,13 @@ export class GiftingCommonController {
         'sender.user',
         'giftOptions',
         'giftOptions.products',
+        'giftOptions.products.displayOptions',
+        'giftOptions.products.displayOptions.images',
         'giftSubmit',
         'giftSubmit.gifts',
         'giftSubmit.gifts.products',
+        'giftSubmit.gifts.products.displayOptions',
+        'giftSubmit.gifts.products.displayOptions.images',
       ],
     });
 
@@ -326,7 +330,7 @@ export class GiftingCommonController {
   @Post('/intent/submit/:id')
   async giftIntentSubmit(
     @Body()
-    { giftOptionIds, personalNote }: GiftOptionSubmitDto,
+    { giftOptionIds, personalNote, submitReason }: GiftOptionSubmitDto,
     @ReqUser()
     reqUser: User,
     @Param('id')
@@ -374,20 +378,22 @@ export class GiftingCommonController {
             giftOptionIds.includes(id),
           ),
           personalNote,
+          submitReason,
         });
-
-        giftIntent.submittedAt = this.helperDateService.create();
 
         const saveGiftSubmit = await transactionalEntityManager.save(
           createGiftSubmit,
         );
-        const saveGiftIntent = await transactionalEntityManager.save(
-          giftIntent,
+
+        await transactionalEntityManager.update(
+          GiftIntent,
+          { id: giftIntentId },
+          { submittedAt: this.helperDateService.create() },
         );
 
         return {
-          giftIntentId: saveGiftIntent?.id,
           giftSubmitId: saveGiftSubmit?.id,
+          giftIntentId,
         };
       },
     );

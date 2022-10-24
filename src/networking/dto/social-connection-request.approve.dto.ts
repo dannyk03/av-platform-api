@@ -24,5 +24,5 @@ export class SocialConnectionRequestApproveDto {
   @ArrayTransform()
   @IsOptional()
   @ApiProperty()
-  userIds: string[];
+  connectionRequestIds: string[];
 }

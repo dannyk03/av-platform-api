@@ -28,7 +28,11 @@ export class Log {
   @JoinColumn()
   role?: AclRole;
 
-  @ManyToOne(() => User, { nullable: true, cascade: false })
+  @ManyToOne(() => User, {
+    nullable: true,
+    cascade: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user?: User;
 
