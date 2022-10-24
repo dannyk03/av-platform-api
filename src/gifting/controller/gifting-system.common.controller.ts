@@ -270,6 +270,7 @@ export class GiftingSystemCommonController {
         'giftOptions',
         'giftOptions.products',
         'giftOptions.products.displayOptions',
+        'giftOptions.products.displayOptions.images',
         'giftOptions.products.displayOptions.language',
         'giftSubmit',
         'giftSubmit.gifts',
@@ -307,7 +308,7 @@ export class GiftingSystemCommonController {
   @Post('/intent/:id')
   async addGiftOption(
     @Param('id') giftIntentId: string,
-    @Body() { productIds, lang }: GiftOptionCreateDto,
+    @Body() { productIds, matchReason, lang }: GiftOptionCreateDto,
   ): Promise<IResponseData> {
     const giftIntent = await this.giftIntentService.findOne({
       where: { id: giftIntentId },
@@ -337,6 +338,7 @@ export class GiftingSystemCommonController {
       async (transactionalEntityManager) => {
         const createGift = await this.giftService.create({
           products,
+          matchReason,
         });
 
         const saveGift = await transactionalEntityManager.save(createGift);
@@ -373,6 +375,7 @@ export class GiftingSystemCommonController {
       addProductIds,
       deleteProductIds,
       giftOptionId,
+      matchReason,
       lang,
     }: GiftOptionUpdateDto,
   ): Promise<IResponseData> {
@@ -419,6 +422,10 @@ export class GiftingSystemCommonController {
         statusCode: EnumProductStatusCodeError.ProductNotFoundError,
         message: 'product.error.notFound',
       });
+    }
+
+    if (matchReason) {
+      giftOption.matchReason = matchReason;
     }
 
     giftOption.products = [
@@ -468,7 +475,7 @@ export class GiftingSystemCommonController {
   async upsertGiftOption(
     @Param('id') giftIntentId: string,
     @Body()
-    { productIds, giftOptionId, lang }: GiftOptionUpsetDto,
+    { productIds, giftOptionId, matchReason, lang }: GiftOptionUpsetDto,
   ): Promise<IResponseData> {
     const giftOption = giftOptionId
       ? await this.giftService.findOne({
@@ -512,6 +519,10 @@ export class GiftingSystemCommonController {
     if (giftOption) {
       giftOption.products = productsFind;
 
+      if (matchReason) {
+        giftOption.matchReason = matchReason;
+      }
+
       return this.giftService.save(giftOption);
     }
 
@@ -538,6 +549,7 @@ export class GiftingSystemCommonController {
 
         const createGift = await this.giftService.create({
           products: productsFind,
+          matchReason,
         });
 
         const saveGift = await transactionalEntityManager.save(createGift);
