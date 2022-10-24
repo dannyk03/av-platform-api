@@ -130,5 +130,5 @@ export class UserProfileGetSerialization
   @Transform(({ obj }) =>
     plainToInstance(InvitationLink, obj.invitationLink?.id),
   )
-  readonly invitationLink?: string;
+  readonly invitationToken?: string;
 }
