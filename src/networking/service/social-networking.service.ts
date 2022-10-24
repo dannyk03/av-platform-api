@@ -91,4 +91,36 @@ export class SocialNetworkingService {
       },
     );
   }
+
+  async createSocialConnection(
+    firstUserId: string,
+    secondUserId: string,
+    commitChanges = true,
+  ) {
+    const firstUser = { id: firstUserId };
+    const secondUser = { id: secondUserId };
+
+    const createSocialConnection1 = await this.socialConnectionService.create({
+      user1: firstUser,
+      user2: secondUser,
+    });
+    const createSocialConnection2 = await this.socialConnectionService.create({
+      user1: secondUser,
+      user2: firstUser,
+    });
+
+    if (!commitChanges) {
+      return [createSocialConnection1, createSocialConnection2];
+    }
+
+    return this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager.save([
+          createSocialConnection1,
+          createSocialConnection2,
+        ]);
+      },
+    );
+  }
 }

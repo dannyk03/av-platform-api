@@ -50,7 +50,7 @@ export class UserService {
     return this.userRepository.findOne(find);
   }
 
-  async find(find: FindManyOptions<User>): Promise<User[]> {
+  async find(find?: FindManyOptions<User>): Promise<User[]> {
     return this.userRepository.find(find);
   }
 

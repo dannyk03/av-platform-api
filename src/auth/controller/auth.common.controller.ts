@@ -18,6 +18,7 @@ import {
   EnumAuthStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumNetworkingConnectionRequestStatus,
+  EnumNetworkingConnectionType,
   EnumUserStatusCodeError,
   IResponseData,
 } from '@avo/type';
@@ -38,8 +39,10 @@ import {
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
 import {
+  InvitationLinkService,
   SocialConnectionRequestService,
   SocialConnectionService,
+  SocialNetworkingService,
 } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
@@ -83,10 +86,12 @@ export class AuthCommonController {
     private defaultDataSource: DataSource,
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
+    private readonly invitationLinkService: InvitationLinkService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly helperCookieService: HelperCookieService,
+    private readonly socialNetworkingService: SocialNetworkingService,
     private readonly logService: LogService,
     private readonly authSignUpVerificationLinkService: AuthSignUpVerificationLinkService,
     private readonly socialConnectionService: SocialConnectionService,
@@ -261,7 +266,7 @@ export class AuthCommonController {
       personas,
       dietary,
     }: AuthSignUpDto,
-    @Query() { ref }: AuthSignUpRefDto,
+    @Query() { ref, type }: AuthSignUpRefDto,
     @RequestUserAgent() userAgent: IResult,
   ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
@@ -341,6 +346,12 @@ export class AuthCommonController {
           { addresseeUser: saveUser },
         );
 
+        const signUpUserInvitationLink =
+          await this.invitationLinkService.create({
+            user: signUpUser,
+          });
+        await transactionalEntityManager.save(signUpUserInvitationLink);
+
         const signUpEmailVerificationLink =
           await this.authSignUpVerificationLinkService.create({
             email,
@@ -365,51 +376,67 @@ export class AuthCommonController {
 
         // Find the connection request that led to the registered user
         if (ref) {
-          const socialConnectionRequest =
-            await this.socialConnectionRequestService.findOne({
-              where: {
-                status: EnumNetworkingConnectionRequestStatus.Pending,
-                id: ref,
-                tempAddresseeEmail: saveUser.email,
-              },
-              relations: ['addresserUser'],
+          if (type == EnumNetworkingConnectionType.ConnectionRequest) {
+            const socialConnectionRequest =
+              await this.socialConnectionRequestService.findOne({
+                where: {
+                  status: EnumNetworkingConnectionRequestStatus.Pending,
+                  id: ref,
+                  tempAddresseeEmail: saveUser.email,
+                },
+                relations: ['addresserUser'],
+              });
+
+            if (socialConnectionRequest) {
+              // Auto approve connection request
+              const createSocialConnection1 =
+                await this.socialConnectionService.create({
+                  user1: socialConnectionRequest.addresserUser,
+                  user2: saveUser,
+                });
+              const createSocialConnection2 =
+                await this.socialConnectionService.create({
+                  user1: saveUser,
+                  user2: socialConnectionRequest.addresserUser,
+                });
+
+              await transactionalEntityManager.save([
+                createSocialConnection1,
+                createSocialConnection2,
+              ]);
+
+              socialConnectionRequest.status =
+                EnumNetworkingConnectionRequestStatus.Approved;
+              const saveSocialConnectionRequest =
+                await transactionalEntityManager.save(socialConnectionRequest);
+
+              if (saveSocialConnectionRequest) {
+                const inviterUserWithProfile = await this.userService.findOne({
+                  where: { id: socialConnectionRequest.addresserUser.id },
+                  relations: ['profile'],
+                });
+
+                await this.emailService.sendSurveyCompletedToInviter({
+                  inviterUser: inviterUserWithProfile,
+                  inviteeUser: saveUser,
+                  socialConnectionRequestId: saveSocialConnectionRequest.id,
+                });
+              }
+            }
+          } else if (type == EnumNetworkingConnectionType.ShareableLink) {
+            const invitationLink = await this.invitationLinkService.findOne({
+              where: { id: ref },
+              relations: ['user'],
             });
 
-          if (socialConnectionRequest) {
-            // Auto approve connection request
-            const createSocialConnection1 =
-              await this.socialConnectionService.create({
-                user1: socialConnectionRequest.addresserUser,
-                user2: saveUser,
-              });
-            const createSocialConnection2 =
-              await this.socialConnectionService.create({
-                user1: saveUser,
-                user2: socialConnectionRequest.addresserUser,
-              });
+            const socialConnection =
+              await this.socialNetworkingService.createSocialConnection(
+                saveUser.id,
+                invitationLink.user.id,
+                false,
+              );
 
-            await transactionalEntityManager.save([
-              createSocialConnection1,
-              createSocialConnection2,
-            ]);
-
-            socialConnectionRequest.status =
-              EnumNetworkingConnectionRequestStatus.Approved;
-            const saveSocialConnectionRequest =
-              await transactionalEntityManager.save(socialConnectionRequest);
-
-            if (saveSocialConnectionRequest) {
-              const inviterUserWithProfile = await this.userService.findOne({
-                where: { id: socialConnectionRequest.addresserUser.id },
-                relations: ['profile'],
-              });
-
-              await this.emailService.sendSurveyCompletedToInviter({
-                inviterUser: inviterUserWithProfile,
-                inviteeUser: saveUser,
-                socialConnectionRequestId: saveSocialConnectionRequest.id,
-              });
-            }
+            await transactionalEntityManager.save(socialConnection);
           }
         }
 

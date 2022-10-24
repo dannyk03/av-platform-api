@@ -21,8 +21,8 @@ export enum EmailTemplate {
   //- survey completed
   SendSurveyCompleted = 'Survey Completed', // sent to all pending inviters (excluding the admin from the MVP)
   // ================= MVP =================
-  // - invatation for the survey
-  SendSurveyInvatation = 'Survey Invatation', // start the chain, without connecitons, sent from admin
+  // - invitation for the survey
+  SendSurveyInvitation = 'Survey Invitation', // start the chain, without connecitons, sent from admin
 
   SendOrganizationInvite = 'SendOrganizationInvite',
   SendGiftConfirm = 'SendGiftConfirm',
@@ -174,7 +174,7 @@ export type ConnectionRequestExistingUserMessageData = {
   connectionId: string;
 };
 
-export type SurveyInvatationMessageData = {
+export type SurveyInvitationMessageData = {
   inviteeUser: {
     firstName: string;
   };
@@ -193,5 +193,5 @@ export type SurveyCompletedMessageData = {
   inviterUser: {
     firstName: string;
   };
-  socialConnectionRequestId: string;
+  socialConnectionRequestId: string; // TODO: delete
 };
