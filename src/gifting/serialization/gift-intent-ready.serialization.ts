@@ -1,4 +1,4 @@
-import { EnumOccasion } from '@avo/type';
+import { EnumOccasion, IUserProfileShippingGetSerialization } from '@avo/type';
 
 import {
   Exclude,
@@ -13,9 +13,10 @@ import { ProductImage } from '@/catalog/product-image/entity';
 import { Product } from '@/catalog/product/entity';
 
 import { ProductImageGetSerialization } from '@/catalog/product-image/serialization';
+import { UserProfileShippingGetSerialization } from '@/user/serialization';
 
 @Exclude()
-class GiftUserSerialization {
+class GiftUserRecipientSerialization {
   @Expose()
   readonly id: string;
 
@@ -24,6 +25,23 @@ class GiftUserSerialization {
 
   @Expose()
   readonly phoneNumber: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj?.profile?.firstName)
+  readonly firstName: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj?.profile?.lastName)
+  readonly lastName: string;
+
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(
+      UserProfileShippingGetSerialization,
+      obj?.profile?.shipping,
+    ),
+  )
+  readonly shipping: IUserProfileShippingGetSerialization;
 }
 
 @Exclude()
@@ -97,8 +115,8 @@ class GiftOptionSerialization {
 @Exclude()
 class GiftRecipientSerialization {
   @Expose()
-  @Type(() => GiftUserSerialization)
-  user: GiftUserSerialization;
+  @Type(() => GiftUserRecipientSerialization)
+  user: GiftUserRecipientSerialization;
 
   @Expose()
   @Type(() => GiftUserAdditionalDataSerialization)
@@ -108,8 +126,8 @@ class GiftRecipientSerialization {
 @Exclude()
 class GiftSenderSerialization {
   @Expose()
-  @Type(() => GiftUserSerialization)
-  user: GiftUserSerialization;
+  @Type(() => GiftUserRecipientSerialization)
+  user: GiftUserRecipientSerialization;
 
   @Expose()
   @Type(() => GiftUserAdditionalDataSerialization)

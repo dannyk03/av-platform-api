@@ -265,6 +265,7 @@ export class GiftingSystemCommonController {
         'sender',
         'recipient.user',
         'recipient.user.profile',
+        'recipient.user.profile.shipping',
         'sender.user',
         'sender.user.profile',
         'giftOptions',

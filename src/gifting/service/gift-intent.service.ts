@@ -79,7 +79,11 @@ export class GiftIntentService {
       .leftJoinAndSelect('recipient.user', 'recipientUser')
       .leftJoinAndSelect('recipientUser.profile', 'recipientUserProfile')
       .leftJoinAndSelect('sender.user', 'senderUser')
-      .leftJoinAndSelect('senderUser.profile', 'senderUserProfile');
+      .leftJoinAndSelect('senderUser.profile', 'senderUserProfile')
+      .leftJoinAndSelect(
+        'recipientUserProfile.shipping',
+        'recipientUserShipping',
+      );
 
     if (loadExtra) {
       builder

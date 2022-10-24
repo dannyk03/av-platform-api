@@ -327,6 +327,7 @@ export class MagicLinkController {
         'giftIntent.additionalData',
         'giftIntent.recipient',
         'giftIntent.recipient.user',
+        'giftIntent.recipient.user.profile.shipping',
         'giftIntent.giftOptions',
         'giftIntent.giftOptions.products',
         'giftIntent.giftOptions.products.displayOptions',

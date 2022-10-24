@@ -6,6 +6,8 @@ import {
   IGiftSubmitGetSerialization,
   IGiftSubmitGiftsGetSerialization,
   IGiftUserGetSerialization,
+  IGiftUserRecipientGetSerialization,
+  IUserProfileShippingGetSerialization,
 } from '@avo/type';
 
 import {
@@ -20,6 +22,7 @@ import { Gift } from '../entity';
 import { Product } from '@/catalog/product/entity';
 
 import { ProductGetSerialization } from '@/catalog/product/serialization';
+import { UserProfileShippingGetSerialization } from '@/user/serialization';
 
 @Exclude()
 class GiftIntentAdditionalDataSerialization
@@ -119,13 +122,28 @@ class GiftUserGetSerialization implements IGiftUserGetSerialization {
 }
 
 @Exclude()
+export class GiftUserRecipientGetSerialization
+  extends GiftUserGetSerialization
+  implements IGiftUserRecipientGetSerialization
+{
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(
+      UserProfileShippingGetSerialization,
+      obj?.user?.profile?.shipping,
+    ),
+  )
+  readonly shipping: IUserProfileShippingGetSerialization;
+}
+
+@Exclude()
 export class GiftIntentGetSerialization implements IGiftIntentGetSerialization {
   @Expose()
   readonly id: string;
 
   @Expose()
-  @Type(() => GiftUserGetSerialization)
-  readonly recipient: GiftUserGetSerialization;
+  @Type(() => GiftUserRecipientGetSerialization)
+  readonly recipient: GiftUserRecipientGetSerialization;
 
   @Expose()
   @Type(() => GiftUserGetSerialization)
