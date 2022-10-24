@@ -14,11 +14,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
-import { EnumNetworkingConnectionType } from '@avo/type';
 import {
   EnumAuthStatusCodeError,
   EnumMessagingStatusCodeError,
   EnumNetworkingConnectionRequestStatus,
+  EnumNetworkingConnectionType,
   EnumUserStatusCodeError,
   IResponseData,
 } from '@avo/type';
@@ -39,11 +39,11 @@ import {
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
 import {
+  InvitationLinkService,
   SocialConnectionRequestService,
   SocialConnectionService,
   SocialNetworkingService,
 } from '@/networking/service';
-import { InvitationLinkService } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
