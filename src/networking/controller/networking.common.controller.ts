@@ -4,10 +4,10 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Patch,
   Post,
   Query,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 
 import {
@@ -297,20 +297,20 @@ export class NetworkingCommonController {
     @Query()
     { ref }: RefQueryParamOptionalDto,
     @Body()
-    { userIds }: SocialConnectionRequestApproveDto,
+    { connectionRequestIds }: SocialConnectionRequestApproveDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
+      await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
         {
-          userId: ref,
-          userIds,
+          connectionRequestId: ref,
           reqUserId: reqUser.id,
+          connectionRequestIds,
         },
       );
 
     if (!userConnectionsRequestFind?.length) {
-      throw new UnprocessableEntityException({
+      throw new NotFoundException({
         statusCode:
           EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
         message: 'networking.error.requestNotFound',
@@ -338,28 +338,20 @@ export class NetworkingCommonController {
     @Query()
     { ref }: RefQueryParamOptionalDto,
     @Body()
-    { userIds }: SocialConnectionRequestRejectDto,
+    { connectionRequestIds }: SocialConnectionRequestRejectDto,
     @ReqUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
-      await this.socialConnectionRequestService.findPendingSocialConnectionRequestByUserIdOrUserIds(
+      await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
         {
-          userId: ref,
-          userIds,
+          connectionRequestId: ref,
           reqUserId: reqUser.id,
+          connectionRequestIds,
         },
       );
 
     if (!userConnectionsRequestFind?.length) {
-      throw new UnprocessableEntityException({
-        statusCode:
-          EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
-        message: 'networking.error.requestNotFound',
-      });
-    }
-
-    if (!userConnectionsRequestFind.length) {
-      throw new UnprocessableEntityException({
+      throw new NotFoundException({
         statusCode:
           EnumNetworkingStatusCodeError.NetworkingConnectionRequestsNotFoundError,
         message: 'networking.error.requestNotFound',
