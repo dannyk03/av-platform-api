@@ -6,6 +6,8 @@ import {
 
 import { Exclude, Expose, Transform, plainToInstance } from 'class-transformer';
 
+import { InvitationLink } from '@/networking/entity';
+
 import { IAwsS3 } from '@/aws/type';
 
 @Exclude()
@@ -123,4 +125,10 @@ export class UserProfileGetSerialization
   @Expose()
   @Transform(({ obj }) => obj.profile?.desiredSkills)
   readonly desiredSkills?: string[];
+
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(InvitationLink, obj.invitationLink?.id),
+  )
+  readonly invitationLink?: string;
 }
