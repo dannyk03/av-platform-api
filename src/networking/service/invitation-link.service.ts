@@ -24,8 +24,18 @@ export class InvitationLinkService {
     return this.invitationLinkRepository.create(props);
   }
 
-  async save(user: InvitationLink): Promise<InvitationLink> {
-    return this.invitationLinkRepository.save<InvitationLink>(user);
+  async createMany(
+    props: DeepPartial<InvitationLink>[],
+  ): Promise<InvitationLink[]> {
+    return this.invitationLinkRepository.create(props);
+  }
+
+  async save(entity: InvitationLink): Promise<InvitationLink> {
+    return this.invitationLinkRepository.save<InvitationLink>(entity);
+  }
+
+  async saveMany(entities: InvitationLink[]): Promise<InvitationLink[]> {
+    return this.invitationLinkRepository.save(entities);
   }
 
   async findOne(find: FindOneOptions<InvitationLink>): Promise<InvitationLink> {
