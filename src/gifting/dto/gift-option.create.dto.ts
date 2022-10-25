@@ -18,14 +18,14 @@ import { ProductDisplayLanguage } from '@/catalog/decorator';
 
 import {
   ArrayTransform,
-  EmptyStringToUndefinedTransform,
   NormalizeStringInputTransform,
   UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
 export class GiftOptionCreateDto {
   @ArrayMinSize(1)
-  @ArrayMaxSize(3)
+  // According to the designs there is currently no support for bundles/multiple products within Gift, That's why max products length is 1.
+  @ArrayMaxSize(1)
   @IsArray()
   @IsNotEmpty({ each: true })
   @IsUUID(undefined, { each: true })
@@ -35,9 +35,8 @@ export class GiftOptionCreateDto {
   readonly productIds!: string[];
 
   @IsString()
-  @IsOptional()
   @MaxLength(1000)
-  @EmptyStringToUndefinedTransform()
+  @IsNotEmpty()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty()
