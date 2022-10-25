@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EnumNetworkingConnectionType } from '@avo/type';
 
 import { Type } from 'class-transformer';
-import { IsOptional, IsUUID } from 'class-validator';
+import { IsEnum, IsOptional, IsUUID } from 'class-validator';
 
 export class AuthSignUpRefDto {
   @IsOptional()
@@ -13,6 +13,7 @@ export class AuthSignUpRefDto {
   readonly ref: string;
 
   @IsOptional()
+  @IsEnum(EnumNetworkingConnectionType)
   @Type(() => Number)
   @ApiProperty()
   readonly type: EnumNetworkingConnectionType;
