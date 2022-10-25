@@ -71,7 +71,7 @@
     "currency-codes": "^2.1.0",
     "currency-symbol-map": "^5.1.0",
     "customerio-node": "^3.3.6",
-    "dayjs": "^1.11.5",
+    "dayjs": "^1.11.6",
     "exceljs": "^4.3.0",
     "express-rate-limit": "^6.6.0",
     "geolib": "^3.3.3",
