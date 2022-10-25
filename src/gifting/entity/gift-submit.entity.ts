@@ -17,6 +17,7 @@ export class GiftSubmit extends BaseEntity<GiftSubmit> {
 
   @Column({
     length: 1000,
+    nullable: true,
   })
   personalNote?: string;
 

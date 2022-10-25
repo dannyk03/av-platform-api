@@ -17,7 +17,7 @@ export class migration1666539746789 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "gift_submits"
-            ADD "personal_note" character varying(1000) NOT NULL
+            ADD "personal_note" character varying(1000)
         `);
     await queryRunner.query(`
             ALTER TABLE "social_connection_requests" DROP COLUMN "personal_note"
