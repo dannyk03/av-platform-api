@@ -5,6 +5,7 @@ import { isEmpty, isNumber, isString } from 'class-validator';
 import cloneDeep from 'lodash/cloneDeep';
 import MaskData from 'maskdata';
 
+import { IHelperMaskService } from '../type/helper.mask.interface';
 import { ILogMask } from '@/log/type';
 
 const maskPasswordOptions = {
@@ -34,7 +35,7 @@ const maskCardOptions = {
 };
 
 @Injectable()
-export class HelperMaskService {
+export class HelperMaskService implements IHelperMaskService {
   constructor(private readonly configService: ConfigService) {}
 
   private maskStrategy({
