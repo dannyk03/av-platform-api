@@ -53,8 +53,6 @@ export class FileSizeImagePipe implements PipeTransform {
         message: 'file.error.maxSize',
       });
     }
-
-    return;
   }
 }
 
@@ -93,8 +91,6 @@ export class FileSizeExcelPipe implements PipeTransform {
         message: 'file.error.maxSize',
       });
     }
-
-    return;
   }
 }
 
@@ -133,8 +129,6 @@ export class FileSizeVideoPipe implements PipeTransform {
         message: 'file.error.maxSize',
       });
     }
-
-    return;
   }
 }
 
@@ -173,7 +167,5 @@ export class FileSizeAudioPipe implements PipeTransform {
         message: 'file.error.maxSize',
       });
     }
-
-    return;
   }
 }

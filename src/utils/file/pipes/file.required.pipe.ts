@@ -23,7 +23,5 @@ export class FileRequiredPipe implements PipeTransform {
         message: 'file.error.notFound',
       });
     }
-
-    return;
   }
 }

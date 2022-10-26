@@ -52,11 +52,7 @@ import { ProductGetSerialization } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
-import {
-  FileRequiredPipe,
-  FileSizeImagePipe,
-  FileTypeImagePipe,
-} from '@/utils/file/pipes';
+import { FileSizeImagePipe, FileTypeImagePipe } from '@/utils/file/pipes';
 
 @Controller({
   version: '1',

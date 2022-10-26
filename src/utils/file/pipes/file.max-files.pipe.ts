@@ -42,8 +42,6 @@ export class FileMaxFilesImagePipe implements PipeTransform {
         message: 'file.error.maxFiles',
       });
     }
-
-    return;
   }
 }
 
@@ -72,8 +70,6 @@ export class FileMaxFilesExcelPipe implements PipeTransform {
         message: 'file.error.maxFiles',
       });
     }
-
-    return;
   }
 }
 
@@ -102,8 +98,6 @@ export class FileMaxFilesVideoPipe implements PipeTransform {
         message: 'file.error.maxFiles',
       });
     }
-
-    return;
   }
 }
 
@@ -132,7 +126,5 @@ export class FileMaxFilesAudioPipe implements PipeTransform {
         message: 'file.error.maxFiles',
       });
     }
-
-    return;
   }
 }
