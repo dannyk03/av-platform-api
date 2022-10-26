@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { StripeModule } from './stripe/stripe.module';
 
+import { PaymentService } from './service';
 import { StripeService } from './stripe/service';
 
 @Module({
@@ -15,8 +16,8 @@ import { StripeService } from './stripe/service';
       }),
     }),
   ],
-  exports: [StripeService],
-  providers: [StripeService],
+  exports: [PaymentService, StripeService],
+  providers: [PaymentService, StripeService],
   controllers: [],
 })
 export class PaymentModule {}

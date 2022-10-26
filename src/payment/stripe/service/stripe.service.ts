@@ -3,8 +3,6 @@ import { ConfigService } from '@nestjs/config';
 
 import Stripe from 'stripe';
 
-import { GiftIntent } from '@/gifting/entity';
-
 import { InjectStripe } from '../decorator';
 
 @Injectable()
@@ -14,8 +12,10 @@ export class StripeService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createPaymentIntent({ giftIntent }: { giftIntent: GiftIntent }) {
-    console.log(giftIntent);
+  async createPaymentIntent(
+    params: Stripe.PaymentIntentCreateParams,
+  ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    return await this.stripeClient.paymentIntents.create(params);
   }
 
   async getTaxAmount({ taxCode, recipientZipCode, basePrice }) {
