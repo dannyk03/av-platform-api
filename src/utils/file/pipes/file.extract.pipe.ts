@@ -1,12 +1,14 @@
-import { Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
-import { PipeTransform } from '@nestjs/common/interfaces';
+import {
+  Injectable,
+  PipeTransform,
+  UnsupportedMediaTypeException,
+} from '@nestjs/common';
 
-import { IFile, IFileExtract } from 'src/common/file/interfaces/file.interface';
+import { EnumFileExcelMime, EnumFileStatusCodeError } from '@avo/type';
 
-import { HelperFileService } from 'src/common/helper/services/helper.file.service';
+import { HelperFileService } from '@/utils/helper/service';
 
-import { ENUM_FILE_EXCEL_MIME } from 'src/common/file/constants/file.enum.constant';
-import { ENUM_FILE_STATUS_CODE_ERROR } from 'src/common/file/constants/file.status-code.constant';
+import { IFile, IFileExtract } from '../type';
 
 // only for excel
 @Injectable()
@@ -41,12 +43,12 @@ export class FileExtractPipe implements PipeTransform {
 
   async validate(mimetype: string): Promise<void> {
     if (
-      !Object.values(ENUM_FILE_EXCEL_MIME).find(
+      !Object.values(EnumFileExcelMime).find(
         (val) => val === mimetype.toLowerCase(),
       )
     ) {
       throw new UnsupportedMediaTypeException({
-        statusCode: ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR,
+        statusCode: EnumFileStatusCodeError.FileExtensionError,
         message: 'file.error.mimeInvalid',
       });
     }

@@ -24,6 +24,7 @@ import {
 import { VendorLogoService, VendorService } from '../service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { UploadFileSingle } from '@/utils/file/decorators';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -32,12 +33,18 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { IFile } from '@/utils/file/type';
+
 import { VendorCreateDto, VendorListDto, VendorUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { VendorGetSerialization } from '../serialization';
 
-import { EnumFileType, UploadFileSingle } from '@/utils/file';
+import {
+  FileRequiredPipe,
+  FileSizeImagePipe,
+  FileTypeImagePipe,
+} from '@/utils/file/pipes';
 import { slugify } from '@/utils/helper';
 
 @Controller({
@@ -63,10 +70,11 @@ export class VendorCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileSingle('logo', { type: EnumFileType.IMAGE, required: false })
+  @UploadFileSingle('logo')
   @Post()
   async create(
-    @UploadedFile() logo: Express.Multer.File,
+    @UploadedFile(FileRequiredPipe, FileSizeImagePipe, FileTypeImagePipe)
+    logo: IFile,
     @Body()
     { name, description, isActive }: VendorCreateDto,
   ): Promise<IResponseData> {

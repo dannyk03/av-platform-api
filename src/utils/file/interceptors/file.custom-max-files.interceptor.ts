@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 
 import { Observable } from 'rxjs';
 
-import { FILE_CUSTOM_MAX_FILES_META_KEY } from 'src/common/file/constants/file.constant';
+import { FILE_CUSTOM_MAX_FILES_META_KEY } from '../constants';
 
 @Injectable()
 export class FileCustomMaxFilesInterceptor implements NestInterceptor<any> {
