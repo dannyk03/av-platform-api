@@ -46,8 +46,6 @@ export class FileTypeImagePipe implements PipeTransform {
         message: 'file.error.mimeInvalid',
       });
     }
-
-    return;
   }
 }
 
@@ -79,8 +77,6 @@ export class FileTypeVideoPipe implements PipeTransform {
         message: 'file.error.mimeInvalid',
       });
     }
-
-    return;
   }
 }
 
@@ -112,8 +108,6 @@ export class FileTypeAudioPipe implements PipeTransform {
         message: 'file.error.mimeInvalid',
       });
     }
-
-    return;
   }
 }
 
@@ -145,7 +139,5 @@ export class FileTypeExcelPipe implements PipeTransform {
         message: 'file.error.mimeInvalid',
       });
     }
-
-    return;
   }
 }

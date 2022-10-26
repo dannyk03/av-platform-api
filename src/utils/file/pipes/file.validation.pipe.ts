@@ -121,7 +121,5 @@ export class FileValidationPipe<T> implements PipeTransform {
         errorType: 'import',
       });
     }
-
-    return;
   }
 }
