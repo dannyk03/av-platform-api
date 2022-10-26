@@ -1,0 +1,14 @@
+import { Module } from '@nestjs/common';
+
+import { PaymentModule } from '@/payment/payment.module';
+import { UserModule } from '@/user/user.module';
+
+import { PaymentCommonController } from '@/payment/controller';
+
+@Module({
+  controllers: [PaymentCommonController],
+  providers: [],
+  exports: [],
+  imports: [PaymentModule, UserModule],
+})
+export class RouterPaymentModule {}

@@ -7,6 +7,7 @@ import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
 import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
+import { RouterPaymentModule } from '@/router/router.payment.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterTestModule } from '@/router/router.test.module';
@@ -36,6 +37,7 @@ export class AppRouterModule {
           RouterNetworkingModule,
           RouterCallbackModule,
           RouterTestModule,
+          RouterPaymentModule,
           RouterModule.register([
             {
               path: '/',
@@ -54,7 +56,6 @@ export class AppRouterModule {
                 },
               ],
             },
-
             {
               path: '/user',
               module: RouterUserModule,
@@ -80,6 +81,10 @@ export class AppRouterModule {
                   module: RouterVendorModule,
                 },
               ],
+            },
+            {
+              path: '/payment',
+              module: RouterPaymentModule,
             },
             {
               path: '/public',
