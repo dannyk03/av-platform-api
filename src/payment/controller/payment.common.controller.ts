@@ -8,6 +8,7 @@ import { DataSource } from 'typeorm';
 import { StripeService } from '../stripe/service';
 
 import { LogTrace } from '@/log/decorator';
+import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
 
@@ -26,49 +27,18 @@ export class PaymentCommonController {
     private readonly stripeService: StripeService,
   ) {}
 
-  // @ClientResponse('payment.create')
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.CreatePayment, {
-  //   tags: ['payment', 'create'],
-  // })
-  // @AclGuard({
-  //   abilities: [
-  //     {
-  //       action: Action.Create,
-  //       subject: Subjects.Organization,
-  //     },
-  //     {
-  //       action: Action.Create,
-  //       subject: Subjects.User,
-  //     },
-  //   ],
-  //   systemOnly: true,
-  // })
-  // @Post('/create')
-  // async create(
-  //   @Body()
-  //   { orderId: orderId }: PaymentCreateDto,
-  // ): Promise<string> {
-  //   console.log(`The order id to create a payment to is: ${orderId}`);
-  //   try {
-  //     // getting the order details from the db
-  //     const order = { totalPrice: 100, currency: 'USD' };
-
-  //     // getting the customer stripe id
-  //     const customerId = '123';
-
-  //     const clientSecret = await this.stripeService.createPaymentIntent({
-  //       amount: order.totalPrice,
-  //       currency: order.currency,
-  //       customerID: customerId,
-  //     });
-
-  //     // return clientSecret;
-  //   } catch (err) {
-  //     console.log(
-  //       `Error occurred during payment intent creation for order: ${orderId}.`,
-  //       err,
-  //     );
-  //   }
-  // }
+  @ClientResponse('payment.create')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CreatePayment, {
+    tags: ['payment', 'stripe', 'create'],
+  })
+  @AclGuard()
+  @Post('/create')
+  async create(
+    @Body()
+    { giftIntentId }: PaymentCreateDto,
+  ): Promise<string> {
+    console.log(giftIntentId);
+    return giftIntentId;
+  }
 }

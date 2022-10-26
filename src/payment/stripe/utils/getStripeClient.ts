@@ -6,9 +6,9 @@ import { StripeOptions } from '../type';
 export function getStripeClient({
   apiKey,
   appInfo = {
-    name: name,
     url: repository,
-    version: version,
+    name,
+    version,
   },
   ...options
 }: StripeOptions): Stripe {
