@@ -6,7 +6,7 @@ import {
   StripeOptionsFactory,
 } from './type';
 
-import { stripeModuleOptions, stripeToken } from './constant';
+import { STRIPE_MODULE_OPTIONS, STRIPE_TOKEN } from './constant';
 
 import { createStripeProvider } from './provider/stripe.provider';
 import { getStripeClient } from './utils';
@@ -26,8 +26,8 @@ export class StripeCoreModule {
 
   static forRootAsync(options: StripeAsyncOptions): DynamicModule {
     const stripeProvider: Provider = {
-      inject: [stripeModuleOptions],
-      provide: stripeToken,
+      inject: [STRIPE_MODULE_OPTIONS],
+      provide: STRIPE_TOKEN,
       useFactory: (stripeOptions: StripeOptions) =>
         getStripeClient(stripeOptions),
     };
@@ -60,14 +60,14 @@ export class StripeCoreModule {
     if (options.useFactory) {
       return {
         inject: options.inject || [],
-        provide: stripeModuleOptions,
+        provide: STRIPE_MODULE_OPTIONS,
         useFactory: options.useFactory,
       };
     }
 
     return {
       inject: [options.useExisting || options.useClass],
-      provide: stripeModuleOptions,
+      provide: STRIPE_MODULE_OPTIONS,
       useFactory: (optionsFactory: StripeOptionsFactory) =>
         optionsFactory.createStripeOptions(),
     };
