@@ -1,1 +1,1 @@
-export const INTEGRATION_CLOUDINARY_URL = '/health/cloudinary';
+export const INTEGRATION_CLOUDINARY_URL = '/api/health/cloudinary';
