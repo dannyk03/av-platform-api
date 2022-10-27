@@ -28,7 +28,6 @@ export class AppRouterModule {
         providers: [],
         exports: [],
         imports: [
-          RouterAppModule,
           RouterCommonModule,
           RouterPublicModule,
           RouterUserModule,
@@ -99,10 +98,6 @@ export class AppRouterModule {
               {
                 path: '/callback',
                 module: RouterCallbackModule,
-              },
-              {
-                path: '/health',
-                module: RouterHealthModule,
               },
               {
                 ...(process.env.APP_ENV !== 'production'

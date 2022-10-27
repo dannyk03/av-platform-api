@@ -24,6 +24,7 @@ import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indica
 @RequestExcludeTimestamp()
 @Controller({
   version: VERSION_NEUTRAL,
+  path: 'health',
 })
 export class HealthCommonController {
   constructor(

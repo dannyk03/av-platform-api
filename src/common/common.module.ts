@@ -35,7 +35,6 @@ import { ConfigDynamicModule } from '@/config';
     ConfigDynamicModule,
     CloudinaryModule,
     DebuggerModuleDynamic.register(),
-
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       name: ConnectionNames.Default,

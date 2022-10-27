@@ -38,7 +38,12 @@ async function bootstrap() {
   // Global Prefix
   app.setGlobalPrefix(globalPrefix, {
     exclude: [
-      { path: 'version', method: RequestMethod.GET },
+      { path: 'health', method: RequestMethod.GET },
+      { path: 'health/database', method: RequestMethod.GET },
+      { path: 'health/memory-heap', method: RequestMethod.GET },
+      { path: 'health/memory-rss', method: RequestMethod.GET },
+      { path: 'health/storage', method: RequestMethod.GET },
+      { path: 'health/cloudinary', method: RequestMethod.GET },
       { path: 'confirm', method: RequestMethod.GET },
       { path: 'signup', method: RequestMethod.GET },
       { path: 'ready', method: RequestMethod.GET },
