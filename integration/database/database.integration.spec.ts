@@ -12,7 +12,7 @@ import { HelperDateService } from '@/utils/helper/service/helper.date.service';
 
 import { INTEGRATION_DATABASE_URL } from './database.constant';
 
-import { HealthController } from '@/health/controller/health.controller';
+import { HealthCommonController } from '@/health/controller/health.common.controller';
 
 describe('Database Integration', () => {
   let app: INestApplication;
@@ -22,7 +22,7 @@ describe('Database Integration', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [CommonModule, HealthModule, TerminusModule],
-      controllers: [HealthController],
+      controllers: [HealthCommonController],
     }).compile();
 
     app = moduleRef.createNestApplication();

@@ -24,9 +24,8 @@ import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indica
 @RequestExcludeTimestamp()
 @Controller({
   version: VERSION_NEUTRAL,
-  path: 'health',
 })
-export class HealthController {
+export class HealthCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,

@@ -8,6 +8,7 @@ import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
 import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
+import { RouterHealthModule } from '@/router/router.health.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
@@ -37,6 +38,7 @@ export class AppRouterModule {
           RouterVendorModule,
           RouterNetworkingModule,
           RouterCallbackModule,
+          RouterHealthModule,
           RouterTestModule,
           RouterModule.register(
             compact([
@@ -91,6 +93,10 @@ export class AppRouterModule {
               {
                 path: '/callback',
                 module: RouterCallbackModule,
+              },
+              {
+                path: '/health',
+                module: RouterHealthModule,
               },
               {
                 ...(process.env.APP_ENV !== 'production'

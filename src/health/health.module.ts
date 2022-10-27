@@ -7,8 +7,8 @@ import { AwsHealthIndicator } from './indicator/health.aws.indicator';
 import { CloudinaryHealthIndicator } from './indicator/health.cloudinary.indicator';
 
 @Module({
+  imports: [AwsModule, CloudinaryModule],
   providers: [AwsHealthIndicator, CloudinaryHealthIndicator],
   exports: [AwsHealthIndicator, CloudinaryHealthIndicator],
-  imports: [AwsModule, CloudinaryModule],
 })
 export class HealthModule {}
