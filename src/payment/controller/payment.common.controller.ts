@@ -66,11 +66,16 @@ export class PaymentCommonController {
           user: { id: reqUserId },
         },
       },
-      relations: {
-        giftSubmit: {
-          gifts: true,
-        },
-      },
+      relations: [
+        'giftSubmit',
+        'giftSubmit.gifts',
+        'giftSubmit.gifts.products',
+      ],
+      // relations: {
+      //   giftSubmit: {
+      //     gifts: true,
+      //   },
+      // },
       select: {
         id: true,
         submittedAt: true,
@@ -86,6 +91,12 @@ export class PaymentCommonController {
                 state: true,
               },
             },
+          },
+        },
+        sender: {
+          user: {
+            id: true,
+            email: true,
           },
         },
         giftSubmit: {
@@ -129,6 +140,9 @@ export class PaymentCommonController {
       const paymentIntent = await this.stripeService.createPaymentIntent({
         amount: giftAmountToBeCharged,
         currency: EnumCurrency.USD.toLowerCase(),
+        // customer: giftIntent.sender.user.stripe.customerId,
+        receipt_email: giftIntent.sender.user.email,
+        confirm: true,
       });
 
       return paymentIntent.client_secret;

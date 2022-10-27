@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { StripeModule } from './stripe/stripe.module';
 
+import { StripePayment } from './stripe/entity';
+
 import { PaymentService } from './service';
 import { StripeService } from './stripe/service';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [
@@ -15,6 +20,7 @@ import { StripeService } from './stripe/service';
         apiVersion: '2022-08-01',
       }),
     }),
+    TypeOrmModule.forFeature([StripePayment], ConnectionNames.Default),
   ],
   exports: [PaymentService, StripeService],
   providers: [PaymentService, StripeService],

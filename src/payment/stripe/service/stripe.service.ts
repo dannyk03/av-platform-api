@@ -1,14 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import Stripe from 'stripe';
+import { Repository } from 'typeorm';
+
+import { StripePayment } from '../entity';
 
 import { InjectStripe } from '../decorator';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class StripeService {
   constructor(
-    @InjectStripe() private readonly stripeClient: Stripe,
+    @InjectStripe()
+    private readonly stripeClient: Stripe,
+    @InjectRepository(StripePayment, ConnectionNames.Default)
+    private userRepository: Repository<StripePayment>,
     private readonly configService: ConfigService,
   ) {}
 

@@ -12,6 +12,7 @@ import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
 import { Organization } from '@/organization/entity';
+import { StripePayment } from '@/payment/stripe/entity';
 import { AclRole } from '@acl/role/entity';
 
 @Entity()
@@ -59,6 +60,11 @@ export class User extends BaseEntity<User> {
     cascade: true,
   })
   invitationLink: InvitationLink;
+
+  @OneToOne(() => StripePayment, (stripe) => stripe.user, {
+    cascade: true,
+  })
+  stripe: StripePayment;
 
   @BeforeInsert()
   beforeInsert() {
