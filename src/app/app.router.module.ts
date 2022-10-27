@@ -1,6 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
+import compact from 'lodash/compact';
+
 import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
@@ -36,64 +38,70 @@ export class AppRouterModule {
           RouterNetworkingModule,
           RouterCallbackModule,
           RouterTestModule,
-          RouterModule.register([
-            {
-              path: '/',
-              module: RouterCommonModule,
-            },
-            {
-              path: '/system',
-              children: [
-                {
-                  path: '/gift',
-                  module: RouterGiftingSystemModule,
-                },
-                {
-                  path: '/user',
-                  module: RouterUserSystemModule,
-                },
-              ],
-            },
+          RouterModule.register(
+            compact([
+              {
+                path: '/',
+                module: RouterCommonModule,
+              },
+              {
+                path: '/system',
+                children: [
+                  {
+                    path: '/gift',
+                    module: RouterGiftingSystemModule,
+                  },
+                  {
+                    path: '/user',
+                    module: RouterUserSystemModule,
+                  },
+                ],
+              },
 
-            {
-              path: '/user',
-              module: RouterUserModule,
-            },
-            {
-              path: '/gift',
-              module: RouterGiftingModule,
-            },
-            {
-              path: '/network',
-              module: RouterNetworkingModule,
-            },
-            {
-              path: '/catalog',
-              module: RouterCatalogModule,
-              children: [
-                {
-                  path: '/product',
-                  module: RouterProductModule,
-                },
-                {
-                  path: '/vendor',
-                  module: RouterVendorModule,
-                },
-              ],
-            },
-            {
-              path: '/public',
-              module: RouterPublicModule,
-            },
-            {
-              path: '/callback',
-              module: RouterCallbackModule,
-            },
-            {
-              path: '/test',
-              module: RouterTestModule,
-            },
-          ]),
+              {
+                path: '/user',
+                module: RouterUserModule,
+              },
+              {
+                path: '/gift',
+                module: RouterGiftingModule,
+              },
+              {
+                path: '/network',
+                module: RouterNetworkingModule,
+              },
+              {
+                path: '/catalog',
+                module: RouterCatalogModule,
+                children: [
+                  {
+                    path: '/product',
+                    module: RouterProductModule,
+                  },
+                  {
+                    path: '/vendor',
+                    module: RouterVendorModule,
+                  },
+                ],
+              },
+              {
+                path: '/public',
+                module: RouterPublicModule,
+              },
+              {
+                path: '/callback',
+                module: RouterCallbackModule,
+              },
+              {
+                ...(process.env.APP_ENV !== 'production'
+                  ? {
+                      path: '/test',
+                      module: RouterTestModule,
+                    }
+                  : null),
+              },
+            ]),
+          ),
         ],
       };
     }
