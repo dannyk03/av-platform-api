@@ -11,6 +11,7 @@ export class CorsMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
+    const isProduction = this.configService.get<boolean>('app.isProduction');
 
     const allowOrigin = this.configService.get<string | boolean | string[]>(
       'middleware.cors.allowOrigin',
@@ -22,10 +23,10 @@ export class CorsMiddleware implements NestMiddleware {
       'middleware.cors.allowHeader',
     );
 
-    const whitelist = ['http://localhost:3000']; // whitelist local dev origin
+    const whitelist = ['http://localhost:3000', 'https://localhost:3000']; // whitelist local dev origin
     const corsOptions: CorsOptions = {
       origin: (origin, callback) => {
-        if (!isSecureMode && whitelist.includes(origin)) {
+        if ((!isProduction || !isSecureMode) && whitelist.includes(origin)) {
           callback(null, true);
         } else {
           callback(null, allowOrigin);

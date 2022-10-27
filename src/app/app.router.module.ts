@@ -3,6 +3,7 @@ import { RouterModule } from '@nestjs/core';
 
 import compact from 'lodash/compact';
 
+import { RouterAppModule } from '@/router/router.app.module';
 import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
@@ -27,6 +28,7 @@ export class AppRouterModule {
         providers: [],
         exports: [],
         imports: [
+          RouterAppModule,
           RouterCommonModule,
           RouterPublicModule,
           RouterUserModule,
@@ -45,6 +47,10 @@ export class AppRouterModule {
               {
                 path: '/',
                 module: RouterCommonModule,
+              },
+              {
+                path: '/app',
+                module: RouterAppModule,
               },
               {
                 path: '/system',
