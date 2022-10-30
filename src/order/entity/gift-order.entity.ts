@@ -6,6 +6,13 @@ import { User } from '@/user/entity';
 
 @Entity()
 export class GiftOrder extends BaseEntity<GiftOrder> {
+  @Column({
+    length: 255,
+    nullable: true,
+    unique: true,
+  })
+  stripePaymentIntentId?: string;
+
   @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.order, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',

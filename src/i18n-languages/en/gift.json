@@ -32,5 +32,10 @@
       "statusAlready": "Gift-intent is already in the requested status",
       "statusNotAvailable": "Gift-intent requested status not available at this time"
     }
+  },
+  "order": {
+    "error": {
+      "notFound": "Gift order not found"
+    }
   }
 }

@@ -13,23 +13,24 @@ export class PaymentService {
   }: {
     giftIntent: GiftIntent;
   }): Promise<number> {
-    return (
-      giftIntent?.giftSubmit?.reduce(
-        (previousValue, currentValue) =>
+    return giftIntent?.giftSubmit?.gifts?.reduce(
+      (previousValue, currentValue) => {
+        return (
           previousValue +
-            currentValue?.gifts?.reduce(
-              (previousValue, currentValue) =>
+          currentValue?.products?.reduce(
+            // Multiply by 100 because Stripe expects to receive the amount in cents
+            (previousValue, { price, shippingCost }) => {
+              return (
                 previousValue +
-                  currentValue?.products?.reduce(
-                    // Multiply by 100 because Stripe expects to receive the amount in cents
-                    (previousValue, { price, shippingCost }) =>
-                      previousValue + price * 100 + shippingCost * 100,
-                    0,
-                  ) ?? 0,
-              0,
-            ) ?? 0,
-        0,
-      ) ?? 0
+                parseFloat(price) * 100 +
+                parseFloat(shippingCost) * 100
+              );
+            },
+            0,
+          )
+        );
+      },
+      0,
     );
   }
 }

@@ -11,17 +11,18 @@ import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumCurrency,
-  EnumGiftIntentStatusCodeError,
+  EnumGiftOrderStatusCodeError,
   EnumPaymentStatusCodeError,
 } from '@avo/type';
 
 import { DataSource } from 'typeorm';
 
+import { GiftOrder } from '@/order/entity';
 import { User } from '@/user/entity';
 
 import { PaymentService } from '../service';
 import { StripeService } from '../stripe/service';
-import { GiftIntentService } from '@/gifting/service';
+import { GiftOrderService } from '@/order/service';
 
 import { LogTrace } from '@/log/decorator';
 import { ReqUser } from '@/user/decorator';
@@ -43,7 +44,7 @@ export class PaymentCommonController {
     private defaultDataSource: DataSource,
     private readonly paymentService: PaymentService,
     private readonly stripeService: StripeService,
-    private readonly giftIntentService: GiftIntentService,
+    private readonly giftOrderService: GiftOrderService,
   ) {}
 
   @ClientResponse('payment.create')
@@ -57,73 +58,21 @@ export class PaymentCommonController {
     @ReqUser()
     { id: reqUserId }: User,
     @Body()
-    { giftIntentId }: PaymentCreateDto,
+    { giftOrderId }: PaymentCreateDto,
   ): Promise<string> {
-    const giftIntent = await this.giftIntentService.findOne({
-      where: {
-        id: giftIntentId,
-        sender: {
-          user: { id: reqUserId },
-        },
-      },
-      relations: [
-        'giftSubmit',
-        'giftSubmit.gifts',
-        'giftSubmit.gifts.products',
-      ],
-      // relations: {
-      //   giftSubmit: {
-      //     gifts: true,
-      //   },
-      // },
-      select: {
-        id: true,
-        submittedAt: true,
-        recipient: {
-          user: {
-            email: true,
-            profile: {
-              shipping: {
-                addressLine1: true,
-                addressLine2: true,
-                city: true,
-                country: true,
-                state: true,
-              },
-            },
-          },
-        },
-        sender: {
-          user: {
-            id: true,
-            email: true,
-          },
-        },
-        giftSubmit: {
-          id: true,
-          gifts: {
-            products: {
-              taxCode: true,
-              price: true,
-              shippingCost: true,
-              displayOptions: {
-                name: true,
-                language: { isoCode: true },
-              },
-            },
-          },
-        },
-      },
+    const giftOrder = await this.giftOrderService.findUsersGiftOrderForPayment({
+      userId: reqUserId,
+      giftOrderId,
     });
 
-    if (!giftIntent) {
+    if (!giftOrder) {
       throw new NotFoundException({
-        statusCode: EnumGiftIntentStatusCodeError.GiftIntentNotFoundError,
-        message: 'gift.intent.error.notFound',
+        statusCode: EnumGiftOrderStatusCodeError.GiftOrderNotFoundError,
+        message: 'gift.order.error.notFound',
       });
     }
 
-    if (!giftIntent.submittedAt) {
+    if (!giftOrder?.giftIntent.submittedAt) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumPaymentStatusCodeError.PaymentGiftIntentNotSubmittedError,
@@ -132,20 +81,60 @@ export class PaymentCommonController {
     }
 
     try {
-      const giftAmountToBeCharged =
-        await this.paymentService.calculateGiftAmountToBeCharged({
-          giftIntent,
-        });
+      const senderUser = giftOrder?.giftIntent?.sender?.user;
+      let stripePaymentIntentId = giftOrder?.stripePaymentIntentId;
+      let stripeCustomerId = senderUser?.stripe?.customerId;
 
-      const paymentIntent = await this.stripeService.createPaymentIntent({
-        amount: giftAmountToBeCharged,
-        currency: EnumCurrency.USD.toLowerCase(),
-        // customer: giftIntent.sender.user.stripe.customerId,
-        receipt_email: giftIntent.sender.user.email,
-        confirm: true,
-      });
+      if (!stripePaymentIntentId) {
+        // New PaymentIntent
+        if (!stripeCustomerId) {
+          const stripeCustomer = await this.stripeService.createStripeCustomer({
+            email: senderUser.email,
+            name: `${senderUser?.profile?.firstName} ${senderUser?.profile?.lastName}`,
+          });
 
-      return paymentIntent.client_secret;
+          const createStripePayment = await this.stripeService.create({
+            customerId: stripeCustomer?.id,
+            user: senderUser,
+          });
+
+          const saveStripePayment = await this.stripeService.save(
+            createStripePayment,
+          );
+
+          stripeCustomerId = saveStripePayment.customerId;
+        }
+
+        const giftAmountToBeCharged =
+          await this.paymentService.calculateGiftAmountToBeCharged({
+            giftIntent: giftOrder.giftIntent,
+          });
+
+        const paymentIntent =
+          await this.stripeService.createStripePaymentIntent({
+            amount: giftAmountToBeCharged,
+            currency: EnumCurrency.USD.toLowerCase(),
+            customer: stripeCustomerId,
+            receipt_email: giftOrder.giftIntent.sender.user.email,
+          });
+
+        this.defaultDataSource
+          .getRepository(GiftOrder)
+          .createQueryBuilder()
+          .update({ stripePaymentIntentId: paymentIntent.id })
+          .where('id = :orderId', { orderId: giftOrder.id })
+          .getQuery();
+
+        stripePaymentIntentId = paymentIntent.id;
+
+        return paymentIntent.client_secret;
+      }
+      // Existing PaymentIntent
+      const existingPaymentIntent =
+        await this.stripeService.retrieveStripePaymentIntentById(
+          stripePaymentIntentId,
+        );
+      return existingPaymentIntent.client_secret;
     } catch (error) {
       throw new UnprocessableEntityException({
         statusCode: EnumPaymentStatusCodeError.PaymentUnprocessableError,
