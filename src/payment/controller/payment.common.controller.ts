@@ -13,6 +13,7 @@ import {
   EnumCurrency,
   EnumGiftOrderStatusCodeError,
   EnumPaymentStatusCodeError,
+  IResponseData,
 } from '@avo/type';
 
 import { DataSource } from 'typeorm';
@@ -59,7 +60,7 @@ export class PaymentCommonController {
     { id: reqUserId }: User,
     @Body()
     { giftOrderId }: PaymentCreateDto,
-  ): Promise<string> {
+  ): Promise<IResponseData> {
     const giftOrder = await this.giftOrderService.findUsersGiftOrderForPayment({
       userId: reqUserId,
       giftOrderId,
@@ -118,23 +119,27 @@ export class PaymentCommonController {
             receipt_email: giftOrder.giftIntent.sender.user.email,
           });
 
-        this.defaultDataSource
+        await this.defaultDataSource
           .getRepository(GiftOrder)
           .createQueryBuilder()
           .update({ stripePaymentIntentId: paymentIntent.id })
           .where('id = :orderId', { orderId: giftOrder.id })
-          .getQuery();
+          .execute();
 
         stripePaymentIntentId = paymentIntent.id;
 
-        return paymentIntent.client_secret;
+        return {
+          clientSecret: paymentIntent.client_secret,
+        };
       }
       // Existing PaymentIntent
       const existingPaymentIntent =
         await this.stripeService.retrieveStripePaymentIntentById(
           stripePaymentIntentId,
         );
-      return existingPaymentIntent.client_secret;
+      return {
+        clientSecret: existingPaymentIntent.client_secret,
+      };
     } catch (error) {
       throw new UnprocessableEntityException({
         statusCode: EnumPaymentStatusCodeError.PaymentUnprocessableError,

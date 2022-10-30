@@ -22,8 +22,7 @@ export class PaymentService {
             (previousValue, { price, shippingCost }) => {
               return (
                 previousValue +
-                parseFloat(price) * 100 +
-                parseFloat(shippingCost) * 100
+                (Number(price) * 100 + Number(shippingCost) * 100)
               );
             },
             0,
