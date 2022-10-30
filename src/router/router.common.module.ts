@@ -1,13 +1,11 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
 
 import { AclController } from '@acl/controller';
 import { AclRoleController } from '@acl/role/controller';
 
 import { AuthModule } from '@/auth/auth.module';
 import { GiftModule } from '@/gifting/gift.module';
-import { HealthModule } from '@/health/health.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { NetworkingModule } from '@/networking/networking.module';
 import { OrganizationModule } from '@/organization/organization.module';
@@ -17,7 +15,6 @@ import { AclPolicyModule } from '@acl/policy/acl-policy.module';
 import { AclRoleModule } from '@acl/role/acl-role.module';
 
 import { AuthCommonController } from '@/auth/controller';
-import { HealthController } from '@/health/controller';
 import { MagicLinkController } from '@/magic-link/controller';
 import {
   OrganizationController,
@@ -27,7 +24,6 @@ import { PaymentController } from '@/payment/controller';
 
 @Module({
   controllers: [
-    HealthController,
     AuthCommonController,
     OrganizationController,
     OrganizationInviteController,
@@ -39,8 +35,6 @@ import { PaymentController } from '@/payment/controller';
   providers: [],
   exports: [],
   imports: [
-    HealthModule,
-    TerminusModule,
     AuthModule,
     UserModule,
     HttpModule,
