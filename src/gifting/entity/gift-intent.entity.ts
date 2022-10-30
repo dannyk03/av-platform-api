@@ -58,6 +58,21 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   })
   submittedAt?: Date;
 
+  @Column({
+    nullable: true,
+  })
+  paidAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  shippedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  deliveredAt?: Date;
+
   @ManyToOne(
     () => GiftIntentConfirmationLink,
     (verificationLink) => verificationLink.giftIntents,

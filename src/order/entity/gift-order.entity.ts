@@ -6,24 +6,6 @@ import { User } from '@/user/entity';
 
 @Entity()
 export class GiftOrder extends BaseEntity<GiftOrder> {
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalPrice!: number;
-
-  @Column({
-    nullable: true,
-  })
-  paidAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  shippedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  deliveredAt?: Date;
-
   @OneToOne(() => GiftIntent, (giftIntent) => giftIntent.order)
   giftIntent!: GiftIntent;
 
