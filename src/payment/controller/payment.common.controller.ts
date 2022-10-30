@@ -116,7 +116,7 @@ export class PaymentCommonController {
             amount: giftAmountToBeCharged,
             currency: EnumCurrency.USD.toLowerCase(),
             customer: stripeCustomerId,
-            receipt_email: giftOrder.giftIntent.sender.user.email,
+            receipt_email: senderUser?.email,
           });
 
         await this.defaultDataSource
