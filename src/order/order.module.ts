@@ -4,11 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
+import { GiftOrder } from './entity';
+
 import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([], ConnectionNames.Default),
+    TypeOrmModule.forFeature([GiftOrder], ConnectionNames.Default),
     MessagingModule,
     UserModule,
   ],
@@ -16,4 +18,4 @@ import { ConnectionNames } from '@/database/constant';
   providers: [],
   controllers: [],
 })
-export class OrganizationModule {}
+export class OrderModule {}
