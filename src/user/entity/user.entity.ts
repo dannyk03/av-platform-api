@@ -4,13 +4,15 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 
-import { InvitationLink } from '../../networking/entity/invitation-link.entity';
 import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
+import { InvitationLink } from '@/networking/entity';
+import { GiftOrder } from '@/order/entity';
 import { Organization } from '@/organization/entity';
 import { StripePayment } from '@/payment/stripe/entity';
 import { AclRole } from '@acl/role/entity';
@@ -60,6 +62,9 @@ export class User extends BaseEntity<User> {
     cascade: true,
   })
   invitationLink: InvitationLink;
+
+  @OneToMany(() => GiftOrder, (order) => order.user)
+  giftOrders: GiftOrder;
 
   @OneToOne(() => StripePayment, (stripe) => stripe.user, {
     cascade: true,

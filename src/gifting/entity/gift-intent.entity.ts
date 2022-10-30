@@ -15,6 +15,7 @@ import { GiftSender } from './gift-sender.entity';
 import { GiftSubmit } from './gift-submit.entity';
 import { Gift } from './gift.entity';
 import { BaseEntity } from '@/database/entity';
+import { GiftOrder } from '@/order/entity';
 
 @Entity()
 export class GiftIntent extends BaseEntity<GiftIntent> {
@@ -57,16 +58,6 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
   })
   submittedAt?: Date;
 
-  @Column({
-    nullable: true,
-  })
-  shippedAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  deliveredAt?: Date;
-
   @ManyToOne(
     () => GiftIntentConfirmationLink,
     (verificationLink) => verificationLink.giftIntents,
@@ -92,4 +83,9 @@ export class GiftIntent extends BaseEntity<GiftIntent> {
     cascade: true,
   })
   giftSubmit?: GiftSubmit[];
+
+  @OneToOne(() => GiftOrder, (order) => order.giftIntent, {
+    nullable: true,
+  })
+  order?: GiftOrder[];
 }
