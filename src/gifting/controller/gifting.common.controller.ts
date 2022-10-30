@@ -36,6 +36,7 @@ import {
 } from '../service';
 import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
+import { GiftOrderService } from '@/order/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
@@ -74,6 +75,7 @@ export class GiftingCommonController {
     private readonly giftConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
     private readonly socialConnectionService: SocialConnectionService,
+    private readonly giftOrderService: GiftOrderService,
   ) {}
 
   @ClientResponse('gift.send')
@@ -360,7 +362,7 @@ export class GiftingCommonController {
       });
     }
 
-    const result = this.defaultDataSource.transaction(
+    return this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const createGiftSubmit = await this.giftSubmitService.create({
@@ -372,9 +374,16 @@ export class GiftingCommonController {
           submitReason,
         });
 
-        const saveGiftSubmit = await transactionalEntityManager.save(
-          createGiftSubmit,
-        );
+        const createGiftOrder = await this.giftOrderService.create({
+          user: reqUser,
+          giftIntent,
+        });
+
+        const [saveGiftSubmit, saveGiftOrder] =
+          await transactionalEntityManager.save([
+            createGiftSubmit,
+            createGiftOrder,
+          ]);
 
         await transactionalEntityManager.update(
           GiftIntent,
@@ -383,17 +392,11 @@ export class GiftingCommonController {
         );
 
         return {
+          giftOrderId: saveGiftOrder?.id,
           giftSubmitId: saveGiftSubmit?.id,
           giftIntentId,
         };
       },
     );
-
-    // For local development/testing
-    const isProduction = this.configService.get<boolean>('app.isProduction');
-    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (!(isProduction || isSecureMode)) {
-      return result;
-    }
   }
 }

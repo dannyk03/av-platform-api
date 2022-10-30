@@ -181,6 +181,9 @@ export class GiftIntentGetSerialization implements IGiftIntentGetSerialization {
   readonly submittedAt: Date;
 
   @Expose()
+  readonly paidAt: Date;
+
+  @Expose()
   readonly shippedAt: Date;
 
   @Expose()
