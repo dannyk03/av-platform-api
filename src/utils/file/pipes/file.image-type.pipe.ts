@@ -18,7 +18,7 @@ import { IFile } from '../type';
 export class FileTypeImagePipe implements PipeTransform {
   async transform(value: IFile | IFile[]): Promise<IFile | IFile[]> {
     if (!value) {
-      return;
+      return value;
     }
 
     if (Array.isArray(value)) {
@@ -37,8 +37,8 @@ export class FileTypeImagePipe implements PipeTransform {
 
   async validate(mimetype: string): Promise<void> {
     if (
-      !Object.values(EnumFileImageMime).find(
-        (val) => val === mimetype.toLowerCase(),
+      !Object.values(EnumFileImageMime).includes(
+        mimetype.toLowerCase() as EnumFileImageMime,
       )
     ) {
       throw new UnsupportedMediaTypeException({
