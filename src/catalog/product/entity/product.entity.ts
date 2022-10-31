@@ -15,6 +15,8 @@ import { Currency } from '@/currency/entity';
 import { BaseEntity } from '@/database/entity';
 import { Gift } from '@/gifting/entity';
 
+import { DecimalToFloatTransformer } from '@/database/transformer';
+
 @Entity()
 export class Product extends BaseEntity<Product> {
   @Index()
@@ -45,10 +47,20 @@ export class Product extends BaseEntity<Product> {
   )
   displayOptions!: ProductDisplayOption[];
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: new DecimalToFloatTransformer(),
+  })
   price!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: new DecimalToFloatTransformer(),
+  })
   shippingCost!: number;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.products, {
