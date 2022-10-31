@@ -7,7 +7,7 @@ import {
 } from '@avo/type';
 
 import { isNumber } from 'class-validator';
-import { compact } from 'lodash';
+import compact from 'lodash/compact';
 import {
   Brackets,
   DeepPartial,

@@ -12,7 +12,7 @@ import { HelperDateService } from '@/utils/helper/service';
 
 import { INTEGRATION_CLOUDINARY_URL } from './cloudinary.constant';
 
-import { HealthController } from '@/health/controller';
+import { HealthCommonController } from '@/health/controller';
 
 describe('Cloudinary Integration', () => {
   let app: INestApplication;
@@ -22,7 +22,7 @@ describe('Cloudinary Integration', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [CommonModule, HealthModule, TerminusModule],
-      controllers: [HealthController],
+      controllers: [HealthCommonController],
     }).compile();
 
     app = moduleRef.createNestApplication();
