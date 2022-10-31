@@ -119,6 +119,7 @@ export class PaymentCommonController {
             receipt_email: senderUser?.email,
           });
 
+        // Save paymentIntent id for users GiftOrder
         await this.defaultDataSource
           .getRepository(GiftOrder)
           .createQueryBuilder()
@@ -132,11 +133,13 @@ export class PaymentCommonController {
           clientSecret: paymentIntent.client_secret,
         };
       }
+
       // Existing PaymentIntent
       const existingPaymentIntent =
         await this.stripeService.retrieveStripePaymentIntentById(
           stripePaymentIntentId,
         );
+
       return {
         clientSecret: existingPaymentIntent.client_secret,
       };
