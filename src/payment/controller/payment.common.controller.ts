@@ -83,7 +83,7 @@ export class PaymentCommonController {
 
     try {
       const senderUser = giftOrder?.giftIntent?.sender?.user;
-      let stripePaymentIntentId = giftOrder?.stripePaymentIntentId;
+      const stripePaymentIntentId = giftOrder?.stripePaymentIntentId;
       let stripeCustomerId = senderUser?.stripe?.customerId;
 
       if (!stripePaymentIntentId) {
@@ -126,8 +126,6 @@ export class PaymentCommonController {
           .update({ stripePaymentIntentId: paymentIntent.id })
           .where('id = :orderId', { orderId: giftOrder.id })
           .execute();
-
-        stripePaymentIntentId = paymentIntent.id;
 
         return {
           clientSecret: paymentIntent.client_secret,

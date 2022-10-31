@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MessagingModule } from '@/messaging/messaging.module';
-import { OrderModule } from '@/order/order.module';
 
 import {
   GiftIntent,
