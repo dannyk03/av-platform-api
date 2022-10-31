@@ -11,6 +11,7 @@ import { RouterGiftingModule } from '@/router/router.gifting.module';
 import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
 import { RouterHealthModule } from '@/router/router.health.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
+import { RouterPaymentModule } from '@/router/router.payment.module';
 import { RouterProductModule } from '@/router/router.product.module';
 import { RouterPublicModule } from '@/router/router.public.module';
 import { RouterTestModule } from '@/router/router.test.module';
@@ -41,6 +42,7 @@ export class AppRouterModule {
           RouterCallbackModule,
           RouterHealthModule,
           RouterTestModule,
+          RouterPaymentModule,
           RouterAppModule,
           RouterModule.register(
             compact([
@@ -91,6 +93,10 @@ export class AppRouterModule {
                     module: RouterVendorModule,
                   },
                 ],
+              },
+              {
+                path: '/payment',
+                module: RouterPaymentModule,
               },
               {
                 path: '/public',

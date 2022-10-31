@@ -1,0 +1,7 @@
+{
+  "create": "Create payment success",
+  "error": {
+    "unprocessable": "Unprocessable payment",
+    "giftIntentNotSubmitted": "Payment failed, Gift intent not submitted"
+  }
+}

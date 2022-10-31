@@ -1,1 +1,1 @@
-export * from './payment.controller';
+export * from './payment.common.controller';

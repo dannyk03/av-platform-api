@@ -49,7 +49,7 @@ export function FileImageInterceptor(
             });
           } else if (finalFiles.length > maxFiles) {
             throw new UnprocessableEntityException({
-              statusCode: EnumFileStatusCodeError.FileMaxError,
+              statusCode: EnumFileStatusCodeError.FileMaxSizeError,
               message: 'file.error.maxFiles',
             });
           }

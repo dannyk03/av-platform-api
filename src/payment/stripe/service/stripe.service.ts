@@ -1,75 +1,75 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import Stripe from 'stripe';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
+
+import { StripePayment } from '../entity';
+
+import { InjectStripe } from '../decorator';
+
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class StripeService {
-  private readonly client: Stripe;
-
   constructor(
-    private readonly httpService: HttpService,
+    @InjectStripe()
+    private readonly stripeClient: Stripe,
+    @InjectRepository(StripePayment, ConnectionNames.Default)
+    private stripePaymentRepository: Repository<StripePayment>,
     private readonly configService: ConfigService,
-  ) {
-    this.client = new Stripe(
-      this.configService.get<string>('stripe.secretKey'),
-      {
-        apiVersion: '2022-08-01',
-      },
-    );
+  ) {}
+
+  async create(props: DeepPartial<StripePayment>): Promise<StripePayment> {
+    return this.stripePaymentRepository.create(props);
   }
 
-  async createPaymentIntent({ amount, currency, customerID }) {
-    const customerStripeId = customerID; // get the customer stripe id
+  async createMany(
+    props: DeepPartial<StripePayment>[],
+  ): Promise<StripePayment[]> {
+    return this.stripePaymentRepository.create(props);
+  }
 
-    const paymentIntent = await this.client.paymentIntents.create(
-      {
-        amount, // in cents
-        currency,
-      },
-      // { stripeAccount: customerStripeId },
-    );
+  async save(user: StripePayment): Promise<StripePayment> {
+    return this.stripePaymentRepository.save<StripePayment>(user);
+  }
 
-    console.log(`${paymentIntent.client_secret} is the client secret`);
+  async findOne(find?: FindOneOptions<StripePayment>): Promise<StripePayment> {
+    return this.stripePaymentRepository.findOne({ ...find });
+  }
 
-    return paymentIntent.client_secret;
+  async findOneBy(
+    find?: FindOptionsWhere<StripePayment>,
+  ): Promise<StripePayment> {
+    return this.stripePaymentRepository.findOneBy({ ...find });
+  }
+
+  async createStripeCustomer(
+    params: Stripe.CustomerCreateParams,
+  ): Promise<Stripe.Response<Stripe.Customer>> {
+    return await this.stripeClient.customers.create(params);
+  }
+
+  async createStripePaymentIntent(
+    params: Stripe.PaymentIntentCreateParams,
+  ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    return await this.stripeClient.paymentIntents.create(params);
+  }
+
+  async retrieveStripePaymentIntentById(
+    id: string,
+  ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    return await this.stripeClient.paymentIntents.retrieve(id);
   }
 
   async getTaxAmount({ taxCode, recipientZipCode, basePrice }) {
     // ask stripe what is the tax for this product
     return 10;
-  }
-
-  async createOrder(giftIntentId) {
-    // TODO: move to payment service
-    // load the GiftIntent object / it will be given as input
-
-    // build the Order and its OrderItems records
-    // calculate shipping, taxes
-
-    // save in the db
-
-    // return the Order and its OrderItems records as a result.
-    return {
-      id: '',
-      totalPrice: 80,
-      totalTax: 13,
-      totalShipping: 13,
-      orderItems: [
-        {
-          tax: 12,
-          shipping: 12,
-          totalPrice: 40,
-          basePrice: 16,
-        },
-        {
-          tax: 1,
-          shipping: 1,
-          totalPrice: 40,
-          basePrice: 38,
-        },
-      ],
-    };
   }
 }

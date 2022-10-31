@@ -1,6 +1,6 @@
-import { IsString } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class PaymentCreateDto {
-  @IsString()
-  readonly orderId: string;
+  @IsUUID()
+  readonly giftOrderId: string;
 }
