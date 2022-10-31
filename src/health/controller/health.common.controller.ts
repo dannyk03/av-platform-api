@@ -26,7 +26,7 @@ import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indica
   version: VERSION_NEUTRAL,
   path: 'health',
 })
-export class HealthController {
+export class HealthCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,

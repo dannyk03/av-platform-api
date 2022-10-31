@@ -49,8 +49,8 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
         })
       : Joi.object({
           APP_ENV: Joi.string()
-            .valid('development', 'production')
-            .default('development')
+            .valid('development', 'production', 'staging')
+            .default('production')
             .required(),
           APP_MODE: Joi.string()
             .valid('simple', 'secure')
