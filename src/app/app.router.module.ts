@@ -43,7 +43,6 @@ export class AppRouterModule {
           RouterHealthModule,
           RouterTestModule,
           RouterPaymentModule,
-          RouterPaymentModule,
           RouterModule.register(
             compact([
               {
