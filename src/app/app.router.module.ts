@@ -41,6 +41,7 @@ export class AppRouterModule {
           RouterCallbackModule,
           RouterHealthModule,
           RouterTestModule,
+          RouterAppModule,
           RouterModule.register(
             compact([
               {
