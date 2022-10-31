@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 
 import { HelperModule } from '@/utils/helper/helper.module';
 
-import { HelperFileService } from '@/utils/helper/service/helper.file.service';
+import { HelperFileService } from '@/utils/helper/service';
 
 import { ConfigDynamicModule } from '@/config';
 
@@ -23,21 +23,21 @@ describe('HelperFileService', () => {
     expect(helperFileService).toBeDefined();
   });
 
-  describe('writeExcel', () => {
+  describe('convertToBytes', () => {
     it('should be called', async () => {
-      const test = jest.spyOn(helperFileService, 'writeExcel');
+      const result = jest.spyOn(helperFileService, 'convertToBytes');
 
-      helperFileService.writeExcel([], []);
-      expect(test).toHaveBeenCalledWith([], []);
+      helperFileService.convertToBytes('1mb');
+      expect(result).toHaveBeenCalledWith('1mb');
     });
 
     it('should be success', async () => {
-      const result = helperFileService.writeExcel([], []);
+      const result = helperFileService.convertToBytes('1mb');
       jest
-        .spyOn(helperFileService, 'writeExcel')
+        .spyOn(helperFileService, 'convertToBytes')
         .mockImplementation(() => result);
 
-      expect(helperFileService.writeExcel([], [])).toBe(result);
+      expect(helperFileService.convertToBytes('1mb')).toBe(result);
     });
   });
 });
