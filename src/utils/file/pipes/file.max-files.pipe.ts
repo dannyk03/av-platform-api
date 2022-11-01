@@ -13,6 +13,8 @@ import { EnumFileStatusCodeError } from '@avo/type';
 
 import { IFile } from '../type';
 
+import { maxFilesValidate } from './utils';
+
 @Injectable({ scope: Scope.REQUEST })
 export class FileMaxFilesImagePipe implements PipeTransform {
   constructor(
@@ -22,26 +24,14 @@ export class FileMaxFilesImagePipe implements PipeTransform {
   ) {}
 
   async transform(value: IFile[]): Promise<IFile[]> {
-    if (!value) {
-      return;
-    }
-
-    await this.validate(value);
-
-    return value;
-  }
-
-  async validate(value: IFile[]): Promise<void> {
     const maxFiles =
       this.request.__customMaxFiles ||
       this.configService.get<number>('file.image.maxFiles');
 
-    if (value.length > maxFiles) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumFileStatusCodeError.FileMaxFilesError,
-        message: 'file.error.maxFiles',
-      });
-    }
+    return await maxFilesValidate({
+      maxFiles,
+      value,
+    });
   }
 }
 
@@ -54,22 +44,14 @@ export class FileMaxFilesExcelPipe implements PipeTransform {
   ) {}
 
   async transform(value: IFile[]): Promise<IFile[]> {
-    await this.validate(value);
-
-    return value;
-  }
-
-  async validate(value: IFile[]): Promise<void> {
     const maxFiles =
       this.request.__customMaxFiles ||
       this.configService.get<number>('file.excel.maxFiles');
 
-    if (value.length > maxFiles) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumFileStatusCodeError.FileMaxFilesError,
-        message: 'file.error.maxFiles',
-      });
-    }
+    return await maxFilesValidate({
+      maxFiles,
+      value,
+    });
   }
 }
 
@@ -82,22 +64,14 @@ export class FileMaxFilesVideoPipe implements PipeTransform {
   ) {}
 
   async transform(value: IFile[]): Promise<IFile[]> {
-    await this.validate(value);
-
-    return value;
-  }
-
-  async validate(value: IFile[]): Promise<void> {
     const maxFiles =
       this.request.__customMaxFiles ||
       this.configService.get<number>('file.video.maxFiles');
 
-    if (value.length > maxFiles) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumFileStatusCodeError.FileMaxFilesError,
-        message: 'file.error.maxFiles',
-      });
-    }
+    return await maxFilesValidate({
+      maxFiles,
+      value,
+    });
   }
 }
 
@@ -110,21 +84,13 @@ export class FileMaxFilesAudioPipe implements PipeTransform {
   ) {}
 
   async transform(value: IFile[]): Promise<IFile[]> {
-    await this.validate(value);
-
-    return value;
-  }
-
-  async validate(value: IFile[]): Promise<void> {
     const maxFiles =
       this.request.__customMaxFiles ||
       this.configService.get<number>('file.audio.maxFiles');
 
-    if (value.length > maxFiles) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumFileStatusCodeError.FileMaxFilesError,
-        message: 'file.error.maxFiles',
-      });
-    }
+    return await maxFilesValidate({
+      maxFiles,
+      value,
+    });
   }
 }
