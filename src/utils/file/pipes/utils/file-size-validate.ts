@@ -29,7 +29,7 @@ export async function fileSizeValidate({
   maxSizeInBytes: number;
 }): Promise<IFile | IFile[]> {
   if (!value) {
-    return value;
+    return;
   }
 
   for (const val of castArray(value)) {
