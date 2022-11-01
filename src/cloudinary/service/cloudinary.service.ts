@@ -17,27 +17,29 @@ import { UploadCloudinaryImage } from '../cloudinary.interface';
 
 @Injectable()
 export class CloudinaryService {
-  private readonly isProduction: boolean;
+  private readonly isProduction =
+    this.configService.get<boolean>('app.isProduction');
+
+  private readonly isPerceptionPointMalwareDetectionOn =
+    this.configService.get<boolean>(
+      'cloudinary.addons.perceptionPointMalwareDetectionOn',
+    );
+
   private readonly cloudinaryDeleteResources: (
     publicIds: string[],
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_resources);
+
   private readonly cloudinaryDeleteFolder: (
     path: string,
     options?: AdminApiOptions,
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_folder);
+
   private readonly cloudinaryDeleteResourcesByPrefix: (
     prefix: string,
     options?: AdminAndResourceOptions,
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_resources_by_prefix);
 
-  constructor(private readonly configService: ConfigService) {
-    this.isProduction = this.configService.get('app.isProduction');
-    this.cloudinaryDeleteResources = util.promisify(v2.api.delete_resources);
-    this.cloudinaryDeleteFolder = util.promisify(v2.api.delete_folder);
-    this.cloudinaryDeleteResourcesByPrefix = util.promisify(
-      v2.api.delete_resources_by_prefix,
-    );
-  }
+  constructor(private readonly configService: ConfigService) {}
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
   }
@@ -78,7 +80,10 @@ export class CloudinaryService {
       const upload = v2.uploader.upload_stream(
         {
           folder: this.isProduction ? productionPath : developmentPath,
-          ...(this.isProduction && { moderation: 'perception_point' }),
+          ...(this.isProduction &&
+            this.isPerceptionPointMalwareDetectionOn && {
+              moderation: 'perception_point',
+            }),
         },
         (error, result) => {
           if (error) return reject(error);
@@ -89,10 +94,11 @@ export class CloudinaryService {
     });
   }
 
-  async list() {
-    const listt = util.promisify(v2.api.sub_folders);
+  // WIP test code
+  async deleteMany() {
+    const subFolders = util.promisify(v2.api.sub_folders);
     try {
-      const res = await listt('jul/products');
+      const res = await subFolders('jul/products');
       res.folders.forEach((folder) => {
         v2.api.resources(
           {

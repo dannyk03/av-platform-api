@@ -8,5 +8,9 @@ export default registerAs(
       key: process.env.CLOUDINARY_API_KEY,
       secret: process.env.CLOUDINARY_API_SECRET,
     },
+    addons: {
+      perceptionPointMalwareDetectionOn:
+        process.env.CLOUDINARY_ADD_ON_PERCEPTION_POINT_MALWARE_DETECTION_ON,
+    },
   }),
 );
