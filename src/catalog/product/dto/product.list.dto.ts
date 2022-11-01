@@ -46,12 +46,15 @@ export class ProductListDto implements IPaginationList {
   @PaginationAvailableSearch(PRODUCT_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
+  @ApiProperty({ default: PRODUCT_DEFAULT_PAGE })
   @PaginationPage(PRODUCT_DEFAULT_PAGE)
   readonly page: number;
 
+  @ApiProperty({ default: PRODUCT_DEFAULT_PER_PAGE })
   @PaginationPerPage(PRODUCT_DEFAULT_PER_PAGE)
   readonly perPage: number;
 
+  @ApiProperty()
   @PaginationSort(
     PRODUCT_DEFAULT_SORT,
     PRODUCT_DEFAULT_AVAILABLE_SORT,
@@ -63,9 +66,11 @@ export class ProductListDto implements IPaginationList {
   @PaginationAvailableSort(PRODUCT_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
 
+  @ApiProperty({ default: PRODUCT_DEFAULT_ACTIVE })
   @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @PaginationFilterRange()
   readonly priceRange?: [number, number];
