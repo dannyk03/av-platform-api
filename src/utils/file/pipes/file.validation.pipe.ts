@@ -48,15 +48,14 @@ export class FileValidationPipe<T> implements PipeTransform {
       return classTransforms;
     }
 
-    const file: IFileExtract<T> = value as IFileExtract<T>;
-    await this.validate(file);
+    await this.validate(value);
 
     const classTransform: T[] = await this.transformExtract(
       this.dto,
-      file.extract,
+      value.extract,
     );
 
-    await this.validateExtract(classTransform, file.filename);
+    await this.validateExtract(classTransform, value.filename);
 
     return this.transformMerge(value, classTransform);
   }
@@ -94,8 +93,6 @@ export class FileValidationPipe<T> implements PipeTransform {
         message: 'file.error.needExtractFirst',
       });
     }
-
-    return;
   }
 
   async validateExtract(classTransform: T[], filename: string): Promise<void> {
