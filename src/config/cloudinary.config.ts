@@ -10,7 +10,8 @@ export default registerAs(
     },
     addons: {
       perceptionPointMalwareDetectionOn:
-        process.env.CLOUDINARY_ADD_ON_PERCEPTION_POINT_MALWARE_DETECTION_ON,
+        process.env.CLOUDINARY_ADD_ON_PERCEPTION_POINT_MALWARE_DETECTION_ON ===
+        'true',
     },
   }),
 );
