@@ -1,1 +1,2 @@
-export * from './mimetype-validate';
+export * from './mimeType-validate';
+export * from './fileSize-validate';
