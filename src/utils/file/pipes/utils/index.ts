@@ -1,3 +1,3 @@
-export * from './mimeType-validate';
-export * from './fileSize-validate';
-export * from './maxFiles-validate';
+export * from './mime-type-validate';
+export * from './file-size-validate';
+export * from './max-files-validate';
