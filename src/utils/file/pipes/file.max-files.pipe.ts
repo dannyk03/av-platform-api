@@ -23,7 +23,7 @@ export class FileMaxFilesImagePipe implements PipeTransform {
 
   async transform(value: IFile[]): Promise<IFile[]> {
     if (!value) {
-      return value;
+      return;
     }
 
     await this.validate(value);
