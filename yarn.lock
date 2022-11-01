@@ -6262,10 +6262,10 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-maskdata@^1.1.10:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/maskdata/-/maskdata-1.1.10.tgz#28de7763d82e0939390712267101a8438c86b12f"
-  integrity sha512-m6sLr6LU8ReVD20jzqwyF/E2fSffiWjeETrWw2p1ae9uLV69gygM5kSEX/eAmz+SYldQH8/YMGb4s4QvlcB8LQ==
+maskdata@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/maskdata/-/maskdata-1.2.0.tgz#807ae0cc30497c3f310e3837851f9edd5d8d1cc6"
+  integrity sha512-O5rK1SQ5iK0wKQm42kU3cYLkNIIkY4bW8MpGlghu4qRbXJaj/TVnwDGNym/UEBpgW377XFx8ApNTx0NieMJjpQ==
   dependencies:
     lodash "^4.17.21"
 

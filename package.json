@@ -81,7 +81,7 @@
     "joi": "^17.6.3",
     "libphonenumber-js": "^1.10.14",
     "lodash": "^4.17.21",
-    "maskdata": "^1.1.10",
+    "maskdata": "^1.2.0",
     "moment-timezone": "^0.5.37",
     "morgan": "^1.10.0",
     "nanoid": "~3.3.4",
