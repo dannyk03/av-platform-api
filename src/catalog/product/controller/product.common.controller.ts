@@ -53,7 +53,11 @@ import { ProductGetSerialization } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
-import { FileSizeImagePipe, FileTypeImagePipe } from '@/utils/file/pipes';
+import {
+  FileMaxFilesImagePipe,
+  FileSizeImagePipe,
+  FileTypeImagePipe,
+} from '@/utils/file/pipes';
 
 @Controller({
   version: '1',
@@ -86,7 +90,7 @@ export class ProductCommonController {
   @UploadFileMultiple('images')
   @Post()
   async create(
-    @UploadedFiles(FileSizeImagePipe, FileTypeImagePipe)
+    @UploadedFiles(FileSizeImagePipe, FileMaxFilesImagePipe, FileTypeImagePipe)
     images: IFile[],
     @Body()
     {
