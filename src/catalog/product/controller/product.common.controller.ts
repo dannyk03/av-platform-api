@@ -26,11 +26,11 @@ import {
 import { isDefined } from 'class-validator';
 import compact from 'lodash/compact';
 import flatMap from 'lodash/flatMap';
-import { v5 as uuidv5 } from 'uuid';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
+import { HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
@@ -64,6 +64,7 @@ export class ProductCommonController {
     private readonly vendorService: VendorService,
     private readonly productImageService: ProductImageService,
     private readonly paginationService: PaginationService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @ClientResponse('product.create', {
@@ -131,7 +132,7 @@ export class ProductCommonController {
       (await this.productImageService.createImages({
         images,
         language,
-        subFolder: uuidv5(sku, uuidv5.URL),
+        subFolder: await this.helperHashService.uuidV5(sku),
       }));
 
     const createProduct = await this.productService.create({

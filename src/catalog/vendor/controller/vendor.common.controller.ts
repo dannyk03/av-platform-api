@@ -22,6 +22,7 @@ import {
 } from '@avo/type';
 
 import { VendorLogoService, VendorService } from '../service';
+import { HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { UploadFileSingle } from '@/utils/file/decorators';
@@ -55,6 +56,7 @@ export class VendorCommonController {
     private readonly vendorService: VendorService,
     private readonly vendorLogoService: VendorLogoService,
     private readonly paginationService: PaginationService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @ClientResponse('vendor.create', {
@@ -100,7 +102,7 @@ export class VendorCommonController {
     const saveLogo = logo
       ? await this.vendorLogoService.createLogo({
           logo,
-          subFolder: slugify(name),
+          subFolder: await this.helperHashService.uuidV5(name),
         })
       : undefined;
 

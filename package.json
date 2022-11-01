@@ -6,6 +6,7 @@
   "author": "Avo team",
   "private": true,
   "license": "UNLICENSED",
+  "namespace": "5e88e0cb-2833-458d-b78f-02137111888a",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

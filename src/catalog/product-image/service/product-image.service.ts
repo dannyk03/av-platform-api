@@ -10,12 +10,12 @@ import {
   In,
   Repository,
 } from 'typeorm';
-import { v5 as uuidv5 } from 'uuid';
 
 import { ProductImage } from '../entity';
 
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
+import { HelperHashService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -27,9 +27,10 @@ import { ICreateImages, ISaveImages } from '../product-image.interface';
 export class ProductImageService {
   constructor(
     @InjectRepository(ProductImage, ConnectionNames.Default)
-    private productImageRepository: Repository<ProductImage>,
+    private readonly productImageRepository: Repository<ProductImage>,
     private readonly productDisplayOptionService: ProductDisplayOptionService,
-    private cloudinaryService: CloudinaryService,
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(props: DeepPartial<ProductImage>): Promise<ProductImage> {
@@ -135,7 +136,7 @@ export class ProductImageService {
     const productImages = await this.createImages({
       images,
       language,
-      subFolder: uuidv5(displayOption.product.sku, uuidv5.URL),
+      subFolder: await this.helperHashService.uuidV5(displayOption.product.sku),
     });
 
     productImages.forEach(

@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 import { SHA256, enc } from 'crypto-js';
 import { customAlphabet, nanoid } from 'nanoid/async';
+import { namespace } from 'package.json';
+import { v5 as uuidv5 } from 'uuid';
 
 import { IHelperHashService } from '../type/helper.hash-service.interface';
 
@@ -43,5 +45,9 @@ export class HelperHashService implements IHelperHashService {
 
   async magicCode(): Promise<string> {
     return magicNanoId();
+  }
+
+  async uuidV5(value: string): Promise<string> {
+    return uuidv5(value, namespace);
   }
 }
