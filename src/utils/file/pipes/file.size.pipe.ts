@@ -44,8 +44,8 @@ export class FileSizeExcelPipe implements PipeTransform {
       : this.configService.get<number>('file.excel.maxFileSize');
 
     return await fileSizeValidate({
-      maxSizeInBytes,
       value,
+      maxSizeInBytes,
     });
   }
 }
@@ -53,10 +53,10 @@ export class FileSizeExcelPipe implements PipeTransform {
 @Injectable({ scope: Scope.REQUEST })
 export class FileSizeVideoPipe implements PipeTransform {
   constructor(
-    @Inject(REQUEST)
-    private readonly request: Request & { __customFileSize: string },
     private readonly configService: ConfigService,
     private readonly helperFileService: HelperFileService,
+    @Inject(REQUEST)
+    private readonly request: Request & { __customFileSize: string },
   ) {}
 
   async transform(value: IFile | IFile[]): Promise<IFile | IFile[]> {
@@ -76,8 +76,8 @@ export class FileSizeAudioPipe implements PipeTransform {
   constructor(
     @Inject(REQUEST)
     private readonly request: Request & { __customFileSize: string },
-    private readonly configService: ConfigService,
     private readonly helperFileService: HelperFileService,
+    private readonly configService: ConfigService,
   ) {}
 
   async transform(value: IFile | IFile[]): Promise<IFile | IFile[]> {
@@ -86,8 +86,8 @@ export class FileSizeAudioPipe implements PipeTransform {
       : this.configService.get<number>('file.audio.maxFileSize');
 
     return await fileSizeValidate({
-      maxSizeInBytes,
       value,
+      maxSizeInBytes,
     });
   }
 }
