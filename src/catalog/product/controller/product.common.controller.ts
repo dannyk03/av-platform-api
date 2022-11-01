@@ -26,6 +26,7 @@ import {
 import { isDefined } from 'class-validator';
 import compact from 'lodash/compact';
 import flatMap from 'lodash/flatMap';
+import { v5 as uuidv5 } from 'uuid';
 
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
@@ -130,7 +131,7 @@ export class ProductCommonController {
       (await this.productImageService.createImages({
         images,
         language,
-        subFolder: sku,
+        subFolder: uuidv5(sku, uuidv5.URL),
       }));
 
     const createProduct = await this.productService.create({

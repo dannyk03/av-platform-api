@@ -10,6 +10,7 @@ import {
   In,
   Repository,
 } from 'typeorm';
+import { v5 as uuidv5 } from 'uuid';
 
 import { ProductImage } from '../entity';
 
@@ -134,7 +135,7 @@ export class ProductImageService {
     const productImages = await this.createImages({
       images,
       language,
-      subFolder: displayOption.product.sku,
+      subFolder: uuidv5(displayOption.product.sku, uuidv5.URL),
     });
 
     productImages.forEach(

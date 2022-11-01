@@ -78,8 +78,8 @@ export class CloudinaryService {
       const upload = v2.uploader.upload_stream(
         {
           folder: this.isProduction ? productionPath : developmentPath,
-          filename_override: image.originalname,
-          use_filename: true,
+          // filename_override: image.originalname,
+          // use_filename: true,
         },
         (error, result) => {
           if (error) return reject(error);
