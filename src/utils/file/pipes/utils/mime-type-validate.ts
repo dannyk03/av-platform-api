@@ -2,15 +2,18 @@ import { UnsupportedMediaTypeException } from '@nestjs/common';
 
 import { EnumFileStatusCodeError } from '@avo/type';
 
-import { IFile } from '../../type';
+import castArray from 'lodash/castArray';
 
-const validate = ({
+import { IFile } from '../../type';
+import { fromBuffer } from 'file-type';
+
+const validate = async ({
   mimetype,
   allowedMimeTypes,
 }: {
   mimetype: string;
   allowedMimeTypes: string[];
-}) => {
+}): Promise<void> => {
   if (!allowedMimeTypes.includes(mimetype.toLowerCase())) {
     throw new UnsupportedMediaTypeException({
       statusCode: EnumFileStatusCodeError.FileExtensionError,
@@ -30,12 +33,12 @@ export async function mimetypeValidate({
     return;
   }
 
-  if (Array.isArray(value)) {
-    for (const val of value) {
-      validate({ mimetype: val.mimetype, allowedMimeTypes });
-    }
-  } else {
-    validate({ mimetype: value.mimetype, allowedMimeTypes });
+  for (const val of castArray(value)) {
+    // The file type declared on the file.
+    await validate({ mimetype: val.mimetype, allowedMimeTypes });
+    // The file type is detected by checking the magic number of the buffer.
+    const fileType = await fromBuffer(val.buffer);
+    await validate({ mimetype: fileType.mime, allowedMimeTypes });
   }
 
   return value;

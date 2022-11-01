@@ -75,6 +75,7 @@
     "customerio-node": "^3.3.6",
     "dayjs": "^1.11.6",
     "express-rate-limit": "^6.6.0",
+    "file-type": "16.5.4",
     "geolib": "^3.3.3",
     "helmet": "^6.0.0",
     "iso-639-1": "^2.1.15",
