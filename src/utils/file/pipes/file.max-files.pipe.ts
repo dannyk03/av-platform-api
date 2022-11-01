@@ -1,15 +1,7 @@
 // only for multiple upload
-import {
-  Inject,
-  Injectable,
-  PipeTransform,
-  Scope,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Inject, Injectable, PipeTransform, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
-
-import { EnumFileStatusCodeError } from '@avo/type';
 
 import { IFile } from '../type';
 
