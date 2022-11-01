@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
@@ -24,6 +24,7 @@ export class AclRoleListDto implements IPaginationList {
   @ApiProperty()
   readonly search: string;
 
+  @ApiHideProperty()
   @PaginationAvailableSearch(ROLE_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
@@ -38,6 +39,7 @@ export class AclRoleListDto implements IPaginationList {
   @PaginationSort(ROLE_DEFAULT_SORT, ROLE_DEFAULT_AVAILABLE_SORT)
   readonly sort: IPaginationSort;
 
+  @ApiHideProperty()
   @PaginationAvailableSort(ROLE_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
 }

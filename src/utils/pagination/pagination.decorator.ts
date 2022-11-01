@@ -60,6 +60,8 @@ export function PaginationMultiSearch(): any {
 export function PaginationAvailableSearch(availableSearch: string[]): any {
   return applyDecorators(
     Expose(),
+    IsArray(),
+    IsString({ each: true }),
     Transform(() => availableSearch),
   );
 }
@@ -119,7 +121,11 @@ export function PaginationAvailableSort(
 ): any {
   return applyDecorators(
     Expose(),
-    Transform(({ value }) => (!value ? availableSort : value)),
+    IsArray(),
+    IsString({ each: true }),
+    Transform(({ value }) => {
+      return !value ? availableSort : [];
+    }),
   );
 }
 
