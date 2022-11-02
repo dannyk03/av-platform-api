@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Request } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { REQUEST } from '@nestjs/core';
 
-import { GiftIntent, GiftSubmit } from '@/gifting/entity';
+import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
+
+import { IRequestApp } from '@/utils/request/type';
 
 import {
   ConnectionRequestExistingUserMessageData,
@@ -18,7 +21,6 @@ import {
   GiftOptionSelectMessageData,
   GiftShippingDetails,
   GiftStatusUpdateMessageData,
-  SignUpEmailVerificationMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
 } from '../email.constant';
@@ -27,6 +29,8 @@ import {
 export class EmailService {
   private readonly isProduction: boolean;
   constructor(
+    @Inject(REQUEST)
+    private readonly request: Request & IRequestApp,
     private readonly configService: ConfigService,
     private readonly customerIOService: CustomerIOService,
   ) {
@@ -52,7 +56,14 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendNetworkInvite.toString(),
       to: [email],
-      emailTemplatePayload: { ref: fromUser.id, personalNote },
+      emailTemplatePayload: {
+        ref: fromUser.id,
+        personalNote,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({ email, ref: fromUser.id });
@@ -84,6 +95,10 @@ export class EmailService {
         approvePath,
         rejectPath,
         personalNote,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
       },
       identifier: { id: email },
     });
@@ -112,7 +127,14 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendOrganizationInvite.toString(),
       to: [email],
-      emailTemplatePayload: { organizationName, path },
+      emailTemplatePayload: {
+        organizationName,
+        path,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, organizationName, path });
@@ -140,7 +162,15 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
       to: [email],
-      emailTemplatePayload: { path, activationCode: code, user: { firstName } },
+      emailTemplatePayload: {
+        path,
+        activationCode: code,
+        user: { firstName },
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({ email, code, expiresInDays, path });
@@ -151,7 +181,6 @@ export class EmailService {
     email,
     firstName,
     code,
-    path = `/reset-password?code=${code}`,
   }: {
     email: string;
     code: string;
@@ -163,7 +192,7 @@ export class EmailService {
     if (!this.isProduction) {
       return true;
     }
-    // TODO: Add server url to payload
+
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendResetPassword.toString(),
       to: [email],
@@ -172,7 +201,10 @@ export class EmailService {
         user: {
           firstName: firstName,
         },
-        resetPasswordLink: '', // TODO: add link here
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
       },
       identifier: { id: email },
     });
@@ -196,7 +228,15 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftSurvey.toString(),
       to: [recipientEmail],
-      emailTemplatePayload: { recipientEmail, senderEmail, path },
+      emailTemplatePayload: {
+        recipientEmail,
+        senderEmail,
+        path,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: recipientEmail },
     });
     console.log({
@@ -223,7 +263,14 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftConfirm.toString(),
       to: [email],
-      emailTemplatePayload: { path, code },
+      emailTemplatePayload: {
+        path,
+        code,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -271,7 +318,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftSelection.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
 
@@ -297,7 +350,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftShipped.toString(),
       to: [email],
-      emailTemplatePayload: { path },
+      emailTemplatePayload: {
+        path,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -353,7 +412,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
-      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      emailTemplatePayload: {
+        ...this.getGiftStatusUpdateMessageData(giftIntent),
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -376,7 +441,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftDelivered.toString(),
       to: [email],
-      emailTemplatePayload: this.getGiftStatusUpdateMessageData(giftIntent),
+      emailTemplatePayload: {
+        ...this.getGiftStatusUpdateMessageData(giftIntent),
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -415,7 +486,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendRecipientGiftDelivered.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -474,7 +551,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestAccepted.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -509,7 +592,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestNewUser.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -550,7 +639,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendConnectionRequestExistingUser.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -588,7 +683,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftSurvey.toString(),
       to: [email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: email },
     });
     console.log({
@@ -625,7 +726,13 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSurveyCompleted.toString(),
       to: [inviterUser.email],
-      emailTemplatePayload: payload,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          host: this.request.get('host'),
+          protocol: this.request.protocol,
+        },
+      },
       identifier: { id: inviterUser.email },
     });
     console.log({
