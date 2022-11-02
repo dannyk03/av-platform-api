@@ -15,8 +15,5 @@ export class HelperAppService {
     if (this.isStaging) {
       return 'https://platform-api.us.stg.avoc.io/';
     }
-
-    // Use ngrok for local debugging
-    return 'http://3e28-169-150-226-246.eu.ngrok.io';
   }
 }
