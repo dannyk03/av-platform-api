@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
@@ -57,4 +57,14 @@ export class ProductImage extends BaseEntity<ProductImage> {
     default: EnumUploadFileMalwareDetectionStatus.Pending,
   })
   malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
+
+  @AfterLoad()
+  substituteImageUrlsIfNotScannedForMalwareDetection() {
+    if (
+      this.malwareDetectionStatus !==
+      EnumUploadFileMalwareDetectionStatus.Approved
+    ) {
+      this.secureUrl = undefined;
+    }
+  }
 }
