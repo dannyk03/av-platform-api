@@ -80,10 +80,9 @@ export class CloudinaryService {
       const upload = v2.uploader.upload_stream(
         {
           folder: this.isProduction ? productionPath : developmentPath,
-          ...(this.isProduction &&
-            this.isPerceptionPointMalwareDetectionOn && {
-              moderation: 'perception_point',
-            }),
+          ...(this.isPerceptionPointMalwareDetectionOn && {
+            moderation: 'perception_point',
+          }),
         },
         (error, result) => {
           if (error) return reject(error);
