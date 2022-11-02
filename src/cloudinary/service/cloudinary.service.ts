@@ -79,6 +79,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {
+          filename_override: image.originalname,
           folder: this.isProduction ? productionPath : developmentPath,
           ...(this.isPerceptionPointMalwareDetectionOn && {
             moderation: 'perception_point',
