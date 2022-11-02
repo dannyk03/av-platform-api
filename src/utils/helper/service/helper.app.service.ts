@@ -17,6 +17,6 @@ export class HelperAppService {
     }
 
     // Use ngrok for local debugging
-    // return 'http://c85e-169-150-226-246.eu.ngrok.io';
+    return 'http://3e28-169-150-226-246.eu.ngrok.io';
   }
 }
