@@ -1,11 +1,10 @@
 import { Body, Controller, Post, VERSION_NEUTRAL } from '@nestjs/common';
 
-import { rest } from 'lodash';
-
 import { ProductImageService } from '@/catalog/product-image/service';
 
 import {
   EnumCloudinaryModeration,
+  EnumCloudinaryNotificationType,
   EnumUploadFileMalwareDetectionStatus,
 } from '../constant';
 
@@ -17,7 +16,7 @@ export class CloudinaryWebhookController {
   constructor(private readonly productImageService: ProductImageService) {}
 
   @Post()
-  async webhook(
+  async notify(
     @Body()
     {
       asset_id,
@@ -31,7 +30,7 @@ export class CloudinaryWebhookController {
       moderation_status: EnumUploadFileMalwareDetectionStatus;
     },
   ): Promise<void> {
-    if (notification_type === 'moderation') {
+    if (notification_type === EnumCloudinaryNotificationType.Moderation) {
       if (moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
         if (
           moderation_status === EnumUploadFileMalwareDetectionStatus.Approved

@@ -10,4 +10,5 @@ export enum EnumCloudinaryModeration {
 
 export enum EnumCloudinaryNotificationType {
   Moderation = 'moderation',
+  Upload = 'upload',
 }
