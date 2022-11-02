@@ -60,8 +60,7 @@ export class EmailService {
         ref: fromUser.id,
         personalNote,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -96,8 +95,7 @@ export class EmailService {
         rejectPath,
         personalNote,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -131,8 +129,7 @@ export class EmailService {
         organizationName,
         path,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -167,8 +164,7 @@ export class EmailService {
         activationCode: code,
         user: { firstName },
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -202,8 +198,7 @@ export class EmailService {
           firstName: firstName,
         },
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -233,8 +228,7 @@ export class EmailService {
         senderEmail,
         path,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: recipientEmail },
@@ -267,8 +261,7 @@ export class EmailService {
         path,
         code,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -321,8 +314,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -353,8 +345,7 @@ export class EmailService {
       emailTemplatePayload: {
         path,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -415,8 +406,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...this.getGiftStatusUpdateMessageData(giftIntent),
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -444,8 +434,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...this.getGiftStatusUpdateMessageData(giftIntent),
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -489,8 +478,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -554,8 +542,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -595,8 +582,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -642,8 +628,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -686,8 +671,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: email },
@@ -729,8 +713,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          host: this.request.get('host'),
-          protocol: this.request.protocol,
+          origin: this.request.get('origin'),
         },
       },
       identifier: { id: inviterUser.email },
