@@ -10,6 +10,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsPositive,
   IsString,
@@ -93,6 +94,7 @@ export function PaginationSort(
 ): any {
   return applyDecorators(
     Expose(),
+    IsObject(),
     Transform(({ value, obj }) => {
       const bSort = PAGINATION_DEFAULT_SORT.split('@')[0];
 
