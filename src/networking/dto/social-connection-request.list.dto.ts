@@ -1,3 +1,5 @@
+import { ApiHideProperty } from '@nestjs/swagger';
+
 import {
   EnumNetworkingConnectionRequestStatus,
   IPaginationList,
@@ -27,6 +29,7 @@ export class SocialConnectionRequestListDto implements IPaginationList {
   @PaginationSearch()
   readonly search: string;
 
+  @ApiHideProperty()
   @PaginationAvailableSearch(CONNECT_REQUEST_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
@@ -43,6 +46,7 @@ export class SocialConnectionRequestListDto implements IPaginationList {
   )
   readonly sort: IPaginationSort;
 
+  @ApiHideProperty()
   @PaginationAvailableSort(CONNECT_REQUEST_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
 

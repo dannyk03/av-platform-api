@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import {
   EnumDisplayLanguage,
@@ -36,6 +36,7 @@ export class GiftIntentListDto implements IPaginationList {
   @ApiProperty()
   readonly keywords: string[];
 
+  @ApiHideProperty()
   @PaginationAvailableSearch(GIFT_INTENT_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
@@ -54,6 +55,7 @@ export class GiftIntentListDto implements IPaginationList {
   )
   readonly sort: IPaginationSort;
 
+  @ApiHideProperty()
   @PaginationAvailableSort(GIFT_INTENT_DEFAULT_AVAILABLE_SORT)
   readonly availableSort: string[];
 
