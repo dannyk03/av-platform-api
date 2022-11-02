@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import {
   EnumDisplayLanguage,
@@ -34,47 +34,44 @@ import {
 
 export class ProductListDto implements IPaginationList {
   @ProductDisplayLanguage()
-  @ApiProperty()
   readonly lang: EnumDisplayLanguage;
 
   @PaginationSearch()
-  @ApiProperty()
   readonly search: string;
 
   @PaginationMultiSearch()
-  @ApiProperty()
   readonly keywords: string[];
 
+  @ApiHideProperty()
   @PaginationAvailableSearch(PRODUCT_DEFAULT_AVAILABLE_SEARCH)
-  @ApiProperty({ default: PRODUCT_DEFAULT_AVAILABLE_SEARCH })
   readonly availableSearch: string[];
 
-  @PaginationPage(PRODUCT_DEFAULT_PAGE)
   @ApiProperty({ default: PRODUCT_DEFAULT_PAGE })
+  @PaginationPage(PRODUCT_DEFAULT_PAGE)
   readonly page: number;
 
-  @PaginationPerPage(PRODUCT_DEFAULT_PER_PAGE)
   @ApiProperty({ default: PRODUCT_DEFAULT_PER_PAGE })
+  @PaginationPerPage(PRODUCT_DEFAULT_PER_PAGE)
   readonly perPage: number;
 
+  @ApiProperty()
   @PaginationSort(
     PRODUCT_DEFAULT_SORT,
     PRODUCT_DEFAULT_AVAILABLE_SORT,
     ProductOrderByNestingAliasMap,
   )
-  @ApiProperty()
   readonly sort: IPaginationSort;
 
+  @ApiHideProperty()
   @PaginationAvailableSort(PRODUCT_DEFAULT_AVAILABLE_SORT)
-  @ApiProperty({ default: PRODUCT_DEFAULT_AVAILABLE_SORT })
   readonly availableSort: string[];
 
-  @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   @ApiProperty({ default: PRODUCT_DEFAULT_ACTIVE })
+  @PaginationFilterBoolean(PRODUCT_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @PaginationFilterRange()
-  @ApiProperty({ required: false })
   readonly priceRange?: [number, number];
 }

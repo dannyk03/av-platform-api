@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
@@ -27,6 +27,7 @@ export class UserListDto implements IPaginationList {
   @ApiProperty()
   readonly search: string;
 
+  @ApiHideProperty()
   @PaginationAvailableSearch(USER_DEFAULT_AVAILABLE_SEARCH)
   readonly availableSearch: string[];
 
@@ -46,8 +47,8 @@ export class UserListDto implements IPaginationList {
   @ApiProperty()
   readonly sort: IPaginationSort;
 
+  @ApiHideProperty()
   @PaginationAvailableSort(USER_DEFAULT_AVAILABLE_SORT)
-  @ApiProperty()
   readonly availableSort: string[];
 
   @PaginationFilterBoolean(USER_DEFAULT_ACTIVE)
