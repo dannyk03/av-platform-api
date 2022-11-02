@@ -11,7 +11,10 @@ import {
 import { createReadStream } from 'streamifier';
 import util from 'util';
 
+import { HelperAppService } from '@/utils/helper/service';
+
 import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
+import { EnumCloudinaryModeration } from '../constant';
 
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 
@@ -39,7 +42,10 @@ export class CloudinaryService {
     options?: AdminAndResourceOptions,
   ) => Promise<any> = util.promisify(v2.api.delete_resources_by_prefix);
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly helperAppService: HelperAppService,
+  ) {}
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
   }
@@ -76,13 +82,14 @@ export class CloudinaryService {
       return Promise.resolve(null);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const upload = v2.uploader.upload_stream(
         {
           filename_override: image.originalname,
           folder: this.isProduction ? productionPath : developmentPath,
           ...(this.isPerceptionPointMalwareDetectionOn && {
-            moderation: 'perception_point',
+            moderation: EnumCloudinaryModeration.PerceptionPoint,
+            notification_url: `${await this.helperAppService.getAppUrl()}/api/webhook/cloudinary`,
           }),
         },
         (error, result) => {

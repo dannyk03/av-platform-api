@@ -18,6 +18,7 @@ import { RouterTestModule } from '@/router/router.test.module';
 import { RouterUserModule } from '@/router/router.user.module';
 import { RouterUserSystemModule } from '@/router/router.user.system.module';
 import { RouterVendorModule } from '@/router/router.vendor.module';
+import { RouterWebhookModule } from '@/router/router.webhook.module';
 
 @Module({})
 export class AppRouterModule {
@@ -44,6 +45,7 @@ export class AppRouterModule {
           RouterTestModule,
           RouterPaymentModule,
           RouterAppModule,
+          RouterWebhookModule,
           RouterModule.register(
             compact([
               {
@@ -105,6 +107,10 @@ export class AppRouterModule {
               {
                 path: '/callback',
                 module: RouterCallbackModule,
+              },
+              {
+                path: '/webhook',
+                module: RouterWebhookModule,
               },
               {
                 ...(process.env.APP_ENV !== 'production'

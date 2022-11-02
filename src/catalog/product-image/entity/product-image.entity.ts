@@ -3,6 +3,8 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
 
+import { EnumUploadFileMalwareDetectionStatus } from '@/cloudinary/constant';
+
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
   @Column({
@@ -48,4 +50,11 @@ export class ProductImage extends BaseEntity<ProductImage> {
   )
   @JoinColumn()
   productDisplayOption: ProductDisplayOption;
+
+  @Column({
+    type: 'enum',
+    enum: EnumUploadFileMalwareDetectionStatus,
+    default: EnumUploadFileMalwareDetectionStatus.Pending,
+  })
+  malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
 }

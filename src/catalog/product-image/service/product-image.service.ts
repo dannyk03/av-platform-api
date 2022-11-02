@@ -5,10 +5,12 @@ import { EnumProductStatusCodeError } from '@avo/type';
 
 import {
   DeepPartial,
+  DeleteResult,
   FindOneOptions,
   FindOptionsWhere,
   In,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 
 import { ProductImage } from '../entity';
@@ -17,6 +19,10 @@ import { ProductDisplayOptionService } from '@/catalog/product-display-option/se
 import { CloudinaryService } from '@/cloudinary/service';
 import { HelperHashService } from '@/utils/helper/service';
 
+import {
+  EnumCloudinaryModeration,
+  EnumUploadFileMalwareDetectionStatus,
+} from '@/cloudinary/constant';
 import { ConnectionNames } from '@/database/constant';
 
 import { CloudinarySubject } from '@/cloudinary';
@@ -113,11 +119,20 @@ export class ProductImageService {
     return Promise.all(
       uploadImages.map(async (image) => {
         if (this.cloudinaryService.isUploadApiResponse(image)) {
+          // Shitty cloudinary types
+          const malwareDetectionStatus = (
+            image.moderation.find(
+              (mod: any) =>
+                mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
+            ) as any
+          )?.status;
+
           return this.create({
             fileName: image.original_filename,
             assetId: image.asset_id,
             publicId: image.public_id,
             secureUrl: image.secure_url,
+            malwareDetectionStatus,
           });
         }
 
@@ -144,5 +159,28 @@ export class ProductImageService {
     );
 
     return this.saveBulk(productImages);
+  }
+
+  async updateImageMalwareDetectionStatus({
+    assetId,
+    malwareDetectionStatus,
+  }: {
+    assetId: string;
+    malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
+  }): Promise<UpdateResult> {
+    return this.productImageRepository
+      .createQueryBuilder()
+      .update(ProductImage)
+      .set({ malwareDetectionStatus })
+      .where('assetId = :assetId', { assetId })
+      .execute();
+  }
+
+  async removeByAssetId({
+    assetId,
+  }: {
+    assetId: string;
+  }): Promise<DeleteResult> {
+    return this.productImageRepository.delete({ assetId });
   }
 }
