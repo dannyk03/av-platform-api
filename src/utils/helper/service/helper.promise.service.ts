@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { IHelperPromiseService } from '../type/helper.promise.interface';
+
 @Injectable()
-export class HelperPromiseService {
+export class HelperPromiseService implements IHelperPromiseService {
   async mapPromiseBasedResultToResponseReport(
     result: PromiseSettledResult<string>[],
   ) {

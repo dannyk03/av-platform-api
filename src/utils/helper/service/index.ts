@@ -13,3 +13,4 @@ export * from './helper.string.service';
 export * from './helper.cookie.service';
 export * from './helper.promise.service';
 export * from './helper.mask.service';
+export * from './helper.app.service';

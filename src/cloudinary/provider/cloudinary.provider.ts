@@ -10,9 +10,9 @@ export const CloudinaryProvider = {
   useFactory: (configService: ConfigService): ConfigOptions => {
     return v2.config({
       secure: true,
-      cloud_name: configService.get<string>('cloudinary.credential.cloudName'),
-      api_key: configService.get<string>('cloudinary.credential.key'),
-      api_secret: configService.get<string>('cloudinary.credential.secret'),
+      cloud_name: configService.get<string>('cloudinary.credentials.cloudName'),
+      api_key: configService.get<string>('cloudinary.credentials.key'),
+      api_secret: configService.get<string>('cloudinary.credentials.secret'),
     });
   },
 };

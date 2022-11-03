@@ -4,13 +4,17 @@ import { ConfigService } from '@nestjs/config';
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 import { SHA256, enc } from 'crypto-js';
 import { customAlphabet, nanoid } from 'nanoid/async';
+import { namespace } from 'package.json';
+import { v5 as uuidv5 } from 'uuid';
+
+import { IHelperHashService } from '../type/helper.hash-service.interface';
 
 const magicNanoId = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
 );
 
 @Injectable()
-export class HelperHashService {
+export class HelperHashService implements IHelperHashService {
   constructor(private readonly configService: ConfigService) {}
 
   randomSalt(length?: number): string {
@@ -41,5 +45,9 @@ export class HelperHashService {
 
   async magicCode(): Promise<string> {
     return magicNanoId();
+  }
+
+  async uuidV5(value: string): Promise<string> {
+    return uuidv5(value, namespace);
   }
 }

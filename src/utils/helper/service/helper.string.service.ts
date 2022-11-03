@@ -3,10 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { isEmail } from 'class-validator';
 
+import { IHelperStringService } from '../type/helper.string-service.interface';
+
 import { IHelperStringRandomOptions } from '../helper.interface';
 
 @Injectable()
-export class HelperStringService {
+export class HelperStringService implements IHelperStringService {
   checkEmail(email: string): boolean {
     return isEmail(email);
   }

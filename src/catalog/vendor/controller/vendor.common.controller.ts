@@ -22,8 +22,10 @@ import {
 } from '@avo/type';
 
 import { VendorLogoService, VendorService } from '../service';
+import { HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { UploadFileSingle } from '@/utils/file/decorators';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -32,12 +34,18 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { IFile } from '@/utils/file/type';
+
 import { VendorCreateDto, VendorListDto, VendorUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { VendorGetSerialization } from '../serialization';
 
-import { EnumFileType, UploadFileSingle } from '@/utils/file';
+import {
+  FileRequiredPipe,
+  FileSizeImagePipe,
+  FileTypeImagePipe,
+} from '@/utils/file/pipes';
 import { slugify } from '@/utils/helper';
 
 @Controller({
@@ -48,6 +56,7 @@ export class VendorCommonController {
     private readonly vendorService: VendorService,
     private readonly vendorLogoService: VendorLogoService,
     private readonly paginationService: PaginationService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @ClientResponse('vendor.create', {
@@ -63,10 +72,11 @@ export class VendorCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileSingle('logo', { type: EnumFileType.IMAGE, required: false })
+  @UploadFileSingle('logo')
   @Post()
   async create(
-    @UploadedFile() logo: Express.Multer.File,
+    @UploadedFile(FileRequiredPipe, FileSizeImagePipe, FileTypeImagePipe)
+    logo: IFile,
     @Body()
     { name, description, isActive }: VendorCreateDto,
   ): Promise<IResponseData> {
@@ -92,7 +102,7 @@ export class VendorCommonController {
     const saveLogo = logo
       ? await this.vendorLogoService.createLogo({
           logo,
-          subFolder: slugify(name),
+          subFolder: await this.helperHashService.uuidV5(name),
         })
       : undefined;
 

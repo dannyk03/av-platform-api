@@ -1,4 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { EnumUploadFileMalwareDetectionStatus } from '@avo/type';
+
+import { AfterLoad, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
@@ -48,4 +50,23 @@ export class ProductImage extends BaseEntity<ProductImage> {
   )
   @JoinColumn()
   productDisplayOption: ProductDisplayOption;
+
+  @Column({
+    type: 'enum',
+    enum: EnumUploadFileMalwareDetectionStatus,
+    default: EnumUploadFileMalwareDetectionStatus.Skip,
+  })
+  malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
+
+  @AfterLoad()
+  substituteImageUrlsIfNotScannedOrSkippedForMalwareDetection(): void {
+    if (
+      [
+        EnumUploadFileMalwareDetectionStatus.Pending,
+        EnumUploadFileMalwareDetectionStatus.Rejected,
+      ].includes(this.malwareDetectionStatus)
+    ) {
+      this.secureUrl = null;
+    }
+  }
 }

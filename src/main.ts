@@ -114,8 +114,10 @@ async function bootstrap() {
     )}`,
     'NestApplication',
   );
+
   logger.log(`Server running on ${await app.getUrl()}`, 'NestApplication');
 
   logger.log(`==========================================================`);
 }
+
 bootstrap();

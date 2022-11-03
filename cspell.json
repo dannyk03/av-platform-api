@@ -31,7 +31,8 @@
     "middlewares",
     "alphanum",
     "typeorm",
-    "tlds"
+    "tlds",
+    "uuidv5"
   ],
   "ignorePaths": [
     "node_modules/**",

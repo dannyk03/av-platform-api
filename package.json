@@ -6,6 +6,7 @@
   "author": "Avo team",
   "private": true,
   "license": "UNLICENSED",
+  "namespace": "5e88e0cb-2833-458d-b78f-02137111888a",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -44,7 +45,7 @@
   },
   "dependencies": {
     "@avo/casl": "^0.0.27",
-    "@avo/type": "^0.0.98",
+    "@avo/type": "^0.0.105",
     "@aws-sdk/client-s3": "^3.201.0",
     "@faker-js/faker": "^7.6.0",
     "@nestjs/axios": "^0.1.0",
@@ -73,8 +74,8 @@
     "currency-symbol-map": "^5.1.0",
     "customerio-node": "^3.3.6",
     "dayjs": "^1.11.6",
-    "exceljs": "^4.3.0",
     "express-rate-limit": "^6.6.0",
+    "file-type": "16.5.4",
     "geolib": "^3.3.3",
     "helmet": "^6.0.0",
     "iso-639-1": "^2.1.15",
@@ -107,6 +108,7 @@
     "validator": "^13.7.0",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
+    "xlsx": "^0.18.5",
     "yargs": "^17.6.0"
   },
   "devDependencies": {

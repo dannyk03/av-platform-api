@@ -8,6 +8,8 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import moment from 'moment-timezone';
 
+import { IHelperDateService } from '../type/helper.date-service.interface';
+
 import { EnumHelperDateDiff, EnumHelperDateFormat } from '../helper.constant';
 
 import {
@@ -25,7 +27,7 @@ dayjs.extend(timezone);
 dayjs.extend(duration);
 
 @Injectable()
-export class HelperDateService {
+export class HelperDateService implements IHelperDateService {
   private readonly timezone: string;
   constructor(private readonly configService: ConfigService) {
     const appTimezone = this.configService.get<string>('app.timezone');
@@ -59,6 +61,10 @@ export class HelperDateService {
     return dayjs(date)
       .tz(options?.timezone || this.timezone)
       .isValid();
+  }
+
+  checkTimestamp(timestamp: number): boolean {
+    return moment(timestamp, true).isValid();
   }
 
   checkTimezone(tz: string): boolean {

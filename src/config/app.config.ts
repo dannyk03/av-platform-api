@@ -7,6 +7,7 @@ export default registerAs(
   'app',
   (): Record<string, any> => ({
     isProduction: process.env.APP_ENV === 'production',
+    isStaging: process.env.APP_ENV === 'staging',
     isCI: process.env.CI === 'true',
     isSecureMode: process.env.APP_MODE === 'secure',
     runSeeds: true,

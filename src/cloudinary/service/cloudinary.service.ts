@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { EnumCloudinaryModeration } from '@avo/type';
+
 import {
   AdminAndResourceOptions,
   AdminApiOptions,
@@ -11,33 +13,40 @@ import {
 import { createReadStream } from 'streamifier';
 import util from 'util';
 
+import { HelperAppService } from '@/utils/helper/service';
+
 import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
 
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 
 @Injectable()
 export class CloudinaryService {
-  private readonly isProduction: boolean;
+  private readonly isProduction =
+    this.configService.get<boolean>('app.isProduction');
+
+  private readonly isPerceptionPointMalwareDetectionOn =
+    this.configService.get<boolean>(
+      'cloudinary.addons.perceptionPointMalwareDetectionOn',
+    );
+
   private readonly cloudinaryDeleteResources: (
     publicIds: string[],
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_resources);
+
   private readonly cloudinaryDeleteFolder: (
     path: string,
     options?: AdminApiOptions,
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_folder);
+
   private readonly cloudinaryDeleteResourcesByPrefix: (
     prefix: string,
     options?: AdminAndResourceOptions,
-  ) => Promise<any>;
+  ) => Promise<any> = util.promisify(v2.api.delete_resources_by_prefix);
 
-  constructor(private readonly configService: ConfigService) {
-    this.isProduction = this.configService.get('app.isProduction');
-    this.cloudinaryDeleteResources = util.promisify(v2.api.delete_resources);
-    this.cloudinaryDeleteFolder = util.promisify(v2.api.delete_folder);
-    this.cloudinaryDeleteResourcesByPrefix = util.promisify(
-      v2.api.delete_resources_by_prefix,
-    );
-  }
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly helperAppService: HelperAppService,
+  ) {}
   isUploadApiResponse(data: any): data is UploadApiResponse {
     return 'asset_id' in data;
   }
@@ -74,12 +83,17 @@ export class CloudinaryService {
       return Promise.resolve(null);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      const appUrl = await this.helperAppService.getAppUrl();
       const upload = v2.uploader.upload_stream(
         {
-          folder: this.isProduction ? productionPath : developmentPath,
           filename_override: image.originalname,
-          use_filename: true,
+          folder: this.isProduction ? productionPath : developmentPath,
+          ...(this.isPerceptionPointMalwareDetectionOn &&
+            appUrl && {
+              moderation: EnumCloudinaryModeration.PerceptionPoint,
+              notification_url: `${appUrl}/api/webhook/cloudinary`,
+            }),
         },
         (error, result) => {
           if (error) return reject(error);
@@ -90,10 +104,11 @@ export class CloudinaryService {
     });
   }
 
-  async list() {
-    const listt = util.promisify(v2.api.sub_folders);
+  // WIP test code
+  async deleteMany() {
+    const subFolders = util.promisify(v2.api.sub_folders);
     try {
-      const res = await listt('jul/products');
+      const res = await subFolders('jul/products');
       res.folders.forEach((folder) => {
         v2.api.resources(
           {

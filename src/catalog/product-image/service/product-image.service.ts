@@ -1,20 +1,27 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumProductStatusCodeError } from '@avo/type';
+import {
+  EnumCloudinaryModeration,
+  EnumProductStatusCodeError,
+  EnumUploadFileMalwareDetectionStatus,
+} from '@avo/type';
 
 import {
   DeepPartial,
+  DeleteResult,
   FindOneOptions,
   FindOptionsWhere,
   In,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 
 import { ProductImage } from '../entity';
 
 import { ProductDisplayOptionService } from '@/catalog/product-display-option/service';
 import { CloudinaryService } from '@/cloudinary/service';
+import { HelperHashService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -26,9 +33,10 @@ import { ICreateImages, ISaveImages } from '../product-image.interface';
 export class ProductImageService {
   constructor(
     @InjectRepository(ProductImage, ConnectionNames.Default)
-    private productImageRepository: Repository<ProductImage>,
+    private readonly productImageRepository: Repository<ProductImage>,
     private readonly productDisplayOptionService: ProductDisplayOptionService,
-    private cloudinaryService: CloudinaryService,
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(props: DeepPartial<ProductImage>): Promise<ProductImage> {
@@ -111,11 +119,28 @@ export class ProductImageService {
     return Promise.all(
       uploadImages.map(async (image) => {
         if (this.cloudinaryService.isUploadApiResponse(image)) {
+          const {
+            moderation,
+            original_filename,
+            asset_id,
+            public_id,
+            secure_url,
+          } = image;
+
+          const PerceptionPointMalwareDetectionStatus =
+            (
+              moderation?.find(
+                (mod: any) =>
+                  mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
+              ) as any
+            )?.status ?? EnumUploadFileMalwareDetectionStatus.Skip;
+
           return this.create({
-            fileName: image.original_filename,
-            assetId: image.asset_id,
-            publicId: image.public_id,
-            secureUrl: image.secure_url,
+            fileName: original_filename,
+            assetId: asset_id,
+            publicId: public_id,
+            secureUrl: secure_url,
+            malwareDetectionStatus: PerceptionPointMalwareDetectionStatus,
           });
         }
 
@@ -134,7 +159,7 @@ export class ProductImageService {
     const productImages = await this.createImages({
       images,
       language,
-      subFolder: displayOption.product.sku,
+      subFolder: await this.helperHashService.uuidV5(displayOption.product.sku),
     });
 
     productImages.forEach(
@@ -142,5 +167,28 @@ export class ProductImageService {
     );
 
     return this.saveBulk(productImages);
+  }
+
+  async updateImageMalwareDetectionStatus({
+    assetId,
+    malwareDetectionStatus,
+  }: {
+    assetId: string;
+    malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
+  }): Promise<UpdateResult> {
+    return this.productImageRepository
+      .createQueryBuilder()
+      .update(ProductImage)
+      .set({ malwareDetectionStatus })
+      .where('assetId = :assetId', { assetId })
+      .execute();
+  }
+
+  async removeByAssetId({
+    assetId,
+  }: {
+    assetId: string;
+  }): Promise<DeleteResult> {
+    return this.productImageRepository.delete({ assetId });
   }
 }

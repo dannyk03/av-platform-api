@@ -9,18 +9,22 @@ import {
   UnprocessableEntityException,
   UploadedFiles,
 } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
 
 import { Action, Subjects } from '@avo/casl';
 import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 
+import { ProductImage } from '../entity/product-image.entity';
+
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
+import { UploadFileMultiple } from '@/utils/file/decorators';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
+
+import { IFile } from '@/utils/file/type';
 
 import { ProductImageBulkDeleteDto, ProductImageUpdateDto } from '../dto';
 import { ProductGetDto } from '@/catalog/product/dto/product.get.dto';
@@ -28,7 +32,7 @@ import { IdParamDto } from '@/utils/request/dto/id-param.dto';
 
 import { ProductImageGetSerialization } from '../serialization';
 
-import { EnumFileType, UploadFileMultiple } from '@/utils/file';
+import { FileSizeImagePipe, FileTypeImagePipe } from '@/utils/file/pipes';
 
 @Controller({
   version: '1',
@@ -68,11 +72,12 @@ export class ProductImageController {
     systemOnly: true,
   })
   @RequestParamGuard(IdParamDto)
-  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: true })
+  @UploadFileMultiple('images')
   @Post('/:id')
   async imageAdd(
     @Param('id') productId: string,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles(FileSizeImagePipe, FileTypeImagePipe)
+    images: IFile[],
     @Query()
     { lang: language }: ProductGetDto,
   ): Promise<void> {
@@ -114,8 +119,10 @@ export class ProductImageController {
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
   async setImageWeight(
-    @Param('id') imageId: string,
-    @Body() body: ProductImageUpdateDto,
+    @Param('id')
+    imageId: string,
+    @Body()
+    body: ProductImageUpdateDto,
   ): Promise<IResponseData> {
     const findImage = await this.productImageService.findOneBy({ id: imageId });
 
@@ -129,7 +136,7 @@ export class ProductImageController {
     const saveImage = await this.productImageService.save({
       ...findImage,
       ...body,
-    });
+    } as ProductImage);
 
     return saveImage;
   }

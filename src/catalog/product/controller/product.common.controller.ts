@@ -30,9 +30,11 @@ import flatMap from 'lodash/flatMap';
 import { ProductService } from '../service';
 import { ProductImageService } from '@/catalog/product-image/service';
 import { VendorService } from '@/catalog/vendor/service';
+import { HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
+import { UploadFileMultiple } from '@/utils/file/decorators';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -40,6 +42,8 @@ import {
 
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
+
+import { IFile } from '@/utils/file/type';
 
 import { ProductCreateDto, ProductListDto, ProductUpdateDto } from '../dto';
 import { ProductGetDto } from '../dto/product.get.dto';
@@ -49,7 +53,11 @@ import { ProductGetSerialization } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
-import { EnumFileType, UploadFileMultiple } from '@/utils/file';
+import {
+  FileMaxFilesImagePipe,
+  FileSizeImagePipe,
+  FileTypeImagePipe,
+} from '@/utils/file/pipes';
 
 @Controller({
   version: '1',
@@ -60,6 +68,7 @@ export class ProductCommonController {
     private readonly vendorService: VendorService,
     private readonly productImageService: ProductImageService,
     private readonly paginationService: PaginationService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @ClientResponse('product.create', {
@@ -78,10 +87,11 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
+  @UploadFileMultiple('images')
   @Post()
   async create(
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles(FileSizeImagePipe, FileMaxFilesImagePipe, FileTypeImagePipe)
+    images: IFile[],
     @Body()
     {
       sku,
@@ -126,7 +136,7 @@ export class ProductCommonController {
       (await this.productImageService.createImages({
         images,
         language,
-        subFolder: sku,
+        subFolder: await this.helperHashService.uuidV5(sku),
       }));
 
     const createProduct = await this.productService.create({
@@ -327,12 +337,14 @@ export class ProductCommonController {
     ],
     systemOnly: true,
   })
-  @UploadFileMultiple('images', { type: EnumFileType.IMAGE, required: false })
+  @UploadFileMultiple('images')
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
   async update(
-    @UploadedFiles() images: Express.Multer.File[],
-    @Param('id') id: string,
+    @UploadedFiles(FileSizeImagePipe, FileTypeImagePipe)
+    images: IFile[],
+    @Param('id')
+    id: string,
     @Body()
     {
       vendorId,
