@@ -117,4 +117,20 @@ export class ProductCreateDto {
   @MaxLength(30)
   @ApiProperty({ required: false })
   vendorName?: string;
+
+  @IsNumber({ allowNaN: false })
+  @IsOptional()
+  @IsPositive()
+  @Min(0)
+  @Type(() => Number)
+  @ApiProperty({ required: false, default: 0 })
+  purchaseCost!: number;
+
+  @IsNumber({ allowNaN: true })
+  @IsOptional()
+  @IsPositive()
+  @Min(0)
+  @Type(() => Number)
+  @ApiProperty({ required: false })
+  shippingTimeInDays?: number;
 }

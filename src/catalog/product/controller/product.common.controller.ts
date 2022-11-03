@@ -107,6 +107,8 @@ export class ProductCommonController {
       shippingCost,
       vendorId,
       vendorName,
+      purchaseCost,
+      shippingTimeInDays,
     }: ProductCreateDto,
   ): Promise<IResponseData> {
     const checkProductExists = await this.productService.checkExistsBy({ sku });
@@ -147,6 +149,8 @@ export class ProductCommonController {
       taxCode,
       vendorName,
       shippingCost,
+      shippingTimeInDays,
+      purchaseCost,
       currency: {
         code: currency,
       },
