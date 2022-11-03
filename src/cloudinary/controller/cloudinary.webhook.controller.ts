@@ -18,6 +18,7 @@ import {
 } from '@avo/type';
 
 import { ProductImageService } from '@/catalog/product-image/service';
+import { HelperHashService } from '@/utils/helper/service';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -27,6 +28,7 @@ export class CloudinaryWebhookController {
   constructor(
     private readonly productImageService: ProductImageService,
     private readonly configService: ConfigService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -45,16 +47,21 @@ export class CloudinaryWebhookController {
       moderation_status?: EnumUploadFileMalwareDetectionStatus;
     },
   ): Promise<void> {
-    const cloudinaryApiKey = this.configService.get<string>(
-      'cloudinary.credentials.key',
+    const cloudinaryApiSecret = this.configService.get<string>(
+      'cloudinary.credentials.secret',
     );
 
     const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
 
-    if (body.api_key && body.api_key !== cloudinaryApiKey) {
+    const isValidSignature = this.helperHashService.sha1Compare(
+      this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
+      xCldSignature,
+    );
+
+    if (!isValidSignature) {
       throw new UnauthorizedException({
         statusCode: EnumWebhookCodeError.WebhookUnauthorizedError,
-        message: 'webhook.error.unauthorized',
+        message: 'webhook.error.invalidSignature',
       });
     }
 

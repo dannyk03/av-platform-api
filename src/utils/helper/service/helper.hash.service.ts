@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { compareSync, genSaltSync, hashSync } from 'bcrypt';
-import { SHA256, enc } from 'crypto-js';
+import { SHA1, SHA256, enc } from 'crypto-js';
 import { customAlphabet, nanoid } from 'nanoid/async';
 import { namespace } from 'package.json';
 import { v5 as uuidv5 } from 'uuid';
@@ -36,6 +36,14 @@ export class HelperHashService implements IHelperHashService {
   }
 
   sha256Compare(hashOne: string, hashTwo: string): boolean {
+    return hashOne === hashTwo;
+  }
+
+  sha1(string: string): string {
+    return SHA1(string).toString(enc.Hex);
+  }
+
+  sha1Compare(hashOne: string, hashTwo: string): boolean {
     return hashOne === hashTwo;
   }
 

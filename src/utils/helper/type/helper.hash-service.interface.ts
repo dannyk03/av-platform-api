@@ -9,6 +9,10 @@ export interface IHelperHashService {
 
   sha256Compare(hashOne: string, hashTwo: string): boolean;
 
+  sha1(string: string): string;
+
+  sha1Compare(hashOne: string, hashTwo: string): boolean;
+
   nanoId(length?: number): Promise<string>;
 
   magicCode(): Promise<string>;

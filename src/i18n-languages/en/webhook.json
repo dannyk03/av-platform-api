@@ -1,5 +1,6 @@
 {
   "error": {
-    "unauthorized": "Unauthorized webhook"
+    "unauthorized": "Unauthorized webhook",
+    "invalidSignature": "Webhook invalid signature"
   }
 }
