@@ -84,6 +84,20 @@ export class Product extends BaseEntity<Product> {
   })
   taxCode!: string;
 
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: new DecimalToFloatTransformer(),
+    default: 0,
+  })
+  purchaseCost: number;
+
+  @Column({
+    nullable: true,
+  })
+  shippingTimeInDays: number;
+
   @ManyToMany(() => Gift, (giftOption) => giftOption.products)
   giftOptions: Gift[];
 
