@@ -230,7 +230,10 @@ export class ProductService {
       flatMap(images, ({ publicId }) => publicId),
     );
 
-    await this.cloudinaryService.deleteResources({ publicIds: imagePublicIds });
+    imagePublicIds &&
+      (await this.cloudinaryService.deleteResources({
+        publicIds: imagePublicIds,
+      }));
     return this.productRepository.remove(removeProduct);
   }
 
