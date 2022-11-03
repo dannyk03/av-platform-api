@@ -66,7 +66,7 @@ export class CloudinaryWebhookController {
         } else if (
           moderation_status === EnumUploadFileMalwareDetectionStatus.Rejected
         ) {
-          // Delete infected file
+          // Delete infected product image
           await this.productImageService.removeByAssetId({
             assetId: asset_id,
           });

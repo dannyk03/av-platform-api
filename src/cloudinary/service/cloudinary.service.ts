@@ -84,14 +84,16 @@ export class CloudinaryService {
     }
 
     return new Promise(async (resolve, reject) => {
+      const appUrl = await this.helperAppService.getAppUrl();
       const upload = v2.uploader.upload_stream(
         {
           filename_override: image.originalname,
           folder: this.isProduction ? productionPath : developmentPath,
-          ...(this.isPerceptionPointMalwareDetectionOn && {
-            moderation: EnumCloudinaryModeration.PerceptionPoint,
-            notification_url: `${await this.helperAppService.getAppUrl()}/api/webhook/cloudinary`,
-          }),
+          ...(this.isPerceptionPointMalwareDetectionOn &&
+            appUrl && {
+              moderation: EnumCloudinaryModeration.PerceptionPoint,
+              notification_url: `${appUrl}/api/webhook/cloudinary`,
+            }),
         },
         (error, result) => {
           if (error) return reject(error);

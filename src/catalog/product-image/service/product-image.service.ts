@@ -119,20 +119,28 @@ export class ProductImageService {
     return Promise.all(
       uploadImages.map(async (image) => {
         if (this.cloudinaryService.isUploadApiResponse(image)) {
-          // Shitty cloudinary types
-          const malwareDetectionStatus = (
-            image.moderation.find(
-              (mod: any) =>
-                mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
-            ) as any
-          )?.status;
+          const {
+            moderation,
+            original_filename,
+            asset_id,
+            public_id,
+            secure_url,
+          } = image;
+
+          const PerceptionPointMalwareDetectionStatus =
+            (
+              moderation?.find(
+                (mod: any) =>
+                  mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
+              ) as any
+            )?.status ?? EnumUploadFileMalwareDetectionStatus.Skip;
 
           return this.create({
-            fileName: image.original_filename,
-            assetId: image.asset_id,
-            publicId: image.public_id,
-            secureUrl: image.secure_url,
-            malwareDetectionStatus,
+            fileName: original_filename,
+            assetId: asset_id,
+            publicId: public_id,
+            secureUrl: secure_url,
+            malwareDetectionStatus: PerceptionPointMalwareDetectionStatus,
           });
         }
 

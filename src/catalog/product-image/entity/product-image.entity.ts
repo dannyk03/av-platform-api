@@ -54,15 +54,17 @@ export class ProductImage extends BaseEntity<ProductImage> {
   @Column({
     type: 'enum',
     enum: EnumUploadFileMalwareDetectionStatus,
-    default: EnumUploadFileMalwareDetectionStatus.Pending,
+    default: EnumUploadFileMalwareDetectionStatus.Skip,
   })
   malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
 
   @AfterLoad()
-  substituteImageUrlsIfNotScannedForMalwareDetection(): void {
+  substituteImageUrlsIfNotScannedOrSkippedForMalwareDetection(): void {
     if (
-      this.malwareDetectionStatus !==
-      EnumUploadFileMalwareDetectionStatus.Approved
+      [
+        EnumUploadFileMalwareDetectionStatus.Pending,
+        EnumUploadFileMalwareDetectionStatus.Rejected,
+      ].includes(this.malwareDetectionStatus)
     ) {
       this.secureUrl = null;
     }
