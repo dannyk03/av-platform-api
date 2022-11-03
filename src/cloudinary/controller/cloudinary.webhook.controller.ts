@@ -1,6 +1,9 @@
 import {
   Body,
   Controller,
+  Headers,
+  HttpCode,
+  HttpStatus,
   Post,
   UnauthorizedException,
   VERSION_NEUTRAL,
@@ -26,49 +29,53 @@ export class CloudinaryWebhookController {
     private readonly configService: ConfigService,
   ) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post()
   async notify(
+    @Headers('x-cld-signature')
+    xCldSignature: string,
+    @Headers('x-cld-timestamp')
+    xCldTimestamp: string,
     @Body()
-    {
-      api_key,
-      asset_id,
-      moderation_kind,
-      notification_type,
-      moderation_status,
-    }: {
+    body: {
       api_key: string;
       asset_id: string;
-      moderation_kind: string;
+      moderation_kind?: string;
       notification_type: string;
-      moderation_status: EnumUploadFileMalwareDetectionStatus;
+      moderation_status?: EnumUploadFileMalwareDetectionStatus;
     },
   ): Promise<void> {
     const cloudinaryApiKey = this.configService.get<string>(
       'cloudinary.credentials.key',
     );
-    if (api_key && api_key !== cloudinaryApiKey) {
+
+    const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
+
+    if (body.api_key && body.api_key !== cloudinaryApiKey) {
       throw new UnauthorizedException({
         statusCode: EnumWebhookCodeError.WebhookUnauthorizedError,
         message: 'webhook.error.unauthorized',
       });
     }
 
-    if (notification_type === EnumCloudinaryNotificationType.Moderation) {
-      if (moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
+    if (body.notification_type === EnumCloudinaryNotificationType.Moderation) {
+      if (body.moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
         if (
-          moderation_status === EnumUploadFileMalwareDetectionStatus.Approved
+          body.moderation_status ===
+          EnumUploadFileMalwareDetectionStatus.Approved
         ) {
           // Update image malware detection status
           await this.productImageService.updateImageMalwareDetectionStatus({
-            assetId: asset_id,
-            malwareDetectionStatus: moderation_status,
+            assetId: body.asset_id,
+            malwareDetectionStatus: body.moderation_status,
           });
         } else if (
-          moderation_status === EnumUploadFileMalwareDetectionStatus.Rejected
+          body.moderation_status ===
+          EnumUploadFileMalwareDetectionStatus.Rejected
         ) {
           // Delete infected product image
           await this.productImageService.removeByAssetId({
-            assetId: asset_id,
+            assetId: body.asset_id,
           });
         }
       }
