@@ -4,7 +4,6 @@ import { RouterModule } from '@nestjs/core';
 import compact from 'lodash/compact';
 
 import { RouterAppModule } from '@/router/router.app.module';
-import { RouterCallbackModule } from '@/router/router.callback.module';
 import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
@@ -40,7 +39,6 @@ export class AppRouterModule {
           RouterProductModule,
           RouterVendorModule,
           RouterNetworkingModule,
-          RouterCallbackModule,
           RouterHealthModule,
           RouterTestModule,
           RouterPaymentModule,
@@ -103,10 +101,6 @@ export class AppRouterModule {
               {
                 path: '/public',
                 module: RouterPublicModule,
-              },
-              {
-                path: '/callback',
-                module: RouterCallbackModule,
               },
               {
                 path: '/webhook',
