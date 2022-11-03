@@ -7,15 +7,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { EnumWebhookCodeError } from '@avo/type';
-
-import { ProductImageService } from '@/catalog/product-image/service';
-
 import {
   EnumCloudinaryModeration,
   EnumCloudinaryNotificationType,
   EnumUploadFileMalwareDetectionStatus,
-} from '../constant';
+  EnumWebhookCodeError,
+} from '@avo/type';
+
+import { ProductImageService } from '@/catalog/product-image/service';
 
 @Controller({
   version: VERSION_NEUTRAL,

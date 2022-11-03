@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { EnumCloudinaryModeration } from '@avo/type';
+
 import {
   AdminAndResourceOptions,
   AdminApiOptions,
@@ -14,7 +16,6 @@ import util from 'util';
 import { HelperAppService } from '@/utils/helper/service';
 
 import { CloudinarySubjectFolderPath } from '../cloudinary.constant';
-import { EnumCloudinaryModeration } from '../constant';
 
 import { UploadCloudinaryImage } from '../cloudinary.interface';
 

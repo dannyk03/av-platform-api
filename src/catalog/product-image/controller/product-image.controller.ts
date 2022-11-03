@@ -13,6 +13,8 @@ import {
 import { Action, Subjects } from '@avo/casl';
 import { EnumProductStatusCodeError, IResponseData } from '@avo/type';
 
+import { ProductImage } from '../entity/product-image.entity';
+
 import { ProductImageService } from '../service';
 import { CloudinaryService } from '@/cloudinary/service';
 
@@ -117,8 +119,10 @@ export class ProductImageController {
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
   async setImageWeight(
-    @Param('id') imageId: string,
-    @Body() body: ProductImageUpdateDto,
+    @Param('id')
+    imageId: string,
+    @Body()
+    body: ProductImageUpdateDto,
   ): Promise<IResponseData> {
     const findImage = await this.productImageService.findOneBy({ id: imageId });
 
@@ -132,7 +136,7 @@ export class ProductImageController {
     const saveImage = await this.productImageService.save({
       ...findImage,
       ...body,
-    });
+    } as ProductImage);
 
     return saveImage;
   }

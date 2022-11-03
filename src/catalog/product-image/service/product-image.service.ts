@@ -1,7 +1,11 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumProductStatusCodeError } from '@avo/type';
+import {
+  EnumCloudinaryModeration,
+  EnumProductStatusCodeError,
+  EnumUploadFileMalwareDetectionStatus,
+} from '@avo/type';
 
 import {
   DeepPartial,
@@ -19,10 +23,6 @@ import { ProductDisplayOptionService } from '@/catalog/product-display-option/se
 import { CloudinaryService } from '@/cloudinary/service';
 import { HelperHashService } from '@/utils/helper/service';
 
-import {
-  EnumCloudinaryModeration,
-  EnumUploadFileMalwareDetectionStatus,
-} from '@/cloudinary/constant';
 import { ConnectionNames } from '@/database/constant';
 
 import { CloudinarySubject } from '@/cloudinary';

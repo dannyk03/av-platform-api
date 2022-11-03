@@ -1,4 +1,7 @@
-import { IProductImageGetSerialization } from '@avo/type';
+import {
+  EnumUploadFileMalwareDetectionStatus,
+  IProductImageGetSerialization,
+} from '@avo/type';
 
 import { Exclude, Expose } from 'class-transformer';
 
@@ -20,4 +23,7 @@ export class ProductImageGetSerialization
 
   @Expose()
   readonly additionalData: object;
+
+  @Expose()
+  readonly malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
 }

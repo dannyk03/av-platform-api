@@ -1,9 +1,9 @@
+import { EnumUploadFileMalwareDetectionStatus } from '@avo/type';
+
 import { AfterLoad, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ProductDisplayOption } from '@/catalog/product-display-option/entity';
 import { BaseEntity } from '@/database/entity';
-
-import { EnumUploadFileMalwareDetectionStatus } from '@/cloudinary/constant';
 
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
@@ -59,12 +59,12 @@ export class ProductImage extends BaseEntity<ProductImage> {
   malwareDetectionStatus: EnumUploadFileMalwareDetectionStatus;
 
   @AfterLoad()
-  substituteImageUrlsIfNotScannedForMalwareDetection() {
+  substituteImageUrlsIfNotScannedForMalwareDetection(): void {
     if (
       this.malwareDetectionStatus !==
       EnumUploadFileMalwareDetectionStatus.Approved
     ) {
-      this.secureUrl = undefined;
+      this.secureUrl = null;
     }
   }
 }
