@@ -4,16 +4,25 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { EnumWebhookCodeError } from '@avo/type';
+import {
+  EnumCloudinaryNotificationType,
+  EnumWebhookCodeError,
+} from '@avo/type';
 
 import { CloudinaryService } from '../service';
+import { HelperHashService } from '@/utils/helper/service';
 
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
+  constructor(
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly configService: ConfigService,
+    private readonly helperHashService: HelperHashService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
@@ -28,6 +37,15 @@ export class CloudinarySignatureGuard implements CanActivate {
         signature: xCldSignature,
         timestamp: xCldTimestamp,
       });
+
+    // TODO remove after issue solved
+    // Temp Stub for Cloudinary BUG with the signature
+    // https://support.cloudinary.com/hc/en-us/requests/205778?page=1
+    const { notification_type } = body;
+    if (notification_type === EnumCloudinaryNotificationType.Moderation) {
+      return true;
+    }
+    // stub end (remove)
 
     if (!isValidSignature) {
       throw new UnauthorizedException({
