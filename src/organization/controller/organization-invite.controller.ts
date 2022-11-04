@@ -129,9 +129,9 @@ export class OrganizationInviteController {
     });
 
     // For local development/testing
-    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
     const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (!(isProduction || isSecureMode)) {
+    if (isDevelopment || !isSecureMode) {
       return result;
     }
   }
