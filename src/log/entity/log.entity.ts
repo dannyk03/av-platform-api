@@ -37,10 +37,11 @@ export class Log {
   user?: User;
 
   @Column({
-    length: 200,
+    nullable: true,
+    length: 1000,
     update: false,
   })
-  description!: string;
+  description?: string;
 
   @Column({
     nullable: true,
@@ -55,6 +56,13 @@ export class Log {
     update: false,
   })
   body?: Record<string, any>;
+
+  @Column({
+    nullable: true,
+    type: 'jsonb',
+    update: false,
+  })
+  headers?: Record<string, any>;
 
   @Column({
     nullable: true,

@@ -1,6 +1,8 @@
 {
   "error": {
     "unauthorized": "Unauthorized webhook",
-    "invalidSignature": "Webhook invalid signature"
+    "cloudinary": {
+      "invalidSignature": "Cloudinary webhook invalid signature"
+    }
   }
 }

@@ -3,6 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
+import omit from 'lodash/omit';
 import { EntityManager, Repository } from 'typeorm';
 
 import { Log } from '../entity';
@@ -146,6 +147,7 @@ export class LogService {
     method = this.request.method as EnumRequestMethod,
     params = this.request.params,
     body = this.request.body,
+    headers = omit(this.request.headers, ['authorization']),
     correlationId = this.request.correlationId,
     userAgent = this.request.userAgent,
     version = this.request.version,
@@ -164,6 +166,7 @@ export class LogService {
     | 'path'
     | 'method'
     | 'params'
+    | 'headers'
     | 'body'
     | 'correlationId'
     | 'userAgent'
@@ -180,6 +183,7 @@ export class LogService {
       path,
       method,
       params,
+      headers,
       body: await this.helperMaskService.maskBody({
         body,
         options: mask,

@@ -20,6 +20,7 @@ export interface IReqLogData {
   method: EnumRequestMethod;
   params?: Record<string, any>;
   body?: Record<string, any>;
+  headers?: Record<string, any>;
   user?: User;
   correlationId: string;
   userAgent: IResult;
@@ -44,6 +45,6 @@ export interface ILogMask {
 export interface ILogOptions {
   description?: string;
   tags?: string[];
-  level?: EnumLogLevel;
+  level?: EnumLogLevel | ((body: Record<string, any>) => EnumLogLevel);
   mask?: ILogMask;
 }

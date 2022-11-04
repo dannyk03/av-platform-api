@@ -21,13 +21,13 @@ export class ProductImage extends BaseEntity<ProductImage> {
 
   @Column({
     unique: true,
-    length: 100,
+    length: 200,
   })
   publicId!: string;
 
   @Column({
     unique: true,
-    length: 200,
+    length: 500,
   })
   secureUrl!: string;
 
