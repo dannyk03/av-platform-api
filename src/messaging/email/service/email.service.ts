@@ -625,7 +625,7 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    if (!this.isDevelopment) {
       return true;
     }
     const payload: ConnectionRequestExistingUserMessageData = {
