@@ -107,6 +107,25 @@ export class CloudinaryService {
     });
   }
 
+  async verifyNotificationSignature({
+    body,
+    timestamp,
+    signature,
+    validFor,
+  }: {
+    body: object;
+    timestamp: string | number;
+    signature: string;
+    validFor?: number;
+  }) {
+    return v2.utils.verifyNotificationSignature(
+      JSON.stringify(body),
+      Number(timestamp),
+      signature,
+      validFor,
+    );
+  }
+
   // WIP test code
   async deleteMany() {
     const subFolders = util.promisify(v2.api.sub_folders);

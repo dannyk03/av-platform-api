@@ -4,20 +4,16 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { EnumWebhookCodeError } from '@avo/type';
 
-import { HelperHashService } from '@/utils/helper/service';
+import { CloudinaryService } from '../service';
 
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly helperHashService: HelperHashService,
-  ) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
@@ -26,16 +22,12 @@ export class CloudinarySignatureGuard implements CanActivate {
     const xCldSignature = request.get('x-cld-signature');
     const xCldTimestamp = request.get('x-cld-timestamp');
 
-    const cloudinaryApiSecret = this.configService.get<string>(
-      'cloudinary.credentials.secret',
-    );
-
-    const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
-
-    const isValidSignature = this.helperHashService.sha1Compare(
-      this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
-      xCldSignature,
-    );
+    const isValidSignature =
+      await this.cloudinaryService.verifyNotificationSignature({
+        body,
+        signature: xCldSignature,
+        timestamp: xCldTimestamp,
+      });
 
     if (!isValidSignature) {
       throw new UnauthorizedException({

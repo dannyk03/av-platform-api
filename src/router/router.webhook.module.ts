@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { ProductImageModule } from '@/catalog/product-image/product-image.module';
+import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 
 import { CloudinaryWebhookController } from '@/cloudinary/controller';
 
@@ -8,6 +9,6 @@ import { CloudinaryWebhookController } from '@/cloudinary/controller';
   controllers: [CloudinaryWebhookController],
   providers: [],
   exports: [],
-  imports: [ProductImageModule],
+  imports: [ProductImageModule, CloudinaryModule],
 })
 export class RouterWebhookModule {}
