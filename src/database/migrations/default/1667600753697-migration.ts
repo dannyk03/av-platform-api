@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1667584448130 implements MigrationInterface {
-  name = 'migration1667584448130';
+export class migration1667600753697 implements MigrationInterface {
+  name = 'migration1667600753697';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -16,7 +16,7 @@ export class migration1667584448130 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "product_images"
-            ADD "public_id" character varying(200) NOT NULL
+            ADD "public_id" character varying(200)
         `);
     await queryRunner.query(`
             ALTER TABLE "product_images"
