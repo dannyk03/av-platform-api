@@ -16,6 +16,9 @@ import {
 import { ProductImageService } from '@/catalog/product-image/service';
 
 import { CloudinaryWebhookSignature } from '../decorator';
+import { LogTrace } from '@/log/decorator';
+
+import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -25,6 +28,9 @@ export class CloudinaryWebhookController {
   constructor(private readonly productImageService: ProductImageService) {}
 
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CloudinaryWebhook, {
+    tags: ['webhook', 'cloudinary'],
+  })
   @CloudinaryWebhookSignature()
   @Post()
   async notify(
