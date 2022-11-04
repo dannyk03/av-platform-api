@@ -10,7 +10,10 @@ import {
 
 import { LogInterceptor } from '../interceptor/log.interceptor';
 
-export function LogTrace(action: EnumLogAction, options?: ILogOptions): any {
+export function LogTrace(
+  action: EnumLogAction | ((body: Record<string, any>) => EnumLogAction),
+  options?: ILogOptions,
+): any {
   return applyDecorators(
     UseInterceptors(LogInterceptor),
     SetMetadata(LOG_ACTION_META_KEY, action),

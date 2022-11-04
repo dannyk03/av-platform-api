@@ -41,4 +41,5 @@ export enum EnumLogAction {
 
   UserProfileRequest = 'USER_PROFILE_REQUEST',
   CloudinaryWebhook = 'CLOUDINARY_WEBHOOK',
+  CloudinaryWebhookError = 'CLOUDINARY_WEBHOOK_ERROR',
 }

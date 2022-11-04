@@ -14,40 +14,45 @@ import {
 } from '@avo/type';
 
 import { ProductImageService } from '@/catalog/product-image/service';
+import { LogService } from '@/log/service';
 
 import { CloudinaryWebhookSignature } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 
-import { EnumLogAction } from '@/log/constant';
+import { EnumLogAction, EnumLogLevel } from '@/log/constant';
 
 @Controller({
   version: VERSION_NEUTRAL,
   path: 'cloudinary',
 })
 export class CloudinaryWebhookController {
-  constructor(private readonly productImageService: ProductImageService) {}
+  constructor(
+    private readonly productImageService: ProductImageService,
+    private readonly logService: LogService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.CloudinaryWebhook, {
-    tags: ['webhook', 'cloudinary'],
-  })
+  @LogTrace(
+    ({ notification_type: notificationType }) =>
+      notificationType == EnumCloudinaryNotificationType.Error
+        ? EnumLogAction.CloudinaryWebhookError
+        : EnumLogAction.CloudinaryWebhook,
+    {
+      level: ({ notification_type: notificationType }) =>
+        notificationType == EnumCloudinaryNotificationType.Error &&
+        EnumLogLevel.Error,
+      tags: ['webhook', 'cloudinary'],
+    },
+  )
   @CloudinaryWebhookSignature()
   @Post()
-  async notify(
-    @Body()
-    {
-      asset_id,
-      moderation_kind,
-      notification_type,
-      moderation_status,
-    }: {
-      asset_id: string;
-      moderation_kind?: string;
-      notification_type: string;
-      moderation_status?: EnumUploadFileMalwareDetectionStatus;
-    },
-  ): Promise<void> {
-    if (notification_type === EnumCloudinaryNotificationType.Moderation) {
+  async notify(@Body() body: any): Promise<void> {
+    const notificationType: EnumCloudinaryNotificationType =
+      body.notification_type;
+
+    if (notificationType == EnumCloudinaryNotificationType.Moderation) {
+      const { moderation_kind, moderation_status, asset_id } = body;
+
       if (moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
         if (
           moderation_status === EnumUploadFileMalwareDetectionStatus.Approved
