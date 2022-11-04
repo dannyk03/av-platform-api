@@ -20,6 +20,8 @@ import {
 import { ProductImageService } from '@/catalog/product-image/service';
 import { HelperHashService } from '@/utils/helper/service';
 
+import { CloudinaryWebhookSignature } from '../decorator';
+
 @Controller({
   version: VERSION_NEUTRAL,
   path: 'cloudinary',
@@ -32,12 +34,9 @@ export class CloudinaryWebhookController {
   ) {}
 
   @HttpCode(HttpStatus.OK)
+  @CloudinaryWebhookSignature()
   @Post()
   async notify(
-    @Headers('x-cld-signature')
-    xCldSignature: string,
-    @Headers('x-cld-timestamp')
-    xCldTimestamp: string,
     @Body()
     body: {
       api_key: string;
@@ -47,24 +46,6 @@ export class CloudinaryWebhookController {
       moderation_status?: EnumUploadFileMalwareDetectionStatus;
     },
   ): Promise<void> {
-    const cloudinaryApiSecret = this.configService.get<string>(
-      'cloudinary.credentials.secret',
-    );
-
-    const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
-
-    const isValidSignature = this.helperHashService.sha1Compare(
-      this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
-      xCldSignature,
-    );
-
-    if (!isValidSignature) {
-      throw new UnauthorizedException({
-        statusCode: EnumWebhookCodeError.WebhookUnauthorizedError,
-        message: 'webhook.error.invalidSignature',
-      });
-    }
-
     if (body.notification_type === EnumCloudinaryNotificationType.Moderation) {
       if (body.moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
         if (
