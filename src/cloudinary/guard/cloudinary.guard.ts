@@ -4,7 +4,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import {
   EnumCloudinaryNotificationType,
@@ -12,17 +11,12 @@ import {
 } from '@avo/type';
 
 import { CloudinaryService } from '../service';
-import { HelperHashService } from '@/utils/helper/service';
 
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(
-    private readonly cloudinaryService: CloudinaryService,
-    private readonly configService: ConfigService,
-    private readonly helperHashService: HelperHashService,
-  ) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
