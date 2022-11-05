@@ -16,7 +16,9 @@ import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
+  constructor(
+    private readonly cloudinaryService: CloudinaryService, // private readonly configService: ConfigService, // private readonly helperHashService: HelperHashService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
@@ -24,6 +26,17 @@ export class CloudinarySignatureGuard implements CanActivate {
 
     const xCldSignature = request.get('x-cld-signature');
     const xCldTimestamp = request.get('x-cld-timestamp');
+
+    // const cloudinaryApiSecret = this.configService.get<string>(
+    //   'cloudinary.credentials.secret',
+    // );
+
+    // const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
+
+    // const isValidSignature = this.helperHashService.sha1Compare(
+    //   this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
+    //   xCldSignature,
+    // );
 
     const isValidSignature =
       await this.cloudinaryService.verifyNotificationSignature({
