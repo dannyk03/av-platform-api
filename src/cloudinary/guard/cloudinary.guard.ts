@@ -10,49 +10,53 @@ import {
   EnumWebhookCodeError,
 } from '@avo/type';
 
+import StringifyWithFloats from 'stringify-with-floats';
+
 import { CloudinaryService } from '../service';
 
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(
-    private readonly cloudinaryService: CloudinaryService, // private readonly configService: ConfigService, // private readonly helperHashService: HelperHashService,
-  ) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
     const { body } = request;
+    const { notification_type } = body;
 
     const xCldSignature = request.get('x-cld-signature');
     const xCldTimestamp = request.get('x-cld-timestamp');
 
-    // const cloudinaryApiSecret = this.configService.get<string>(
-    //   'cloudinary.credentials.secret',
-    // );
-
-    // const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
-
-    // const isValidSignature = this.helperHashService.sha1Compare(
-    //   this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
-    //   xCldSignature,
-    // );
+    const bodyString =
+      notification_type === EnumCloudinaryNotificationType.Moderation
+        ? StringifyWithFloats({
+            waiting_to_finish: 'float',
+            confidence: 'float',
+            status_code: 'float',
+            urls_count: 'float',
+            vt_positives: 'float',
+            size: 'float',
+            webroot_reputation: 'float',
+            waiting_for_es: 'float',
+            timestamp: 'float',
+            unpacking_duration: 'float',
+            scan_duration: 'float',
+            scan_remote_duration: 'float',
+            scan_self_duration: 'float',
+            scan_finish_duration: 'float',
+            decisions_duration: 'float',
+            scan_queue_duration: 'float',
+            scan_local_duration: 'float',
+          })(body)
+        : JSON.stringify(body);
 
     const isValidSignature =
       await this.cloudinaryService.verifyNotificationSignature({
-        body,
+        body: bodyString,
         signature: xCldSignature,
         timestamp: xCldTimestamp,
       });
-
-    // TODO remove after issue solved
-    // Temp Stub for Cloudinary BUG with the signature
-    // https://support.cloudinary.com/hc/en-us/requests/205778?page=1
-    const { notification_type } = body;
-    if (notification_type === EnumCloudinaryNotificationType.Moderation) {
-      return true;
-    }
-    // stub end (remove)
 
     if (!isValidSignature) {
       throw new UnauthorizedException({

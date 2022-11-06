@@ -113,13 +113,13 @@ export class CloudinaryService {
     signature,
     validFor,
   }: {
-    body: object;
+    body: string;
     timestamp: string | number;
     signature: string;
     validFor?: number;
   }) {
     return v2.utils.verifyNotificationSignature(
-      JSON.stringify(body),
+      body,
       Number(timestamp),
       signature,
       validFor,
