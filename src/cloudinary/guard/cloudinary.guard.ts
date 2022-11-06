@@ -68,11 +68,9 @@ export class CloudinarySignatureGuard implements CanActivate {
       xCldSignature,
     );
 
-    console.log({ isValidSignature1 });
-
     // The desired time in seconds for considering the request valid
     const validFor = 3600;
-
+    console.log('#############################################');
     console.log({ body });
     console.log({
       CloudinarySignatureGuard: 'CloudinarySignatureGuard',
@@ -89,6 +87,9 @@ export class CloudinarySignatureGuard implements CanActivate {
         timestamp: xCldTimestamp,
         validFor,
       });
+
+    console.log({ isValidSignature1, isValidSignature });
+    console.log('#############################################');
 
     if (!isValidSignature) {
       throw new UnauthorizedException({
