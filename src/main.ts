@@ -17,6 +17,7 @@ import { ConnectionNames } from './database/constant';
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule, {
     bodyParser: true,
+    rawBody: true,
   });
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.env');
@@ -28,6 +29,8 @@ async function bootstrap() {
   const versioningPrefix: string = configService.get<string>(
     'app.versioning.prefix',
   );
+
+  // app.use(rawBodyMiddleware());
 
   app.getHttpAdapter().getInstance().disable('x-powered-by');
 
