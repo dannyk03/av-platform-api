@@ -27,15 +27,15 @@ import {
 
 @Injectable()
 export class EmailService {
-  private readonly isProduction: boolean;
+  private readonly isDevelopment: boolean =
+    this.configService.get<boolean>('app.isDevelopment');
+
   constructor(
     @Inject(REQUEST)
     private readonly request: Request & IRequestApp,
     private readonly configService: ConfigService,
     private readonly customerIOService: CustomerIOService,
-  ) {
-    this.isProduction = this.configService.get<boolean>('app.isProduction');
-  }
+  ) {}
 
   async sendNetworkJoinInvite({
     email,
@@ -46,9 +46,8 @@ export class EmailService {
     fromUser: User;
     personalNote: string;
   }) {
-    // const path = `/network/join?ref=${fromUser.id}`;
-    // Temporary for local development
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
 
@@ -80,8 +79,8 @@ export class EmailService {
   }) {
     const approvePath = `/network/approve?ref=${fromUser.id}`;
     const rejectPath = `/network/reject?ref=${fromUser.id}`;
-    // Temporary for local development
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
 
@@ -117,10 +116,11 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
-    // Temporary for local development
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendOrganizationInvite.toString(),
@@ -151,10 +151,11 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
-    // Temporary for local development
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     // TODO: Add server url to payload
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSignUpEmailVerification.toString(),
@@ -184,8 +185,8 @@ export class EmailService {
     firstName: string;
     path?: string;
   }): Promise<boolean> {
-    // Temporary for local development
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
 
@@ -216,9 +217,11 @@ export class EmailService {
     senderEmail: string;
     path?: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftSurvey.toString(),
@@ -250,9 +253,11 @@ export class EmailService {
     code: string;
     path?: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftConfirm.toString(),
@@ -285,9 +290,11 @@ export class EmailService {
     code: string;
     path?: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
       (giftOption) => ({
         productName: giftOption.products[0].displayOptions[0].name,
@@ -335,9 +342,11 @@ export class EmailService {
     email: string;
     path?: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     // TODO: Verify template parameters
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGiftShipped.toString(),
@@ -397,9 +406,11 @@ export class EmailService {
     path?: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
@@ -425,9 +436,11 @@ export class EmailService {
     email: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftDelivered.toString(),
       to: [email],
@@ -452,7 +465,8 @@ export class EmailService {
     email: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
 
@@ -526,9 +540,11 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const payload = this.getConnectionRequestAcceptedMessageData({
       requestingUserName,
       receivingUserName,
@@ -565,9 +581,11 @@ export class EmailService {
     personalNote: string;
     connectionId: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const payload: ConnectionRequestNewUserMessageData = {
       requestingUser: {
         firstName: requestingUser.profile.firstName,
@@ -607,7 +625,7 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    if (!this.isDevelopment) {
       return true;
     }
     const payload: ConnectionRequestExistingUserMessageData = {
@@ -651,9 +669,11 @@ export class EmailService {
     inviterUserName: string;
     personalNote: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
+
     const payload: SurveyInvitationMessageData = {
       inviteeUser: {
         firstName: inviteeUserName,
@@ -692,10 +712,11 @@ export class EmailService {
     inviterUser: User;
     socialConnectionRequestId: string;
   }): Promise<boolean> {
-    if (!this.isProduction) {
+    // Stub for local development
+    if (this.isDevelopment) {
       return true;
     }
-    // const path = {{SERVER}}/api/v1/user/profile/:userId
+
     const payload: SurveyCompletedMessageData = {
       inviteeUser: {
         firstName: inviteeUser.profile.firstName,
