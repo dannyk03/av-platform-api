@@ -25,6 +25,11 @@ export class CloudinarySignatureGuard implements CanActivate {
     const { body } = request;
     const { notification_type } = body;
 
+    console.log({
+      CloudinarySignatureGuard: 'CloudinarySignatureGuard',
+      request,
+    });
+
     const xCldSignature = request.get('x-cld-signature');
     const xCldTimestamp = request.get('x-cld-timestamp');
 
