@@ -15,7 +15,5 @@ export class HelperAppService {
     if (this.isStaging) {
       return 'https://platform-api.us.stg.avoc.io/';
     }
-
-    return 'https://a0bf-169-150-226-248.eu.ngrok.io';
   }
 }
