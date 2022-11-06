@@ -60,8 +60,6 @@ export class LogInterceptor implements NestInterceptor<any> {
               ? responseData.statusCode
               : responseStatus;
 
-          console.log('INSIDE LOGGER', { responseStatus, statusCode });
-
           const loggerAction: EnumLogAction = this.reflector.get<EnumLogAction>(
             LOG_ACTION_META_KEY,
             context.getHandler(),
@@ -71,7 +69,7 @@ export class LogInterceptor implements NestInterceptor<any> {
             context.getHandler(),
           );
 
-          const rawLogResponse = await this.loggerService.raw({
+          await this.loggerService.raw({
             mask: loggerOptions?.mask,
             level: isFunction(loggerOptions.level)
               ? loggerOptions.level(body)
@@ -96,8 +94,6 @@ export class LogInterceptor implements NestInterceptor<any> {
             repoVersion,
             tags: loggerOptions?.tags || [],
           });
-
-          console.log({ rawLogResponse });
         }),
       );
     }

@@ -18,6 +18,7 @@ import { LogService } from '@/log/service';
 
 import { CloudinaryWebhookSignature } from '../decorator';
 import { LogTrace } from '@/log/decorator';
+import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
 
 import { EnumLogAction, EnumLogLevel } from '@/log/constant';
 
@@ -45,12 +46,11 @@ export class CloudinaryWebhookController {
     },
   )
   @CloudinaryWebhookSignature()
+  @RequestExcludeTimestampCheck()
   @Post()
   async notify(@Body() body: any): Promise<void> {
     const notificationType: EnumCloudinaryNotificationType =
       body.notification_type;
-
-    console.log({ NOTIFICATION_TYPE: notificationType });
 
     if (notificationType === EnumCloudinaryNotificationType.Moderation) {
       const { moderation_kind, moderation_status, asset_id } = body;

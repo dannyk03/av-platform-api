@@ -11,7 +11,7 @@ import { IReqLogData } from '@/log/type';
 
 import {
   EnumRequestMethod,
-  REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
+  REQUEST_EXCLUDE_TIMESTAMP_CHECK_KEY,
 } from '../constant';
 
 export const RequestUserAgent = createParamDecorator(
@@ -78,5 +78,5 @@ export const ReqLogData = createParamDecorator(
   },
 );
 
-export const RequestExcludeTimestamp = () =>
-  SetMetadata(REQUEST_EXCLUDE_TIMESTAMP_META_KEY, true);
+export const RequestExcludeTimestampCheck = () =>
+  SetMetadata(REQUEST_EXCLUDE_TIMESTAMP_CHECK_KEY, true);
