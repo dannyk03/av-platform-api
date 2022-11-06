@@ -39,8 +39,8 @@ export class HelperHashService implements IHelperHashService {
     return hashOne === hashTwo;
   }
 
-  sha1(string: string): string {
-    return SHA1(string).toString(enc.Hex);
+  sha1(value: string): string {
+    return SHA1(value).toString(enc.Hex);
   }
 
   sha1Compare(hashOne: string, hashTwo: string): boolean {
