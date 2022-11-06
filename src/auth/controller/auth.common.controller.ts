@@ -222,10 +222,10 @@ export class AuthCommonController {
     }
 
     // For local development/testing
-    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
     const isSecureMode: boolean =
       this.configService.get<boolean>('app.isSecureMode');
-    if (!(isProduction || isSecureMode)) {
+    if (isDevelopment || !isSecureMode) {
       return { code: findAuthSignUpVerificationLink.code };
     }
   }
@@ -453,9 +453,9 @@ export class AuthCommonController {
         await this.helperCookieService.detachAccessToken(response);
 
         // For local development/testing
-        const isProduction =
-          this.configService.get<boolean>('app.isProduction');
-        if (!(isProduction || isSecureMode)) {
+        const isDevelopment =
+          this.configService.get<boolean>('app.isDevelopment');
+        if (isDevelopment || !isSecureMode) {
           return { code: signUpEmailVerificationLink.code };
         }
       },
@@ -612,9 +612,9 @@ export class AuthCommonController {
     }
 
     // For local development/testing
-    const isProduction = this.configService.get<boolean>('app.isProduction');
+    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
     const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (!(isProduction || isSecureMode)) {
+    if (isDevelopment || !isSecureMode) {
       return { code: saveResetPasswordLink.code };
     }
   }
