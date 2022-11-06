@@ -9,11 +9,11 @@ export class HelperAppService {
   constructor(private readonly configService: ConfigService) {}
   async getAppUrl(): Promise<string> {
     if (this.isProduction) {
-      return 'https://platform-api.us.prod.avoc.io/';
+      return 'https://platform-api.us.prod.avoc.io';
     }
 
     if (this.isStaging) {
-      return 'https://platform-api.us.stg.avoc.io/';
+      return 'https://platform-api.us.stg.avoc.io';
     }
   }
 }
