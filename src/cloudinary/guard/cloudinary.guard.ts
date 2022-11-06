@@ -51,11 +51,15 @@ export class CloudinarySignatureGuard implements CanActivate {
           })(body)
         : JSON.stringify(body);
 
+    // The desired time in seconds for considering the request valid
+    const validFor = 3600;
+
     const isValidSignature =
       await this.cloudinaryService.verifyNotificationSignature({
         body: bodyString,
         signature: xCldSignature,
         timestamp: xCldTimestamp,
+        validFor,
       });
 
     if (!isValidSignature) {
