@@ -50,6 +50,8 @@ export class CloudinaryWebhookController {
     const notificationType: EnumCloudinaryNotificationType =
       body.notification_type;
 
+    console.log({ NOTIFICATION_TYPE: notificationType });
+
     if (notificationType === EnumCloudinaryNotificationType.Moderation) {
       const { moderation_kind, moderation_status, asset_id } = body;
 

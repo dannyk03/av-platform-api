@@ -177,6 +177,27 @@ export class LogService {
     transactionalEntityManager?: EntityManager;
     mask?: ILogMask;
   }): Promise<Log> {
+    console.log({
+      mask,
+      user,
+      role,
+      path,
+      method,
+      params,
+      body,
+      headers,
+      correlationId,
+      userAgent,
+      version,
+      repoVersion,
+      exec,
+      action,
+      description,
+      statusCode,
+      tags,
+      data,
+      level,
+    });
     const create = this.logRepository.create({
       user,
       role,
