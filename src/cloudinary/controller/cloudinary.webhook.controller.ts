@@ -35,12 +35,12 @@ export class CloudinaryWebhookController {
   @HttpCode(HttpStatus.OK)
   @LogTrace(
     ({ notification_type: notificationType }) =>
-      notificationType == EnumCloudinaryNotificationType.Error
+      notificationType === EnumCloudinaryNotificationType.Error
         ? EnumLogAction.CloudinaryWebhookError
         : EnumLogAction.CloudinaryWebhook,
     {
       level: ({ notification_type: notificationType }) =>
-        notificationType == EnumCloudinaryNotificationType.Error &&
+        notificationType === EnumCloudinaryNotificationType.Error &&
         EnumLogLevel.Error,
       tags: ['webhook', 'cloudinary'],
     },
