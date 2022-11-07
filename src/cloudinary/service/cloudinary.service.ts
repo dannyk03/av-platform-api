@@ -56,7 +56,7 @@ export class CloudinaryService {
   }
 
   async deleteResources({ publicIds }: { publicIds: string[] }) {
-    if (!publicIds) {
+    if (!publicIds?.length) {
       return null;
     }
     return this.cloudinaryDeleteResources([...new Set(publicIds)]);
