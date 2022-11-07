@@ -1,4 +1,4 @@
-export enum EnumPaymentIntentStatuses {
+export enum EnumPaymentIntentStatus {
   AmountCapturableUpdated = 'payment_intent.amount_capturable_updated',
   Canceled = 'payment_intent.canceled',
   Created = 'payment_intent.created',
