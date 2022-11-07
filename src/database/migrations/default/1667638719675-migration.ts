@@ -6,7 +6,7 @@ export class migration1667638719675 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE "logs"
-            ADD "headers" jsonb
+            ADD COLUMN IF NOT EXISTS "headers" jsonb
         `);
     await queryRunner.query(`
             ALTER TABLE "product_images" 
