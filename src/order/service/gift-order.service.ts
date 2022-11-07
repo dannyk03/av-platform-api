@@ -11,7 +11,7 @@ import {
 
 import { GiftOrder } from '../entity';
 
-import { PaymentStatuses } from '../order.constants';
+import { PaymentIntentStatuses } from '../order.constants';
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
@@ -77,7 +77,7 @@ export class GiftOrderService {
     paymentStatus,
   }: {
     stripePaymentIntentId: string;
-    paymentStatus: PaymentStatuses;
+    paymentStatus: PaymentIntentStatuses;
   }): Promise<UpdateResult> {
     return this.giftOrderRepository
       .createQueryBuilder()

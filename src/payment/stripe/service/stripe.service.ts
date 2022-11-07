@@ -18,7 +18,7 @@ import { GiftOrderService } from '@/order/service';
 import { InjectStripe } from '../decorator';
 
 import { ConnectionNames } from '@/database/constant';
-import { PaymentStatuses } from '@/order/order.constants';
+import { PaymentIntentStatuses } from '@/order/order.constants';
 
 @Injectable()
 export class StripeService {
@@ -97,16 +97,32 @@ export class StripeService {
   }
 
   async processWebhookEvent(event: Stripe.Event) {
-    let intent = null;
-    let status: PaymentStatuses = null;
+    const intent = event?.data?.object as Stripe.PaymentIntent;
+    let status: PaymentIntentStatuses = null;
     switch (event['type']) {
-      case 'payment_intent.succeeded':
-        intent = event.data.object;
-        status = PaymentStatuses.succeeded;
+      case PaymentIntentStatuses.succeeded:
+        status = PaymentIntentStatuses.succeeded;
         break;
-      case 'payment_intent.payment_failed':
-        intent = event.data.object;
-        status = PaymentStatuses.payment_failed;
+      case PaymentIntentStatuses.payment_failed:
+        status = PaymentIntentStatuses.payment_failed;
+        break;
+      case PaymentIntentStatuses.processing:
+        status = PaymentIntentStatuses.processing;
+        break;
+      case PaymentIntentStatuses.canceled:
+        status = PaymentIntentStatuses.canceled;
+        break;
+      case PaymentIntentStatuses.requires_action:
+        status = PaymentIntentStatuses.requires_action;
+        break;
+      case PaymentIntentStatuses.partially_funded:
+        status = PaymentIntentStatuses.partially_funded;
+        break;
+      case PaymentIntentStatuses.amount_capturable_updated:
+        status = PaymentIntentStatuses.amount_capturable_updated;
+        break;
+      case PaymentIntentStatuses.created:
+        status = PaymentIntentStatuses.created;
         break;
     }
 

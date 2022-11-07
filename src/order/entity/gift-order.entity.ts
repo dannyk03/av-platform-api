@@ -4,7 +4,7 @@ import { BaseEntity } from '@/database/entity';
 import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
-import { PaymentStatuses } from '../order.constants';
+import { PaymentIntentStatuses } from '../order.constants';
 
 @Entity()
 export class GiftOrder extends BaseEntity<GiftOrder> {
@@ -33,7 +33,7 @@ export class GiftOrder extends BaseEntity<GiftOrder> {
     length: 255,
     nullable: true,
   })
-  paymentStatus?: PaymentStatuses;
+  paymentStatus?: PaymentIntentStatuses;
 
   // All 'totalPrice' calculations should be performed in 'real time' against GiftIntent entity,
   // and at the time of the desire to pay, because it is something dynamic and can change between the moment it was
