@@ -110,9 +110,9 @@ export class StripeService {
         break;
     }
 
-    if (intent?.payment_intent && status) {
+    if (intent?.id && status) {
       await this.giftOrderService.updatePaymentStatus({
-        stripePaymentIntentId: intent.payment_intent,
+        stripePaymentIntentId: intent.id,
         paymentStatus: status,
       });
     }
