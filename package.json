@@ -109,7 +109,7 @@
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
     "xlsx": "^0.18.5",
-    "yargs": "^17.6.0"
+    "yargs": "^17.6.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.1.5",
