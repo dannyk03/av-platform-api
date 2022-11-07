@@ -7549,11 +7549,6 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-stringify-with-floats@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/stringify-with-floats/-/stringify-with-floats-2.0.1.tgz#984bcfaa6c3d2a31ce255266943a917d37fda158"
-  integrity sha512-ivh/tYzCfYbiEWlX4GslPl2HE/Vao51UUo7LGn4v11RtMFhm8sitiWOVeX4krWDDG0XA/GT1kYR133mII1t1lg==
-
 strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"

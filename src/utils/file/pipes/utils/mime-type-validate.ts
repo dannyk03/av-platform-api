@@ -38,7 +38,10 @@ export async function mimetypeValidate({
     await validate({ mimetype: val.mimetype, allowedMimeTypes });
     // The file type is detected by checking the magic number of the buffer.
     const fileType = await fromBuffer(val.buffer);
-    await validate({ mimetype: fileType.mime, allowedMimeTypes });
+    await validate({
+      mimetype: fileType.mime,
+      allowedMimeTypes: [val.mimetype],
+    });
   }
 
   return value;

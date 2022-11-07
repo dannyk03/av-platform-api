@@ -100,7 +100,6 @@
     "rxjs": "^7.5.7",
     "slugify": "^1.6.5",
     "streamifier": "^0.1.1",
-    "stringify-with-floats": "^2.0.1",
     "stripe": "^10.15.0",
     "tsconfig-paths": "^4.1.0",
     "typeorm": "^0.3.10",
