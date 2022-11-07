@@ -31,6 +31,7 @@ export class GiftOrder extends BaseEntity<GiftOrder> {
 
   @Column({
     length: 255,
+    nullable: true,
   })
   paymentStatus?: PaymentStatuses;
 

@@ -103,20 +103,18 @@ export class StripeService {
       case 'payment_intent.succeeded':
         intent = event.data.object;
         status = PaymentStatuses.succeeded;
-        console.log('Succeeded:', intent.id);
         break;
       case 'payment_intent.payment_failed':
         intent = event.data.object;
         status = PaymentStatuses.payment_failed;
-        const message =
-          intent.last_payment_error && intent.last_payment_error.message;
-        console.log('Failed:', intent.id, message);
         break;
     }
 
-    await this.giftOrderService.updatePaymentStatus({
-      stripePaymentIntentId: intent.id,
-      paymentStatus: status,
-    });
+    if (intent?.payment_intent && status) {
+      await this.giftOrderService.updatePaymentStatus({
+        stripePaymentIntentId: intent.payment_intent,
+        paymentStatus: status,
+      });
+    }
   }
 }

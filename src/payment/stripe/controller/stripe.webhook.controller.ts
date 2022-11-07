@@ -17,9 +17,6 @@ export class StripeWebhookController {
     @Headers('stripe-signature') signature: string,
     @Req() request,
   ) {
-    console.log(1111);
-    console.log(request.rawBody);
-
     if (!signature) {
       throw new BadRequestException('Missing stripe-signature header');
     }
@@ -30,15 +27,12 @@ export class StripeWebhookController {
     );
 
     try {
-      await this.stripeService.createEvent(event.id);
+      await this.stripeService.createEvent(event.request.idempotency_key);
     } catch (error) {
       console.log(error);
       throw new BadRequestException('This event was already processed');
     }
 
     this.stripeService.processWebhookEvent(event);
-
-    return event;
-    // ...
   }
 }
