@@ -4,7 +4,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import {
   EnumCloudinaryNotificationType,
@@ -14,17 +13,12 @@ import {
 import StringifyWithFloats from 'stringify-with-floats';
 
 import { CloudinaryService } from '../service';
-import { HelperHashService } from '@/utils/helper/service';
 
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class CloudinarySignatureGuard implements CanActivate {
-  constructor(
-    private readonly cloudinaryService: CloudinaryService,
-    private readonly helperHashService: HelperHashService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const request = ctx.switchToHttp().getRequest<IRequestApp>();
@@ -57,30 +51,8 @@ export class CloudinarySignatureGuard implements CanActivate {
           })(body)
         : JSON.stringify(body);
 
-    const cloudinaryApiSecret = this.configService.get<string>(
-      'cloudinary.credentials.secret',
-    );
-
-    const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
-
-    const isValidSignature1 = this.helperHashService.sha1Compare(
-      this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
-      xCldSignature,
-    );
-
-    console.log({ isValidSignature1 });
-
     // The desired time in seconds for considering the request valid
     const validFor = 3600;
-
-    console.log({ body });
-    console.log({
-      CloudinarySignatureGuard: 'CloudinarySignatureGuard',
-      body: bodyString,
-      signature: xCldSignature,
-      timestamp: xCldTimestamp,
-      validFor,
-    });
 
     const isValidSignature =
       await this.cloudinaryService.verifyNotificationSignature({

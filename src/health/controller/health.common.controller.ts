@@ -13,7 +13,7 @@ import { IResponseData } from '@avo/type';
 
 import { DataSource } from 'typeorm';
 
-import { RequestExcludeTimestamp } from '@/utils/request/decorator';
+import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { ConnectionNames } from '@/database/constant';
@@ -21,7 +21,7 @@ import { ConnectionNames } from '@/database/constant';
 import { CloudinaryHealthIndicator } from '../indicator/health.cloudinary.indicator';
 
 @Throttle(1, 5)
-@RequestExcludeTimestamp()
+@RequestExcludeTimestampCheck()
 @Controller({
   version: VERSION_NEUTRAL,
   path: 'health',
