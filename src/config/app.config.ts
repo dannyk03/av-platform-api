@@ -1,6 +1,5 @@
 import { registerAs } from '@nestjs/config';
 
-import ms from 'ms';
 import { version } from 'package.json';
 
 export default registerAs(
@@ -30,20 +29,8 @@ export default registerAs(
       on: process.env.APP_VERSIONING === 'true',
       prefix: 'v',
     },
-    debug: process.env.APP_DEBUG === 'true',
-    debugger: {
-      http: {
-        maxFiles: 5,
-        maxSize: '2M',
-      },
-      system: {
-        active: false,
-        maxFiles: ms('7d'),
-        maxSize: '2m',
-      },
-    },
 
     httpOn: process.env.APP_HTTP_ON === 'true',
-    taskOn: process.env.APP_JOB_ON === 'true',
+    jobOn: process.env.APP_JOB_ON === 'true',
   }),
 );

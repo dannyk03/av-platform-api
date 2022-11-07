@@ -15,10 +15,12 @@ import {
   plainToInstance,
 } from 'class-transformer';
 import { Response } from 'express';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IErrorHttpFilterMetadata } from '@/utils/error/type';
 import { IRequestApp } from '@/utils/request/type';
 
 import {
@@ -27,18 +29,18 @@ import {
   RESPONSE_PAGING_TYPE_META_KEY,
   RESPONSE_SERIALIZATION_META_KEY,
   RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
-} from '../constant/response.constant';
+} from '../constant';
 
 import { IMessageOptionsProperties } from '@/response-message';
 import { EnumPaginationType } from '@/utils/pagination';
 
 @Injectable()
-export class ResponsePagingInterceptor
-  implements NestInterceptor<Promise<any>>
+export class ResponsePagingInterceptor<T>
+  implements NestInterceptor<Promise<T>>
 {
   constructor(
     private readonly reflector: Reflector,
-    private readonly responseMessageService: ResponseMessageService,
+    private readonly messageService: ResponseMessageService,
   ) {}
 
   async intercept(
@@ -50,6 +52,7 @@ export class ResponsePagingInterceptor
         map(async (responseData: Promise<IResponsePagingData>) => {
           const ctx: HttpArgumentsHost = context.switchToHttp();
           const responseExpress: Response = ctx.getResponse();
+          const requestExpress: IRequestApp = ctx.getRequest<IRequestApp>();
 
           const messagePath: string = this.reflector.get<string>(
             RESPONSE_MESSAGE_PATH_META_KEY,
@@ -79,6 +82,14 @@ export class ResponsePagingInterceptor
 
           // response
           const { data, ...meta } = await responseData;
+          const {
+            totalData,
+            currentPage,
+            perPage,
+            availableSort,
+            availableSearch,
+            totalPage,
+          } = meta;
           const statusCode: number = responseExpress.statusCode;
           const properties: IMessageOptionsProperties = messageProperties;
           let serialization = data;
@@ -91,17 +102,44 @@ export class ResponsePagingInterceptor
             );
           }
 
+          // get metadata
+          const __path = requestExpress.path;
+          const __correlationId = requestExpress.correlationId;
+          const __timestamp = requestExpress.timestamp;
+          const __timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const __version = requestExpress.version;
+          const __repoVersion = requestExpress.repoVersion;
+
+          const resMetadata: IErrorHttpFilterMetadata = {
+            timestamp: __timestamp,
+            timezone: __timezone,
+            requestId: __correlationId,
+            path: __path,
+            version: __version,
+            repoVersion: __repoVersion,
+          };
+
           // message
-          const message: string | IMessage =
-            await this.responseMessageService.get(messagePath, {
+          const message: string | IMessage = await this.messageService.get(
+            messagePath,
+            {
               customLanguages: customLang,
               properties,
-            });
+            },
+          );
 
           const responseHttp: IResponsePaging = {
             statusCode,
             message,
-            meta,
+            meta: {
+              ...resMetadata,
+              totalData,
+              totalPage,
+              currentPage,
+              perPage,
+              availableSort,
+              availableSearch,
+            },
             results: serialization,
           };
 
