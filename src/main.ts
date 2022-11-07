@@ -14,11 +14,10 @@ import { AppModule } from '@/app/app.module';
 
 import { ConnectionNames } from './database/constant';
 
+import rawBodyMiddleware from './utils/middleware/raw-body/raw-body.middleware';
+
 async function bootstrap() {
-  const app: NestApplication = await NestFactory.create(AppModule, {
-    bodyParser: true,
-    rawBody: true,
-  });
+  const app: NestApplication = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.env');
   const tz: string = configService.get<string>('app.timezone');
@@ -29,6 +28,8 @@ async function bootstrap() {
   const versioningPrefix: string = configService.get<string>(
     'app.versioning.prefix',
   );
+
+  app.use(rawBodyMiddleware());
 
   app.getHttpAdapter().getInstance().disable('x-powered-by');
 
