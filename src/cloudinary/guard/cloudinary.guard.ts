@@ -26,7 +26,7 @@ export class CloudinarySignatureGuard implements CanActivate {
 
     const isValidSignature =
       await this.cloudinaryService.verifyNotificationSignature({
-        body: request.rawBody,
+        body: request.rawBody.toString(),
         signature: xCldSignature,
         timestamp: xCldTimestamp,
         validFor,

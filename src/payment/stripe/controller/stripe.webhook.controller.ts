@@ -11,6 +11,8 @@ import { StripeService } from '../service/stripe.service';
 import { LogTrace } from '@/log/decorator';
 import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
 
+import { IRequestApp } from '@/utils/request/type';
+
 import { EnumLogAction } from '@/log/constant';
 
 @Controller('stripe')
@@ -24,7 +26,7 @@ export class StripeWebhookController {
   @Post()
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
-    @Req() request,
+    @Req() request: IRequestApp,
   ) {
     if (!signature) {
       throw new BadRequestException('Missing stripe-signature header');

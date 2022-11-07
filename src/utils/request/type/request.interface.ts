@@ -4,7 +4,7 @@ import { IResult } from 'ua-parser-js';
 import { User } from '@/user/entity';
 
 interface IRequestAppExt {
-  rawBody: string;
+  rawBody: Buffer;
 }
 
 export interface IRequestApp extends Request, IRequestAppExt {
