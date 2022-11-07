@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import {
@@ -105,48 +109,55 @@ export class ProductImageService {
     language,
     subFolder,
   }: ICreateImages): Promise<ProductImage[]> {
-    const uploadImages = await Promise.all(
-      images.map(async (image) => {
-        return this.cloudinaryService.uploadImage({
-          subject: CloudinarySubject.Product,
-          subFolder,
-          image,
-          languageIsoCode: language,
-        });
-      }),
-    );
-
-    return Promise.all(
-      uploadImages.map(async (image) => {
-        if (this.cloudinaryService.isUploadApiResponse(image)) {
-          const {
-            moderation,
-            original_filename,
-            asset_id,
-            public_id,
-            secure_url,
-          } = image;
-
-          const PerceptionPointMalwareDetectionStatus =
-            (
-              moderation?.find(
-                (mod: any) =>
-                  mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
-              ) as any
-            )?.status ?? EnumUploadFileMalwareDetectionStatus.Skip;
-
-          return this.create({
-            fileName: original_filename,
-            assetId: asset_id,
-            publicId: public_id,
-            secureUrl: secure_url,
-            malwareDetectionStatus: PerceptionPointMalwareDetectionStatus,
+    try {
+      const uploadImages = await Promise.all(
+        images.map(async (image) => {
+          return this.cloudinaryService.uploadImage({
+            subject: CloudinarySubject.Product,
+            subFolder,
+            image,
+            languageIsoCode: language,
           });
-        }
+        }),
+      );
 
-        return Promise.resolve(null);
-      }),
-    );
+      return Promise.all(
+        uploadImages.map(async (image) => {
+          if (this.cloudinaryService.isUploadApiResponse(image)) {
+            const {
+              moderation,
+              original_filename,
+              asset_id,
+              public_id,
+              secure_url,
+            } = image;
+
+            const PerceptionPointMalwareDetectionStatus =
+              (
+                moderation?.find(
+                  (mod: any) =>
+                    mod?.kind === EnumCloudinaryModeration.PerceptionPoint,
+                ) as any
+              )?.status ?? EnumUploadFileMalwareDetectionStatus.Skip;
+
+            return this.create({
+              fileName: original_filename,
+              assetId: asset_id,
+              publicId: public_id,
+              secureUrl: secure_url,
+              malwareDetectionStatus: PerceptionPointMalwareDetectionStatus,
+            });
+          }
+
+          return Promise.resolve(null);
+        }),
+      );
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumProductStatusCodeError.ProductImageUploadError,
+        message: 'product.error.imageUpload',
+      });
+    }
   }
 
   async saveImages({ id, images, language }: ISaveImages) {

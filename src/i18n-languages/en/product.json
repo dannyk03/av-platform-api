@@ -13,6 +13,7 @@
     "notFound": "Product not found.",
     "inactive": "Product not active",
     "exists": "Product exists",
-    "image": "Image not found"
+    "image": "Image not found",
+    "imageUpload": "Image upload error"
   }
 }

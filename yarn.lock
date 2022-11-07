@@ -73,10 +73,10 @@
   dependencies:
     "@casl/ability" "^6.3.1"
 
-"@avo/type@^0.0.105":
-  version "0.0.105"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.105.tgz#6603fb76f1537dd0d2b54d681d50b515ed36487f"
-  integrity sha512-Vb844HMz9PtAyC3hiH3YkcPeLg8c/wHZANyelw0rTNs0/OE79OQaWlo06XoQBn5105Hs5eNSEY42E05ApHZbOg==
+"@avo/type@^0.0.107":
+  version "0.0.107"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.107.tgz#d3c98a847107bc17abfe815a37c6297089bf5a46"
+  integrity sha512-LWSv1i8MT1DdsWF+6WTHi4/m6RAFtDYJhb1YGfPWTmQzF/sfgSr1s7RPzoySKicRfO2ZQf4mzd6dyXOcm3NdjA==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -7548,6 +7548,11 @@ string_decoder@~1.1.1:
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   dependencies:
     safe-buffer "~5.1.0"
+
+stringify-with-floats@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/stringify-with-floats/-/stringify-with-floats-2.0.1.tgz#984bcfaa6c3d2a31ce255266943a917d37fda158"
+  integrity sha512-ivh/tYzCfYbiEWlX4GslPl2HE/Vao51UUo7LGn4v11RtMFhm8sitiWOVeX4krWDDG0XA/GT1kYR133mII1t1lg==
 
 strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"

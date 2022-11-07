@@ -29,7 +29,10 @@ export class ResponseCustomHeadersInterceptor
 
           responseExpress.setHeader('x-custom-lang', request.customLang);
           responseExpress.setHeader('x-timestamp', request.timestamp);
-          responseExpress.setHeader('x-timezone', request.timezone);
+          responseExpress.setHeader(
+            'x-timezone',
+            Intl.DateTimeFormat().resolvedOptions().timeZone,
+          );
           responseExpress.setHeader('x-correlation-id', request.correlationId);
           responseExpress.setHeader('x-version', request.version);
           responseExpress.setHeader('x-repo-version', request.repoVersion);

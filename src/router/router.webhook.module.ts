@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { ProductImageModule } from '@/catalog/product-image/product-image.module';
+import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { OrderModule } from '@/order/order.module';
 import { PaymentModule } from '@/payment/payment.module';
 
@@ -11,6 +12,6 @@ import { StripeWebhookController } from '@/payment/stripe/controller/stripe.webh
   controllers: [CloudinaryWebhookController, StripeWebhookController],
   providers: [],
   exports: [],
-  imports: [ProductImageModule, PaymentModule, OrderModule],
+  imports: [ProductImageModule, CloudinaryModule, PaymentModule, OrderModule],
 })
 export class RouterWebhookModule {}

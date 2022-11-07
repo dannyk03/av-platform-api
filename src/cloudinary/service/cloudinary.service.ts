@@ -56,7 +56,7 @@ export class CloudinaryService {
   }
 
   async deleteResources({ publicIds }: { publicIds: string[] }) {
-    if (!publicIds) {
+    if (!publicIds?.length) {
       return null;
     }
     return this.cloudinaryDeleteResources([...new Set(publicIds)]);
@@ -88,6 +88,8 @@ export class CloudinaryService {
 
     return new Promise(async (resolve, reject) => {
       const appUrl = await this.helperAppService.getAppUrl();
+      const notificationUrl = `${appUrl}/api/webhook/cloudinary`;
+
       const upload = v2.uploader.upload_stream(
         {
           filename_override: image.originalname,
@@ -95,7 +97,7 @@ export class CloudinaryService {
           ...(this.isPerceptionPointMalwareDetectionOn &&
             appUrl && {
               moderation: EnumCloudinaryModeration.PerceptionPoint,
-              notification_url: `${appUrl}/api/webhook/cloudinary`,
+              notification_url: notificationUrl,
             }),
         },
         (error, result) => {
@@ -105,6 +107,25 @@ export class CloudinaryService {
       );
       createReadStream(image.buffer).pipe(upload);
     });
+  }
+
+  async verifyNotificationSignature({
+    body,
+    timestamp,
+    signature,
+    validFor,
+  }: {
+    body: string;
+    timestamp: string | number;
+    signature: string;
+    validFor?: number;
+  }) {
+    return v2.utils.verifyNotificationSignature(
+      body,
+      Number(timestamp),
+      signature,
+      validFor,
+    );
   }
 
   // WIP test code
@@ -120,13 +141,10 @@ export class CloudinaryService {
             max_results: 500,
           },
           function (error, res1) {
-            console.log(error, res1);
             if (res1?.resources.length) {
               v2.api.delete_resources_by_prefix(folder.path, (err, res) => {
-                console.log(err, res);
                 // v2.api.delete_folder(folder.path, (err, res) => {
                 //   debugger;
-                //   console.log(err, res);
                 // });
               });
             } else {

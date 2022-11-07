@@ -47,8 +47,8 @@ export class ResponseMessageService {
       let property: string = transfomer.property;
       let propertyValue: string = transfomer.value;
 
-      if (children.length > 0) {
-        while (children.length > 0) {
+      if (children?.length) {
+        while (children?.length) {
           for (const child of children) {
             property = `${property}.${child.property}`;
 
@@ -109,10 +109,9 @@ export class ResponseMessageService {
     options?: IMessageOptions,
   ): Promise<string | IMessage> {
     const properties = options?.properties;
-    const customLanguages =
-      options?.customLanguages?.length > 0
-        ? options.customLanguages
-        : [this.defaultLanguage];
+    const customLanguages = options?.customLanguages?.length
+      ? options.customLanguages
+      : [this.defaultLanguage];
 
     const messages: IMessage = {};
     for (const customLanguage of customLanguages) {

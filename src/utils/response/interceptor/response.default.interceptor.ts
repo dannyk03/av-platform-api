@@ -15,11 +15,11 @@ import {
   plainToInstance,
 } from 'class-transformer';
 import { Response } from 'express';
-import isEmpty from 'lodash/isEmpty';
 import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
 
+import { IErrorHttpFilterMetadata } from '@/utils/error/type';
 import { IRequestApp } from '@/utils/request/type';
 
 import {
@@ -27,13 +27,13 @@ import {
   RESPONSE_MESSAGE_PROPERTIES_META_KEY,
   RESPONSE_SERIALIZATION_META_KEY,
   RESPONSE_SERIALIZATION_OPTIONS_META_KEY,
-} from '../constant/response.constant';
+} from '../constant';
 
 import { IMessageOptionsProperties } from '@/response-message';
 
 @Injectable()
-export class ResponseDefaultInterceptor
-  implements NestInterceptor<Promise<any>>
+export class ResponseDefaultInterceptor<T = any>
+  implements NestInterceptor<Promise<T>>
 {
   constructor(
     private readonly reflector: Reflector,
@@ -50,6 +50,7 @@ export class ResponseDefaultInterceptor
           async (responseData: Promise<IResponseData>): Promise<IResponse> => {
             const ctx: HttpArgumentsHost = context.switchToHttp();
             const responseExpress: Response = ctx.getResponse();
+            const requestExpress: IRequestApp = ctx.getRequest<IRequestApp>();
 
             let messagePath: string = this.reflector.get<string>(
               RESPONSE_MESSAGE_PATH_META_KEY,
@@ -80,6 +81,23 @@ export class ResponseDefaultInterceptor
               customLanguages: customLang,
               properties: messageProperties,
             });
+
+            // get metadata
+            const __path = requestExpress.path;
+            const __correlationId = requestExpress.correlationId;
+            const __timestamp = requestExpress.timestamp;
+            const __timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const __version = requestExpress.version;
+            const __repoVersion = requestExpress.repoVersion;
+
+            const resMetadata: IErrorHttpFilterMetadata = {
+              timestamp: __timestamp,
+              timezone: __timezone,
+              correlationId: __correlationId,
+              path: __path,
+              version: __version,
+              repoVersion: __repoVersion,
+            };
 
             // response
             const response = (await responseData) as IResponse;
@@ -120,7 +138,7 @@ export class ResponseDefaultInterceptor
               return {
                 statusCode,
                 message,
-                ...(!isEmpty(meta) && { meta }),
+                meta: { ...resMetadata, ...meta },
                 result: serialization,
               };
             }
@@ -128,6 +146,7 @@ export class ResponseDefaultInterceptor
             return {
               statusCode,
               message,
+              meta: resMetadata,
               result: typeof response === 'undefined' ? response : null,
             };
           },

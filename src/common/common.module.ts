@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '@/auth/auth.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { DatabaseModule } from '@/database/database.module';
-import { DebuggerModuleDynamic } from '@/debugger/debugger.module';
+import { DebuggerModule } from '@/debugger/debugger.module';
 import { LogModule } from '@/log/log.module';
 import { ResponseMessageModule } from '@/response-message/response-message.module';
 import { ErrorModule } from '@/utils/error/error.module';
@@ -34,7 +34,7 @@ import { ConfigDynamicModule } from '@/config';
   imports: [
     ConfigDynamicModule,
     CloudinaryModule,
-    DebuggerModuleDynamic.register(),
+    DebuggerModule.register(),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       name: ConnectionNames.Default,

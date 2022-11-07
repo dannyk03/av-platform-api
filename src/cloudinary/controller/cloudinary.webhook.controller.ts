@@ -1,24 +1,26 @@
 import {
   Body,
   Controller,
-  Headers,
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
   VERSION_NEUTRAL,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import {
   EnumCloudinaryModeration,
   EnumCloudinaryNotificationType,
   EnumUploadFileMalwareDetectionStatus,
-  EnumWebhookCodeError,
 } from '@avo/type';
 
 import { ProductImageService } from '@/catalog/product-image/service';
-import { HelperHashService } from '@/utils/helper/service';
+import { LogService } from '@/log/service';
+
+import { CloudinaryWebhookSignature } from '../decorator';
+import { LogTrace } from '@/log/decorator';
+import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
+
+import { EnumLogAction, EnumLogLevel } from '@/log/constant';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -27,62 +29,47 @@ import { HelperHashService } from '@/utils/helper/service';
 export class CloudinaryWebhookController {
   constructor(
     private readonly productImageService: ProductImageService,
-    private readonly configService: ConfigService,
-    private readonly helperHashService: HelperHashService,
+    private readonly logService: LogService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post()
-  async notify(
-    @Headers('x-cld-signature')
-    xCldSignature: string,
-    @Headers('x-cld-timestamp')
-    xCldTimestamp: string,
-    @Body()
-    body: {
-      api_key: string;
-      asset_id: string;
-      moderation_kind?: string;
-      notification_type: string;
-      moderation_status?: EnumUploadFileMalwareDetectionStatus;
+  @LogTrace(
+    ({ notification_type: notificationType }) =>
+      notificationType == EnumCloudinaryNotificationType.Error
+        ? EnumLogAction.CloudinaryWebhookError
+        : EnumLogAction.CloudinaryWebhook,
+    {
+      level: ({ notification_type: notificationType }) =>
+        notificationType == EnumCloudinaryNotificationType.Error &&
+        EnumLogLevel.Error,
+      tags: ['webhook', 'cloudinary'],
     },
-  ): Promise<void> {
-    const cloudinaryApiSecret = this.configService.get<string>(
-      'cloudinary.credentials.secret',
-    );
+  )
+  @CloudinaryWebhookSignature()
+  @RequestExcludeTimestampCheck()
+  @Post()
+  async notify(@Body() body: any): Promise<void> {
+    const notificationType: EnumCloudinaryNotificationType =
+      body.notification_type;
 
-    const signedPayload = `${JSON.stringify(body)}${xCldTimestamp}`;
+    if (notificationType === EnumCloudinaryNotificationType.Moderation) {
+      const { moderation_kind, moderation_status, asset_id } = body;
 
-    const isValidSignature = this.helperHashService.sha1Compare(
-      this.helperHashService.sha1(`${signedPayload}${cloudinaryApiSecret}`),
-      xCldSignature,
-    );
-
-    if (!isValidSignature) {
-      throw new UnauthorizedException({
-        statusCode: EnumWebhookCodeError.WebhookUnauthorizedError,
-        message: 'webhook.error.invalidSignature',
-      });
-    }
-
-    if (body.notification_type === EnumCloudinaryNotificationType.Moderation) {
-      if (body.moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
+      if (moderation_kind === EnumCloudinaryModeration.PerceptionPoint) {
         if (
-          body.moderation_status ===
-          EnumUploadFileMalwareDetectionStatus.Approved
+          moderation_status === EnumUploadFileMalwareDetectionStatus.Approved
         ) {
           // Update image malware detection status
           await this.productImageService.updateImageMalwareDetectionStatus({
-            assetId: body.asset_id,
-            malwareDetectionStatus: body.moderation_status,
+            assetId: asset_id,
+            malwareDetectionStatus: moderation_status,
           });
         } else if (
-          body.moderation_status ===
-          EnumUploadFileMalwareDetectionStatus.Rejected
+          moderation_status === EnumUploadFileMalwareDetectionStatus.Rejected
         ) {
           // Delete infected product image
           await this.productImageService.removeByAssetId({
-            assetId: body.asset_id,
+            assetId: asset_id,
           });
         }
       }

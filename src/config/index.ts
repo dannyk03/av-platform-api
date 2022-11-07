@@ -10,6 +10,7 @@ import AwsConfig from './aws.config';
 import CloudinaryConfig from './cloudinary.config';
 import CustomerIoConfig from './customer-io.config';
 import DatabaseConfig from './database.config';
+import DebuggerConfig from './debugger.config';
 import FileConfig from './file.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
@@ -17,7 +18,7 @@ import OrganizationConfig from './organization.config';
 import StripeConfig from './stripe.config';
 import UserConfig from './user.config';
 
-const Configs = [
+export const Configs = [
   AppConfig,
   AuthConfig,
   DatabaseConfig,
@@ -30,6 +31,7 @@ const Configs = [
   CloudinaryConfig,
   CustomerIoConfig,
   StripeConfig,
+  DebuggerConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
