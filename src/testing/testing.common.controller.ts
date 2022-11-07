@@ -60,11 +60,6 @@ export class TestingCommonController {
         timezone: timezone,
         format: EnumHelperDateFormat.FriendlyDateTime,
       }),
-      timestamp: this.helperDateService.timestamp({
-        date: newDate,
-        timezone: timezone,
-      }),
-      repoVersion: this.configService.get('app.repoVersion'),
     };
   }
 
