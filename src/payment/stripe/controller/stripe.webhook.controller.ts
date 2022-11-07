@@ -8,10 +8,19 @@ import {
 
 import { StripeService } from '../service/stripe.service';
 
+import { LogTrace } from '@/log/decorator';
+import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
+
+import { EnumLogAction } from '@/log/constant';
+
 @Controller('stripe')
 export class StripeWebhookController {
   constructor(private readonly stripeService: StripeService) {}
 
+  @LogTrace(EnumLogAction.StripeWebhook, {
+    tags: ['webhook', 'stripe'],
+  })
+  @RequestExcludeTimestampCheck()
   @Post()
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
@@ -29,7 +38,6 @@ export class StripeWebhookController {
     try {
       await this.stripeService.createEvent(event.request.idempotency_key);
     } catch (error) {
-      console.log(error);
       throw new BadRequestException('This event was already processed');
     }
 

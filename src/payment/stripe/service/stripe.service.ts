@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import Stripe from 'stripe';
 import {
+  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -12,8 +13,10 @@ import {
 
 import { StripePayment } from '../entity';
 import StripeWebhookEvent from '../entity/stripe-webhook-event.entity';
+import { GiftIntent } from '@/gifting/entity';
 
 import { GiftOrderService } from '@/order/service';
+import { HelperDateService } from '@/utils/helper/service';
 
 import { InjectStripe } from '../decorator';
 
@@ -23,12 +26,15 @@ import { PaymentIntentStatuses } from '@/order/order.constants';
 @Injectable()
 export class StripeService {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     @InjectStripe()
     private readonly stripeClient: Stripe,
     @InjectRepository(StripePayment, ConnectionNames.Default)
     private stripePaymentRepository: Repository<StripePayment>,
     @InjectRepository(StripeWebhookEvent)
     private stripeWebhookEventRepository: Repository<StripeWebhookEvent>,
+    private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
     private readonly giftOrderService: GiftOrderService,
   ) {}
@@ -81,14 +87,14 @@ export class StripeService {
   }
 
   async constructEventFromPayload(signature: string, payload: Buffer) {
-    const webhookSecret = this.configService.get<string>(
-      'stripe.webhookSecret',
+    const webhookSecretKey = this.configService.get<string>(
+      'stripe.webhookSecretKey',
     );
 
     return this.stripeClient.webhooks.constructEvent(
       payload,
       signature,
-      webhookSecret,
+      webhookSecretKey,
     );
   }
 
@@ -103,8 +109,8 @@ export class StripeService {
       case PaymentIntentStatuses.succeeded:
         status = PaymentIntentStatuses.succeeded;
         break;
-      case PaymentIntentStatuses.payment_failed:
-        status = PaymentIntentStatuses.payment_failed;
+      case PaymentIntentStatuses.paymentFailed:
+        status = PaymentIntentStatuses.paymentFailed;
         break;
       case PaymentIntentStatuses.processing:
         status = PaymentIntentStatuses.processing;
@@ -112,14 +118,14 @@ export class StripeService {
       case PaymentIntentStatuses.canceled:
         status = PaymentIntentStatuses.canceled;
         break;
-      case PaymentIntentStatuses.requires_action:
-        status = PaymentIntentStatuses.requires_action;
+      case PaymentIntentStatuses.requiresAction:
+        status = PaymentIntentStatuses.requiresAction;
         break;
-      case PaymentIntentStatuses.partially_funded:
-        status = PaymentIntentStatuses.partially_funded;
+      case PaymentIntentStatuses.partiallyFunded:
+        status = PaymentIntentStatuses.partiallyFunded;
         break;
-      case PaymentIntentStatuses.amount_capturable_updated:
-        status = PaymentIntentStatuses.amount_capturable_updated;
+      case PaymentIntentStatuses.amountCapturableUpdated:
+        status = PaymentIntentStatuses.amountCapturableUpdated;
         break;
       case PaymentIntentStatuses.created:
         status = PaymentIntentStatuses.created;
@@ -127,6 +133,24 @@ export class StripeService {
     }
 
     if (intent?.id && status) {
+      if (status === PaymentIntentStatuses.succeeded) {
+        const giftOrder = await this.giftOrderService.findOne({
+          where: {
+            stripePaymentIntentId: intent.id,
+          },
+          relations: ['giftIntent'],
+        });
+        await this.defaultDataSource.transaction(
+          'SERIALIZABLE',
+          async (transactionalEntityManager) => {
+            await transactionalEntityManager.update(
+              GiftIntent,
+              { id: giftOrder.giftIntent.id },
+              { paidAt: this.helperDateService.create() },
+            );
+          },
+        );
+      }
       await this.giftOrderService.updatePaymentStatus({
         stripePaymentIntentId: intent.id,
         paymentStatus: status,
