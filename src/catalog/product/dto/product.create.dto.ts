@@ -47,13 +47,13 @@ export class ProductCreateDto {
   @ApiProperty({ required: false })
   readonly brand?: string;
 
-  @MaxLength(30)
+  @MaxLength(75)
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly name!: string;
 
   @IsOptional()
-  @MaxLength(200)
+  @MaxLength(1500)
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly description!: string;

@@ -170,8 +170,12 @@ export class ProductCommonController {
       }),
     });
 
-    const saveProduct = await this.productService.save(createProduct);
-    return saveProduct;
+    try {
+      const saveProduct = await this.productService.save(createProduct);
+      return saveProduct;
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   @ClientResponsePaging('product.list', {
