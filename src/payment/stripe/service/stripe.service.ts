@@ -21,7 +21,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { InjectStripe } from '../decorator';
 
 import { ConnectionNames } from '@/database/constant';
-import { EnumPaymentIntentStatuses } from '@/order/order.constants';
+import { EnumPaymentIntentStatus } from '@/order/order.constants';
 
 @Injectable()
 export class StripeService {
@@ -104,36 +104,36 @@ export class StripeService {
 
   async processWebhookEvent(event: Stripe.Event) {
     const intent = event?.data?.object as Stripe.PaymentIntent;
-    let status: EnumPaymentIntentStatuses = null;
+    let status: EnumPaymentIntentStatus = null;
     switch (event['type']) {
-      case EnumPaymentIntentStatuses.Succeeded:
-        status = EnumPaymentIntentStatuses.Succeeded;
+      case EnumPaymentIntentStatus.Succeeded:
+        status = EnumPaymentIntentStatus.Succeeded;
         break;
-      case EnumPaymentIntentStatuses.PaymentFailed:
-        status = EnumPaymentIntentStatuses.PaymentFailed;
+      case EnumPaymentIntentStatus.PaymentFailed:
+        status = EnumPaymentIntentStatus.PaymentFailed;
         break;
-      case EnumPaymentIntentStatuses.Processing:
-        status = EnumPaymentIntentStatuses.Processing;
+      case EnumPaymentIntentStatus.Processing:
+        status = EnumPaymentIntentStatus.Processing;
         break;
-      case EnumPaymentIntentStatuses.Canceled:
-        status = EnumPaymentIntentStatuses.Canceled;
+      case EnumPaymentIntentStatus.Canceled:
+        status = EnumPaymentIntentStatus.Canceled;
         break;
-      case EnumPaymentIntentStatuses.RequiresAction:
-        status = EnumPaymentIntentStatuses.RequiresAction;
+      case EnumPaymentIntentStatus.RequiresAction:
+        status = EnumPaymentIntentStatus.RequiresAction;
         break;
-      case EnumPaymentIntentStatuses.PartiallyFunded:
-        status = EnumPaymentIntentStatuses.PartiallyFunded;
+      case EnumPaymentIntentStatus.PartiallyFunded:
+        status = EnumPaymentIntentStatus.PartiallyFunded;
         break;
-      case EnumPaymentIntentStatuses.AmountCapturableUpdated:
-        status = EnumPaymentIntentStatuses.AmountCapturableUpdated;
+      case EnumPaymentIntentStatus.AmountCapturableUpdated:
+        status = EnumPaymentIntentStatus.AmountCapturableUpdated;
         break;
-      case EnumPaymentIntentStatuses.Created:
-        status = EnumPaymentIntentStatuses.Created;
+      case EnumPaymentIntentStatus.Created:
+        status = EnumPaymentIntentStatus.Created;
         break;
     }
 
     if (intent?.id && status) {
-      if (status === EnumPaymentIntentStatuses.Succeeded) {
+      if (status === EnumPaymentIntentStatus.Succeeded) {
         const giftOrder = await this.giftOrderService.findOne({
           where: {
             stripePaymentIntentId: intent.id,
