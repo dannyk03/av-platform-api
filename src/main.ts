@@ -30,8 +30,6 @@ async function bootstrap() {
     'app.versioning.prefix',
   );
 
-  // app.use(rawBodyMiddleware());
-
   app.getHttpAdapter().getInstance().disable('x-powered-by');
 
   const logger = new Logger();
