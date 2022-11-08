@@ -32,7 +32,9 @@
     "alphanum",
     "typeorm",
     "tlds",
-    "uuidv5"
+    "uuidv5",
+    "idempotency",
+    "capturable"
   ],
   "ignorePaths": [
     "node_modules/**",
