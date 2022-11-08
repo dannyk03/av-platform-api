@@ -34,7 +34,7 @@ import {
 
 export class ProductCreateDto {
   @IsNotEmpty()
-  @Length(3, 30)
+  @Length(2, 40)
   @ProductSKU()
   @NormalizeStringInputTransform()
   @Type(() => String)
@@ -47,13 +47,13 @@ export class ProductCreateDto {
   @ApiProperty({ required: false })
   readonly brand?: string;
 
-  @MaxLength(30)
+  @MaxLength(75)
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly name!: string;
 
   @IsOptional()
-  @MaxLength(200)
+  @MaxLength(1500)
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly description!: string;
@@ -90,7 +90,6 @@ export class ProductCreateDto {
 
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
-  @IsPositive()
   @Min(0)
   @Type(() => Number)
   @ApiProperty({ required: false })
@@ -117,4 +116,18 @@ export class ProductCreateDto {
   @MaxLength(30)
   @ApiProperty({ required: false })
   vendorName?: string;
+
+  @IsNumber({ allowNaN: false })
+  @IsOptional()
+  @Min(0)
+  @Type(() => Number)
+  @ApiProperty({ required: false, default: 0 })
+  purchaseCost!: number;
+
+  @IsNumber({ allowNaN: false })
+  @IsOptional()
+  @Min(0)
+  @Type(() => Number)
+  @ApiProperty({ required: false })
+  shippingTimeInDays?: number;
 }

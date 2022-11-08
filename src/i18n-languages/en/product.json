@@ -11,6 +11,7 @@
   "updateImage": "Image update success",
   "error": {
     "notFound": "Product not found.",
+    "unprocessable": "Unprocessable product",
     "inactive": "Product not active",
     "exists": "Product exists",
     "image": "Image not found",
