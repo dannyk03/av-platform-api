@@ -6,7 +6,7 @@ export default registerAs(
   'file',
   (): Record<string, any> => ({
     image: {
-      maxFileSize: bytes('1mb'), // 1mb
+      maxFileSize: bytes('5mb'), // 1mb
       maxFiles: 3, // 3 files
     },
     excel: {
