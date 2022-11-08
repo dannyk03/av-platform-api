@@ -96,7 +96,7 @@ export class Product extends BaseEntity<Product> {
   @Column({
     nullable: true,
   })
-  shippingTimeInDays: number;
+  shippingTimeInDays?: number;
 
   @ManyToMany(() => Gift, (giftOption) => giftOption.products)
   giftOptions: Gift[];
