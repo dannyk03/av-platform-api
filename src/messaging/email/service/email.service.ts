@@ -66,7 +66,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({ email, ref: fromUser.id });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -101,7 +101,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({ email, approvePath, rejectPath });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -136,7 +136,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({ email, code, expiresInDays, organizationName, path });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -172,7 +172,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({ email, code, expiresInDays, path });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -206,7 +206,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({ email, firstName });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -238,11 +238,7 @@ export class EmailService {
       },
       identifier: { id: recipientEmail },
     });
-    console.log({
-      recipientEmail,
-      senderEmail,
-      path,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -273,11 +269,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      path,
-      email,
-      code,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -526,9 +518,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -592,10 +582,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -634,10 +621,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -680,10 +664,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -725,10 +706,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -768,9 +746,7 @@ export class EmailService {
       },
       identifier: { id: inviterUser.email },
     });
-    console.log({
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 }
