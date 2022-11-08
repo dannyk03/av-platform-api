@@ -146,6 +146,52 @@ export class GiftIntentService {
     return searchBuilder.getCount();
   }
 
+  async notifyGiftDelivered({
+    id,
+    markAsDelivered = true,
+  }: {
+    id: string;
+    markAsDelivered?: boolean;
+  }) {
+    const giftIntent = await this.findOne({
+      where: { id, deliveredAt: IsNull() },
+      relations: ['giftSubmit', 'additionalData', 'sender', 'sender.user'],
+    });
+
+    if (!giftIntent) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
+        message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    const emailSent = await this.emailService.sendSenderTheGiftWasDelivered({
+      email:
+        giftIntent.sender?.user?.email ||
+        giftIntent.recipient?.additionalData['email'],
+      giftIntent,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+        error: `Failed to send 'gift delivered' email. GiftIntent id: ${giftIntent.id}`,
+      });
+    }
+
+    if (markAsDelivered) {
+      this.gifIntentRepository
+        .createQueryBuilder()
+        .update(GiftIntent)
+        .set({ deliveredAt: this.helperDateService.create() })
+        .where('id = :id', {
+          id: giftIntent.id,
+        })
+        .execute();
+    }
+  }
+
   async notifyGiftOptionsReady({
     id,
     markAsReady = true,
@@ -200,12 +246,19 @@ export class GiftIntentService {
           throw new InternalServerErrorException({
             statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
             message: 'messaging.error.email.send',
+            error: `Failed to send 'gift ready' email. GiftIntent id: ${giftIntent.id}`,
           });
         }
 
         if (markAsReady) {
-          giftIntent.readyAt = this.helperDateService.create();
-          await transactionalEntityManager.save(giftIntent);
+          this.gifIntentRepository
+            .createQueryBuilder()
+            .update(GiftIntent)
+            .set({ readyAt: this.helperDateService.create() })
+            .where('id = :id', {
+              id: giftIntent.id,
+            })
+            .execute();
         }
 
         return {
@@ -270,12 +323,19 @@ export class GiftIntentService {
       throw new InternalServerErrorException({
         statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
         message: 'messaging.error.email.send',
+        error: `Failed to send 'gift shipped' email. GiftIntent id: ${giftIntent.id}`,
       });
     }
 
     if (markAsShipped) {
-      giftIntent.shippedAt = this.helperDateService.create();
-      await this.save(giftIntent);
+      this.gifIntentRepository
+        .createQueryBuilder()
+        .update(GiftIntent)
+        .set({ shippedAt: this.helperDateService.create() })
+        .where('id = :id', {
+          id: giftIntent.id,
+        })
+        .execute();
     }
   }
 }

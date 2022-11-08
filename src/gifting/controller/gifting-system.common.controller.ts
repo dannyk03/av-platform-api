@@ -215,18 +215,27 @@ export class GiftingSystemCommonController {
 
     let devResult: any;
 
-    if (status === EnumGiftIntentStatus.Ready) {
-      devResult = await this.giftIntentService.notifyGiftOptionsReady({
-        id: giftIntent.id,
-        markAsReady: false,
-      });
-    }
-
-    if (status === EnumGiftIntentStatus.Shipped) {
-      devResult = await this.giftIntentService.notifyGiftShipped({
-        id: giftIntent.id,
-        markAsShipped: false,
-      });
+    switch (status) {
+      case EnumGiftIntentStatus.Ready:
+        devResult = await this.giftIntentService.notifyGiftOptionsReady({
+          id: giftIntent.id,
+          markAsReady: false,
+        });
+        break;
+      case EnumGiftIntentStatus.Shipped:
+        devResult = await this.giftIntentService.notifyGiftShipped({
+          id: giftIntent.id,
+          markAsShipped: false,
+        });
+        break;
+      case EnumGiftIntentStatus.Delivered:
+        devResult = await this.giftIntentService.notifyGiftDelivered({
+          id: giftIntent.id,
+          markAsDelivered: false,
+        });
+        break;
+      default:
+        break;
     }
 
     giftIntent[`${status.toLowerCase()}At`] = this.helperDateService.create();
