@@ -33,7 +33,8 @@
     "typeorm",
     "tlds",
     "uuidv5",
-    "idempotency"
+    "idempotency",
+    "capturable"
   ],
   "ignorePaths": [
     "node_modules/**",
