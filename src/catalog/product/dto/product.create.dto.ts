@@ -34,7 +34,7 @@ import {
 
 export class ProductCreateDto {
   @IsNotEmpty()
-  @Length(3, 30)
+  @Length(2, 40)
   @ProductSKU()
   @NormalizeStringInputTransform()
   @Type(() => String)

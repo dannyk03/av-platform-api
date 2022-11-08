@@ -21,7 +21,7 @@ import { DecimalToFloatTransformer } from '@/database/transformer';
 export class Product extends BaseEntity<Product> {
   @Index()
   @Column({
-    length: 30,
+    length: 40,
     unique: true,
   })
   sku!: string;
