@@ -468,6 +468,7 @@ export class EmailService {
     email,
     giftIntent,
   }: {
+    // Recipient email
     email: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
@@ -489,7 +490,6 @@ export class EmailService {
         firstName: giftIntent.sender.user.profile.firstName,
       },
       shippingDetails: shippingDetails,
-      actionUrl: '', // TODO: Add here the relevant url
     };
 
     const sendResult = await this.customerIOService.sendEmail({

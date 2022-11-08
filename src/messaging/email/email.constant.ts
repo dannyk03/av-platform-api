@@ -133,7 +133,6 @@ export type GiftDeliveredToRecipientMessageData = {
     firstName: string;
   };
   shippingDetails: GiftShippingDetails;
-  actionUrl: string;
 };
 
 export type ResetPasswordMessageData = {
