@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Post,
   UnprocessableEntityException,
@@ -201,21 +202,29 @@ export class PaymentCommonController {
       });
     }
 
-    // Retrieve Existing PaymentIntent
-    const existingPaymentIntent =
-      await this.stripeService.retrieveStripePaymentIntentById(
-        giftOrder.stripePaymentIntentId,
-      );
+    try {
+      // Retrieve Existing PaymentIntent
+      const existingPaymentIntent =
+        await this.stripeService.retrieveStripePaymentIntentById(
+          giftOrder.stripePaymentIntentId,
+        );
 
-    if (!existingPaymentIntent) {
-      throw new NotFoundException({
-        statusCode: EnumPaymentStatusCodeError.PaymentNotFoundError,
-        message: 'payment.error.notFound',
+      if (!existingPaymentIntent) {
+        throw new NotFoundException({
+          statusCode: EnumPaymentStatusCodeError.PaymentNotFoundError,
+          message: 'payment.error.notFound',
+        });
+      }
+
+      return {
+        clientSecret: existingPaymentIntent.client_secret,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumPaymentStatusCodeError.PaymentUnprocessableError,
+        message: 'payment.error.unprocessable',
+        error,
       });
     }
-
-    return {
-      clientSecret: existingPaymentIntent.client_secret,
-    };
   }
 }
