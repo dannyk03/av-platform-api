@@ -124,7 +124,7 @@ export class ProductCreateDto {
   @ApiProperty({ required: false, default: 0 })
   purchaseCost!: number;
 
-  @IsNumber({ allowNaN: true })
+  @IsNumber({ allowNaN: false })
   @IsOptional()
   @IsPositive()
   @Min(0)
