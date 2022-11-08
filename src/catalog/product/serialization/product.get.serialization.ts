@@ -85,4 +85,10 @@ export class ProductGetSerialization implements IProductGetSerialization {
 
   @Expose()
   readonly vendorName: string;
+
+  @Expose()
+  readonly purchaseCost: number;
+
+  @Expose()
+  readonly shippingTimeInDays: number;
 }

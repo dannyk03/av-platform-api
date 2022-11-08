@@ -16,14 +16,14 @@ import { DisplayLanguage } from '@/language/display-language/entity';
 export class ProductDisplayOption extends BaseEntity<ProductDisplayOption> {
   @Index()
   @Column({
-    length: 50,
+    length: 75,
   })
   name!: string;
 
   @Index()
   @Column({
     nullable: true,
-    length: 200,
+    length: 1500,
   })
   description?: string;
 

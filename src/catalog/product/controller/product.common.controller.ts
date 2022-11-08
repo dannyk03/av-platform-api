@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
@@ -107,6 +108,8 @@ export class ProductCommonController {
       shippingCost,
       vendorId,
       vendorName,
+      purchaseCost,
+      shippingTimeInDays,
     }: ProductCreateDto,
   ): Promise<IResponseData> {
     const checkProductExists = await this.productService.checkExistsBy({ sku });
@@ -147,6 +150,8 @@ export class ProductCommonController {
       taxCode,
       vendorName,
       shippingCost,
+      shippingTimeInDays,
+      purchaseCost,
       currency: {
         code: currency,
       },
@@ -166,8 +171,15 @@ export class ProductCommonController {
       }),
     });
 
-    const saveProduct = await this.productService.save(createProduct);
-    return saveProduct;
+    try {
+      return await this.productService.save(createProduct);
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumProductStatusCodeError.ProductUnprocessableError,
+        message: 'product.error.unprocessable',
+        error,
+      });
+    }
   }
 
   @ClientResponsePaging('product.list', {
