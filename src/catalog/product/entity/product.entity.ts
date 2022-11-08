@@ -21,7 +21,7 @@ import { DecimalToFloatTransformer } from '@/database/transformer';
 export class Product extends BaseEntity<Product> {
   @Index()
   @Column({
-    length: 30,
+    length: 40,
     unique: true,
   })
   sku!: string;
@@ -83,6 +83,20 @@ export class Product extends BaseEntity<Product> {
     length: 30,
   })
   taxCode!: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: new DecimalToFloatTransformer(),
+    default: 0,
+  })
+  purchaseCost!: number;
+
+  @Column({
+    nullable: true,
+  })
+  shippingTimeInDays?: number;
 
   @ManyToMany(() => Gift, (giftOption) => giftOption.products)
   giftOptions: Gift[];
