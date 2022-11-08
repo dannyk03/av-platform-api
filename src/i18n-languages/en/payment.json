@@ -1,8 +1,10 @@
 {
   "create": "Create payment success",
+  "get": "Get payment success",
   "error": {
     "unprocessable": "Unprocessable payment",
     "giftIntentNotSubmitted": "Gift intent not submitted",
-    "giftIntentAlreadyPaid": "Gift already has been paid"
+    "giftIntentAlreadyPaid": "Gift already has been paid",
+    "notFound": "Payment not found"
   }
 }

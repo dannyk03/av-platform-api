@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -31,7 +32,7 @@ import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
 
-import { PaymentCreateDto } from '../dto';
+import { PaymentCreateDto, PaymentGetDto } from '../dto';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
@@ -54,17 +55,18 @@ export class PaymentCommonController {
     tags: ['payment', 'stripe', 'checkout', 'create'],
   })
   @AclGuard()
-  @Post('/create')
-  async createPaymentIntent(
+  @Post()
+  async createPayment(
     @ReqUser()
     { id: reqUserId }: User,
     @Body()
     { giftOrderId }: PaymentCreateDto,
   ): Promise<IResponseData> {
-    const giftOrder = await this.giftOrderService.findUsersGiftOrderForPayment({
-      userId: reqUserId,
-      giftOrderId,
-    });
+    const giftOrder =
+      await this.giftOrderService.findUsersGiftOrderForPaymentCreation({
+        userId: reqUserId,
+        giftOrderId,
+      });
 
     if (!giftOrder) {
       throw new NotFoundException({
@@ -158,5 +160,62 @@ export class PaymentCommonController {
         error,
       });
     }
+  }
+
+  @ClientResponse('payment.get')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CreatePayment, {
+    tags: ['payment', 'stripe', 'get'],
+  })
+  @AclGuard()
+  @Get()
+  async getPayment(
+    @ReqUser()
+    { id: reqUserId }: User,
+    @Body()
+    { giftOrderId }: PaymentGetDto,
+  ): Promise<IResponseData> {
+    const giftOrder = await this.giftOrderService.findOne({
+      where: {
+        id: giftOrderId,
+        user: {
+          id: reqUserId,
+        },
+      },
+      relations: {
+        user: true,
+      },
+      select: {
+        id: true,
+        stripePaymentIntentId: true,
+        user: {
+          id: true,
+        },
+      },
+    });
+
+    if (!giftOrder) {
+      throw new NotFoundException({
+        statusCode: EnumGiftOrderStatusCodeError.GiftOrderNotFoundError,
+        message: 'gift.order.error.notFound',
+      });
+    }
+
+    // Retrieve Existing PaymentIntent
+    const existingPaymentIntent =
+      await this.stripeService.retrieveStripePaymentIntentById(
+        giftOrder.stripePaymentIntentId,
+      );
+
+    if (!existingPaymentIntent) {
+      throw new NotFoundException({
+        statusCode: EnumPaymentStatusCodeError.PaymentNotFoundError,
+        message: 'payment.error.notFound',
+      });
+    }
+
+    return {
+      clientSecret: existingPaymentIntent.client_secret,
+    };
   }
 }
