@@ -27,6 +27,7 @@ import {
 
 @Injectable()
 export class EmailService {
+  private readonly origin: string = this.request.get('origin');
   private readonly isDevelopment: boolean =
     this.configService.get<boolean>('app.isDevelopment');
 
@@ -59,7 +60,7 @@ export class EmailService {
         ref: fromUser.id,
         personalNote,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -94,7 +95,7 @@ export class EmailService {
         rejectPath,
         personalNote,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -129,7 +130,7 @@ export class EmailService {
         organizationName,
         path,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -165,7 +166,7 @@ export class EmailService {
         activationCode: code,
         user: { firstName },
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -199,7 +200,7 @@ export class EmailService {
           firstName: firstName,
         },
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -231,7 +232,7 @@ export class EmailService {
         senderEmail,
         path,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: recipientEmail },
@@ -266,7 +267,7 @@ export class EmailService {
         path,
         code,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -319,7 +320,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -330,10 +331,11 @@ export class EmailService {
 
   async sendGiftShipped({
     email,
-    path = '/shipped',
+    giftIntent,
   }: {
+    // Recipient email
     email: string;
-    path?: string;
+    giftIntent: GiftIntent;
   }): Promise<boolean> {
     // Stub for local development
     if (this.isDevelopment) {
@@ -345,16 +347,12 @@ export class EmailService {
       template: EmailTemplate.SendGiftShipped.toString(),
       to: [email],
       emailTemplatePayload: {
-        path,
+        from: giftIntent?.sender?.user?.profile?.firstName,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
-    });
-    console.log({
-      path,
-      email,
     });
     return sendResult.status === EmailStatus.success;
   }
@@ -362,12 +360,12 @@ export class EmailService {
   getGiftStatusUpdateMessageData(giftIntent: GiftIntent) {
     const giftDetails: GiftDetails = {
       productName:
-        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
+        giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].name,
       imageUrl:
-        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0]
-          .images[0].secureUrl,
-      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
-      personalNote: giftIntent.giftSubmit[0].personalNote,
+        giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].images[0]
+          .secureUrl,
+      formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
+      personalNote: giftIntent.giftSubmit.personalNote,
     };
 
     const shippingDetails: GiftShippingDetails = {
@@ -392,11 +390,9 @@ export class EmailService {
 
   async sendSenderTheGiftIsOnItsWay({
     email,
-    path = '/shipped',
     giftIntent,
   }: {
     email: string;
-    path?: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
     // Stub for local development
@@ -410,22 +406,19 @@ export class EmailService {
       emailTemplatePayload: {
         ...this.getGiftStatusUpdateMessageData(giftIntent),
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      path,
-      email,
-    });
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendSenderTheGiftWasDelivered({
+  async sendSenderTheGiftDelivered({
     email,
     giftIntent,
   }: {
+    // Sender email
     email: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
@@ -438,16 +431,36 @@ export class EmailService {
       template: EmailTemplate.SendSenderGiftDelivered.toString(),
       to: [email],
       emailTemplatePayload: {
-        ...this.getGiftStatusUpdateMessageData(giftIntent),
+        recipient: {
+          firstName: giftIntent?.recipient?.user?.profile?.firstName,
+          shipping: {
+            addressLine1:
+              giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
+            addressLine2:
+              giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
+            city: giftIntent?.recipient?.user?.profile?.shipping?.city,
+            country: giftIntent?.recipient?.user?.profile?.shipping?.country,
+            state: giftIntent?.recipient?.user?.profile?.shipping?.state,
+            zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+          },
+        },
+        gift: {
+          productName:
+            giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]
+              ?.name,
+          imageUrl:
+            giftIntent.giftSubmit?.gifts[0].products[0].displayOptions[0]
+              .images[0].secureUrl,
+          formattedPrice: `$${giftIntent.giftSubmit?.gifts[0].products[0].price}`,
+          personalNote: giftIntent?.giftSubmit?.personalNote,
+        },
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -485,7 +498,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -551,7 +564,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -593,7 +606,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -639,7 +652,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -684,7 +697,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -727,7 +740,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: inviterUser.email },

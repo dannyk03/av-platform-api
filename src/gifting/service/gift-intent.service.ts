@@ -155,7 +155,12 @@ export class GiftIntentService {
   }) {
     const giftIntent = await this.findOne({
       where: { id, deliveredAt: IsNull() },
-      relations: ['giftSubmit', 'additionalData', 'sender', 'sender.user'],
+      relations: [
+        'giftSubmit.gifts.products.displayOptions.images',
+        'additionalData',
+        'recipient.user.profile.shipping',
+        'sender.user',
+      ],
     });
 
     if (!giftIntent) {
@@ -165,7 +170,7 @@ export class GiftIntentService {
       });
     }
 
-    const emailSent = await this.emailService.sendSenderTheGiftWasDelivered({
+    const emailSent = await this.emailService.sendSenderTheGiftDelivered({
       email:
         giftIntent.sender?.user?.email ||
         giftIntent.recipient?.additionalData['email'],
@@ -288,7 +293,7 @@ export class GiftIntentService {
         'giftOptions',
         'additionalData',
         'recipient',
-        'sender',
+        'sender.user.profile',
         'recipient.user',
         'sender.user',
       ],
@@ -301,13 +306,6 @@ export class GiftIntentService {
       });
     }
 
-    if (!giftIntent?.giftOptions?.length) {
-      throw new UnprocessableEntityException({
-        statusCode: EnumGiftIntentStatusCodeError.GiftIntentOptionsEmptyError,
-        message: 'gift.intent.error.empty',
-      });
-    }
-
     const emailSent = await this.emailService.sendGiftShipped({
       email:
         /*
@@ -317,6 +315,7 @@ export class GiftIntentService {
       */
         giftIntent.recipient?.user?.email ||
         giftIntent.recipient?.additionalData['email'],
+      giftIntent,
     });
 
     if (!emailSent) {

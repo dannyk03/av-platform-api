@@ -168,6 +168,7 @@ export class GiftingSystemCommonController {
         readyAt: true,
         submittedAt: true,
         shippedAt: true,
+        paidAt: true,
         deliveredAt: true,
       },
     });
