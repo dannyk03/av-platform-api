@@ -294,7 +294,7 @@ export class EmailService {
     if (this.isDevelopment) {
       return true;
     }
-
+    // TODO remove all [0], and implement with localization and bundles
     const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
       (giftOption) => ({
         productName: giftOption.products[0].displayOptions[0].name,
@@ -311,6 +311,7 @@ export class EmailService {
       sender: {
         firstName: giftIntent.sender.user.profile.firstName,
       },
+      giftIntentId: giftIntent.id,
       giftOptions,
       giftSelectUrl: `gifts/select/${giftIntent.id}`,
     };

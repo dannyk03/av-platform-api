@@ -97,6 +97,7 @@ export type GiftOptionSelectMessageData = {
   sender: {
     firstName: string;
   };
+  giftIntentId: string;
   giftOptions: GiftOption[];
   giftSelectUrl: string;
 };
