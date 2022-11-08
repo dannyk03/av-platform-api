@@ -41,7 +41,7 @@ export class GiftOrderService {
     return this.giftOrderRepository.findOneBy({ ...find });
   }
 
-  async findUsersGiftOrderForPayment({
+  async findUsersGiftOrderForPaymentCreation({
     userId,
     giftOrderId,
   }: {
