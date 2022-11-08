@@ -6,6 +6,7 @@ import {
   HttpStatus,
   InternalServerErrorException,
   NotFoundException,
+  Param,
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -32,8 +33,10 @@ import { ReqUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { PaymentCreateDto, PaymentGetDto } from '../dto';
+import { IdParamDto } from '@/utils/request/dto';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
@@ -169,12 +172,12 @@ export class PaymentCommonController {
     tags: ['payment', 'stripe', 'get'],
   })
   @AclGuard()
-  @Get()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
   async getPayment(
     @ReqUser()
     { id: reqUserId }: User,
-    @Body()
-    { giftOrderId }: PaymentGetDto,
+    @Param('id') giftOrderId: string,
   ): Promise<IResponseData> {
     const giftOrder = await this.giftOrderService.findOne({
       where: {

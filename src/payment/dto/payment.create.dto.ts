@@ -1,3 +1,6 @@
-import { PaymentGetDto } from './payment.get.dto';
+import { IsUUID } from 'class-validator';
 
-export class PaymentCreateDto extends PaymentGetDto {}
+export class PaymentCreateDto {
+  @IsUUID()
+  readonly giftOrderId: string;
+}
