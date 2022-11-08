@@ -73,11 +73,19 @@ export class PaymentCommonController {
       });
     }
 
-    if (!giftOrder?.giftIntent.submittedAt) {
+    if (!giftOrder?.giftIntent?.submittedAt) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumPaymentStatusCodeError.PaymentGiftIntentNotSubmittedError,
         message: 'payment.error.giftIntentNotSubmitted',
+      });
+    }
+
+    if (giftOrder?.giftIntent?.paidAt) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumPaymentStatusCodeError.PaymentGiftIntentAlreadyBeenPaidError,
+        message: 'payment.error.giftIntentAlreadyPaid',
       });
     }
 
