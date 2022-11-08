@@ -35,7 +35,8 @@ export class CloudinarySignatureGuard implements CanActivate {
     if (!isValidSignature) {
       throw new UnauthorizedException({
         statusCode: EnumWebhookCodeError.WebhookUnauthorizedError,
-        message: 'webhook.error.cloudinary.invalidSignature',
+        message: 'webhook.error.invalidSignature',
+        error: 'Cloudinary webhook invalid signature',
       });
     }
 

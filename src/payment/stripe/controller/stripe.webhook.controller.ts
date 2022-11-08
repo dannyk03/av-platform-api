@@ -6,6 +6,8 @@ import {
   Req,
 } from '@nestjs/common';
 
+import { EnumWebhookCodeError } from '@avo/type';
+
 import { StripeService } from '../service/stripe.service';
 
 import { LogTrace } from '@/log/decorator';
@@ -29,7 +31,11 @@ export class StripeWebhookController {
     @Req() request: IRequestApp,
   ) {
     if (!signature) {
-      throw new BadRequestException('Missing stripe-signature header');
+      throw new BadRequestException({
+        statusCode: EnumWebhookCodeError.WebhookInvalidSignature,
+        message: 'webhook.error.invalidSignature',
+        error: 'Stripe webhook missing signature',
+      });
     }
 
     const event = await this.stripeService.constructEventFromPayload(
@@ -40,9 +46,12 @@ export class StripeWebhookController {
     try {
       await this.stripeService.createEvent(event.request.idempotency_key);
     } catch (error) {
-      throw new BadRequestException('This event was already processed');
+      throw new BadRequestException({
+        statusCode: EnumWebhookCodeError.WebhookEventIdempotencyError,
+        message: 'webhook.error.idempotency',
+        error: `Stripe event has already been processed. id:${event.id}`,
+      });
     }
-
     this.stripeService.processWebhookEvent(event);
   }
 }
