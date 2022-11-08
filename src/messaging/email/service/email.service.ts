@@ -16,6 +16,7 @@ import {
   EmailStatus,
   EmailTemplate,
   GiftDeliveredToRecipientMessageData,
+  GiftDeliveredToSenderMessageData,
   GiftDetails,
   GiftOption,
   GiftOptionSelectMessageData,
@@ -364,12 +365,19 @@ export class EmailService {
       imageUrl:
         giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].images[0]
           .secureUrl,
-      formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
+      formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of measure + add symbols '.' , ','
       personalNote: giftIntent.giftSubmit.personalNote,
     };
 
     const shippingDetails: GiftShippingDetails = {
-      shippingAddress: '', // TODO: verify we save this
+      addressLine1:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
+      addressLine2:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
+      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
+      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
+      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
+      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
       ETA: '', // TODO: verify we save this
     };
 
@@ -382,7 +390,6 @@ export class EmailService {
       },
       giftDetails,
       shippingDetails,
-      sendAnotherGiftUrl: '', // TODO: When action url is ready update here
     };
 
     return data;
@@ -427,33 +434,42 @@ export class EmailService {
       return true;
     }
 
+    const shippingDetails: GiftShippingDetails = {
+      addressLine1:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
+      addressLine2:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
+      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
+      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
+      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
+      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+      ETA: '', // TODO: verify we save this
+    };
+
+    const payload: GiftDeliveredToSenderMessageData = {
+      recipient: {
+        firstName: giftIntent.recipient.user.profile.firstName,
+      },
+      sender: {
+        firstName: giftIntent.sender.user.profile.firstName,
+      },
+      giftDetails: {
+        productName:
+          giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]?.name,
+        imageUrl:
+          giftIntent.giftSubmit?.gifts[0].products[0].displayOptions[0]
+            .images[0].secureUrl,
+        formattedPrice: `$${giftIntent.giftSubmit?.gifts[0].products[0].price}`,
+        personalNote: giftIntent?.giftSubmit?.personalNote,
+      },
+      shippingDetails,
+    };
+
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSenderGiftDelivered.toString(),
       to: [email],
       emailTemplatePayload: {
-        recipient: {
-          firstName: giftIntent?.recipient?.user?.profile?.firstName,
-          shipping: {
-            addressLine1:
-              giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
-            addressLine2:
-              giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
-            city: giftIntent?.recipient?.user?.profile?.shipping?.city,
-            country: giftIntent?.recipient?.user?.profile?.shipping?.country,
-            state: giftIntent?.recipient?.user?.profile?.shipping?.state,
-            zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
-          },
-        },
-        gift: {
-          productName:
-            giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]
-              ?.name,
-          imageUrl:
-            giftIntent.giftSubmit?.gifts[0].products[0].displayOptions[0]
-              .images[0].secureUrl,
-          formattedPrice: `$${giftIntent.giftSubmit?.gifts[0].products[0].price}`,
-          personalNote: giftIntent?.giftSubmit?.personalNote,
-        },
+        ...payload,
         transport: {
           origin: this.origin,
         },
@@ -464,7 +480,7 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendRecipientTheGiftWasDelivered({
+  async sendRecipientTheGiftDelivered({
     email,
     giftIntent,
   }: {
@@ -478,7 +494,14 @@ export class EmailService {
     }
 
     const shippingDetails: GiftShippingDetails = {
-      shippingAddress: '', // TODO: verify we save this
+      addressLine1:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
+      addressLine2:
+        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
+      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
+      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
+      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
+      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
       ETA: '', // TODO: verify we save this
     };
 
@@ -489,7 +512,7 @@ export class EmailService {
       sender: {
         firstName: giftIntent.sender.user.profile.firstName,
       },
-      shippingDetails: shippingDetails,
+      shippingDetails,
     };
 
     const sendResult = await this.customerIOService.sendEmail({

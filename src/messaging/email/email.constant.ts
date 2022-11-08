@@ -109,8 +109,13 @@ export type GiftDetails = {
 };
 
 export type GiftShippingDetails = {
-  shippingAddress: string;
-  ETA: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  country: string;
+  state: string;
+  zipCode: string;
+  ETA?: string;
 };
 
 export type GiftStatusUpdateMessageData = {
@@ -122,7 +127,6 @@ export type GiftStatusUpdateMessageData = {
   };
   giftDetails: GiftDetails;
   shippingDetails: GiftShippingDetails;
-  sendAnotherGiftUrl: string;
 };
 
 export type GiftDeliveredToRecipientMessageData = {
@@ -134,6 +138,9 @@ export type GiftDeliveredToRecipientMessageData = {
   };
   shippingDetails: GiftShippingDetails;
 };
+
+export type GiftDeliveredToSenderMessageData =
+  GiftDeliveredToRecipientMessageData & { giftDetails: GiftDetails };
 
 export type ResetPasswordMessageData = {
   user: {

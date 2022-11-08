@@ -170,14 +170,20 @@ export class GiftIntentService {
       });
     }
 
-    const emailSent = await this.emailService.sendSenderTheGiftDelivered({
-      email:
-        giftIntent.sender?.user?.email ||
-        giftIntent.recipient?.additionalData['email'],
-      giftIntent,
-    });
+    const [emailSentSender, emailSentRecipient] = await Promise.all([
+      this.emailService.sendSenderTheGiftDelivered({
+        email:
+          giftIntent.sender?.user?.email ||
+          giftIntent.recipient?.additionalData['email'],
+        giftIntent,
+      }),
+      this.emailService.sendRecipientTheGiftDelivered({
+        email: giftIntent.recipient?.user?.email,
+        giftIntent,
+      }),
+    ]);
 
-    if (!emailSent) {
+    if (!(emailSentSender && emailSentRecipient)) {
       throw new InternalServerErrorException({
         statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
         message: 'messaging.error.email.send',
