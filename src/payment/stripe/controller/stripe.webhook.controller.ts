@@ -6,14 +6,16 @@ import {
   Req,
 } from '@nestjs/common';
 
+import { EnumWebhookCodeError } from '@avo/type';
+
 import { StripeService } from '../service/stripe.service';
 
 import { LogTrace } from '@/log/decorator';
 import { RequestExcludeTimestampCheck } from '@/utils/request/decorator';
 
-import { EnumLogAction } from '@/log/constant';
+import { IRequestApp } from '@/utils/request/type';
 
-import RequestWithRawBody from '@/utils/middleware/raw-body/raw-body.interface';
+import { EnumLogAction } from '@/log/constant';
 
 @Controller('stripe')
 export class StripeWebhookController {
@@ -26,10 +28,14 @@ export class StripeWebhookController {
   @Post()
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
-    @Req() request: RequestWithRawBody,
-  ) {
+    @Req() request: IRequestApp,
+  ): Promise<void> {
     if (!signature) {
-      throw new BadRequestException('Missing stripe-signature header');
+      throw new BadRequestException({
+        statusCode: EnumWebhookCodeError.WebhookInvalidSignature,
+        message: 'webhook.error.invalidSignature',
+        error: 'Stripe webhook missing signature',
+      });
     }
 
     const event = await this.stripeService.constructEventFromPayload(
@@ -40,9 +46,12 @@ export class StripeWebhookController {
     try {
       await this.stripeService.createEvent(event.request.idempotency_key);
     } catch (error) {
-      throw new BadRequestException('This event was already processed');
+      throw new BadRequestException({
+        statusCode: EnumWebhookCodeError.WebhookEventIdempotencyError,
+        message: 'webhook.error.idempotency',
+        error,
+      });
     }
-
     this.stripeService.processWebhookEvent(event);
   }
 }
