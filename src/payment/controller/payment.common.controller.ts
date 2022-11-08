@@ -81,6 +81,8 @@ export class PaymentCommonController {
       });
     }
 
+    // Logically it turns out that a user is trying to pay for something he has already paid.
+    // This is to prevent double pay
     if (giftOrder?.giftIntent?.paidAt) {
       throw new UnprocessableEntityException({
         statusCode:
