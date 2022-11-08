@@ -283,12 +283,10 @@ export class EmailService {
     giftIntent,
     email,
     code,
-    path = '/ready',
   }: {
     giftIntent: GiftIntent;
     email: string;
     code: string;
-    path?: string;
   }): Promise<boolean> {
     // Stub for local development
     if (this.isDevelopment) {
@@ -313,7 +311,6 @@ export class EmailService {
       },
       giftIntentId: giftIntent.id,
       giftOptions,
-      giftSelectUrl: `gifts/select/${giftIntent.id}`,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
