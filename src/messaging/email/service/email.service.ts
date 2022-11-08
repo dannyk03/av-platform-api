@@ -2,6 +2,8 @@ import { Inject, Injectable, Request } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
+import { plainToInstance } from 'class-transformer';
+
 import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
@@ -15,6 +17,7 @@ import {
   ConnectionRequestNewUserMessageData,
   EmailStatus,
   EmailTemplate,
+  EnumEmailPayloadGroup,
   GiftDeliveredToRecipientMessageData,
   GiftDetails,
   GiftOption,
@@ -23,7 +26,9 @@ import {
   GiftStatusUpdateMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
-} from '../email.constant';
+} from '../constant';
+
+import { EmailPayloadGiftIntent } from '../transform';
 
 @Injectable()
 export class EmailService {
@@ -423,6 +428,9 @@ export class EmailService {
     giftIntent: GiftIntent;
   }): Promise<boolean> {
     // Stub for local development
+    const test = plainToInstance(EmailPayloadGiftIntent, giftIntent, {
+      groups: [EnumEmailPayloadGroup.DeliveredSender],
+    });
     if (this.isDevelopment) {
       return true;
     }
@@ -569,10 +577,7 @@ export class EmailService {
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
