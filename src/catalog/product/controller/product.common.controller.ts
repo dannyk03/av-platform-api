@@ -172,8 +172,7 @@ export class ProductCommonController {
     });
 
     try {
-      const saveProduct = await this.productService.save(createProduct);
-      return saveProduct;
+      return await this.productService.save(createProduct);
     } catch (error) {
       throw new InternalServerErrorException({
         statusCode: EnumProductStatusCodeError.ProductUnprocessableError,
