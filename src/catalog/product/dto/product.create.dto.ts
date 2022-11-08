@@ -126,7 +126,6 @@ export class ProductCreateDto {
 
   @IsNumber({ allowNaN: false })
   @IsOptional()
-  @IsPositive()
   @Min(0)
   @Type(() => Number)
   @ApiProperty({ required: false })
