@@ -325,11 +325,6 @@ export class EmailService {
       identifier: { id: email },
     });
 
-    console.log({
-      path,
-      email,
-      code,
-    });
     return sendResult.status === EmailStatus.success;
   }
 
