@@ -35,7 +35,7 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { PaymentCreateDto, PaymentGetDto } from '../dto';
+import { PaymentCreateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { ConnectionNames } from '@/database/constant';
