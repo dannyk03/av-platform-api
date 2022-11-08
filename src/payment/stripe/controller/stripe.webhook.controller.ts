@@ -49,7 +49,7 @@ export class StripeWebhookController {
       throw new BadRequestException({
         statusCode: EnumWebhookCodeError.WebhookEventIdempotencyError,
         message: 'webhook.error.idempotency',
-        error: `Stripe event has already been processed. id:${event.id}`,
+        error,
       });
     }
     this.stripeService.processWebhookEvent(event);
