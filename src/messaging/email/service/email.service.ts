@@ -283,18 +283,16 @@ export class EmailService {
     giftIntent,
     email,
     code,
-    path = '/ready',
   }: {
     giftIntent: GiftIntent;
     email: string;
     code: string;
-    path?: string;
   }): Promise<boolean> {
     // Stub for local development
     if (this.isDevelopment) {
       return true;
     }
-
+    // TODO remove all [0], and implement with localization and bundles
     const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
       (giftOption) => ({
         productName: giftOption.products[0].displayOptions[0].name,
@@ -311,8 +309,8 @@ export class EmailService {
       sender: {
         firstName: giftIntent.sender.user.profile.firstName,
       },
+      giftIntentId: giftIntent.id,
       giftOptions,
-      giftSelectUrl: `gifts/select/${giftIntent.id}`,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
@@ -327,11 +325,6 @@ export class EmailService {
       identifier: { id: email },
     });
 
-    console.log({
-      path,
-      email,
-      code,
-    });
     return sendResult.status === EmailStatus.success;
   }
 
