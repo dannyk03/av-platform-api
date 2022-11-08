@@ -91,7 +91,7 @@ export class Product extends BaseEntity<Product> {
     transformer: new DecimalToFloatTransformer(),
     default: 0,
   })
-  purchaseCost: number;
+  purchaseCost!: number;
 
   @Column({
     nullable: true,
