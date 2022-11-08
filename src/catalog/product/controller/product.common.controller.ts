@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
@@ -174,7 +175,11 @@ export class ProductCommonController {
       const saveProduct = await this.productService.save(createProduct);
       return saveProduct;
     } catch (error) {
-      console.error(error.message);
+      throw new InternalServerErrorException({
+        statusCode: EnumProductStatusCodeError.ProductUnprocessableError,
+        message: 'product.error.unprocessable',
+        error,
+      });
     }
   }
 
