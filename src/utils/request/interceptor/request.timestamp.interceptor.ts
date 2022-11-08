@@ -16,7 +16,7 @@ import { HelperDateService, HelperNumberService } from '@/utils/helper/service';
 
 import { IRequestApp } from '../type';
 
-import { REQUEST_EXCLUDE_TIMESTAMP_META_KEY } from '../constant';
+import { REQUEST_EXCLUDE_TIMESTAMP_CHECK_KEY } from '../constant';
 
 @Injectable()
 export class RequestTimestampInterceptor
@@ -40,7 +40,7 @@ export class RequestTimestampInterceptor
       const xTimestamp: string = headers['x-timestamp'] as string;
       const currentTimestamp: number = this.helperDateService.timestamp();
       const excludeTimestamp = this.reflector.getAllAndOverride<boolean>(
-        REQUEST_EXCLUDE_TIMESTAMP_META_KEY,
+        REQUEST_EXCLUDE_TIMESTAMP_CHECK_KEY,
         [context.getHandler(), context.getClass()],
       );
       let ts = xTimestamp;

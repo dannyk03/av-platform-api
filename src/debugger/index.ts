@@ -1,1 +1,1 @@
-export * from './debugger.constant';
+export * from './constant/debugger.constant';

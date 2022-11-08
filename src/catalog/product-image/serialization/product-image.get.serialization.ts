@@ -3,7 +3,7 @@ import {
   IProductImageGetSerialization,
 } from '@avo/type';
 
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
 @Exclude()
 export class ProductImageGetSerialization
@@ -19,6 +19,14 @@ export class ProductImageGetSerialization
   readonly fileName: string;
 
   @Expose()
+  @Transform(({ obj }) => {
+    return [
+      EnumUploadFileMalwareDetectionStatus.Pending,
+      EnumUploadFileMalwareDetectionStatus.Rejected,
+    ].includes(obj.malwareDetectionStatus)
+      ? null
+      : obj.secureUrl;
+  })
   readonly secureUrl: string;
 
   @Expose()

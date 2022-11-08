@@ -7,6 +7,6 @@ export class IdParamDto {
   @IsNotEmpty()
   @IsUUID()
   @Type(() => String)
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
   readonly id!: string;
 }

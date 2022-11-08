@@ -8,10 +8,10 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 
 import { Response } from 'express';
+import isFunction from 'lodash/isFunction';
 import { Observable, tap } from 'rxjs';
 
 import { LogService } from '../service';
-import { HelperMaskService } from '@/utils/helper/service';
 
 import { ILogOptions } from '../type/log.interface';
 import { IRequestApp } from '@/utils/request/type';
@@ -29,7 +29,6 @@ export class LogInterceptor implements NestInterceptor<any> {
   constructor(
     private readonly reflector: Reflector,
     private readonly loggerService: LogService,
-    private readonly helperMaskService: HelperMaskService,
   ) {}
 
   async intercept(
@@ -45,6 +44,7 @@ export class LogInterceptor implements NestInterceptor<any> {
         correlationId,
         body,
         params,
+        headers,
         path,
         version,
         repoVersion,
@@ -71,8 +71,12 @@ export class LogInterceptor implements NestInterceptor<any> {
 
           await this.loggerService.raw({
             mask: loggerOptions?.mask,
-            level: loggerOptions.level || EnumLogLevel.Info,
-            action: loggerAction,
+            level: isFunction(loggerOptions.level)
+              ? loggerOptions.level(body)
+              : loggerOptions.level || EnumLogLevel.Info,
+            action: isFunction(loggerAction)
+              ? loggerAction(body)
+              : loggerAction,
             description: loggerOptions.description
               ? loggerOptions.description
               : `Request ${method} called, url ${originalUrl}, action ${loggerAction}`,
@@ -82,6 +86,7 @@ export class LogInterceptor implements NestInterceptor<any> {
             method: method as EnumRequestMethod,
             params,
             body,
+            headers,
             path,
             statusCode,
             userAgent,

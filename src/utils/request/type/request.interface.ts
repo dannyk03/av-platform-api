@@ -3,7 +3,11 @@ import { IResult } from 'ua-parser-js';
 
 import { User } from '@/user/entity';
 
-export interface IRequestApp extends Request {
+interface IRequestAppExt {
+  rawBody: Buffer;
+}
+
+export interface IRequestApp extends Request, IRequestAppExt {
   correlationId: string;
   timezone: string;
   timestamp: number;

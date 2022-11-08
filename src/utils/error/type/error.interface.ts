@@ -35,7 +35,6 @@ export interface IErrorHttpFilterMetadata {
   languages?: string[];
   timestamp: number;
   timezone: string;
-  correlationId: string;
   path: string;
   version: string;
   repoVersion: string;

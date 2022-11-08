@@ -1,6 +1,7 @@
 {
   "error": {
     "unauthorized": "Unauthorized webhook",
-    "invalidSignature": "Webhook invalid signature"
+    "invalidSignature": "Webhook invalid signature",
+    "idempotency": "Idempotency error, the event has already been processed"
   }
 }

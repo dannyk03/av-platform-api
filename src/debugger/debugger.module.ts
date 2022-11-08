@@ -4,39 +4,43 @@ import { WinstonModule } from 'nest-winston';
 
 import { DebuggerOptionService, DebuggerService } from './service';
 
-@Global()
 @Module({
-  providers: [DebuggerOptionService, DebuggerService],
-  exports: [DebuggerOptionService, DebuggerService],
+  providers: [DebuggerOptionService],
+  exports: [DebuggerOptionService],
   imports: [],
 })
-export class DebuggerModule {}
+export class DebuggerOptionsModule {}
 
+@Global()
 @Module({})
-export class DebuggerModuleDynamic {
+export class DebuggerModule {
   static register(): DynamicModule {
-    if (process.env.APP_ENV === 'production' && process.env.CI === 'false') {
+    if (
+      process.env.DEBUGGER_SYSTEM_WRITE_INTO_CONSOLE === 'true' ||
+      process.env.DEBUGGER_SYSTEM_WRITE_INTO_FILE === 'true'
+    ) {
       return {
-        module: DebuggerModuleDynamic,
-        providers: [],
-        exports: [],
+        module: DebuggerModule,
         controllers: [],
-        imports: [],
+        providers: [DebuggerService],
+        exports: [DebuggerService],
+        imports: [
+          WinstonModule.forRootAsync({
+            inject: [DebuggerOptionService],
+            imports: [DebuggerOptionsModule],
+            useFactory: (debuggerOptionsService: DebuggerOptionService) =>
+              debuggerOptionsService.createLogger(),
+          }),
+        ],
       };
     }
 
     return {
-      module: DebuggerModuleDynamic,
-      imports: [
-        DebuggerModule,
-        WinstonModule.forRootAsync({
-          imports: [DebuggerModule],
-          inject: [DebuggerOptionService],
-          useFactory: (debuggerOptionService: DebuggerOptionService) =>
-            debuggerOptionService.createLogger(),
-        }),
-      ],
+      module: DebuggerModule,
       providers: [],
+      exports: [],
+      controllers: [],
+      imports: [],
     };
   }
 }

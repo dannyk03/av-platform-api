@@ -17,6 +17,7 @@ import { ConnectionNames } from './database/constant';
 async function bootstrap() {
   const app: NestApplication = await NestFactory.create(AppModule, {
     bodyParser: true,
+    rawBody: true,
   });
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.env');
@@ -83,17 +84,13 @@ async function bootstrap() {
     `App Language is ${configService.get<string>('app.language')}`,
     'NestApplication',
   );
-  logger.log(
-    `App Debug is ${configService.get<boolean>('app.debug')}`,
-    'NestApplication',
-  );
   logger.log(`App Versioning is ${versioning}`, 'NestApplication');
   logger.log(
     `App Http is ${configService.get<boolean>('app.httpOn')}`,
     'NestApplication',
   );
   logger.log(
-    `App Task is ${configService.get<boolean>('app.taskOn')}`,
+    `App Task is ${configService.get<boolean>('app.jobOn')}`,
     'NestApplication',
   );
   logger.log(`App Timezone is ${tz}`, 'NestApplication');

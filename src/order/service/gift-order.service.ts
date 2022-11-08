@@ -6,10 +6,12 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 
 import { GiftOrder } from '../entity';
 
+import { EnumPaymentIntentStatus } from '../order.constants';
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
@@ -39,7 +41,7 @@ export class GiftOrderService {
     return this.giftOrderRepository.findOneBy({ ...find });
   }
 
-  async findUsersGiftOrderForPayment({
+  async findUsersGiftOrderForPaymentCreation({
     userId,
     giftOrderId,
   }: {
@@ -68,5 +70,22 @@ export class GiftOrderService {
       .leftJoinAndSelect('gifts.products', 'products');
 
     return builder.getOne();
+  }
+
+  async updatePaymentStatus({
+    stripePaymentIntentId,
+    paymentStatus,
+  }: {
+    stripePaymentIntentId: string;
+    paymentStatus: EnumPaymentIntentStatus;
+  }): Promise<UpdateResult> {
+    return this.giftOrderRepository
+      .createQueryBuilder()
+      .update(GiftOrder)
+      .set({ paymentStatus })
+      .where('stripePaymentIntentId = :stripePaymentIntentId', {
+        stripePaymentIntentId,
+      })
+      .execute();
   }
 }

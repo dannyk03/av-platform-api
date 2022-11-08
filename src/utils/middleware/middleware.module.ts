@@ -9,6 +9,8 @@ import { HelmetMiddleware } from './helmet/helmet.middleware';
 import {
   HttpDebuggerMiddleware,
   HttpDebuggerResponseMiddleware,
+  HttpDebuggerWriteIntoConsoleMiddleware,
+  HttpDebuggerWriteIntoFileMiddleware,
 } from './http-debugger/http-debugger.middleware';
 import { ResponseTimeMiddleware } from './response-time/response-time.middleware';
 import { TimestampMiddleware } from './timestamp/timestamp.middleware';
@@ -24,26 +26,24 @@ export class MiddlewareModule implements NestModule {
     this.isProduction = this.configService.get<boolean>('app.isProduction');
   }
   configure(consumer: MiddlewareConsumer): void {
-    const middlewares: any = [
-      CorrelationIdMiddleware,
-      TimezoneMiddleware,
-      CompressionMiddleware,
-      CorsMiddleware,
-      HelmetMiddleware,
-      CookieParserMiddleware,
-      ValidateCustomLanguageMiddleware,
-      UserAgentMiddleware,
-      ResponseTimeMiddleware,
-      TimestampMiddleware,
-      VersionMiddleware,
-    ];
-
-    if (!this.isProduction) {
-      middlewares.push([
+    consumer
+      .apply(
+        CorrelationIdMiddleware,
+        TimezoneMiddleware,
+        CompressionMiddleware,
+        CorsMiddleware,
+        HelmetMiddleware,
+        CookieParserMiddleware,
+        ValidateCustomLanguageMiddleware,
+        UserAgentMiddleware,
+        ResponseTimeMiddleware,
+        TimestampMiddleware,
+        VersionMiddleware,
         HttpDebuggerResponseMiddleware,
         HttpDebuggerMiddleware,
-      ]);
-    }
-    consumer.apply(...middlewares).forRoutes('*');
+        HttpDebuggerWriteIntoConsoleMiddleware,
+        HttpDebuggerWriteIntoFileMiddleware,
+      )
+      .forRoutes('*');
   }
 }

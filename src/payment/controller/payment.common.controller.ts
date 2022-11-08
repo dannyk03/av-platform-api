@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
+  Param,
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -30,8 +33,10 @@ import { ReqUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
 import { PaymentCreateDto } from '../dto';
+import { IdParamDto } from '@/utils/request/dto';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
@@ -54,17 +59,18 @@ export class PaymentCommonController {
     tags: ['payment', 'stripe', 'checkout', 'create'],
   })
   @AclGuard()
-  @Post('/create')
-  async createPaymentIntent(
+  @Post()
+  async createPayment(
     @ReqUser()
     { id: reqUserId }: User,
     @Body()
     { giftOrderId }: PaymentCreateDto,
   ): Promise<IResponseData> {
-    const giftOrder = await this.giftOrderService.findUsersGiftOrderForPayment({
-      userId: reqUserId,
-      giftOrderId,
-    });
+    const giftOrder =
+      await this.giftOrderService.findUsersGiftOrderForPaymentCreation({
+        userId: reqUserId,
+        giftOrderId,
+      });
 
     if (!giftOrder) {
       throw new NotFoundException({
@@ -73,11 +79,21 @@ export class PaymentCommonController {
       });
     }
 
-    if (!giftOrder?.giftIntent.submittedAt) {
+    if (!giftOrder?.giftIntent?.submittedAt) {
       throw new UnprocessableEntityException({
         statusCode:
           EnumPaymentStatusCodeError.PaymentGiftIntentNotSubmittedError,
         message: 'payment.error.giftIntentNotSubmitted',
+      });
+    }
+
+    // Logically it turns out that a user is trying to pay for something he has already paid.
+    // This is to prevent double pay
+    if (giftOrder?.giftIntent?.paidAt) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumPaymentStatusCodeError.PaymentGiftIntentAlreadyBeenPaidError,
+        message: 'payment.error.giftIntentAlreadyPaid',
       });
     }
 
@@ -143,6 +159,71 @@ export class PaymentCommonController {
       };
     } catch (error) {
       throw new UnprocessableEntityException({
+        statusCode: EnumPaymentStatusCodeError.PaymentUnprocessableError,
+        message: 'payment.error.unprocessable',
+        error,
+      });
+    }
+  }
+
+  @ClientResponse('payment.get')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CreatePayment, {
+    tags: ['payment', 'stripe', 'get'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
+  async getPayment(
+    @ReqUser()
+    { id: reqUserId }: User,
+    @Param('id') giftOrderId: string,
+  ): Promise<IResponseData> {
+    const giftOrder = await this.giftOrderService.findOne({
+      where: {
+        id: giftOrderId,
+        user: {
+          id: reqUserId,
+        },
+      },
+      relations: {
+        user: true,
+      },
+      select: {
+        id: true,
+        stripePaymentIntentId: true,
+        user: {
+          id: true,
+        },
+      },
+    });
+
+    if (!giftOrder) {
+      throw new NotFoundException({
+        statusCode: EnumGiftOrderStatusCodeError.GiftOrderNotFoundError,
+        message: 'gift.order.error.notFound',
+      });
+    }
+
+    try {
+      // Retrieve Existing PaymentIntent
+      const existingPaymentIntent =
+        await this.stripeService.retrieveStripePaymentIntentById(
+          giftOrder.stripePaymentIntentId,
+        );
+
+      if (!existingPaymentIntent) {
+        throw new NotFoundException({
+          statusCode: EnumPaymentStatusCodeError.PaymentNotFoundError,
+          message: 'payment.error.notFound',
+        });
+      }
+
+      return {
+        clientSecret: existingPaymentIntent.client_secret,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException({
         statusCode: EnumPaymentStatusCodeError.PaymentUnprocessableError,
         message: 'payment.error.unprocessable',
         error,

@@ -3,16 +3,11 @@ import { ConfigService } from '@nestjs/config';
 
 import { NextFunction } from 'express';
 
-import { HelperNumberService } from '@/utils/helper/service';
-
 import { IRequestApp } from '@/utils/request/type';
 
 @Injectable()
 export class VersionMiddleware implements NestMiddleware {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly helperNumberService: HelperNumberService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async use(
     req: IRequestApp,

@@ -101,7 +101,7 @@ export class FileValidationPipe<T> implements PipeTransform {
       const validator: ValidationError[] = await validate(
         clsTransform as Record<string, any>,
       );
-      if (validator.length > 0) {
+      if (validator?.length) {
         errors.push({
           row: index,
           file: filename,
@@ -110,7 +110,7 @@ export class FileValidationPipe<T> implements PipeTransform {
       }
     }
 
-    if (errors.length > 0) {
+    if (errors?.length) {
       throw new UnprocessableEntityException({
         statusCode: EnumFileStatusCodeError.FileValidationDtoError,
         message: 'file.error.validationDto',
