@@ -29,7 +29,7 @@ export class StripeWebhookController {
   async handleIncomingEvents(
     @Headers('stripe-signature') signature: string,
     @Req() request: IRequestApp,
-  ) {
+  ): Promise<void> {
     if (!signature) {
       throw new BadRequestException({
         statusCode: EnumWebhookCodeError.WebhookInvalidSignature,

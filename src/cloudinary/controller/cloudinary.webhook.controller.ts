@@ -14,7 +14,6 @@ import {
 } from '@avo/type';
 
 import { ProductImageService } from '@/catalog/product-image/service';
-import { LogService } from '@/log/service';
 
 import { CloudinaryWebhookSignature } from '../decorator';
 import { LogTrace } from '@/log/decorator';
@@ -27,10 +26,7 @@ import { EnumLogAction, EnumLogLevel } from '@/log/constant';
   path: 'cloudinary',
 })
 export class CloudinaryWebhookController {
-  constructor(
-    private readonly productImageService: ProductImageService,
-    private readonly logService: LogService,
-  ) {}
+  constructor(private readonly productImageService: ProductImageService) {}
 
   @HttpCode(HttpStatus.OK)
   @LogTrace(
@@ -48,7 +44,7 @@ export class CloudinaryWebhookController {
   @CloudinaryWebhookSignature()
   @RequestExcludeTimestampCheck()
   @Post()
-  async notify(@Body() body: any): Promise<void> {
+  async handleIncomingEvents(@Body() body: any): Promise<void> {
     const notificationType: EnumCloudinaryNotificationType =
       body.notification_type;
 
