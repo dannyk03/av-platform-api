@@ -213,10 +213,8 @@ export class GiftIntentService {
     const giftIntent = await this.findOne({
       where: { id, readyAt: IsNull() },
       relations: [
-        'giftOptions',
+        'giftOptions.products.displayOptions.images',
         'additionalData',
-        'recipient',
-        'sender',
         'recipient.user',
         'sender.user',
       ],

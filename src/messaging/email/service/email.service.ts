@@ -299,7 +299,9 @@ export class EmailService {
         productName: giftOption.products[0].displayOptions[0].name,
         description: giftOption.products[0].displayOptions[0].description,
         brand: giftOption.products[0].brand,
-        imageUrl: giftOption.products[0].displayOptions[0].images[0].secureUrl,
+        imageUrl:
+          giftOption.products[0].displayOptions[0].images[0]?.secureUrl ||
+          this.configService.get<string>('default.product.imageUrl'),
       }),
     );
 
@@ -333,7 +335,8 @@ export class EmailService {
         giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].name,
       imageUrl:
         giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].images[0]
-          ?.secureUrl,
+          ?.secureUrl ||
+        this.configService.get<string>('default.product.imageUrl'),
       formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of measure + add symbols '.' , ','
       personalNote: giftIntent.giftSubmit.personalNote,
     };
@@ -407,7 +410,8 @@ export class EmailService {
           giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]?.name,
         imageUrl:
           giftIntent.giftSubmit?.gifts[0].products[0].displayOptions[0]
-            .images[0].secureUrl,
+            .images[0]?.secureUrl ||
+          this.configService.get<string>('default.product.imageUrl'),
         formattedPrice: `$${giftIntent.giftSubmit?.gifts[0].products[0].price}`,
         personalNote: giftIntent?.giftSubmit?.personalNote,
       },
