@@ -8,7 +8,7 @@ import { BaseEntity } from '@/database/entity';
 @Entity()
 export class ProductImage extends BaseEntity<ProductImage> {
   @Column({
-    length: 30,
+    length: 40,
   })
   fileName!: string;
 
