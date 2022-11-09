@@ -24,7 +24,7 @@ import {
 } from '@avo/type';
 
 import flatMap from 'lodash/flatMap';
-import { DataSource, In, IsNull, Not } from 'typeorm';
+import { DataSource, In, IsNull } from 'typeorm';
 
 import { GiftIntent, GiftIntentConfirmationLink } from '../entity';
 import { User } from '@/user/entity';
@@ -338,8 +338,6 @@ export class GiftingCommonController {
           },
         },
         giftOptions: { id: In(giftOptionIds) },
-        confirmedAt: Not(IsNull()),
-        acceptedAt: Not(IsNull()),
         submittedAt: IsNull(),
       },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
@@ -349,6 +347,14 @@ export class GiftingCommonController {
       throw new UnprocessableEntityException({
         statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
         message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    if (!giftIntent.readyAt) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentNotReadyForSubmitError,
+        message: 'gift.intent.error.notReadyForSubmit',
       });
     }
 
