@@ -296,12 +296,10 @@ export class GiftIntentService {
     const giftIntent = await this.findOne({
       where: { id, shippedAt: IsNull() },
       relations: [
-        'giftOptions',
+        'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
-        'recipient',
         'sender.user.profile',
         'recipient.user',
-        'sender.user',
       ],
     });
 
@@ -312,7 +310,7 @@ export class GiftIntentService {
       });
     }
 
-    const emailSent = await this.emailService.sendGiftShipped({
+    const emailSent = await this.emailService.sendSenderTheGiftIsOnItsWay({
       email:
         /*
         TODO:

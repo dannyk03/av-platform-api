@@ -1,33 +1,24 @@
-import {
-  Exclude,
-  Expose,
-  Transform,
-  Type,
-  plainToInstance,
-} from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { EnumEmailPayloadGroup } from '../constant';
-
-import { EmailPayloadShipping } from './email.shipping.transform';
+import { EmailTemplate } from '../constant';
 
 @Exclude()
 export class EmailPayloadRecipient {
   @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
+    groups: [
+      EmailTemplate.SendSenderGiftDelivered,
+      EmailTemplate.SendRecipientGiftDelivered,
+      EmailTemplate.SendGiftSelection,
+      EmailTemplate.SendSenderGiftIsOnItsWay,
+    ],
   })
   @Transform(({ obj: recipient }) => recipient.user?.profile?.firstName, {
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
+    groups: [
+      EmailTemplate.SendSenderGiftDelivered,
+      EmailTemplate.SendRecipientGiftDelivered,
+      EmailTemplate.SendGiftSelection,
+      EmailTemplate.SendSenderGiftIsOnItsWay,
+    ],
   })
   readonly firstName: string;
-
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
-  @Transform(({ obj: recipient }) =>
-    plainToInstance(EmailPayloadShipping, recipient.user?.profile?.shipping, {
-      groups: [EnumEmailPayloadGroup.DeliveredSender],
-    }),
-  )
-  @Type(() => EmailPayloadShipping)
-  shipping: EmailPayloadShipping;
 }

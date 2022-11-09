@@ -99,6 +99,7 @@ export type GiftOptionSelectMessageData = {
   };
   giftIntentId: string;
   giftOptions: GiftOption[];
+  code: string;
 };
 
 export type GiftDetails = {

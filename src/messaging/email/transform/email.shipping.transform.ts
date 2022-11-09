@@ -1,35 +1,47 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { EnumEmailPayloadGroup } from '../constant';
+import { GiftShippingDetails } from '../constant';
 
 @Exclude()
-export class EmailPayloadShipping {
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+export class EmailPayloadShipping implements Omit<GiftShippingDetails, 'ETA'> {
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
+  )
   addressLine1: string;
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
+  )
   addressLine2: string;
 
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.city,
+  )
   city: string;
 
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.country,
+  )
   country: string;
 
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.state,
+  )
   state: string;
 
-  @Expose({
-    groups: [EnumEmailPayloadGroup.DeliveredSender],
-  })
+  @Expose()
+  @Transform(
+    ({ obj: giftIntent }) =>
+      giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+  )
   zipCode: string;
 }

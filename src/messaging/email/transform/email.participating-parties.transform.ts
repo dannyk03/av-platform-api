@@ -1,9 +1,12 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 
 import { EmailTemplate } from '../constant';
 
+import { EmailPayloadRecipient } from './email.recipient.transform';
+import { EmailPayloadSender } from './email.sender.transform';
+
 @Exclude()
-export class EmailPayloadSender {
+export class EmailPayloadTheParticipatingParties {
   @Expose({
     groups: [
       EmailTemplate.SendSenderGiftDelivered,
@@ -12,7 +15,10 @@ export class EmailPayloadSender {
       EmailTemplate.SendSenderGiftIsOnItsWay,
     ],
   })
-  @Transform(({ obj: sender }) => sender.user?.profile?.firstName, {
+  @Type(() => EmailPayloadRecipient)
+  recipient: EmailPayloadRecipient;
+
+  @Expose({
     groups: [
       EmailTemplate.SendSenderGiftDelivered,
       EmailTemplate.SendRecipientGiftDelivered,
@@ -20,5 +26,6 @@ export class EmailPayloadSender {
       EmailTemplate.SendSenderGiftIsOnItsWay,
     ],
   })
-  readonly firstName: string;
+  @Type(() => EmailPayloadSender)
+  sender: EmailPayloadSender;
 }

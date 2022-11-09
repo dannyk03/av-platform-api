@@ -17,7 +17,6 @@ import {
   ConnectionRequestNewUserMessageData,
   EmailStatus,
   EmailTemplate,
-  EnumEmailPayloadGroup,
   GiftDeliveredToRecipientMessageData,
   GiftDeliveredToSenderMessageData,
   GiftDetails,
@@ -29,7 +28,10 @@ import {
   SurveyInvitationMessageData,
 } from '../constant';
 
-import { EmailPayloadGiftIntent } from '../transform';
+import {
+  EmailPayloadShipping,
+  EmailPayloadTheParticipatingParties,
+} from '../transform';
 
 @Injectable()
 export class EmailService {
@@ -302,12 +304,10 @@ export class EmailService {
     );
 
     const payload: GiftOptionSelectMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendGiftSelection],
+      }),
+      code,
       giftIntentId: giftIntent.id,
       giftOptions,
     };
@@ -327,64 +327,26 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftShipped({
-    email,
-    giftIntent,
-  }: {
-    // Recipient email
-    email: string;
-    giftIntent: GiftIntent;
-  }): Promise<boolean> {
-    // Stub for local development
-    if (this.isDevelopment) {
-      return true;
-    }
-
-    // TODO: Verify template parameters
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftShipped.toString(),
-      to: [email],
-      emailTemplatePayload: {
-        from: giftIntent?.sender?.user?.profile?.firstName,
-        transport: {
-          origin: this.origin,
-        },
-      },
-      identifier: { id: email },
-    });
-    return sendResult.status === EmailStatus.success;
-  }
-
-  getGiftStatusUpdateMessageData(giftIntent: GiftIntent) {
+  getGiftOnItsWayMessageData(giftIntent: GiftIntent) {
     const giftDetails: GiftDetails = {
       productName:
         giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].name,
       imageUrl:
         giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].images[0]
-          .secureUrl,
+          ?.secureUrl,
       formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of measure + add symbols '.' , ','
       personalNote: giftIntent.giftSubmit.personalNote,
     };
 
     const shippingDetails: GiftShippingDetails = {
-      addressLine1:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
-      addressLine2:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
-      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
-      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
-      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
-      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
       ETA: '', // TODO: verify we save this
     };
 
     const data: GiftStatusUpdateMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendSenderGiftIsOnItsWay],
+      }),
       giftDetails,
       shippingDetails,
     };
@@ -408,7 +370,7 @@ export class EmailService {
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
       emailTemplatePayload: {
-        ...this.getGiftStatusUpdateMessageData(giftIntent),
+        ...this.getGiftOnItsWayMessageData(giftIntent),
         transport: {
           origin: this.origin,
         },
@@ -427,32 +389,19 @@ export class EmailService {
     giftIntent: GiftIntent;
   }): Promise<boolean> {
     // Stub for local development
-    const test = plainToInstance(EmailPayloadGiftIntent, giftIntent, {
-      groups: [EnumEmailPayloadGroup.DeliveredSender],
-    });
     if (this.isDevelopment) {
       return true;
     }
 
     const shippingDetails: GiftShippingDetails = {
-      addressLine1:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
-      addressLine2:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
-      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
-      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
-      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
-      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
       ETA: '', // TODO: verify we save this
     };
 
     const payload: GiftDeliveredToSenderMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendSenderGiftDelivered],
+      }),
       giftDetails: {
         productName:
           giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]?.name,
@@ -494,24 +443,14 @@ export class EmailService {
     }
 
     const shippingDetails: GiftShippingDetails = {
-      addressLine1:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine1,
-      addressLine2:
-        giftIntent?.recipient?.user?.profile?.shipping?.addressLine2,
-      city: giftIntent?.recipient?.user?.profile?.shipping?.city,
-      country: giftIntent?.recipient?.user?.profile?.shipping?.country,
-      state: giftIntent?.recipient?.user?.profile?.shipping?.state,
-      zipCode: giftIntent?.recipient?.user?.profile?.shipping?.zipCode,
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
       ETA: '', // TODO: verify we save this
     };
 
     const payload: GiftDeliveredToRecipientMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendRecipientGiftDelivered],
+      }),
       shippingDetails,
     };
 
