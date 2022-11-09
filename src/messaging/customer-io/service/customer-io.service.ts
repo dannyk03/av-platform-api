@@ -13,7 +13,7 @@ import {
   CustomerIOTransactionalResponse,
   EmailInstance,
   EmailStatus,
-} from '@/messaging/email/email.constant';
+} from '@/messaging/email/constant';
 
 @Injectable()
 export class CustomerIOService {

@@ -30,7 +30,8 @@
       "readyLinkInvalid": "Invalid gift-intent ready link",
       "readyLinkNotFound": "Gift-intent ready link not found",
       "statusAlready": "Gift-intent is already in the requested status",
-      "statusNotAvailable": "Gift-intent requested status not available at this time"
+      "statusNotAvailable": "Gift-intent requested status not available at this time",
+      "notSubmitted": "Gift-intent option not submitted"
     }
   },
   "order": {

@@ -12,7 +12,7 @@ import {
   GiftSurveyMessageData,
   Identifier,
   SignUpEmailVerificationMessageData,
-} from '../email.constant';
+} from '../constant';
 
 export class SendEmailDto {
   @IsString()

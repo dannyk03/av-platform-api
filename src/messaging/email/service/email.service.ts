@@ -2,6 +2,8 @@ import { Inject, Injectable, Request } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
+import { plainToInstance } from 'class-transformer';
+
 import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
@@ -16,6 +18,7 @@ import {
   EmailStatus,
   EmailTemplate,
   GiftDeliveredToRecipientMessageData,
+  GiftDeliveredToSenderMessageData,
   GiftDetails,
   GiftOption,
   GiftOptionSelectMessageData,
@@ -23,10 +26,16 @@ import {
   GiftStatusUpdateMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
-} from '../email.constant';
+} from '../constant';
+
+import {
+  EmailPayloadShipping,
+  EmailPayloadTheParticipatingParties,
+} from '../transform';
 
 @Injectable()
 export class EmailService {
+  private readonly origin: string = this.request.get('origin');
   private readonly isDevelopment: boolean =
     this.configService.get<boolean>('app.isDevelopment');
 
@@ -59,12 +68,12 @@ export class EmailService {
         ref: fromUser.id,
         personalNote,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({ email, ref: fromUser.id });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -94,12 +103,12 @@ export class EmailService {
         rejectPath,
         personalNote,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({ email, approvePath, rejectPath });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -129,12 +138,12 @@ export class EmailService {
         organizationName,
         path,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({ email, code, expiresInDays, organizationName, path });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -165,12 +174,12 @@ export class EmailService {
         activationCode: code,
         user: { firstName },
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({ email, code, expiresInDays, path });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -199,12 +208,12 @@ export class EmailService {
           firstName: firstName,
         },
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({ email, firstName });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -231,16 +240,12 @@ export class EmailService {
         senderEmail,
         path,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: recipientEmail },
     });
-    console.log({
-      recipientEmail,
-      senderEmail,
-      path,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -266,16 +271,12 @@ export class EmailService {
         path,
         code,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      path,
-      email,
-      code,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -303,12 +304,10 @@ export class EmailService {
     );
 
     const payload: GiftOptionSelectMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendGiftSelection],
+      }),
+      code,
       giftIntentId: giftIntent.id,
       giftOptions,
     };
@@ -319,7 +318,7 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
@@ -328,63 +327,28 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGiftShipped({
-    email,
-    path = '/shipped',
-  }: {
-    email: string;
-    path?: string;
-  }): Promise<boolean> {
-    // Stub for local development
-    if (this.isDevelopment) {
-      return true;
-    }
-
-    // TODO: Verify template parameters
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGiftShipped.toString(),
-      to: [email],
-      emailTemplatePayload: {
-        path,
-        transport: {
-          origin: this.request.get('origin'),
-        },
-      },
-      identifier: { id: email },
-    });
-    console.log({
-      path,
-      email,
-    });
-    return sendResult.status === EmailStatus.success;
-  }
-
-  getGiftStatusUpdateMessageData(giftIntent: GiftIntent) {
+  getGiftOnItsWayMessageData(giftIntent: GiftIntent) {
     const giftDetails: GiftDetails = {
       productName:
-        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0].name,
+        giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].name,
       imageUrl:
-        giftIntent.giftSubmit[0].gifts[0].products[0].displayOptions[0]
-          .images[0].secureUrl,
-      formattedPrice: `$${giftIntent.giftSubmit[0].gifts[0].products[0].price}`, // TODO: verify the unit of mesure + add symbols '.' , ','
-      personalNote: giftIntent.giftSubmit[0].personalNote,
+        giftIntent.giftSubmit.gifts[0].products[0].displayOptions[0].images[0]
+          ?.secureUrl,
+      formattedPrice: `$${giftIntent.giftSubmit.gifts[0].products[0].price}`, // TODO: verify the unit of measure + add symbols '.' , ','
+      personalNote: giftIntent.giftSubmit.personalNote,
     };
 
     const shippingDetails: GiftShippingDetails = {
-      shippingAddress: '', // TODO: verify we save this
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
       ETA: '', // TODO: verify we save this
     };
 
     const data: GiftStatusUpdateMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendSenderGiftIsOnItsWay],
+      }),
       giftDetails,
       shippingDetails,
-      sendAnotherGiftUrl: '', // TODO: When action url is ready update here
     };
 
     return data;
@@ -392,11 +356,9 @@ export class EmailService {
 
   async sendSenderTheGiftIsOnItsWay({
     email,
-    path = '/shipped',
     giftIntent,
   }: {
     email: string;
-    path?: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
     // Stub for local development
@@ -408,53 +370,21 @@ export class EmailService {
       template: EmailTemplate.SendSenderGiftIsOnItsWay.toString(),
       to: [email],
       emailTemplatePayload: {
-        ...this.getGiftStatusUpdateMessageData(giftIntent),
+        ...this.getGiftOnItsWayMessageData(giftIntent),
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      path,
-      email,
-    });
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendSenderTheGiftWasDelivered({
+  async sendSenderTheGiftDelivered({
     email,
     giftIntent,
   }: {
-    email: string;
-    giftIntent: GiftIntent;
-  }): Promise<boolean> {
-    // Stub for local development
-    if (this.isDevelopment) {
-      return true;
-    }
-
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendSenderGiftDelivered.toString(),
-      to: [email],
-      emailTemplatePayload: {
-        ...this.getGiftStatusUpdateMessageData(giftIntent),
-        transport: {
-          origin: this.request.get('origin'),
-        },
-      },
-      identifier: { id: email },
-    });
-    console.log({
-      email,
-    });
-    return sendResult.status === EmailStatus.success;
-  }
-
-  async sendRecipientTheGiftWasDelivered({
-    email,
-    giftIntent,
-  }: {
+    // Sender email
     email: string;
     giftIntent: GiftIntent;
   }): Promise<boolean> {
@@ -464,19 +394,64 @@ export class EmailService {
     }
 
     const shippingDetails: GiftShippingDetails = {
-      shippingAddress: '', // TODO: verify we save this
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
+      ETA: '', // TODO: verify we save this
+    };
+
+    const payload: GiftDeliveredToSenderMessageData = {
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendSenderGiftDelivered],
+      }),
+      giftDetails: {
+        productName:
+          giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]?.name,
+        imageUrl:
+          giftIntent.giftSubmit?.gifts[0].products[0].displayOptions[0]
+            .images[0].secureUrl,
+        formattedPrice: `$${giftIntent.giftSubmit?.gifts[0].products[0].price}`,
+        personalNote: giftIntent?.giftSubmit?.personalNote,
+      },
+      shippingDetails,
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendSenderGiftDelivered.toString(),
+      to: [email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendRecipientTheGiftDelivered({
+    email,
+    giftIntent,
+  }: {
+    // Recipient email
+    email: string;
+    giftIntent: GiftIntent;
+  }): Promise<boolean> {
+    // Stub for local development
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const shippingDetails: GiftShippingDetails = {
+      ...plainToInstance(EmailPayloadShipping, giftIntent),
       ETA: '', // TODO: verify we save this
     };
 
     const payload: GiftDeliveredToRecipientMessageData = {
-      recipient: {
-        firstName: giftIntent.recipient.user.profile.firstName,
-      },
-      sender: {
-        firstName: giftIntent.sender.user.profile.firstName,
-      },
-      shippingDetails: shippingDetails,
-      actionUrl: '', // TODO: Add here the relevant url
+      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
+        groups: [EmailTemplate.SendRecipientGiftDelivered],
+      }),
+      shippingDetails,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
@@ -485,14 +460,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -551,15 +524,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -593,15 +563,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -639,15 +606,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -684,15 +648,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: email },
     });
-    console.log({
-      email,
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 
@@ -727,14 +688,12 @@ export class EmailService {
       emailTemplatePayload: {
         ...payload,
         transport: {
-          origin: this.request.get('origin'),
+          origin: this.origin,
         },
       },
       identifier: { id: inviterUser.email },
     });
-    console.log({
-      payload,
-    });
+
     return sendResult.status === EmailStatus.success;
   }
 }
