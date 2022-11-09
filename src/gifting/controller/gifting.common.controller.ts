@@ -24,7 +24,7 @@ import {
 } from '@avo/type';
 
 import flatMap from 'lodash/flatMap';
-import { DataSource, In, IsNull, Not } from 'typeorm';
+import { DataSource, In, IsNull } from 'typeorm';
 
 import { GiftIntent, GiftIntentConfirmationLink } from '../entity';
 import { User } from '@/user/entity';

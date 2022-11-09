@@ -291,7 +291,7 @@ export class EmailService {
   }): Promise<boolean> {
     // Stub for local development
     if (this.isDevelopment) {
-      // return true;
+      return true;
     }
     // TODO remove all [0], and implement with localization and bundles
     const giftOptions: GiftOption[] = giftIntent.giftOptions.map(
