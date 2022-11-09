@@ -338,8 +338,6 @@ export class GiftingCommonController {
           },
         },
         giftOptions: { id: In(giftOptionIds) },
-        confirmedAt: Not(IsNull()),
-        acceptedAt: Not(IsNull()),
         submittedAt: IsNull(),
       },
       relations: ['giftOptions', 'additionalData', 'sender', 'sender.user'],
@@ -349,6 +347,14 @@ export class GiftingCommonController {
       throw new UnprocessableEntityException({
         statusCode: EnumGiftIntentStatusCodeError.GiftIntentUnprocessableError,
         message: 'gift.intent.error.unprocessable',
+      });
+    }
+
+    if (!giftIntent.readyAt) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentNotReadyForSubmitError,
+        message: 'gift.intent.error.notReadyForSubmit',
       });
     }
 
