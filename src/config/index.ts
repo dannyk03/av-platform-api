@@ -11,6 +11,7 @@ import CloudinaryConfig from './cloudinary.config';
 import CustomerIoConfig from './customer-io.config';
 import DatabaseConfig from './database.config';
 import DebuggerConfig from './debugger.config';
+import DefaultConfig from './default.config';
 import FileConfig from './file.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
@@ -34,6 +35,7 @@ export const Configs = [
   StripeConfig,
   TwilioConfig,
   DebuggerConfig,
+  DefaultConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({

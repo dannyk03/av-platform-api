@@ -56,6 +56,7 @@ import { EnumLogAction } from '@/log/constant';
 
 import {
   FileMaxFilesImagePipe,
+  FileRequiredPipe,
   FileSizeImagePipe,
   FileTypeImagePipe,
 } from '@/utils/file/pipes';
@@ -91,7 +92,12 @@ export class ProductCommonController {
   @UploadFileMultiple('images')
   @Post()
   async create(
-    @UploadedFiles(FileSizeImagePipe, FileMaxFilesImagePipe, FileTypeImagePipe)
+    @UploadedFiles(
+      FileRequiredPipe,
+      FileSizeImagePipe,
+      FileMaxFilesImagePipe,
+      FileTypeImagePipe,
+    )
     images: IFile[],
     @Body()
     {

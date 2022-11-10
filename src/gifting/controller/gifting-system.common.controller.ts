@@ -168,6 +168,7 @@ export class GiftingSystemCommonController {
         readyAt: true,
         submittedAt: true,
         shippedAt: true,
+        paidAt: true,
         deliveredAt: true,
       },
     });
@@ -215,18 +216,44 @@ export class GiftingSystemCommonController {
 
     let devResult: any;
 
-    if (status === EnumGiftIntentStatus.Ready) {
-      devResult = await this.giftIntentService.notifyGiftOptionsReady({
-        id: giftIntent.id,
-        markAsReady: false,
-      });
-    }
+    switch (status) {
+      case EnumGiftIntentStatus.Ready:
+        const giftOptionsCount = await this.giftService.count({
+          where: {
+            giftIntent: {
+              id: giftIntent.id,
+            },
+          },
+        });
 
-    if (status === EnumGiftIntentStatus.Shipped) {
-      devResult = await this.giftIntentService.notifyGiftShipped({
-        id: giftIntent.id,
-        markAsShipped: false,
-      });
+        // Minimum 3 gift Options
+        if (giftOptionsCount < 3) {
+          throw new ForbiddenException({
+            statusCode:
+              EnumGiftIntentStatusCodeError.GiftIntentUnprocessableStatusUpdateError,
+            message: 'gift.intent.error.mustHaveAtLeastThreeOptions',
+          });
+        }
+
+        devResult = await this.giftIntentService.notifyGiftOptionsReady({
+          id: giftIntent.id,
+          markAsReady: false,
+        });
+        break;
+      case EnumGiftIntentStatus.Shipped:
+        devResult = await this.giftIntentService.notifyGiftShipped({
+          id: giftIntent.id,
+          markAsShipped: false,
+        });
+        break;
+      case EnumGiftIntentStatus.Delivered:
+        devResult = await this.giftIntentService.notifyGiftDelivered({
+          id: giftIntent.id,
+          markAsDelivered: false,
+        });
+        break;
+      default:
+        break;
     }
 
     giftIntent[`${status.toLowerCase()}At`] = this.helperDateService.create();
@@ -380,6 +407,8 @@ export class GiftingSystemCommonController {
       lang,
     }: GiftOptionUpdateDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const giftOption = await this.giftService.findOne({
       where: {
         id: giftOptionId,
@@ -478,6 +507,8 @@ export class GiftingSystemCommonController {
     @Body()
     { productIds, giftOptionId, matchReason, lang }: GiftOptionUpsetDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const giftOption = giftOptionId
       ? await this.giftService.findOne({
           where: {
@@ -583,6 +614,8 @@ export class GiftingSystemCommonController {
     @Param('id') giftIntentId: string,
     @Body() { giftOptionIds }: GiftOptionDeleteDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const { affected } = await this.giftService.deleteOneBy({
       id: In(giftOptionIds),
       giftIntent: { id: giftIntentId },
