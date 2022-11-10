@@ -94,14 +94,10 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly lastName: string;
 
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  @EmptyStringToUndefinedTransform()
   @IsPhoneNumber()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  readonly phoneNumber?: string;
+  readonly phoneNumber!: string;
 
   @IsString()
   @IsOptional()

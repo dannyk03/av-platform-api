@@ -12,6 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
@@ -38,6 +39,7 @@ import {
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
+import { TwilioService } from '@/messaging/twilio/service';
 import {
   InvitationLinkService,
   SocialConnectionRequestService,
@@ -66,6 +68,8 @@ import {
   AuthResetPasswordSetDto,
   AuthSignUpDto,
   AuthSignUpRefDto,
+  AuthSmsOtpGetDto,
+  AuthSmsOtpVerifyDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
@@ -97,7 +101,50 @@ export class AuthCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
     private readonly resetPasswordLinkService: ResetPasswordLinkService,
+    private readonly twilioService: TwilioService,
   ) {}
+
+  @ClientResponse('auth.smsOtpGet')
+  @Throttle(1, 10)
+  @HttpCode(HttpStatus.OK)
+  @Post('/sms-otp')
+  async createSmsVerificationOTP(
+    @Body() { phoneNumber }: AuthSmsOtpGetDto,
+  ): Promise<void> {
+    const checkExist = await this.userService.checkExist({
+      phoneNumber,
+    });
+
+    if (!checkExist.phoneNumber) {
+      // TODO fix
+      throw new BadRequestException({
+        silent: true,
+        // statusCode: EnumUserStatusCodeError.UserPhoneNumberExistsError,
+        // message: 'user.error.phoneNumberExists',
+      });
+    }
+    await this.twilioService.createVerificationsSmsOPT({ phoneNumber });
+  }
+
+  @ClientResponse('auth.smsOtpVerify')
+  @Throttle(1, 10)
+  @HttpCode(HttpStatus.OK)
+  @Post('/verify-sms-otp')
+  async verifySmsVerificationOTP(
+    @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
+  ): Promise<void> {
+    const isOtpApproved = await this.twilioService.checkVerificationSmsOTP({
+      phoneNumber,
+      code,
+    });
+
+    if (!isOtpApproved) {
+      throw new BadRequestException({
+        // statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+        // message: 'vendor.error.notFound',
+      });
+    }
+  }
 
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
@@ -272,9 +319,11 @@ export class AuthCommonController {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
-    const checkExist = await this.userService.checkExist(email, phoneNumber);
+
+    const checkExist = await this.userService.checkExist({
+      email,
+      phoneNumber,
+    });
 
     if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
@@ -450,11 +499,25 @@ export class AuthCommonController {
           },
         });
 
+        try {
+          await this.twilioService.createVerificationsSmsOPT({ phoneNumber });
+        } catch (error) {
+          // TODO fix stf
+          throw new InternalServerErrorException({
+            // statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+            // message: 'messaging.error.email.send',
+            error,
+          });
+        }
+
         await this.helperCookieService.detachAccessToken(response);
 
         // For local development/testing
         const isDevelopment =
           this.configService.get<boolean>('app.isDevelopment');
+        const isSecureMode: boolean =
+          this.configService.get<boolean>('app.isSecureMode');
+
         if (isDevelopment || !isSecureMode) {
           return { code: signUpEmailVerificationLink.code };
         }

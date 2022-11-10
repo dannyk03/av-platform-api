@@ -97,11 +97,14 @@ export class UserService {
     return Boolean(exists);
   }
 
-  async checkExist(
-    email: string,
-    phoneNumber?: string,
-  ): Promise<IUserCheckExist> {
-    const existEmail = await this.findOneBy({ email });
+  async checkExist({
+    email,
+    phoneNumber,
+  }: {
+    email?: string;
+    phoneNumber?: string;
+  }): Promise<IUserCheckExist> {
+    const existEmail = email && (await this.findOneBy({ email }));
 
     const existsPhoneNumber =
       phoneNumber && (await this.findOneBy({ phoneNumber }));

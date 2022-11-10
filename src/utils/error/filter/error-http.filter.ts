@@ -79,6 +79,8 @@ export class ErrorHttpFilter implements ExceptionFilter {
       const {
         statusCode,
         message,
+        silent,
+        detailed,
         error,
         errorType,
         data,
@@ -141,7 +143,11 @@ export class ErrorHttpFilter implements ExceptionFilter {
       const resResponse: IErrorHttpFilter = {
         statusCode: statusCode || statusHttp,
         message: mapMessage,
-        error: error && Object.keys(error).length ? error : exception.message,
+        error: detailed
+          ? error && Object.keys(error).length
+            ? error
+            : exception.message
+          : undefined,
         errors: errors as IErrors[] | IErrorsImport[],
         meta: resMetadata,
         data,
@@ -155,7 +161,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         .setHeader('x-version', __version)
         .setHeader('x-repo-version', __repoVersion)
         .status(statusHttp)
-        .json(resResponse);
+        .json(silent ? { status: 'OK' } : resResponse);
     } else {
       // In certain situations `httpAdapter` might not be available in the
       // constructor method, thus we should resolve it here.

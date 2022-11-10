@@ -17,6 +17,7 @@ import { CustomerIOService } from './customer-io';
       useFactory: (configService: ConfigService) => ({
         accountSid: configService.get<string>('twilio.accountSid'),
         authToken: configService.get<string>('twilio.authToken'),
+        logLevel: configService.get<string>('twilio.logLevel'),
       }),
     }),
   ],
