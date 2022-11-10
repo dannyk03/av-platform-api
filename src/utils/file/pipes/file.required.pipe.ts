@@ -20,7 +20,7 @@ export class FileRequiredPipe implements PipeTransform {
     if (!value || (Array.isArray(value) && value.length === 0)) {
       throw new UnprocessableEntityException({
         statusCode: EnumFileStatusCodeError.FileNeededError,
-        message: 'file.error.notFound',
+        message: 'file.error.requiredNotFound',
       });
     }
   }
