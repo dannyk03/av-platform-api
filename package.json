@@ -134,6 +134,7 @@
     "@types/response-time": "^2.3.5",
     "@types/streamifier": "^0.1.0",
     "@types/supertest": "^2.0.12",
+    "@types/twilio": "^3.19.3",
     "@types/ua-parser-js": "^0.7.36",
     "@types/uuid": "^8.3.4",
     "@types/validator": "^13.7.10",
