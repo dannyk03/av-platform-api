@@ -2,8 +2,6 @@ import { Inject, Injectable, Request } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
-import { plainToInstance } from 'class-transformer';
-
 import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
