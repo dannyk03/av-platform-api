@@ -44,7 +44,6 @@ import {
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
-import { TwilioService } from '@/messaging/twilio/service';
 import {
   InvitationLinkService,
   SocialConnectionRequestService,
@@ -104,14 +103,7 @@ export class AuthCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
     private readonly resetPasswordLinkService: ResetPasswordLinkService,
-    private readonly twilioService: TwilioService,
   ) {}
-
-  @HttpCode(HttpStatus.OK)
-  @Get('/aaa')
-  test() {
-    this.twilioService.test();
-  }
 
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
