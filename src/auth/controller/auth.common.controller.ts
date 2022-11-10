@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
@@ -24,14 +23,9 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { code } from 'currency-codes';
-import { Response, response } from 'express';
-import { ref } from 'joi';
-import { now } from 'lodash';
-import { type } from 'os';
+import { Response } from 'express';
 import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
-import { string } from 'yargs';
 
 import { UserAuthConfig } from '../entity';
 import { SocialConnectionRequest } from '@/networking/entity';
