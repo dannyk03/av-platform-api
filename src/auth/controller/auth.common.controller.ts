@@ -144,6 +144,8 @@ export class AuthCommonController {
         // message: 'vendor.error.notFound',
       });
     }
+
+    // TODO commit phone_verified_at
   }
 
   @ClientResponse('auth.login')
