@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeepPartial,
   DeleteResult,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -22,6 +23,14 @@ export class GiftService {
 
   async create(props: DeepPartial<Gift>): Promise<Gift> {
     return this.giftRepository.create(props);
+  }
+
+  async find(find?: FindManyOptions<Gift>): Promise<Gift[]> {
+    return this.giftRepository.find(find);
+  }
+
+  async count(find?: FindManyOptions<Gift>): Promise<number> {
+    return this.giftRepository.count(find);
   }
 
   async save(props: Gift): Promise<Gift> {
