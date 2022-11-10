@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   InternalServerErrorException,
@@ -23,9 +24,14 @@ import {
   IResponseData,
 } from '@avo/type';
 
-import { Response } from 'express';
+import { code } from 'currency-codes';
+import { Response, response } from 'express';
+import { ref } from 'joi';
+import { now } from 'lodash';
+import { type } from 'os';
 import { DataSource, IsNull } from 'typeorm';
 import { IResult } from 'ua-parser-js';
+import { string } from 'yargs';
 
 import { UserAuthConfig } from '../entity';
 import { SocialConnectionRequest } from '@/networking/entity';
@@ -38,6 +44,7 @@ import {
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
+import { TwilioService } from '@/messaging/twilio/service';
 import {
   InvitationLinkService,
   SocialConnectionRequestService,
@@ -97,7 +104,14 @@ export class AuthCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
     private readonly resetPasswordLinkService: ResetPasswordLinkService,
+    private readonly twilioService: TwilioService,
   ) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/aaa')
+  test() {
+    this.twilioService.test();
+  }
 
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)

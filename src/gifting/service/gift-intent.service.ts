@@ -215,7 +215,6 @@ export class GiftIntentService {
       relations: [
         'giftOptions.products.displayOptions.images',
         'additionalData',
-        'recipient.user',
         'sender.user',
       ],
     });
@@ -246,8 +245,8 @@ export class GiftIntentService {
         const emailSent = await this.emailService.sendGiftOptionSelect({
           giftIntent,
           email:
-            giftIntent.recipient?.user?.email ||
-            giftIntent.recipient?.additionalData['email'],
+            giftIntent?.sender?.user?.email ||
+            giftIntent?.sender?.additionalData['email'],
           code: readyLink.code,
         });
 
