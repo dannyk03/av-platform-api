@@ -16,6 +16,7 @@ import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
 import StripeConfig from './stripe.config';
+import TwilioConfig from './twilio.config';
 import UserConfig from './user.config';
 
 export const Configs = [
@@ -31,6 +32,7 @@ export const Configs = [
   CloudinaryConfig,
   CustomerIoConfig,
   StripeConfig,
+  TwilioConfig,
   DebuggerConfig,
 ];
 
