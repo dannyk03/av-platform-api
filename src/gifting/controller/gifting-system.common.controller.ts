@@ -218,6 +218,23 @@ export class GiftingSystemCommonController {
 
     switch (status) {
       case EnumGiftIntentStatus.Ready:
+        const giftOptionsCount = await this.giftService.count({
+          where: {
+            giftIntent: {
+              id: giftIntent.id,
+            },
+          },
+        });
+
+        // Minimum 3 gift Options
+        if (giftOptionsCount < 3) {
+          throw new ForbiddenException({
+            statusCode:
+              EnumGiftIntentStatusCodeError.GiftIntentUnprocessableStatusUpdateError,
+            message: 'gift.intent.error.mustHaveAtLeastThreeOptions',
+          });
+        }
+
         devResult = await this.giftIntentService.notifyGiftOptionsReady({
           id: giftIntent.id,
           markAsReady: false,
@@ -390,6 +407,8 @@ export class GiftingSystemCommonController {
       lang,
     }: GiftOptionUpdateDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const giftOption = await this.giftService.findOne({
       where: {
         id: giftOptionId,
@@ -488,6 +507,8 @@ export class GiftingSystemCommonController {
     @Body()
     { productIds, giftOptionId, matchReason, lang }: GiftOptionUpsetDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const giftOption = giftOptionId
       ? await this.giftService.findOne({
           where: {
@@ -593,6 +614,8 @@ export class GiftingSystemCommonController {
     @Param('id') giftIntentId: string,
     @Body() { giftOptionIds }: GiftOptionDeleteDto,
   ): Promise<IResponseData> {
+    await this.giftIntentService.checkIfCanBeModified({ id: giftIntentId });
+
     const { affected } = await this.giftService.deleteOneBy({
       id: In(giftOptionIds),
       giftIntent: { id: giftIntentId },

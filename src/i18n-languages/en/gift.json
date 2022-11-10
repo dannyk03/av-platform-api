@@ -32,7 +32,10 @@
       "statusAlready": "Gift-intent is already in the requested status",
       "statusNotAvailable": "Gift-intent requested status not available at this time",
       "notSubmitted": "Gift-intent option not submitted",
-      "notReadyForSubmit": "Gift-intent is not ready for submit"
+      "notReadyForSubmit": "Gift-intent is not ready for submit",
+      "mustHaveAtLeastThreeOptions": "Gift-intent must have at least 3 options",
+      "alreadySubmitted": "Gift-intent already submitted and cannot be modified",
+      "cannotModify": "Gift-intent cannot be modified"
     }
   },
   "order": {

@@ -339,4 +339,24 @@ export class GiftIntentService {
         .execute();
     }
   }
+
+  async checkIfCanBeModified({ id }: { id: string }) {
+    const giftIntent = await this.findOne({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        readyAt: true,
+      },
+    });
+
+    if (giftIntent.readyAt) {
+      throw new UnprocessableEntityException({
+        statusCode:
+          EnumGiftIntentStatusCodeError.GiftIntentCannotBeModifiedError,
+        message: 'gift.intent.error.cannotModify',
+      });
+    }
+  }
 }
