@@ -8,7 +8,7 @@ import {
 
 import { STRIPE_MODULE_OPTIONS, STRIPE_TOKEN } from './constant';
 
-import { createStripeProvider } from './provider/stripe.provider';
+import { createStripeProvider } from './provider';
 import { getStripeClient } from './utils';
 
 @Global()

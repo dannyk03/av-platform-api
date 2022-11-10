@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { AclController } from '@acl/controller';
@@ -34,7 +33,6 @@ import {
   imports: [
     AuthModule,
     UserModule,
-    HttpModule,
     AuthModule,
     UserModule,
     AclRoleModule,
