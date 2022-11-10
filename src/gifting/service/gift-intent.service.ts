@@ -174,11 +174,13 @@ export class GiftIntentService {
       this.emailService.sendSenderTheGiftDelivered({
         email:
           giftIntent.sender?.user?.email ||
-          giftIntent.recipient?.additionalData['email'],
+          giftIntent.sender?.additionalData['email'],
         giftIntent,
       }),
       this.emailService.sendRecipientTheGiftDelivered({
-        email: giftIntent.recipient?.user?.email,
+        email:
+          giftIntent.recipient?.user?.email ||
+          giftIntent.recipient?.additionalData['email'],
         giftIntent,
       }),
     ]);
@@ -314,8 +316,8 @@ export class GiftIntentService {
           1. verify if there's an option the email is empty
           2. there should also be a mail for the sender  
       */
-        giftIntent.recipient?.user?.email ||
-        giftIntent.recipient?.additionalData['email'],
+        giftIntent.sender?.user?.email ||
+        giftIntent.sender?.additionalData['email'],
       giftIntent,
     });
 
