@@ -159,7 +159,7 @@ export class GiftIntentService {
         'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
         'recipient.user.profile.shipping',
-        'sender.user',
+        'sender.user.profile',
       ],
     });
 
@@ -217,8 +217,8 @@ export class GiftIntentService {
       relations: [
         'giftOptions.products.displayOptions.images',
         'additionalData',
-        'sender.user',
-        'recipient.user',
+        'sender.user.profile',
+        'recipient.user.profile',
       ],
     });
 
@@ -299,7 +299,7 @@ export class GiftIntentService {
         'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
         'sender.user.profile',
-        'recipient.user',
+        'recipient.user.profile',
       ],
     });
 
