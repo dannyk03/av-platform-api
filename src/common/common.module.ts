@@ -9,7 +9,6 @@ import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { DatabaseModule } from '@/database/database.module';
 import { DebuggerModule } from '@/debugger/debugger.module';
 import { LogModule } from '@/log/log.module';
-import { TwilioModule } from '@/messaging/twilio/twilio.module';
 import { ResponseMessageModule } from '@/response-message/response-message.module';
 import { ErrorModule } from '@/utils/error/error.module';
 import { HelperModule } from '@/utils/helper/helper.module';
