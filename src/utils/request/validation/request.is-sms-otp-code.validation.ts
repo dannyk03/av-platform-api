@@ -35,7 +35,7 @@ export function IsSmsOtpCode(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsSmsOtpCode,
+      validator: IsSmsOtpCodeConstraint,
     });
   };
 }

@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 import { AuthSmsOtpGetDto } from './auth.sms-otp-get.dto';
 
 import { NormalizeStringInputTransform } from '@/utils/request/transform';
-import { IsSmsOtpCode } from '@/utils/request/validation/request.is-sms-otp-code.validation';
+import { IsSmsOtpCode } from '@/utils/request/validation';
 
 export class AuthSmsOtpVerifyDto extends AuthSmsOtpGetDto {
   @IsSmsOtpCode()

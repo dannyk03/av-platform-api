@@ -131,16 +131,20 @@ export class AuthCommonController {
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<void> {
-    const isOtpApproved = await this.authService.checkVerificationSmsOTP({
-      phoneNumber,
-      code,
-    });
-
-    if (!isOtpApproved) {
-      throw new BadRequestException({
-        // statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
-        // message: 'vendor.error.notFound',
+    try {
+      const isOtpApproved = await this.authService.checkVerificationSmsOTP({
+        phoneNumber,
+        code,
       });
+
+      if (!isOtpApproved) {
+        throw new BadRequestException({
+          // statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
+          // message: 'vendor.error.notFound',
+        });
+      }
+    } catch (error) {
+      debugger;
     }
 
     // TODO commit phone_verified_at
