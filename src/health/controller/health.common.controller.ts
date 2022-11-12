@@ -51,7 +51,7 @@ export class HealthCommonController {
 
   private checkStorage = () =>
     this.diskHealthIndicator.checkStorage('disk health', {
-      thresholdPercent: 0.75,
+      thresholdPercent: 0.9,
       path: '/',
     });
 
