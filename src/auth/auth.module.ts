@@ -12,6 +12,7 @@ import {
   AuthSignUpVerificationLinkService,
   ResetPasswordLinkService,
 } from './service';
+import { TwilioService } from '@/messaging/twilio/service';
 
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
@@ -31,6 +32,7 @@ import { ConnectionNames } from '@/database/constant';
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
     ResetPasswordLinkService,
+    TwilioService,
   ],
   exports: [
     AuthService,

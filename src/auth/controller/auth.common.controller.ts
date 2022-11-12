@@ -39,7 +39,6 @@ import {
 } from '../service';
 import { LogService } from '@/log/service';
 import { EmailService } from '@/messaging/email/service';
-import { TwilioService } from '@/messaging/twilio/service';
 import {
   InvitationLinkService,
   SocialConnectionRequestService,
@@ -101,7 +100,6 @@ export class AuthCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly socialConnectionRequestService: SocialConnectionRequestService,
     private readonly resetPasswordLinkService: ResetPasswordLinkService,
-    private readonly twilioService: TwilioService,
   ) {}
 
   @ClientResponse('auth.smsOtpGet')
@@ -123,7 +121,7 @@ export class AuthCommonController {
         // message: 'user.error.phoneNumberExists',
       });
     }
-    await this.twilioService.createVerificationsSmsOPT({ phoneNumber });
+    await this.authService.createVerificationsSmsOPT({ phoneNumber });
   }
 
   @ClientResponse('auth.smsOtpVerify')
@@ -133,7 +131,7 @@ export class AuthCommonController {
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<void> {
-    const isOtpApproved = await this.twilioService.checkVerificationSmsOTP({
+    const isOtpApproved = await this.authService.checkVerificationSmsOTP({
       phoneNumber,
       code,
     });
@@ -502,7 +500,7 @@ export class AuthCommonController {
         });
 
         try {
-          await this.twilioService.createVerificationsSmsOPT({ phoneNumber });
+          await this.authService.createVerificationsSmsOPT({ phoneNumber });
         } catch (error) {
           // TODO fix stf
           throw new InternalServerErrorException({

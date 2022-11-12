@@ -11,9 +11,7 @@ import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
 import { User } from '../entity';
 
-import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
-import { HelperPromiseService } from '@/utils/helper/service';
 
 import { ReqUser } from '../decorator/user.decorator';
 import { LogTrace } from '@/log/decorator';
@@ -36,8 +34,6 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class UserCommonController {
   constructor(
-    private readonly emailService: EmailService,
-    private readonly helperPromiseService: HelperPromiseService,
     private readonly socialConnectionService: SocialConnectionService,
   ) {}
 
