@@ -2,8 +2,6 @@ import { Inject, Injectable, Request } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
-import { plainToInstance } from 'class-transformer';
-
 import { GiftIntent } from '@/gifting/entity';
 import { User } from '@/user/entity';
 
@@ -29,9 +27,9 @@ import {
 } from '../constant';
 
 import {
-  EmailPayloadShipping,
-  EmailPayloadTheParticipatingParties,
-} from '../transform';
+  getRecipientShippingDetails,
+  getTheParticipatingParties,
+} from '../utils';
 
 @Injectable()
 export class EmailService {
@@ -306,9 +304,7 @@ export class EmailService {
     );
 
     const payload: GiftOptionSelectMessageData = {
-      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
-        groups: [EmailTemplate.SendGiftSelection],
-      }),
+      ...getTheParticipatingParties(giftIntent),
       code,
       giftIntentId: giftIntent.id,
       giftOptions,
@@ -342,14 +338,13 @@ export class EmailService {
     };
 
     const shippingDetails: GiftShippingDetails = {
-      ...plainToInstance(EmailPayloadShipping, giftIntent),
-      ETA: '', // TODO: verify we save this
+      ...getRecipientShippingDetails(giftIntent),
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const data: GiftStatusUpdateMessageData = {
-      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
-        groups: [EmailTemplate.SendSenderGiftIsOnItsWay],
-      }),
+      ...getTheParticipatingParties(giftIntent),
       giftDetails,
       shippingDetails,
     };
@@ -397,14 +392,13 @@ export class EmailService {
     }
 
     const shippingDetails: GiftShippingDetails = {
-      ...plainToInstance(EmailPayloadShipping, giftIntent),
-      ETA: '', // TODO: verify we save this
+      ...getRecipientShippingDetails(giftIntent),
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const payload: GiftDeliveredToSenderMessageData = {
-      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
-        groups: [EmailTemplate.SendSenderGiftDelivered],
-      }),
+      ...getTheParticipatingParties(giftIntent),
       giftDetails: {
         productName:
           giftIntent.giftSubmit?.gifts[0]?.products[0]?.displayOptions[0]?.name,
@@ -447,14 +441,16 @@ export class EmailService {
     }
 
     const shippingDetails: GiftShippingDetails = {
-      ...plainToInstance(EmailPayloadShipping, giftIntent),
-      ETA: '', // TODO: verify we save this
+      ...getRecipientShippingDetails(giftIntent),
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const payload: GiftDeliveredToRecipientMessageData = {
-      ...plainToInstance(EmailPayloadTheParticipatingParties, giftIntent, {
-        groups: [EmailTemplate.SendRecipientGiftDelivered],
-      }),
+      ...getTheParticipatingParties(giftIntent),
+      giftDetails: {
+        personalNote: giftIntent?.giftSubmit?.personalNote,
+      },
       shippingDetails,
     };
 
