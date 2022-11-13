@@ -13,7 +13,6 @@ import {
 } from 'class-validator';
 
 import {
-  EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
   TrimTransform,

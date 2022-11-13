@@ -7,7 +7,6 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   Repository,
-  UpdateResult,
 } from 'typeorm';
 
 import { UserAuthConfig } from '../entity';
