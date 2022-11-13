@@ -339,7 +339,8 @@ export class EmailService {
 
     const shippingDetails: GiftShippingDetails = {
       ...getRecipientShippingDetails(giftIntent),
-      ETA: '', // TODO: verify we save this
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const data: GiftStatusUpdateMessageData = {
@@ -392,7 +393,8 @@ export class EmailService {
 
     const shippingDetails: GiftShippingDetails = {
       ...getRecipientShippingDetails(giftIntent),
-      ETA: '', // TODO: verify we save this
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const payload: GiftDeliveredToSenderMessageData = {
@@ -440,7 +442,8 @@ export class EmailService {
 
     const shippingDetails: GiftShippingDetails = {
       ...getRecipientShippingDetails(giftIntent),
-      ETA: '', // TODO: verify we save this
+      shippingTimeInDays:
+        giftIntent.giftSubmit?.gifts[0]?.products[0]?.shippingTimeInDays,
     };
 
     const payload: GiftDeliveredToRecipientMessageData = {
