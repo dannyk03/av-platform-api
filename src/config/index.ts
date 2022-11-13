@@ -100,6 +100,9 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           CLOUDINARY_API_SECRET: Joi.string().required(),
 
           CUSTOMER_IO_API_KEY: Joi.string().required(),
+
+          TWILIO_ACCOUNT_SID: Joi.string().required(),
+          TWILIO_AUTH_TOKEN: Joi.string().required(),
         }),
   validationOptions: {
     allowUnknown: true,
