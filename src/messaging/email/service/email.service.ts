@@ -448,6 +448,9 @@ export class EmailService {
 
     const payload: GiftDeliveredToRecipientMessageData = {
       ...getTheParticipatingParties(giftIntent),
+      giftDetails: {
+        personalNote: giftIntent?.giftSubmit?.personalNote,
+      },
       shippingDetails,
     };
 

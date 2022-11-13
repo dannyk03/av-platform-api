@@ -137,6 +137,9 @@ export type GiftDeliveredToRecipientMessageData = {
   sender: {
     firstName: string;
   };
+  giftDetails: {
+    personalNote: string;
+  };
   shippingDetails: GiftShippingDetails;
 };
 
