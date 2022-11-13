@@ -159,7 +159,7 @@ export class GiftIntentService {
         'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
         'recipient.user.profile.shipping',
-        'sender.user',
+        'sender.user.profile',
       ],
     });
 
@@ -174,11 +174,13 @@ export class GiftIntentService {
       this.emailService.sendSenderTheGiftDelivered({
         email:
           giftIntent.sender?.user?.email ||
-          giftIntent.recipient?.additionalData['email'],
+          giftIntent.sender?.additionalData['email'],
         giftIntent,
       }),
       this.emailService.sendRecipientTheGiftDelivered({
-        email: giftIntent.recipient?.user?.email,
+        email:
+          giftIntent.sender?.user?.email ||
+          giftIntent.recipient?.additionalData['email'],
         giftIntent,
       }),
     ]);
@@ -215,7 +217,8 @@ export class GiftIntentService {
       relations: [
         'giftOptions.products.displayOptions.images',
         'additionalData',
-        'sender.user',
+        'sender.user.profile',
+        'recipient.user.profile',
       ],
     });
 
@@ -296,7 +299,7 @@ export class GiftIntentService {
         'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
         'sender.user.profile',
-        'recipient.user',
+        'recipient.user.profile',
       ],
     });
 
@@ -314,8 +317,8 @@ export class GiftIntentService {
           1. verify if there's an option the email is empty
           2. there should also be a mail for the sender  
       */
-        giftIntent.recipient?.user?.email ||
-        giftIntent.recipient?.additionalData['email'],
+        giftIntent.sender?.user?.email ||
+        giftIntent.sender?.additionalData['email'],
       giftIntent,
     });
 
