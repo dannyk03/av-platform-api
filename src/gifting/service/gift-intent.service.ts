@@ -179,7 +179,7 @@ export class GiftIntentService {
       }),
       this.emailService.sendRecipientTheGiftDelivered({
         email:
-          giftIntent.sender?.user?.email ||
+          giftIntent.recipient?.user?.email ||
           giftIntent.recipient?.additionalData['email'],
         giftIntent,
       }),
