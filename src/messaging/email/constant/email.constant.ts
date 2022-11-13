@@ -116,7 +116,7 @@ export type GiftShippingDetails = {
   country: string;
   state: string;
   zipCode: string;
-  ETA?: string;
+  shippingTimeInDays?: number;
 };
 
 export type GiftStatusUpdateMessageData = {
@@ -136,6 +136,9 @@ export type GiftDeliveredToRecipientMessageData = {
   };
   sender: {
     firstName: string;
+  };
+  giftDetails: {
+    personalNote: string;
   };
   shippingDetails: GiftShippingDetails;
 };
