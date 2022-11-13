@@ -16,6 +16,7 @@
     "inactive": "User not active",
     "emailExists": "The email has already been taken",
     "phoneNumberExists": "Phone number already used",
+    "phoneNumberNotFound": "Phone number not found",
     "active": "User status active invalid",
     "exists": "User exists",
     "code": "Invalid sign up code",

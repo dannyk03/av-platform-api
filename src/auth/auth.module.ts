@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { MessagingModule } from '@/messaging/messaging.module';
+
 import {
   ResetPasswordLink,
   SignUpEmailVerificationLink,
@@ -12,7 +14,6 @@ import {
   AuthSignUpVerificationLinkService,
   ResetPasswordLinkService,
 } from './service';
-import { TwilioService } from '@/messaging/twilio/service';
 
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
 import { JwtStrategy } from '@/auth/guard/jwt/auth.jwt.strategy';
@@ -25,6 +26,7 @@ import { ConnectionNames } from '@/database/constant';
       [UserAuthConfig, SignUpEmailVerificationLink, ResetPasswordLink],
       ConnectionNames.Default,
     ),
+    MessagingModule,
   ],
   providers: [
     AuthService,
@@ -32,7 +34,6 @@ import { ConnectionNames } from '@/database/constant';
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
     ResetPasswordLinkService,
-    TwilioService,
   ],
   exports: [
     AuthService,

@@ -108,20 +108,22 @@ export class AuthCommonController {
   @Post('/sms-otp')
   async createSmsVerificationOTP(
     @Body() { phoneNumber }: AuthSmsOtpGetDto,
-  ): Promise<void> {
+  ): Promise<any> {
     const checkExist = await this.userService.checkExist({
       phoneNumber,
     });
 
     if (!checkExist.phoneNumber) {
-      // TODO fix
       throw new BadRequestException({
         silent: true,
-        // statusCode: EnumUserStatusCodeError.UserPhoneNumberExistsError,
-        // message: 'user.error.phoneNumberExists',
+        statusCode: EnumUserStatusCodeError.UserPhoneNumberNotFoundError,
+        message: 'user.error.phoneNumberNotFound',
       });
     }
-    await this.authService.createVerificationsSmsOPT({ phoneNumber });
+    const res = await this.authService.createVerificationsSmsOPT({
+      phoneNumber,
+    });
+    return res;
   }
 
   @ClientResponse('auth.smsOtpVerify')
@@ -139,8 +141,8 @@ export class AuthCommonController {
 
       if (!isOtpApproved) {
         throw new BadRequestException({
-          // statusCode: EnumVendorStatusCodeError.VendorNotFoundError,
-          // message: 'vendor.error.notFound',
+          statusCode: EnumAuthStatusCodeError.AuthWrongOtpValidationError,
+          message: 'auth.error.optValidation',
         });
       }
     } catch (error) {
@@ -156,7 +158,6 @@ export class AuthCommonController {
     tags: ['login', 'withEmail'],
     mask: {
       passwordStrategyFields: ['password'],
-      // emailStrategyFields: ['email'],
     },
   })
   @LoginGuard()
@@ -182,7 +183,7 @@ export class AuthCommonController {
     if (!isValid) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthWrongCredentialsError,
-        message: 'auth.error.wrongCredentials',
+        message: 'auth.error.credentials',
       });
     }
 
