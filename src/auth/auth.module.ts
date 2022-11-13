@@ -13,6 +13,7 @@ import {
   AuthService,
   AuthSignUpVerificationLinkService,
   ResetPasswordLinkService,
+  UserAuthConfigService,
 } from './service';
 
 import { JwtRefreshStrategy } from './guard/jwt-refresh/auth.jwt-refresh.strategy';
@@ -34,6 +35,7 @@ import { ConnectionNames } from '@/database/constant';
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
     ResetPasswordLinkService,
+    UserAuthConfigService,
   ],
   exports: [
     AuthService,
@@ -41,6 +43,7 @@ import { ConnectionNames } from '@/database/constant';
     JwtRefreshStrategy,
     AuthSignUpVerificationLinkService,
     ResetPasswordLinkService,
+    UserAuthConfigService,
   ],
   controllers: [],
 })

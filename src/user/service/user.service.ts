@@ -1,5 +1,4 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumUserStatusCodeError } from '@avo/type';
@@ -27,16 +26,10 @@ import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserService {
-  private readonly uploadPath: string;
-
   constructor(
     @InjectRepository(User, ConnectionNames.Default)
     private userRepository: Repository<User>,
-
-    private readonly configService: ConfigService,
-  ) {
-    this.uploadPath = this.configService.get<string>('user.uploadPath');
-  }
+  ) {}
 
   async create(props: DeepPartial<User>): Promise<User> {
     return this.userRepository.create(props);
@@ -95,6 +88,26 @@ export class UserService {
     });
 
     return Boolean(exists);
+  }
+
+  async findUserByPhoneNumberForOtp({ phoneNumber }: { phoneNumber: string }) {
+    return this.findOne({
+      where: { phoneNumber },
+      relations: {
+        authConfig: true,
+      },
+      select: {
+        id: true,
+        phoneNumber: true,
+        authConfig: {
+          id: true,
+          phoneVerifiedAt: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
   }
 
   async checkExist({

@@ -5,6 +5,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { User } from '@/user/entity';
 
+import { UserAuthConfigService } from './user-auth-config.service';
 import { TwilioService } from '@/messaging/twilio/service';
 import {
   HelperDateService,
@@ -40,6 +41,7 @@ export class AuthService {
     );
 
   constructor(
+    private readonly userAuthConfigService: UserAuthConfigService,
     private readonly helperHashService: HelperHashService,
     private readonly helperDateService: HelperDateService,
     private readonly helperEncryptionService: HelperEncryptionService,
@@ -169,5 +171,17 @@ export class AuthService {
     code: string;
   }): Promise<boolean> {
     return this.twilioService.checkVerificationSmsOTP({ phoneNumber, code });
+  }
+
+  async setUserPhoneNumberVerified({
+    phoneNumber,
+  }: {
+    phoneNumber: string;
+  }): Promise<boolean> {
+    const res = await this.userAuthConfigService.setUserPhoneNumberVerified({
+      phoneNumber,
+    });
+
+    return Boolean(res);
   }
 }

@@ -105,31 +105,47 @@ export class AuthCommonController {
   @ClientResponse('auth.smsOtpGet')
   @Throttle(1, 10)
   @HttpCode(HttpStatus.OK)
-  @Post('/sms-otp')
+  @Post('/otp/sms')
   async createSmsVerificationOTP(
     @Body() { phoneNumber }: AuthSmsOtpGetDto,
-  ): Promise<any> {
-    const checkExist = await this.userService.checkExist({
+  ): Promise<void> {
+    const findUser = await this.userService.findUserByPhoneNumberForOtp({
       phoneNumber,
     });
 
-    if (!checkExist.phoneNumber) {
+    if (!findUser?.phoneNumber) {
       throw new BadRequestException({
         silent: true,
         statusCode: EnumUserStatusCodeError.UserPhoneNumberNotFoundError,
         message: 'user.error.phoneNumberNotFound',
       });
     }
-    const res = await this.authService.createVerificationsSmsOPT({
-      phoneNumber,
-    });
-    return res;
+
+    if (findUser?.authConfig?.phoneVerifiedAt) {
+      throw new BadRequestException({
+        silent: true,
+        statusCode: EnumAuthStatusCodeError.AuthPhoneNumberAlreadyVerifiedError,
+        message: 'auth.error.phoneVerified',
+      });
+    }
+
+    try {
+      await this.authService.createVerificationsSmsOPT({
+        phoneNumber,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
+        message: 'auth.error.otp',
+        error,
+      });
+    }
   }
 
   @ClientResponse('auth.smsOtpVerify')
   @Throttle(1, 10)
   @HttpCode(HttpStatus.OK)
-  @Post('/verify-sms-otp')
+  @Post('/otp/sms/verify')
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<void> {
@@ -146,10 +162,18 @@ export class AuthCommonController {
         });
       }
     } catch (error) {
-      debugger;
+      if (error.name === BadRequestException.name) {
+        throw error;
+      }
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthWrongOtpValidationError,
+        message: 'auth.error.optValidation',
+        error,
+      });
     }
 
-    // TODO commit phone_verified_at
+    await this.authService.setUserPhoneNumberVerified({ phoneNumber });
+    // TODO authenticate user client
   }
 
   @ClientResponse('auth.login')
@@ -507,15 +531,12 @@ export class AuthCommonController {
         try {
           await this.authService.createVerificationsSmsOPT({ phoneNumber });
         } catch (error) {
-          // TODO fix stf
           throw new InternalServerErrorException({
-            // statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-            // message: 'messaging.error.email.send',
+            statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
+            message: 'auth.error.otp',
             error,
           });
         }
-
-        await this.helperCookieService.detachAccessToken(response);
 
         // For local development/testing
         const isDevelopment =
