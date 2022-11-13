@@ -79,7 +79,9 @@ export class LogInterceptor implements NestInterceptor<any> {
               : loggerAction,
             description: loggerOptions.description
               ? loggerOptions.description
-              : `Request ${method} called, url ${originalUrl}, action ${loggerAction}`,
+              : `Request ${method} called, url ${originalUrl}, action ${
+                  isFunction(loggerAction) ? loggerAction(body) : loggerAction
+                }`,
             user: __user,
             role: __user?.role,
             correlationId,
