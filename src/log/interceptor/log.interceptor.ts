@@ -69,19 +69,19 @@ export class LogInterceptor implements NestInterceptor<any> {
             context.getHandler(),
           );
 
+          const action = isFunction(loggerAction)
+            ? loggerAction(body)
+            : loggerAction;
+
           await this.loggerService.raw({
+            action,
             mask: loggerOptions?.mask,
             level: isFunction(loggerOptions.level)
               ? loggerOptions.level(body)
               : loggerOptions.level || EnumLogLevel.Info,
-            action: isFunction(loggerAction)
-              ? loggerAction(body)
-              : loggerAction,
             description: loggerOptions.description
               ? loggerOptions.description
-              : `Request ${method} called, url ${originalUrl}, action ${
-                  isFunction(loggerAction) ? loggerAction(body) : loggerAction
-                }`,
+              : `Request ${method} called, url ${originalUrl}, action ${action}`,
             user: __user,
             role: __user?.role,
             correlationId,
