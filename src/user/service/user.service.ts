@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumUserStatusCodeError } from '@avo/type';
 
-import { isNumber } from 'class-validator';
+import { isDefined, isNumber } from 'class-validator';
 import set from 'lodash/set';
 import {
   Brackets,
@@ -85,6 +85,10 @@ export class UserService {
   async checkExistsByEmail(email: string): Promise<boolean> {
     const exists = await this.userRepository.findOne({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+      },
     });
 
     return Boolean(exists);
@@ -117,14 +121,31 @@ export class UserService {
     email?: string;
     phoneNumber?: string;
   }): Promise<IUserCheckExist> {
-    const existEmail = email && (await this.findOneBy({ email }));
-
-    const existsPhoneNumber =
-      phoneNumber && (await this.findOneBy({ phoneNumber }));
+    const findUser =
+      email || phoneNumber
+        ? await this.findOne({
+            where: [
+              {
+                phoneNumber,
+              },
+              {
+                email,
+              },
+            ],
+            select: {
+              id: true,
+              email: true,
+              phoneNumber: true,
+              isActive: true,
+            },
+          })
+        : null;
 
     return {
-      email: existEmail ? true : false,
-      phoneNumber: existsPhoneNumber ? true : false,
+      email: isDefined(findUser?.email) && findUser?.email === email,
+      phoneNumber:
+        isDefined(findUser?.phoneNumber) &&
+        findUser?.phoneNumber === phoneNumber,
     };
   }
 

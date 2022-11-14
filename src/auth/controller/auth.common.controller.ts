@@ -103,7 +103,7 @@ export class AuthCommonController {
   ) {}
 
   @ClientResponse('auth.smsOtpGet')
-  @Throttle(1, 10)
+  @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
   @Post('/otp/sms')
   async createSmsVerificationOTP(
@@ -130,9 +130,12 @@ export class AuthCommonController {
     }
 
     try {
-      await this.authService.createVerificationsSmsOPT({
-        phoneNumber,
-      });
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+      if (isProduction) {
+        await this.authService.createVerificationsSmsOPT({
+          phoneNumber,
+        });
+      }
     } catch (error) {
       throw new InternalServerErrorException({
         statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
@@ -143,17 +146,21 @@ export class AuthCommonController {
   }
 
   @ClientResponse('auth.smsOtpVerify')
-  @Throttle(1, 10)
+  @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
   @Post('/otp/sms/verify')
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<IResponseData> {
     try {
-      const isOtpApproved = await this.authService.checkVerificationSmsOTP({
-        phoneNumber,
-        code,
-      });
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+
+      const isOtpApproved = isProduction
+        ? await this.authService.checkVerificationSmsOTP({
+            phoneNumber,
+            code,
+          })
+        : code === this.configService.get<string>('twilio.dev.nonProdMagicOTP');
 
       if (!isOtpApproved) {
         throw new BadRequestException({
@@ -580,7 +587,13 @@ export class AuthCommonController {
         });
 
         try {
-          await this.authService.createVerificationsSmsOPT({ phoneNumber });
+          // Skip sending sms on non production environments
+          // instead use nonProdMagicOTP
+          const isProduction =
+            this.configService.get<boolean>('app.isProduction');
+          if (phoneNumber && isProduction) {
+            await this.authService.createVerificationsSmsOPT({ phoneNumber });
+          }
         } catch (error) {
           throw new InternalServerErrorException({
             statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,

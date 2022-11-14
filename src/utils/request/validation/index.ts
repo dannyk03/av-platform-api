@@ -14,3 +14,4 @@ export * from './request.is-phone-number.validation';
 export * from './request.range.validation';
 export * from './request.is-sms-otp-code.validation';
 export * from './request.is-not-empty-for-env.validation';
+export * from './request.is-registered-user.validation';

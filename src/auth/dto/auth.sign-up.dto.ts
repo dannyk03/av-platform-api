@@ -20,11 +20,7 @@ import {
   NormalizeStringInputTransform,
   TrimTransform,
 } from '@/utils/request/transform';
-import {
-  IsNotEmptyForEnv,
-  IsPasswordStrong,
-  IsPhoneNumber,
-} from '@/utils/request/validation';
+import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
   @MaxLength(50)

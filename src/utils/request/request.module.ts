@@ -10,6 +10,8 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { EnumRequestStatusCodeError } from '@avo/type';
 
+import { UserModule } from '@/user/user.module';
+
 import { ExecMetaGuard } from './guard/exec-meta.guard';
 
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
@@ -20,6 +22,7 @@ import {
   IsPasswordStrongConstraint,
   IsPasswordWeakConstraint,
   IsPhoneNumberConstraint,
+  IsRegisteredUserConstraint,
   IsSmsOtpCodeConstraint,
   IsStartWithConstraint,
   MaxGreaterThanConstraint,
@@ -82,7 +85,8 @@ import {
     RangeTupleConstraint,
     IsSmsOtpCodeConstraint,
     IsNotEmptyForEnvConstraint,
+    IsRegisteredUserConstraint,
   ],
-  imports: [],
+  imports: [UserModule],
 })
 export class RequestModule {}
