@@ -1,6 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
+import { EnumAppEnv } from '@avo/type';
+
 import compact from 'lodash/compact';
 
 import { RouterAppModule } from '@/router/router.app.module';
@@ -107,7 +109,7 @@ export class AppRouterModule {
                 module: RouterWebhookModule,
               },
               {
-                ...(process.env.APP_ENV !== 'production'
+                ...(process.env.APP_ENV !== EnumAppEnv.Production
                   ? {
                       path: '/test',
                       module: RouterTestModule,

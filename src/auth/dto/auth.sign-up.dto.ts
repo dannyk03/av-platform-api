@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EnumAppEnv } from '@avo/type';
+
 import { Type } from 'class-transformer';
 import {
   Allow,
@@ -104,14 +106,17 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly lastName: string;
 
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  @EmptyStringToUndefinedTransform()
-  @IsPhoneNumber()
+  @IsPhoneNumber({
+    allowEmptyForEnvs: [
+      EnumAppEnv.Staging,
+      EnumAppEnv.Development,
+      EnumAppEnv.Production,
+    ],
+  })
   @NormalizeStringInputTransform()
+  @EmptyStringToUndefinedTransform()
   @Type(() => String)
-  readonly phoneNumber?: string;
+  readonly phoneNumber!: string;
 
   @IsString()
   @IsOptional()

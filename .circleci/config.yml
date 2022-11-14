@@ -83,6 +83,7 @@ workflows:
             - jfrog-platform
             - cloudinary
             - customerio
+            - twilio
       - build-and-push-image:
           context:
             - eu-ecr

@@ -54,7 +54,7 @@ export class UserLoginPutToRequestGuard implements CanActivate {
     if (!requestUser) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthWrongCredentialsError,
-        message: 'auth.error.wrongCredentials',
+        message: 'auth.error.credentials',
       });
     }
 

@@ -5,6 +5,8 @@ import { plainToInstance } from 'class-transformer';
 
 import { User } from '@/user/entity';
 
+import { UserAuthConfigService } from './user-auth-config.service';
+import { TwilioService } from '@/messaging/twilio/service';
 import {
   HelperDateService,
   HelperEncryptionService,
@@ -17,46 +19,35 @@ import { AuthUserLoginSerialization } from '../serialization';
 
 @Injectable()
 export class AuthService {
-  private readonly accessTokenSecretToken: string;
-  private readonly accessTokenExpirationTime: string;
-  private readonly accessTokenNotBeforeExpirationTime: string;
-
-  private readonly guestAccessTokenExpirationTime: string;
-
-  private readonly refreshTokenSecretToken: string;
-  private readonly refreshTokenExpirationTime: string;
-  private readonly refreshTokenExpirationTimeRememberMe: string;
-  private readonly refreshTokenNotBeforeExpirationTime: string;
+  private readonly accessTokenSecretToken: string =
+    this.configService.get<string>('auth.jwt.accessToken.secretKey');
+  private readonly accessTokenExpirationTime: string =
+    this.configService.get<string>('auth.jwt.accessToken.expirationTime');
+  private readonly accessTokenNotBeforeExpirationTime: string =
+    this.configService.get<string>(
+      'auth.jwt.accessToken.notBeforeExpirationTime',
+    );
+  private readonly refreshTokenSecretToken: string =
+    this.configService.get<string>('auth.jwt.refreshToken.secretKey');
+  private readonly refreshTokenExpirationTime: string =
+    this.configService.get<string>('auth.jwt.refreshToken.expirationTime');
+  private readonly refreshTokenExpirationTimeRememberMe: string =
+    this.configService.get<string>(
+      'auth.jwt.refreshToken.expirationTimeRememberMe',
+    );
+  private readonly refreshTokenNotBeforeExpirationTime: string =
+    this.configService.get<string>(
+      'auth.jwt.refreshToken.notBeforeExpirationTime',
+    );
 
   constructor(
+    private readonly userAuthConfigService: UserAuthConfigService,
     private readonly helperHashService: HelperHashService,
     private readonly helperDateService: HelperDateService,
     private readonly helperEncryptionService: HelperEncryptionService,
     private readonly configService: ConfigService,
-  ) {
-    this.accessTokenSecretToken = this.configService.get<string>(
-      'auth.jwt.accessToken.secretKey',
-    );
-    this.accessTokenExpirationTime = this.configService.get<string>(
-      'auth.jwt.accessToken.expirationTime',
-    );
-    this.accessTokenNotBeforeExpirationTime = this.configService.get<string>(
-      'auth.jwt.accessToken.notBeforeExpirationTime',
-    );
-
-    this.refreshTokenSecretToken = this.configService.get<string>(
-      'auth.jwt.refreshToken.secretKey',
-    );
-    this.refreshTokenExpirationTime = this.configService.get<string>(
-      'auth.jwt.refreshToken.expirationTime',
-    );
-    this.refreshTokenExpirationTimeRememberMe = this.configService.get<string>(
-      'auth.jwt.refreshToken.expirationTimeRememberMe',
-    );
-    this.refreshTokenNotBeforeExpirationTime = this.configService.get<string>(
-      'auth.jwt.refreshToken.notBeforeExpirationTime',
-    );
-  }
+    private readonly twilioService: TwilioService,
+  ) {}
 
   async createAccessToken(payload: Record<string, any>): Promise<string> {
     return this.helperEncryptionService.jwtEncrypt(payload, {
@@ -166,5 +157,31 @@ export class AuthService {
     }
 
     return false;
+  }
+
+  async createVerificationsSmsOPT({ phoneNumber }: { phoneNumber: string }) {
+    return this.twilioService.createVerificationsSmsOPT({ phoneNumber });
+  }
+
+  async checkVerificationSmsOTP({
+    phoneNumber,
+    code,
+  }: {
+    phoneNumber: string;
+    code: string;
+  }): Promise<boolean> {
+    return this.twilioService.checkVerificationSmsOTP({ phoneNumber, code });
+  }
+
+  async setUserPhoneNumberVerified({
+    phoneNumber,
+  }: {
+    phoneNumber: string;
+  }): Promise<boolean> {
+    const res = await this.userAuthConfigService.setUserPhoneNumberVerified({
+      phoneNumber,
+    });
+
+    return Boolean(res);
   }
 }

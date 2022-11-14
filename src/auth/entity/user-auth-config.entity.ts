@@ -19,6 +19,11 @@ export class UserAuthConfig extends BaseEntity<UserAuthConfig> {
   })
   emailVerifiedAt?: Date;
 
+  @Column({
+    nullable: true,
+  })
+  phoneVerifiedAt?: Date;
+
   @OneToOne(() => User, (user) => user.authConfig, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
