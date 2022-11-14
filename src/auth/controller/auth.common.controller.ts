@@ -148,7 +148,7 @@ export class AuthCommonController {
   @Post('/otp/sms/verify')
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
-  ): Promise<void> {
+  ): Promise<IResponseData> {
     try {
       const isOtpApproved = await this.authService.checkVerificationSmsOTP({
         phoneNumber,
@@ -173,7 +173,58 @@ export class AuthCommonController {
     }
 
     await this.authService.setUserPhoneNumberVerified({ phoneNumber });
-    // TODO authenticate user client
+
+    const findUser = await this.userService.findOne({
+      where: {
+        phoneNumber,
+      },
+      relations: {
+        authConfig: true,
+        organization: true,
+        role: true,
+      },
+      select: {
+        authConfig: {
+          id: true,
+          phoneVerifiedAt: true,
+          emailVerifiedAt: true,
+          passwordExpiredAt: true,
+        },
+        organization: {
+          isActive: true,
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    });
+
+    const safeData: AuthUserLoginSerialization =
+      await this.authService.serializationLogin(findUser);
+
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
+    const rememberMe = false;
+    const payloadAccessToken: Record<string, any> =
+      await this.authService.createPayloadAccessToken(safeData, rememberMe);
+    const payloadRefreshToken: Record<string, any> =
+      await this.authService.createPayloadRefreshToken(safeData, rememberMe, {
+        loginDate: payloadAccessToken.loginDate,
+      });
+
+    const accessToken: string = await this.authService.createAccessToken(
+      payloadAccessToken,
+    );
+
+    const refreshToken: string = await this.authService.createRefreshToken(
+      payloadRefreshToken,
+      rememberMe,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   @ClientResponse('auth.login')

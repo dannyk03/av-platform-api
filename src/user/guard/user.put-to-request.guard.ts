@@ -65,6 +65,7 @@ export class UserPutToRequestGuard implements CanActivate {
             password: loadAuthSensitiveData,
             passwordExpiredAt: true,
             emailVerifiedAt: true,
+            phoneVerifiedAt: true,
           },
         },
       }));
