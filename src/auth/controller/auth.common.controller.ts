@@ -587,11 +587,11 @@ export class AuthCommonController {
         });
 
         try {
+          // TODO switch to production
           // Skip sending sms on non production environments
           // instead use nonProdMagicOTP
-          const isProduction =
-            this.configService.get<boolean>('app.isProduction');
-          if (phoneNumber && isProduction) {
+          const isStaging = this.configService.get<boolean>('app.isStaging');
+          if (phoneNumber && isStaging) {
             await this.authService.createVerificationsSmsOPT({ phoneNumber });
           }
         } catch (error) {
