@@ -107,11 +107,7 @@ export class SurveyPersonalDto {
   readonly lastName: string;
 
   @IsPhoneNumber({
-    allowEmptyForEnvs: [
-      EnumAppEnv.Staging,
-      EnumAppEnv.Development,
-      EnumAppEnv.Production,
-    ],
+    allowEmptyForEnvs: [EnumAppEnv.Staging, EnumAppEnv.Development],
   })
   @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
