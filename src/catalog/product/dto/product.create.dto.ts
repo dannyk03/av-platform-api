@@ -36,6 +36,7 @@ export class ProductCreateDto {
   @IsNotEmpty()
   @Length(2, 40)
   @ProductSKU()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
@@ -43,17 +44,20 @@ export class ProductCreateDto {
 
   @IsOptional()
   @MaxLength(30)
+  @IsString()
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly brand?: string;
 
   @MaxLength(75)
+  @IsString()
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly name!: string;
 
   @IsOptional()
   @MaxLength(1500)
+  @IsString()
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly description!: string;
@@ -96,6 +100,7 @@ export class ProductCreateDto {
   shippingCost!: number;
 
   @MaxLength(200)
+  @IsString()
   @NormalizeStringInputTransform()
   @ApiProperty({ required: false })
   readonly taxCode!: string;
