@@ -13,6 +13,7 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
+  IsString,
   Max,
   MaxLength,
   Min,
@@ -51,18 +52,21 @@ export class GiftSendSenderDto {
 
   @MaxLength(30)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly firstName?: string;
 
   @MaxLength(30)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly lastName?: string;
 
   @MaxLength(50)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   @EmptyStringToUndefinedTransform()
   readonly organizationName?: string;

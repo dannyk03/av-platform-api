@@ -32,15 +32,18 @@ export class ProductUpdateDisplayDto {
 
   @IsOptional()
   @MaxLength(30)
+  @IsString()
   @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
+  @IsString()
   @NormalizeStringInputTransform()
   readonly description?: string;
 
   @IsArray()
   @IsOptional()
+  @IsString({ each: true })
   @ArrayTransform()
   @NormalizeStringInputTransform({ each: true })
   readonly keywords?: string[];
@@ -50,6 +53,7 @@ export class ProductUpdateDto {
   @IsOptional()
   @MaxLength(30)
   @MinLength(1)
+  @IsString()
   @NormalizeStringInputTransform()
   readonly brand?: string;
 
@@ -65,11 +69,13 @@ export class ProductUpdateDto {
   @IsOptional()
   @MaxLength(50)
   @MinLength(1)
+  @IsString()
   @NormalizeStringInputTransform()
   readonly name?: string;
 
   @MaxLength(200)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   readonly description?: string;
 
@@ -91,6 +97,7 @@ export class ProductUpdateDto {
   @MaxLength(30)
   @MinLength(1)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   vendorName?: string;
 
@@ -98,6 +105,7 @@ export class ProductUpdateDto {
   @MaxLength(30)
   @MinLength(1)
   @IsOptional()
+  @IsString()
   @NormalizeStringInputTransform()
   taxCode?: string;
 

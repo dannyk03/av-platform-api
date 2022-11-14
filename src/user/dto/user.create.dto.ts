@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
+  IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -24,6 +25,7 @@ export class UserCreateDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
@@ -32,6 +34,7 @@ export class UserCreateDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
@@ -47,6 +50,7 @@ export class UserCreateDto {
   readonly phoneNumber?: string;
 
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @ApiProperty()
   readonly role: string;
