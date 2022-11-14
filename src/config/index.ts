@@ -1,5 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 
+import { EnumAppEnv, EnumAppMode } from '@avo/type';
+
 import Joi from 'joi';
 
 import { EnumMessageLanguage } from '@/response-message';
@@ -55,12 +57,12 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
         })
       : Joi.object({
           APP_ENV: Joi.string()
-            .valid('development', 'production', 'staging')
-            .default('production')
+            .valid(Object.values(EnumAppEnv))
+            .default(EnumAppEnv.Production)
             .required(),
           APP_MODE: Joi.string()
-            .valid('simple', 'secure')
-            .default('simple')
+            .valid(Object.values(EnumAppMode))
+            .default(EnumAppMode.Secure)
             .required(),
           APP_LANGUAGE: Joi.string()
             .valid(...Object.values(EnumMessageLanguage))

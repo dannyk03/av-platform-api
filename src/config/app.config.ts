@@ -1,19 +1,21 @@
 import { registerAs } from '@nestjs/config';
 
+import { EnumAppEnv, EnumAppMode } from '@avo/type';
+
 import { version } from 'package.json';
 
 export default registerAs(
   'app',
   (): Record<string, any> => ({
-    isProduction: process.env.APP_ENV === 'production',
-    isStaging: process.env.APP_ENV === 'staging',
-    isDevelopment: process.env.APP_ENV === 'development',
+    isProduction: process.env.APP_ENV === EnumAppEnv.Production,
+    isStaging: process.env.APP_ENV === EnumAppEnv.Staging,
+    isDevelopment: process.env.APP_ENV === EnumAppEnv.Development,
     isCI: process.env.CI === 'true',
-    isSecureMode: process.env.APP_MODE === 'secure',
+    isSecureMode: process.env.APP_MODE === EnumAppMode.Secure,
     runSeeds: true,
     name: process.env.APP_NAME || 'platform',
-    env: process.env.APP_ENV || 'development',
-    mode: process.env.APP_MODE || 'simple',
+    env: process.env.APP_ENV || EnumAppEnv.Development,
+    mode: process.env.APP_MODE || EnumAppMode.Secure,
     language: process.env.APP_LANGUAGE || 'en',
     timezone: process.env.APP_TZ || 'Asia/Jerusalem',
 
