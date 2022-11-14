@@ -1,7 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 import {
   NormalizeEmail,
@@ -34,6 +40,7 @@ export class AuthMagicLoginDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName?: string;
@@ -41,6 +48,7 @@ export class AuthMagicLoginDto {
   @MaxLength(30)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName?: string;
