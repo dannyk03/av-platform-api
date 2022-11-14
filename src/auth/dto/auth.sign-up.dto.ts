@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EnumAppEnv } from '@avo/type';
+
 import { Type } from 'class-transformer';
 import {
   Allow,
@@ -13,11 +15,16 @@ import {
 } from 'class-validator';
 
 import {
+  EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
   TrimTransform,
 } from '@/utils/request/transform';
-import { IsPasswordStrong, IsPhoneNumber } from '@/utils/request/validation';
+import {
+  IsNotEmptyForEnv,
+  IsPasswordStrong,
+  IsPhoneNumber,
+} from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
   @MaxLength(50)
@@ -93,8 +100,11 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly lastName: string;
 
-  @IsPhoneNumber()
+  @IsPhoneNumber({
+    allowEmptyForEnvs: [EnumAppEnv.Staging, EnumAppEnv.Development],
+  })
   @NormalizeStringInputTransform()
+  @EmptyStringToUndefinedTransform()
   @Type(() => String)
   readonly phoneNumber!: string;
 

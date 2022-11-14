@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { EnumAppEnv } from '@avo/type';
 
 import {
   ValidationArguments,
@@ -19,11 +22,19 @@ import { CountryCode } from 'libphonenumber-js/types';
 export class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
   constructor(
     protected readonly helperPhoneNumberService: HelperPhoneNumberService,
+    protected readonly configService: ConfigService,
   ) {}
 
   validate(value: string, args: ValidationArguments) {
-    const [relatedPropertyName] = args.constraints;
-    const relatedValue = args.object[relatedPropertyName];
+    const [countryCodeProperty, allowEmptyForEnvs] = args.constraints;
+    const relatedValue = args.object[countryCodeProperty];
+
+    if (
+      allowEmptyForEnvs?.includes(this.configService.get<string>('app.env')) &&
+      (value === '' || value === null || value === undefined)
+    ) {
+      return true;
+    }
 
     return (
       typeof value === 'string' &&
@@ -36,8 +47,19 @@ export class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsPhoneNumber(
-  property?,
-  validationOptions: ValidationOptions = {},
+  {
+    allowEmptyForEnvs = [],
+    countryCodeProperty,
+    validationOptions,
+  }: {
+    allowEmptyForEnvs?: EnumAppEnv[];
+    countryCodeProperty?: string;
+    validationOptions?: ValidationOptions;
+  } = {
+    allowEmptyForEnvs: [],
+    countryCodeProperty: undefined,
+    validationOptions: undefined,
+  },
 ) {
   return function (object: Record<string, any>, propertyName: string): any {
     if (!get(validationOptions, 'message')) {
@@ -49,7 +71,7 @@ export function IsPhoneNumber(
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      constraints: [property],
+      constraints: [countryCodeProperty, allowEmptyForEnvs],
       validator: IsPhoneNumberConstraint,
     });
   };

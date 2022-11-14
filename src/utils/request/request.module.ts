@@ -14,6 +14,7 @@ import { ExecMetaGuard } from './guard/exec-meta.guard';
 
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import {
+  IsNotEmptyForEnvConstraint,
   IsOnlyDigitsConstraint,
   IsPasswordMediumConstraint,
   IsPasswordStrongConstraint,
@@ -80,6 +81,7 @@ import {
     IsPhoneNumberConstraint,
     RangeTupleConstraint,
     IsSmsOtpCodeConstraint,
+    IsNotEmptyForEnvConstraint,
   ],
   imports: [],
 })

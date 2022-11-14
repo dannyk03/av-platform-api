@@ -6,6 +6,9 @@ export default registerAs(
     logLevel: process.env.TWILIO_DEBUG === 'true' ? 'debug' : 'none',
     accountSid: process.env.TWILIO_ACCOUNT_SID,
     authToken: process.env.TWILIO_AUTH_TOKEN,
+    dev: {
+      nonProdMagicOTP: '123456',
+    },
     service: {
       verify: {
         otp: {
