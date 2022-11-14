@@ -299,7 +299,7 @@ export class GiftIntentService {
         'giftSubmit.gifts.products.displayOptions.images',
         'additionalData',
         'sender.user.profile',
-        'recipient.user.profile',
+        'recipient.user.profile.shipping',
       ],
     });
 
