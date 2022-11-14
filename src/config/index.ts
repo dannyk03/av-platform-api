@@ -57,11 +57,11 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
         })
       : Joi.object({
           APP_ENV: Joi.string()
-            .valid(Object.values(EnumAppEnv))
+            .valid(...Object.values(EnumAppEnv))
             .default(EnumAppEnv.Production)
             .required(),
           APP_MODE: Joi.string()
-            .valid(Object.values(EnumAppMode))
+            .valid(...Object.values(EnumAppMode))
             .default(EnumAppMode.Secure)
             .required(),
           APP_LANGUAGE: Joi.string()
