@@ -130,8 +130,8 @@ export class AuthCommonController {
     }
 
     try {
-      const isStaging = this.configService.get<boolean>('app.isStaging');
-      if (isStaging) {
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+      if (isProduction) {
         await this.authService.createVerificationsSmsOPT({
           phoneNumber,
         });
