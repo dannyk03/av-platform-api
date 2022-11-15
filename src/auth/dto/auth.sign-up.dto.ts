@@ -190,3 +190,19 @@ export class AuthSignUpDto {
   @Type(() => String)
   readonly password!: string;
 }
+
+export class UserProfileDto {
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => SurveyPersonalDto)
+  @ApiProperty()
+  readonly personal: SurveyPersonalDto;
+
+  @Allow()
+  @ApiProperty()
+  readonly personas: object;
+
+  @Allow()
+  @ApiProperty()
+  readonly dietary: object;
+}
