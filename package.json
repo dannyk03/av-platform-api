@@ -100,7 +100,7 @@
     "rxjs": "^7.5.7",
     "slugify": "^1.6.5",
     "streamifier": "^0.1.1",
-    "stripe": "^10.16.0",
+    "stripe": "^10.17.0",
     "tsconfig-paths": "^4.1.0",
     "twilio": "^3.83.2",
     "typeorm": "^0.3.10",
