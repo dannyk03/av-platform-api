@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { UserProfileHome } from './user-profile-home.entity';
 import { UserProfileShipping } from './user-profile-shipping.entity';
@@ -97,7 +104,7 @@ export class UserProfile extends BaseEntity<UserProfile> {
   })
   dietary?: object;
 
-  @OneToOne(() => User, (user) => user.authConfig, {
+  @OneToOne(() => User, (user) => user.profile, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
   })

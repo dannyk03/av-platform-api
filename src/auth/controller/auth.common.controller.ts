@@ -153,9 +153,9 @@ export class AuthCommonController {
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<IResponseData> {
     try {
-      const isProduction = this.configService.get<boolean>('app.isProduction');
+      const isStaging = this.configService.get<boolean>('app.isStaging');
 
-      const isOtpApproved = isProduction
+      const isOtpApproved = isStaging
         ? await this.authService.checkVerificationSmsOTP({
             phoneNumber,
             code,
