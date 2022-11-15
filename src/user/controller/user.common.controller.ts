@@ -34,7 +34,7 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { UserProfileDto } from '@/auth/dto';
+import { UserProfileDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
