@@ -45,6 +45,6 @@ export enum EnumLogAction {
 
   StripeWebhook = 'STRIPE_WEBHOOK',
 
-  OtpRequest = 'OTP_REQUEST',
-  OtpVerify = 'OTP_Verify',
+  OtpSmsRequest = 'OTP_SMS_REQUEST',
+  OtpSmsVerify = 'OTP_SMS_VERIFY',
 }

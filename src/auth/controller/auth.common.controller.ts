@@ -105,7 +105,7 @@ export class AuthCommonController {
   @ClientResponse('auth.smsOtpGet')
   @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.OtpRequest, {
+  @LogTrace(EnumLogAction.OtpSmsRequest, {
     tags: ['otp', 'sms'],
   })
   @Post('/otp/sms')
@@ -151,7 +151,7 @@ export class AuthCommonController {
   @ClientResponse('auth.smsOtpVerify')
   @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.OtpVerify, {
+  @LogTrace(EnumLogAction.OtpSmsVerify, {
     tags: ['otp', 'sms'],
   })
   @Post('/otp/sms/verify')
