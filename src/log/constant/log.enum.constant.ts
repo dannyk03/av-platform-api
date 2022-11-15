@@ -44,4 +44,7 @@ export enum EnumLogAction {
   CloudinaryWebhookError = 'CLOUDINARY_WEBHOOK_ERROR',
 
   StripeWebhook = 'STRIPE_WEBHOOK',
+
+  OtpRequest = 'OTP_REQUEST',
+  OtpVerify = 'OTP_Verify',
 }
