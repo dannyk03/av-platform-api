@@ -115,16 +115,6 @@ export class UserCommonController {
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         await transactionalEntityManager
-          .getRepository(User)
-          .createQueryBuilder()
-          .update<User>(User, {
-            email,
-            phoneNumber,
-          })
-          .where('id = :userId', { userId: reqUser.id })
-          .execute();
-
-        await transactionalEntityManager
           .getRepository(UserProfile)
           .createQueryBuilder()
           .update<UserProfile>(UserProfile, {
