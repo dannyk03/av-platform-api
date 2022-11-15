@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsOptional,
+  IsString,
   IsUUID,
   Length,
 } from 'class-validator';
@@ -18,6 +19,7 @@ export class VendorUpdateDto {
   @Length(3, 30)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly name?: string;
@@ -25,6 +27,7 @@ export class VendorUpdateDto {
   @Length(3, 200)
   @IsOptional()
   @IsNotEmpty()
+  @IsString()
   @NormalizeStringInputTransform()
   readonly description!: string;
 

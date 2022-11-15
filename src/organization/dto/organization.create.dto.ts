@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { Length, MaxLength } from 'class-validator';
+import { IsString, Length, MaxLength } from 'class-validator';
 
 import {
   NormalizeEmail,
@@ -19,6 +19,7 @@ export class OrganizationCreateDto {
   readonly password!: string;
 
   @Length(2, 30)
+  @IsString()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly name!: string;

@@ -9,6 +9,8 @@ import { Reflector } from '@nestjs/core';
 
 import { EnumUserStatusCodeError } from '@avo/type';
 
+import { IRequestApp } from '@/utils/request/type';
+
 import { USER_VERIFIED_ONLY_META_KEY } from '../constant';
 
 @Injectable()
@@ -25,7 +27,7 @@ export class ReqUserVerifiedOnlyGuard implements CanActivate {
       return true;
     }
 
-    const { __user } = ctx.switchToHttp().getRequest();
+    const { __user } = ctx.switchToHttp().getRequest() as IRequestApp;
 
     if (!__user) {
       throw new NotFoundException({
@@ -34,7 +36,11 @@ export class ReqUserVerifiedOnlyGuard implements CanActivate {
       });
     }
 
-    if (!__user.authConfig?.emailVerifiedAt) {
+    if (
+      !(
+        __user.authConfig?.phoneVerifiedAt || __user.authConfig?.emailVerifiedAt
+      )
+    ) {
       throw new ForbiddenException({
         statusCode: EnumUserStatusCodeError.UserVerifiedOnlyError,
         message: 'user.error.verified',

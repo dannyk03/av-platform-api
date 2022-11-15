@@ -1,5 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 
+import { EnumAppEnv, EnumAppMode } from '@avo/type';
+
 import Joi from 'joi';
 
 import { EnumMessageLanguage } from '@/response-message';
@@ -17,6 +19,7 @@ import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
 import StripeConfig from './stripe.config';
+import TwilioConfig from './twilio.config';
 import UserConfig from './user.config';
 
 export const Configs = [
@@ -32,6 +35,7 @@ export const Configs = [
   CloudinaryConfig,
   CustomerIoConfig,
   StripeConfig,
+  TwilioConfig,
   DebuggerConfig,
   DefaultConfig,
 ];
@@ -53,12 +57,12 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
         })
       : Joi.object({
           APP_ENV: Joi.string()
-            .valid('development', 'production', 'staging')
-            .default('production')
+            .valid(...Object.values(EnumAppEnv))
+            .default(EnumAppEnv.Production)
             .required(),
           APP_MODE: Joi.string()
-            .valid('simple', 'secure')
-            .default('simple')
+            .valid(...Object.values(EnumAppMode))
+            .default(EnumAppMode.Secure)
             .required(),
           APP_LANGUAGE: Joi.string()
             .valid(...Object.values(EnumMessageLanguage))
@@ -98,6 +102,9 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           CLOUDINARY_API_SECRET: Joi.string().required(),
 
           CUSTOMER_IO_API_KEY: Joi.string().required(),
+
+          TWILIO_ACCOUNT_SID: Joi.string().required(),
+          TWILIO_AUTH_TOKEN: Joi.string().required(),
         }),
   validationOptions: {
     allowUnknown: true,

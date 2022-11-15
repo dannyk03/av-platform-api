@@ -1,4 +1,3 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
 import { ProductModule } from '@/catalog/product/product.module';
@@ -14,7 +13,6 @@ import { GiftingSystemCommonController } from '@/gifting/controller';
   providers: [],
   exports: [],
   imports: [
-    HttpModule,
     GiftModule,
     MessagingModule,
     AclRoleModule,

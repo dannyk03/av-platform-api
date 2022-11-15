@@ -21,11 +21,8 @@ import {
   UserProfileShipping,
 } from '../entity';
 
-import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
-import { UserProfileService } from '@/user/service/user-profile.service';
 import { UserService } from '@/user/service/user.service';
-import { HelperPromiseService } from '@/utils/helper/service';
 
 import { ReqUser } from '../decorator/user.decorator';
 import { LogTrace } from '@/log/decorator';
@@ -52,10 +49,7 @@ export class UserCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    private readonly emailService: EmailService,
-    private readonly helperPromiseService: HelperPromiseService,
     private readonly socialConnectionService: SocialConnectionService,
-    private readonly userProfileService: UserProfileService,
     private readonly userService: UserService,
   ) {}
 

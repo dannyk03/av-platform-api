@@ -1,10 +1,9 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumUserStatusCodeError } from '@avo/type';
 
-import { isNumber } from 'class-validator';
+import { isDefined, isNumber } from 'class-validator';
 import set from 'lodash/set';
 import {
   Brackets,
@@ -27,16 +26,10 @@ import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserService {
-  private readonly uploadPath: string;
-
   constructor(
     @InjectRepository(User, ConnectionNames.Default)
     private userRepository: Repository<User>,
-
-    private readonly configService: ConfigService,
-  ) {
-    this.uploadPath = this.configService.get<string>('user.uploadPath');
-  }
+  ) {}
 
   async create(props: DeepPartial<User>): Promise<User> {
     return this.userRepository.create(props);
@@ -92,23 +85,67 @@ export class UserService {
   async checkExistsByEmail(email: string): Promise<boolean> {
     const exists = await this.userRepository.findOne({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+      },
     });
 
     return Boolean(exists);
   }
 
-  async checkExist(
-    email: string,
-    phoneNumber?: string,
-  ): Promise<IUserCheckExist> {
-    const existEmail = await this.findOneBy({ email });
+  async findUserByPhoneNumberForOtp({ phoneNumber }: { phoneNumber: string }) {
+    return this.findOne({
+      where: { phoneNumber },
+      relations: {
+        authConfig: true,
+      },
+      select: {
+        id: true,
+        phoneNumber: true,
+        authConfig: {
+          id: true,
+          phoneVerifiedAt: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
 
-    const existsPhoneNumber =
-      phoneNumber && (await this.findOneBy({ phoneNumber }));
+  async checkExist({
+    email,
+    phoneNumber,
+  }: {
+    email?: string;
+    phoneNumber?: string;
+  }): Promise<IUserCheckExist> {
+    const findUser =
+      email || phoneNumber
+        ? await this.findOne({
+            where: [
+              {
+                phoneNumber,
+              },
+              {
+                email,
+              },
+            ],
+            select: {
+              id: true,
+              email: true,
+              phoneNumber: true,
+              isActive: true,
+            },
+          })
+        : null;
 
     return {
-      email: existEmail ? true : false,
-      phoneNumber: existsPhoneNumber ? true : false,
+      email: isDefined(findUser?.email) && findUser?.email === email,
+      phoneNumber:
+        isDefined(findUser?.phoneNumber) &&
+        findUser?.phoneNumber === phoneNumber,
     };
   }
 

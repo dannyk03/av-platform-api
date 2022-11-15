@@ -10,23 +10,30 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { EnumRequestStatusCodeError } from '@avo/type';
 
+import { UserModule } from '@/user/user.module';
+
 import { ExecMetaGuard } from './guard/exec-meta.guard';
 
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
-import { RangeTupleConstraint } from './validation';
-import { IsPhoneNumberConstraint } from './validation/request.is-mobile-number.validation';
-import { IsPasswordMediumConstraint } from './validation/request.is-password-medium.validation';
-import { IsPasswordStrongConstraint } from './validation/request.is-password-strong.validation';
-import { IsPasswordWeakConstraint } from './validation/request.is-password-weak.validation';
-import { IsStartWithConstraint } from './validation/request.is-start-with.validation';
-import { MaxGreaterThanEqualConstraint } from './validation/request.max-greater-than-equal.validation';
-import { MaxGreaterThanConstraint } from './validation/request.max-greater-than.validation';
-import { MinGreaterThanEqualConstraint } from './validation/request.min-greater-than-equal.validation';
-import { MinGreaterThanConstraint } from './validation/request.min-greater-than.validation';
-import { IsOnlyDigitsConstraint } from './validation/request.only-digits.validation';
-import { SafeStringConstraint } from './validation/request.safe-string.validation';
-import { SkipConstraint } from './validation/request.skip.validation';
-import { StringOrNumberOrBooleanConstraint } from './validation/request.string-or-number-or-boolean.validation';
+import {
+  IsNotEmptyForEnvConstraint,
+  IsOnlyDigitsConstraint,
+  IsPasswordMediumConstraint,
+  IsPasswordStrongConstraint,
+  IsPasswordWeakConstraint,
+  IsPhoneNumberConstraint,
+  IsRegisteredUserConstraint,
+  IsSmsOtpCodeConstraint,
+  IsStartWithConstraint,
+  MaxGreaterThanConstraint,
+  MaxGreaterThanEqualConstraint,
+  MinGreaterThanConstraint,
+  MinGreaterThanEqualConstraint,
+  RangeTupleConstraint,
+  SafeStringConstraint,
+  SkipConstraint,
+  StringOrNumberOrBooleanConstraint,
+} from './validation';
 
 @Module({
   controllers: [],
@@ -76,7 +83,10 @@ import { StringOrNumberOrBooleanConstraint } from './validation/request.string-o
     IsOnlyDigitsConstraint,
     IsPhoneNumberConstraint,
     RangeTupleConstraint,
+    IsSmsOtpCodeConstraint,
+    IsNotEmptyForEnvConstraint,
+    IsRegisteredUserConstraint,
   ],
-  imports: [],
+  imports: [UserModule],
 })
 export class RequestModule {}

@@ -20,6 +20,8 @@ export interface IValidationErrorImport {
 
 // error exception
 export interface IErrorException {
+  silent: boolean;
+  detailed: boolean;
   statusCode: number;
   message: string;
   error?: string;

@@ -12,6 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
@@ -66,6 +67,8 @@ import {
   AuthResetPasswordSetDto,
   AuthSignUpDto,
   AuthSignUpRefDto,
+  AuthSmsOtpGetDto,
+  AuthSmsOtpVerifyDto,
 } from '../dto';
 import { AuthLoginDto } from '../dto/auth.login.dto';
 import { AuthResendSignupEmailDto } from '../dto/auth.resend-signup-email.dto';
@@ -99,13 +102,144 @@ export class AuthCommonController {
     private readonly resetPasswordLinkService: ResetPasswordLinkService,
   ) {}
 
+  @ClientResponse('auth.smsOtpGet')
+  @Throttle(1, 5)
+  @HttpCode(HttpStatus.OK)
+  @Post('/otp/sms')
+  async createSmsVerificationOTP(
+    @Body() { phoneNumber }: AuthSmsOtpGetDto,
+  ): Promise<void> {
+    const findUser = await this.userService.findUserByPhoneNumberForOtp({
+      phoneNumber,
+    });
+
+    if (!findUser?.phoneNumber) {
+      throw new BadRequestException({
+        silent: true,
+        statusCode: EnumUserStatusCodeError.UserPhoneNumberNotFoundError,
+        message: 'user.error.phoneNumberNotFound',
+      });
+    }
+
+    if (findUser?.authConfig?.phoneVerifiedAt) {
+      throw new BadRequestException({
+        silent: true,
+        statusCode: EnumAuthStatusCodeError.AuthPhoneNumberAlreadyVerifiedError,
+        message: 'auth.error.phoneVerified',
+      });
+    }
+
+    try {
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+      if (isProduction) {
+        await this.authService.createVerificationsSmsOPT({
+          phoneNumber,
+        });
+      }
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
+        message: 'auth.error.otp',
+        error,
+      });
+    }
+  }
+
+  @ClientResponse('auth.smsOtpVerify')
+  @Throttle(1, 5)
+  @HttpCode(HttpStatus.OK)
+  @Post('/otp/sms/verify')
+  async verifySmsVerificationOTP(
+    @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
+  ): Promise<IResponseData> {
+    try {
+      const isStaging = this.configService.get<boolean>('app.isStaging');
+
+      const isOtpApproved = isStaging
+        ? await this.authService.checkVerificationSmsOTP({
+            phoneNumber,
+            code,
+          })
+        : code === this.configService.get<string>('twilio.dev.nonProdMagicOTP');
+
+      if (!isOtpApproved) {
+        throw new BadRequestException({
+          statusCode: EnumAuthStatusCodeError.AuthWrongOtpValidationError,
+          message: 'auth.error.optValidation',
+        });
+      }
+    } catch (error) {
+      if (error.name === BadRequestException.name) {
+        throw error;
+      }
+      throw new BadRequestException({
+        statusCode: EnumAuthStatusCodeError.AuthWrongOtpValidationError,
+        message: 'auth.error.optValidation',
+        error,
+      });
+    }
+
+    await this.authService.setUserPhoneNumberVerified({ phoneNumber });
+
+    const findUser = await this.userService.findOne({
+      where: {
+        phoneNumber,
+      },
+      relations: {
+        authConfig: true,
+        organization: true,
+        role: true,
+      },
+      select: {
+        authConfig: {
+          id: true,
+          phoneVerifiedAt: true,
+          emailVerifiedAt: true,
+          passwordExpiredAt: true,
+        },
+        organization: {
+          isActive: true,
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    });
+
+    const safeData: AuthUserLoginSerialization =
+      await this.authService.serializationLogin(findUser);
+
+    // TODO: cache in redis safeData with user role and permission for next api calls
+
+    const rememberMe = false;
+    const payloadAccessToken: Record<string, any> =
+      await this.authService.createPayloadAccessToken(safeData, rememberMe);
+    const payloadRefreshToken: Record<string, any> =
+      await this.authService.createPayloadRefreshToken(safeData, rememberMe, {
+        loginDate: payloadAccessToken.loginDate,
+      });
+
+    const accessToken: string = await this.authService.createAccessToken(
+      payloadAccessToken,
+    );
+
+    const refreshToken: string = await this.authService.createRefreshToken(
+      payloadRefreshToken,
+      rememberMe,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
   @ClientResponse('auth.login')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.Login, {
     tags: ['login', 'withEmail'],
     mask: {
       passwordStrategyFields: ['password'],
-      // emailStrategyFields: ['email'],
     },
   })
   @LoginGuard()
@@ -131,7 +265,7 @@ export class AuthCommonController {
     if (!isValid) {
       throw new BadRequestException({
         statusCode: EnumAuthStatusCodeError.AuthWrongCredentialsError,
-        message: 'auth.error.wrongCredentials',
+        message: 'auth.error.credentials',
       });
     }
 
@@ -272,9 +406,11 @@ export class AuthCommonController {
     const expiresInDays = this.configService.get<number>(
       'user.signUpCodeExpiresInDays',
     );
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
-    const checkExist = await this.userService.checkExist(email, phoneNumber);
+
+    const checkExist = await this.userService.checkExist({
+      email,
+      phoneNumber,
+    });
 
     if (checkExist.email && checkExist.phoneNumber) {
       throw new BadRequestException({
@@ -450,11 +586,28 @@ export class AuthCommonController {
           },
         });
 
-        await this.helperCookieService.detachAccessToken(response);
+        try {
+          // TODO switch to production
+          // Skip sending sms on non production environments
+          // instead use nonProdMagicOTP
+          const isStaging = this.configService.get<boolean>('app.isStaging');
+          if (phoneNumber && isStaging) {
+            await this.authService.createVerificationsSmsOPT({ phoneNumber });
+          }
+        } catch (error) {
+          throw new InternalServerErrorException({
+            statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
+            message: 'auth.error.otp',
+            error,
+          });
+        }
 
         // For local development/testing
         const isDevelopment =
           this.configService.get<boolean>('app.isDevelopment');
+        const isSecureMode: boolean =
+          this.configService.get<boolean>('app.isSecureMode');
+
         if (isDevelopment || !isSecureMode) {
           return { code: signUpEmailVerificationLink.code };
         }

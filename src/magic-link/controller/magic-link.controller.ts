@@ -80,6 +80,7 @@ export class MagicLinkController {
             authConfig: {
               id: true,
               emailVerifiedAt: true,
+              phoneVerifiedAt: true,
             },
           },
         },
