@@ -130,8 +130,8 @@ export class AuthCommonController {
     }
 
     try {
-      const isProduction = this.configService.get<boolean>('app.isProduction');
-      if (isProduction) {
+      const isStaging = this.configService.get<boolean>('app.isStaging');
+      if (isStaging) {
         await this.authService.createVerificationsSmsOPT({
           phoneNumber,
         });
@@ -587,7 +587,6 @@ export class AuthCommonController {
         });
 
         try {
-          // TODO switch to production
           // Skip sending sms on non production environments
           // instead use nonProdMagicOTP
           const isStaging = this.configService.get<boolean>('app.isStaging');
