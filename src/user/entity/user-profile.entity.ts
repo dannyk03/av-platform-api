@@ -104,7 +104,7 @@ export class UserProfile extends BaseEntity<UserProfile> {
   })
   dietary?: object;
 
-  @ManyToOne(() => User, (user) => user.profile, {
+  @OneToOne(() => User, (user) => user.profile, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
   })
