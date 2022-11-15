@@ -8,11 +8,18 @@ import {
   Param,
   Put,
 } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 
-import { Action, Subjects } from '@avo/casl';
 import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
-import { User } from '../entity';
+import { DataSource } from 'typeorm';
+
+import {
+  User,
+  UserProfile,
+  UserProfileHome,
+  UserProfileShipping,
+} from '../entity';
 
 import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
@@ -27,9 +34,7 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { DeepPartial } from 'utility-types';
-
-import { AuthSignUpDto, UserProfileDto } from '@/auth/dto';
+import { UserProfileDto } from '@/auth/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
@@ -37,6 +42,7 @@ import {
   UserProfileGetSerialization,
 } from '../serialization';
 
+import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
 @Controller({
@@ -44,6 +50,8 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class UserCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly emailService: EmailService,
     private readonly helperPromiseService: HelperPromiseService,
     private readonly socialConnectionService: SocialConnectionService,
@@ -74,13 +82,13 @@ export class UserCommonController {
     return reqUser;
   }
 
-  // @ClientResponse('user.profile', {
-  //   classSerialization: UserConnectionProfileGetSerialization,
-  // })
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.UserProfileRequest, {
-  //   tags: ['user', 'profile'],
-  // })
+  @ClientResponse('user.profile', {
+    classSerialization: UserConnectionProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UserProfileRequest, {
+    tags: ['user', 'profile'],
+  })
   @AclGuard({
     relations: ['profile'],
   })
@@ -88,7 +96,6 @@ export class UserCommonController {
   async updateUserProfile(
     @ReqUser()
     reqUser: User,
-    // @Param('id') connectionUserId: string,
     @Body()
     {
       personal: {
@@ -110,46 +117,65 @@ export class UserCommonController {
       dietary,
     }: UserProfileDto,
   ): Promise<IResponseData> {
+    this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager
+          .getRepository(User)
+          .createQueryBuilder()
+          .update<User>(User, {
+            email,
+            phoneNumber,
+          })
+          .where('id = :userId', { userId: reqUser.id })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfile)
+          .createQueryBuilder()
+          .update<UserProfile>(UserProfile, {
+            firstName,
+            lastName,
+            personas,
+            dietary,
+            birthMonth,
+            birthDay,
+            workAnniversaryMonth,
+            workAnniversaryDay,
+            kidFriendlyActivities,
+            funFacts,
+            desiredSkills,
+          })
+          .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfileHome)
+          .createQueryBuilder()
+          .update<UserProfileHome>(UserProfileHome, home)
+          .where('user_profile_id = :userProfileId', {
+            userProfileId: reqUser.profile.id,
+          })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfileShipping)
+          .createQueryBuilder()
+          .update<UserProfileShipping>(UserProfileShipping, shipping)
+          .where('user_profile_id = :userProfileId', {
+            userProfileId: reqUser.profile.id,
+          })
+          .execute();
+      },
+    );
+
     const user = await this.userService.findOne({
       where: {
         id: reqUser.id,
       },
-      relations: [
-        'profile',
-        // 'profile.home',
-        // 'profile.shipping'
-      ],
+      relations: ['profile', 'profile.home', 'profile.shipping'],
     });
-
-    // const userProfile = Object.assign(user.profile, {
-    //     firstName,
-    //     lastName,
-    //     // home,
-    //     // shipping,
-    //     personas,
-    //     dietary,
-    //     birthMonth,
-    //     birthDay,
-    //     workAnniversaryMonth,
-    //     workAnniversaryDay,
-    //     kidFriendlyActivities,
-    //     funFacts,
-    //     desiredSkills,
-    //   }
-    // );
-
-    const cloned = Object.assign({}, user.profile);
-
-    const profile = await this.userProfileService.findOne({
-      where: { id: '9c0e9f4a-1d1c-48b6-8b26-9a0e972de9da' },
-    });
-    try {
-      await this.userProfileService.save(cloned);
-    } catch (err) {
-      const a = 'a';
-    }
-
-    return profile;
+    return user;
   }
 
   @ClientResponse('user.profile', {
