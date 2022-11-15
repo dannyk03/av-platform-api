@@ -1,17 +1,28 @@
 import {
+  Body,
   Controller,
   ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  Put,
 } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 import { EnumUserStatusCodeError, IResponseData } from '@avo/type';
 
-import { User } from '../entity';
+import { DataSource } from 'typeorm';
+
+import {
+  User,
+  UserProfile,
+  UserProfileHome,
+  UserProfileShipping,
+} from '../entity';
 
 import { SocialConnectionService } from '@/networking/service';
+import { UserService } from '@/user/service/user.service';
 
 import { ReqUser } from '../decorator/user.decorator';
 import { LogTrace } from '@/log/decorator';
@@ -20,6 +31,7 @@ import { ClientResponse } from '@/utils/response/decorator';
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { UserProfileDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
@@ -27,6 +39,7 @@ import {
   UserProfileGetSerialization,
 } from '../serialization';
 
+import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
 @Controller({
@@ -34,7 +47,10 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class UserCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly socialConnectionService: SocialConnectionService,
+    private readonly userService: UserService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -58,6 +74,102 @@ export class UserCommonController {
     reqUser: User,
   ): Promise<IResponseData> {
     return reqUser;
+  }
+
+  @ClientResponse('user.profile', {
+    classSerialization: UserConnectionProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UserProfileRequest, {
+    tags: ['user', 'profile'],
+  })
+  @AclGuard({
+    relations: ['profile'],
+  })
+  @Put('/profile')
+  async updateUserProfile(
+    @ReqUser()
+    reqUser: User,
+    @Body()
+    {
+      personal: {
+        email,
+        phoneNumber,
+        firstName,
+        lastName,
+        birthMonth,
+        birthDay,
+        workAnniversaryMonth,
+        workAnniversaryDay,
+        kidFriendlyActivities,
+        home,
+        shipping,
+        funFacts,
+        desiredSkills,
+      },
+      personas,
+      dietary,
+    }: UserProfileDto,
+  ): Promise<IResponseData> {
+    this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager
+          .getRepository(User)
+          .createQueryBuilder()
+          .update<User>(User, {
+            email,
+            phoneNumber,
+          })
+          .where('id = :userId', { userId: reqUser.id })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfile)
+          .createQueryBuilder()
+          .update<UserProfile>(UserProfile, {
+            firstName,
+            lastName,
+            personas,
+            dietary,
+            birthMonth,
+            birthDay,
+            workAnniversaryMonth,
+            workAnniversaryDay,
+            kidFriendlyActivities,
+            funFacts,
+            desiredSkills,
+          })
+          .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfileHome)
+          .createQueryBuilder()
+          .update<UserProfileHome>(UserProfileHome, home)
+          .where('user_profile_id = :userProfileId', {
+            userProfileId: reqUser.profile.id,
+          })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfileShipping)
+          .createQueryBuilder()
+          .update<UserProfileShipping>(UserProfileShipping, shipping)
+          .where('user_profile_id = :userProfileId', {
+            userProfileId: reqUser.profile.id,
+          })
+          .execute();
+      },
+    );
+
+    const user = await this.userService.findOne({
+      where: {
+        id: reqUser.id,
+      },
+      relations: ['profile', 'profile.home', 'profile.shipping'],
+    });
+    return user;
   }
 
   @ClientResponse('user.profile', {
