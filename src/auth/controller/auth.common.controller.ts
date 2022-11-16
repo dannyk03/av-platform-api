@@ -563,16 +563,23 @@ export class AuthCommonController {
             const invitationLink = await this.invitationLinkService.findOne({
               where: { id: ref },
               relations: ['user'],
+              select: {
+                user: {
+                  id: true,
+                },
+              },
             });
 
-            const socialConnection =
-              await this.socialNetworkingService.createSocialConnection(
-                saveUser.id,
-                invitationLink.user.id,
-                false,
-              );
+            if (invitationLink?.user) {
+              const socialConnection =
+                await this.socialNetworkingService.createSocialConnection(
+                  saveUser.id,
+                  invitationLink.user.id,
+                  false,
+                );
 
-            await transactionalEntityManager.save(socialConnection);
+              await transactionalEntityManager.save(socialConnection);
+            }
           }
         }
 
