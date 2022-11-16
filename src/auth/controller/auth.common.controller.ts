@@ -564,6 +564,7 @@ export class AuthCommonController {
               where: { id: ref },
               relations: ['user'],
               select: {
+                id: true,
                 user: {
                   id: true,
                 },
