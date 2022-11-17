@@ -8,9 +8,13 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 
+import { EnumGroupStatusCodeError, IResponseData } from '@avo/type';
+
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
+
+import { GroupService } from '../service';
 
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
@@ -20,19 +24,19 @@ import { AclGuard } from '@/auth/guard';
 
 import { GroupCreateDto } from '../dto';
 
-import { ConnectionNames } from '@/database/constant';
+import { GroupGetSerialization } from '../serialization';
+
 import { EnumLogAction } from '@/log/constant';
 
 @Controller({
   version: '1',
 })
 export class GroupCommonController {
-  constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
-  ) {}
+  constructor(private readonly groupService: GroupService) {}
 
-  @ClientResponse('group.create')
+  @ClientResponse('group.create', {
+    classSerialization: GroupGetSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CreateGroup, {
     tags: ['group', 'create'],
@@ -41,10 +45,27 @@ export class GroupCommonController {
   @Post()
   async create(
     @ReqAuthUser()
-    reqUser: User,
+    { id: userId }: User,
     @Body()
     { name, description }: GroupCreateDto,
-  ): Promise<void> {
-    return;
+  ): Promise<IResponseData> {
+    const isExists = await this.groupService.checkExistsByName(name);
+
+    if (isExists) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupExistsError,
+        message: 'group.error.exists',
+      });
+    }
+
+    const createGroup = await this.groupService.create({
+      name,
+      description,
+      owner: {
+        id: userId,
+      },
+    });
+
+    return this.groupService.save(createGroup);
   }
 }

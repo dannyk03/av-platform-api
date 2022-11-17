@@ -56,7 +56,9 @@ export class Group extends BaseEntity<Group> {
   users: User[];
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn()
+  @JoinColumn({
+    name: 'owner_user_id',
+  })
   owner!: User;
 
   @BeforeInsert()

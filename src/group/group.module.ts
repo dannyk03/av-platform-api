@@ -5,6 +5,8 @@ import { UserModule } from '@/user/user.module';
 
 import { Group } from './entity';
 
+import { GroupService } from './service';
+
 import { ConnectionNames } from '@/database/constant';
 
 @Module({
@@ -12,8 +14,8 @@ import { ConnectionNames } from '@/database/constant';
     TypeOrmModule.forFeature([Group], ConnectionNames.Default),
     UserModule,
   ],
-  exports: [],
-  providers: [],
+  exports: [GroupService],
+  providers: [GroupService],
   controllers: [],
 })
 export class GroupModule {}
