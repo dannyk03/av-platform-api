@@ -39,7 +39,7 @@ export class SurveyPersonalAddressDto {
   readonly country?: string;
 }
 
-export class SurveyPersonalShippingDto {
+export class SurveyAddressDto {
   @IsOptional()
   @MaxLength(200)
   @NormalizeStringInputTransform()
@@ -75,6 +75,16 @@ export class SurveyPersonalShippingDto {
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly zipCode?: string;
+}
+
+export class SurveyPersonalShippingDto extends SurveyAddressDto {}
+
+export class SurveyPersonalMailingDto extends SurveyAddressDto {
+  @IsOptional()
+  @MaxLength(1000)
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly deliveryInstructions: string;
 }
 
 export class SurveyPersonalDto {
@@ -151,6 +161,12 @@ export class SurveyPersonalDto {
   @Type(() => SurveyPersonalShippingDto)
   @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => SurveyPersonalMailingDto)
+  @ApiProperty()
+  readonly mailing: SurveyPersonalMailingDto;
 
   @IsOptional()
   @IsArray()
