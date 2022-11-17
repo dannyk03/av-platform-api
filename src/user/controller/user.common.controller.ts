@@ -22,6 +22,7 @@ import {
   UserProfileShipping,
 } from '../entity';
 
+import { UserProfileService } from '../service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service/user.service';
 
@@ -43,6 +44,8 @@ import {
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
+import { DeepOmit, UnDot } from '@/utils/ts';
+
 @Controller({
   version: '1',
 })
@@ -52,6 +55,7 @@ export class UserCommonController {
     private defaultDataSource: DataSource,
     private readonly socialConnectionService: SocialConnectionService,
     private readonly userService: UserService,
+    private readonly userProfileService: UserProfileService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -78,7 +82,7 @@ export class UserCommonController {
   }
 
   @ClientResponse('user.profile', {
-    classSerialization: UserConnectionProfileGetSerialization,
+    classSerialization: UserProfileGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.UserProfileRequest, {
@@ -94,8 +98,6 @@ export class UserCommonController {
     @Body()
     {
       personal: {
-        email,
-        phoneNumber,
         firstName,
         lastName,
         birthMonth,
@@ -111,7 +113,10 @@ export class UserCommonController {
       },
       personas,
       dietary,
-    }: UserProfileDto,
+    }: DeepOmit<
+      DeepOmit<UserProfileDto, UnDot<'personal.email'>>,
+      UnDot<'personal.phoneNumber'>
+    >,
   ): Promise<IResponseData> {
     this.defaultDataSource.transaction(
       'SERIALIZABLE',
@@ -175,6 +180,7 @@ export class UserCommonController {
         'profile.mailing',
       ],
     });
+
     return user;
   }
 

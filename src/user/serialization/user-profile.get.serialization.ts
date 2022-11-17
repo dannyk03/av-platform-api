@@ -107,6 +107,15 @@ export class UserProfileGetSerialization
   readonly shipping: IUserProfileShippingGetSerialization;
 
   @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(
+      UserProfileShippingGetSerialization,
+      obj?.profile?.shipping,
+    ),
+  )
+  readonly mailing: IUserProfileShippingGetSerialization;
+
+  @Expose()
   @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)
   readonly kidFriendlyActivities?: object;
 
