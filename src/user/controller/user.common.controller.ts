@@ -18,6 +18,7 @@ import {
   User,
   UserProfile,
   UserProfileHome,
+  UserProfileMailing,
   UserProfileShipping,
 } from '../entity';
 
@@ -130,7 +131,6 @@ export class UserCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
-            mailing,
           })
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
@@ -148,6 +148,15 @@ export class UserCommonController {
           .getRepository(UserProfileShipping)
           .createQueryBuilder()
           .update<UserProfileShipping>(UserProfileShipping, shipping)
+          .where('user_profile_id = :userProfileId', {
+            userProfileId: reqUser.profile.id,
+          })
+          .execute();
+
+        await transactionalEntityManager
+          .getRepository(UserProfileMailing)
+          .createQueryBuilder()
+          .update<UserProfileMailing>(UserProfileMailing, mailing)
           .where('user_profile_id = :userProfileId', {
             userProfileId: reqUser.profile.id,
           })
