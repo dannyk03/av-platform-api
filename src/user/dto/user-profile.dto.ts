@@ -162,6 +162,7 @@ export class SurveyPersonalDto {
   @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
 
+  @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalMailingDto)

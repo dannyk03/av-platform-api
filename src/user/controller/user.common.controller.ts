@@ -18,9 +18,11 @@ import {
   User,
   UserProfile,
   UserProfileHome,
+  UserProfileMailing,
   UserProfileShipping,
 } from '../entity';
 
+import { UserProfileService } from '../service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service/user.service';
 
@@ -42,6 +44,8 @@ import {
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
+import { DeepOmit, UnDot } from '@/utils/ts';
+
 @Controller({
   version: '1',
 })
@@ -51,6 +55,7 @@ export class UserCommonController {
     private defaultDataSource: DataSource,
     private readonly socialConnectionService: SocialConnectionService,
     private readonly userService: UserService,
+    private readonly userProfileService: UserProfileService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -77,7 +82,7 @@ export class UserCommonController {
   }
 
   @ClientResponse('user.profile', {
-    classSerialization: UserConnectionProfileGetSerialization,
+    classSerialization: UserProfileGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.UserProfileRequest, {
@@ -93,8 +98,6 @@ export class UserCommonController {
     @Body()
     {
       personal: {
-        email,
-        phoneNumber,
         firstName,
         lastName,
         birthMonth,
@@ -110,9 +113,12 @@ export class UserCommonController {
       },
       personas,
       dietary,
-    }: UserProfileDto,
+    }: DeepOmit<
+      DeepOmit<UserProfileDto, UnDot<'personal.email'>>,
+      UnDot<'personal.phoneNumber'>
+    >,
   ): Promise<IResponseData> {
-    this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         await transactionalEntityManager
@@ -130,28 +136,42 @@ export class UserCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
-            mailing,
           })
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
 
-        await transactionalEntityManager
-          .getRepository(UserProfileHome)
-          .createQueryBuilder()
-          .update<UserProfileHome>(UserProfileHome, home)
-          .where('user_profile_id = :userProfileId', {
-            userProfileId: reqUser.profile.id,
-          })
-          .execute();
+        if (home) {
+          await transactionalEntityManager
+            .getRepository(UserProfileHome)
+            .createQueryBuilder()
+            .update<UserProfileHome>(UserProfileHome, home)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
 
-        await transactionalEntityManager
-          .getRepository(UserProfileShipping)
-          .createQueryBuilder()
-          .update<UserProfileShipping>(UserProfileShipping, shipping)
-          .where('user_profile_id = :userProfileId', {
-            userProfileId: reqUser.profile.id,
-          })
-          .execute();
+        if (shipping) {
+          await transactionalEntityManager
+            .getRepository(UserProfileShipping)
+            .createQueryBuilder()
+            .update<UserProfileShipping>(UserProfileShipping, shipping)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
+
+        if (mailing) {
+          await transactionalEntityManager
+            .getRepository(UserProfileMailing)
+            .createQueryBuilder()
+            .update<UserProfileMailing>(UserProfileMailing, mailing)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
       },
     );
 
@@ -159,8 +179,14 @@ export class UserCommonController {
       where: {
         id: reqUser.id,
       },
-      relations: ['profile', 'profile.home', 'profile.shipping'],
+      relations: [
+        'profile',
+        'profile.home',
+        'profile.shipping',
+        'profile.mailing',
+      ],
     });
+
     return user;
   }
 
