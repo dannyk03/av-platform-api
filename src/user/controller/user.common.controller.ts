@@ -118,7 +118,7 @@ export class UserCommonController {
       UnDot<'personal.phoneNumber'>
     >,
   ): Promise<IResponseData> {
-    this.defaultDataSource.transaction(
+    await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         await transactionalEntityManager
