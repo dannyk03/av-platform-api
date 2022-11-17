@@ -18,7 +18,7 @@ export default registerAs(
       allowOriginProduction: [/^https:\/\/gifting\.avonow\.com$/],
       allowOriginStaging: [/^https:\/\/staging--avo-gifting\.netlify\.app$/],
       allowOriginFeatureBranches: [
-        /^https:\/\staging[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
+        /^https:\/\[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
       ],
       allowOriginLocalhost: [/^https?:\/\/localhost:3000$/],
       allowHeader: [
