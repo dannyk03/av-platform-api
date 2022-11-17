@@ -10,6 +10,7 @@ import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
 import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
+import { RouterGroupModule } from '@/router/router.group.module';
 import { RouterHealthModule } from '@/router/router.health.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
 import { RouterPaymentModule } from '@/router/router.payment.module';
@@ -46,6 +47,7 @@ export class AppRouterModule {
           RouterPaymentModule,
           RouterAppModule,
           RouterWebhookModule,
+          RouterGroupModule,
           RouterModule.register(
             compact([
               {
@@ -99,6 +101,10 @@ export class AppRouterModule {
               {
                 path: '/payment',
                 module: RouterPaymentModule,
+              },
+              {
+                path: '/group',
+                module: RouterGroupModule,
               },
               {
                 path: '/public',

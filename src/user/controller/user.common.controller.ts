@@ -24,7 +24,7 @@ import {
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service/user.service';
 
-import { ReqUser } from '../decorator/user.decorator';
+import { ReqAuthUser } from '../decorator/user.decorator';
 import { LogTrace } from '@/log/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
@@ -70,7 +70,7 @@ export class UserCommonController {
   })
   @Get('/profile')
   async getProfile(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
   ): Promise<IResponseData> {
     return reqUser;
@@ -88,7 +88,7 @@ export class UserCommonController {
   })
   @Put('/profile')
   async updateUserProfile(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     {
@@ -175,7 +175,7 @@ export class UserCommonController {
   @RequestParamGuard(IdParamDto)
   @Get('/profile/:id')
   async getConnectionProfile(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Param('id') connectionUserId: string,
   ): Promise<IResponseData> {
