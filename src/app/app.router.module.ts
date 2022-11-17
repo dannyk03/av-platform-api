@@ -47,6 +47,7 @@ export class AppRouterModule {
           RouterPaymentModule,
           RouterAppModule,
           RouterWebhookModule,
+          RouterGroupModule,
           RouterModule.register(
             compact([
               {

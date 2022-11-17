@@ -6,7 +6,7 @@ import { User } from '@/user/entity';
 
 import { AclPolicyService } from '../policy/service';
 
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
@@ -27,7 +27,7 @@ export class AclController {
   @AclGuard()
   @Get()
   async create(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
   ): Promise<IResponseData> {
     return reqUser?.role?.policy;

@@ -50,7 +50,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
 import { ReqJwtUser, Token } from '../decorator';
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { RequestUserAgent } from '@/utils/request/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
@@ -249,7 +249,7 @@ export class AuthCommonController {
     response: Response,
     @Body()
     body: AuthLoginDto,
-    @ReqUser()
+    @ReqAuthUser()
     user: User,
   ): Promise<IResponseData> {
     const rememberMe = Boolean(body.rememberMe);
@@ -632,7 +632,7 @@ export class AuthCommonController {
   async refresh(
     @Res({ passthrough: true })
     response: Response,
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @ReqJwtUser()
     { rememberMe, loginDate }: Record<string, any>,

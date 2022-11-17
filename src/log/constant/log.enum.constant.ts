@@ -15,6 +15,7 @@ export enum EnumLogAction {
   Refresh = 'REFRESH',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',
+  CreateGroup = 'CREATE_GROUP',
 
   SendConnectionRequest = 'SEND_CONNECTION_REQUEST',
   ApproveConnectionRequest = 'APPROVE_CONNECTION_REQUEST',

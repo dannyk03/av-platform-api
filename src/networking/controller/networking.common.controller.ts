@@ -31,7 +31,7 @@ import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -78,7 +78,7 @@ export class NetworkingCommonController {
   @AclGuard()
   @Post('/connect')
   async connect(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     {
@@ -184,7 +184,7 @@ export class NetworkingCommonController {
   @AclGuard()
   @Get('/connect/list')
   async listConnectRequests(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Query()
     {
@@ -239,7 +239,7 @@ export class NetworkingCommonController {
   @AclGuard()
   @Get('/list')
   async listConnections(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Query()
     {
@@ -298,7 +298,7 @@ export class NetworkingCommonController {
     { ref }: RefQueryParamOptionalDto,
     @Body()
     { connectionRequestIds }: SocialConnectionRequestApproveDto,
-    @ReqUser() reqUser: User,
+    @ReqAuthUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
       await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
@@ -339,7 +339,7 @@ export class NetworkingCommonController {
     { ref }: RefQueryParamOptionalDto,
     @Body()
     { connectionRequestIds }: SocialConnectionRequestRejectDto,
-    @ReqUser() reqUser: User,
+    @ReqAuthUser() reqUser: User,
   ): Promise<IResponseData> {
     const userConnectionsRequestFind =
       await this.socialConnectionRequestService.findPendingConnectionRequestByRequestIdsOrRequestId(
