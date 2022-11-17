@@ -14,13 +14,21 @@ export class CorsMiddleware implements NestMiddleware {
     const isProduction = this.configService.get<boolean>('app.isProduction');
     const isStaging = this.configService.get<boolean>('app.isStaging');
 
-    const allowOriginProduction = this.configService.get<
-      string | boolean | string[]
-    >('middleware.cors.allowOriginProduction');
+    const allowOriginProduction = this.configService.get<string[]>(
+      'middleware.cors.allowOriginProduction',
+    );
 
-    const allowOriginStaging = this.configService.get<
-      string | boolean | string[]
-    >('middleware.cors.allowOriginStaging');
+    const allowOriginStaging = this.configService.get<string[]>(
+      'middleware.cors.allowOriginStaging',
+    );
+
+    // const allowOriginFeatureBranches = this.configService.get<string[]>(
+    //   'middleware.cors.allowOriginFeatureBranches',
+    // );
+
+    const allowOriginLocalhost = this.configService.get<string[]>(
+      'middleware.cors.allowOriginLocalhost',
+    );
 
     const allowMethod = this.configService.get<string[]>(
       'middleware.cors.allowMethod',
@@ -29,20 +37,18 @@ export class CorsMiddleware implements NestMiddleware {
       'middleware.cors.allowHeader',
     );
 
-    const whitelist = ['http://localhost:3000', 'https://localhost:3000']; // whitelist local dev origin
     const corsOptions: CorsOptions = {
       origin: (origin, callback) => {
         if (isProduction) {
           callback(null, allowOriginProduction);
         } else if (isStaging) {
-          callback(null, allowOriginStaging);
-        } else if (
-          (!isProduction || !isSecureMode) &&
-          whitelist.includes(origin)
-        ) {
-          callback(null, true);
+          callback(null, [
+            ...allowOriginStaging,
+            ...allowOriginLocalhost,
+            // ...allowOriginFeatureBranches,
+          ]);
         } else {
-          callback(null, allowOriginProduction);
+          callback(null, true);
         }
       },
       methods: allowMethod,
