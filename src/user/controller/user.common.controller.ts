@@ -140,32 +140,38 @@ export class UserCommonController {
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
 
-        await transactionalEntityManager
-          .getRepository(UserProfileHome)
-          .createQueryBuilder()
-          .update<UserProfileHome>(UserProfileHome, home)
-          .where('user_profile_id = :userProfileId', {
-            userProfileId: reqUser.profile.id,
-          })
-          .execute();
+        if (home) {
+          await transactionalEntityManager
+            .getRepository(UserProfileHome)
+            .createQueryBuilder()
+            .update<UserProfileHome>(UserProfileHome, home)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
 
-        await transactionalEntityManager
-          .getRepository(UserProfileShipping)
-          .createQueryBuilder()
-          .update<UserProfileShipping>(UserProfileShipping, shipping)
-          .where('user_profile_id = :userProfileId', {
-            userProfileId: reqUser.profile.id,
-          })
-          .execute();
+        if (shipping) {
+          await transactionalEntityManager
+            .getRepository(UserProfileShipping)
+            .createQueryBuilder()
+            .update<UserProfileShipping>(UserProfileShipping, shipping)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
 
-        await transactionalEntityManager
-          .getRepository(UserProfileMailing)
-          .createQueryBuilder()
-          .update<UserProfileMailing>(UserProfileMailing, mailing)
-          .where('user_profile_id = :userProfileId', {
-            userProfileId: reqUser.profile.id,
-          })
-          .execute();
+        if (mailing) {
+          await transactionalEntityManager
+            .getRepository(UserProfileMailing)
+            .createQueryBuilder()
+            .update<UserProfileMailing>(UserProfileMailing, mailing)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
       },
     );
 
