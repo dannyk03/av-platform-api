@@ -1,13 +1,7 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { UserProfileHome } from './user-profile-home.entity';
+import { UserProfileMailing } from './user-profile-mailing.entity';
 import { UserProfileShipping } from './user-profile-shipping.entity';
 import { User } from './user.entity';
 import { BaseEntity } from '@/database/entity';
@@ -91,6 +85,16 @@ export class UserProfile extends BaseEntity<UserProfile> {
     },
   )
   shipping: UserProfileShipping;
+
+  @OneToOne(
+    () => UserProfileMailing,
+    (userProfileMailing) => userProfileMailing.userProfile,
+    {
+      cascade: true,
+      nullable: true,
+    },
+  )
+  mailing: UserProfileMailing;
 
   @Column({
     type: 'jsonb',

@@ -50,7 +50,7 @@ import { HelperCookieService, HelperDateService } from '@/utils/helper/service';
 
 import { ReqJwtUser, Token } from '../decorator';
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { RequestUserAgent } from '@/utils/request/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
@@ -255,7 +255,7 @@ export class AuthCommonController {
     response: Response,
     @Body()
     body: AuthLoginDto,
-    @ReqUser()
+    @ReqAuthUser()
     user: User,
   ): Promise<IResponseData> {
     const rememberMe = Boolean(body.rememberMe);
@@ -402,6 +402,7 @@ export class AuthCommonController {
         shipping,
         funFacts,
         desiredSkills,
+        mailing,
       },
       personas,
       dietary,
@@ -463,6 +464,7 @@ export class AuthCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
+            mailing,
           },
           authConfig: {
             password: passwordHash,
@@ -569,16 +571,24 @@ export class AuthCommonController {
             const invitationLink = await this.invitationLinkService.findOne({
               where: { id: ref },
               relations: ['user'],
+              select: {
+                id: true,
+                user: {
+                  id: true,
+                },
+              },
             });
 
-            const socialConnection =
-              await this.socialNetworkingService.createSocialConnection(
-                saveUser.id,
-                invitationLink.user.id,
-                false,
-              );
+            if (invitationLink?.user) {
+              const socialConnection =
+                await this.socialNetworkingService.createSocialConnection(
+                  saveUser.id,
+                  invitationLink.user.id,
+                  false,
+                );
 
-            await transactionalEntityManager.save(socialConnection);
+              await transactionalEntityManager.save(socialConnection);
+            }
           }
         }
 
@@ -631,7 +641,7 @@ export class AuthCommonController {
   async refresh(
     @Res({ passthrough: true })
     response: Response,
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @ReqJwtUser()
     { rememberMe, loginDate }: Record<string, any>,

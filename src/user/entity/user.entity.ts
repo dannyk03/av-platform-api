@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   Index,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -11,6 +12,7 @@ import {
 import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
+import { Group } from '@/group/entity';
 import { InvitationLink } from '@/networking/entity';
 import { GiftOrder } from '@/order/entity';
 import { Organization } from '@/organization/entity';
@@ -70,6 +72,11 @@ export class User extends BaseEntity<User> {
     cascade: true,
   })
   stripe: StripePayment;
+
+  @ManyToMany(() => Group, (group) => group.users, {
+    cascade: true,
+  })
+  groups: Group[];
 
   @BeforeInsert()
   beforeInsert() {

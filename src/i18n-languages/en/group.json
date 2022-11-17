@@ -1,0 +1,13 @@
+{
+  "list": "List groups success",
+  "get": "Get group success",
+  "create": "Create group success",
+  "delete": "Delete group success",
+  "update": "Update group success",
+  "error": {
+    "notFound": "Group not found",
+    "inactive": "Group not active",
+    "exists": "Group already exists",
+    "unprocessable": "Unprocessable"
+  }
+}

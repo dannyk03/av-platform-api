@@ -22,7 +22,7 @@ import { EmailService } from '@/messaging/email/service';
 import { HelperPromiseService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { ReqUser } from '../decorator';
+import { ReqAuthUser } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 import {
   ClientResponse,
@@ -216,7 +216,7 @@ export class UserSystemCommonController {
   })
   @Post('/invite')
   async generalInvite(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     { addressees, personalNote: sharedPersonalNote }: UserInviteDto,

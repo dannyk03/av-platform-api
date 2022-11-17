@@ -73,10 +73,10 @@
   dependencies:
     "@casl/ability" "^6.3.1"
 
-"@avo/type@^0.0.125":
-  version "0.0.125"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.125.tgz#a5e4abe83d21bf04d4d20be14fab86f50f0ce09c"
-  integrity sha512-9t7bCoQH7TBb1c9tqNIj6a6meivADkRzMR6mYW/wgLwkyFv7KYZbWi1oeadaC/VD0IAlEaYzdCRMDUQMC3hp6g==
+"@avo/type@^0.0.128":
+  version "0.0.128"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.128.tgz#4adf3f694de6aedec5c0fb29e7c5c169360ae972"
+  integrity sha512-plqZNe0z7MyI9b/Zo6l+m0q+j73J0yNKS3CUj5lFXowgAWMQ8PSsajGPEAglYH3JD6wPIRBNQIJVSNNm7ssv/Q==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"

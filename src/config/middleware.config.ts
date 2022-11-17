@@ -15,10 +15,12 @@ export default registerAs(
         EnumRequestMethod.PATCH,
         EnumRequestMethod.POST,
       ],
-      allowOrigin: [
-        /^https:\/\/[a-z0-9]+\.avonow\.com$/,
-        /^https:\/\/[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
+      allowOriginProduction: [/^https:\/\/gifting\.avonow\.com$/],
+      allowOriginStaging: [/^https:\/\/staging--avo-gifting\.netlify\.app$/],
+      allowOriginFeatureBranches: [
+        /^https:\/\[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
       ],
+      allowOriginLocalhost: [/^https?:\/\/localhost:3000$/],
       allowHeader: [
         'Accept',
         'Accept-Language',

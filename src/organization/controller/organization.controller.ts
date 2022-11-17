@@ -21,7 +21,7 @@ import { UserService } from '@/user/service';
 import { AclRolePresetService, AclRoleService } from '@acl/role/service';
 
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
@@ -66,9 +66,9 @@ export class OrganizationController {
     ],
     systemOnly: true,
   })
-  @Post('/create')
+  @Post()
   async create(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     {

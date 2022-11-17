@@ -42,7 +42,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import {
   ClientResponse,
   ClientResponsePaging,
@@ -91,7 +91,7 @@ export class GiftingCommonController {
   async sendGift(
     @Body()
     { recipients, additionalData }: GiftSendDto,
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
   ): Promise<IResponseData> {
     const uniqueRecipients = [...new Set(recipients)];
@@ -237,7 +237,7 @@ export class GiftingCommonController {
       availableSort,
       availableSearch,
     }: GiftIntentListDto,
-    @ReqUser() reqUser: User,
+    @ReqAuthUser() reqUser: User,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
@@ -282,7 +282,7 @@ export class GiftingCommonController {
   async get(
     @Param('id')
     giftIntentId: string,
-    @ReqUser() reqUser: User,
+    @ReqAuthUser() reqUser: User,
   ) {
     const getGiftIntent = await this.giftIntentService.findOne({
       where: {
@@ -324,7 +324,7 @@ export class GiftingCommonController {
   async giftIntentSubmit(
     @Body()
     { giftOptionIds, personalNote, submitReason }: GiftOptionSubmitDto,
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Param('id')
     giftIntentId: string,
