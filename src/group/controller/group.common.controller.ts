@@ -6,11 +6,8 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
 
 import { EnumGroupStatusCodeError, IResponseData } from '@avo/type';
-
-import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
 
