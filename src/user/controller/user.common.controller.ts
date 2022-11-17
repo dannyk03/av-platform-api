@@ -168,7 +168,12 @@ export class UserCommonController {
       where: {
         id: reqUser.id,
       },
-      relations: ['profile', 'profile.home', 'profile.shipping'],
+      relations: [
+        'profile',
+        'profile.home',
+        'profile.shipping',
+        'profile.mailing',
+      ],
     });
     return user;
   }
