@@ -6,6 +6,7 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 
 import { Group } from '../entity';
@@ -32,11 +33,11 @@ export class GroupService {
     return this.groupRepository.create(props);
   }
 
-  async save(props: Group): Promise<Group> {
+  async save(props: DeepPartial<Group>): Promise<Group> {
     return this.groupRepository.save(props);
   }
 
-  async saveBulk(props: Group[]): Promise<Group[]> {
+  async saveBulk(props: DeepPartial<Group>[]): Promise<Group[]> {
     return this.groupRepository.save(props);
   }
 
@@ -57,5 +58,21 @@ export class GroupService {
     });
 
     return Boolean(exists);
+  }
+
+  async updateGroupActiveStatus({
+    id,
+    isActive,
+  }: {
+    id: string;
+    isActive: boolean;
+  }): Promise<UpdateResult> {
+    return this.groupRepository
+      .createQueryBuilder()
+      .update(Group)
+      .set({ isActive })
+      .where('id = :id', { id })
+      .andWhere('isActive != :isActive', { isActive })
+      .execute();
   }
 }

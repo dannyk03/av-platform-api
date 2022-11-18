@@ -4,6 +4,8 @@
   "create": "Create group success",
   "delete": "Delete group success",
   "update": "Update group success",
+  "inactive": "Group inactive succeed",
+  "active": "Group active succeed",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",

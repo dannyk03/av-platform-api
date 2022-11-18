@@ -4,6 +4,8 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 
@@ -18,8 +20,10 @@ import { ReqAuthUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
+import { RequestParamGuard } from '@/utils/request/guard';
 
-import { GroupCreateDto } from '../dto';
+import { GroupCreateDto, GroupUpdateDto } from '../dto';
+import { IdParamDto } from '@/utils/request/dto';
 
 import { GroupGetSerialization } from '../serialization';
 
@@ -64,5 +68,79 @@ export class GroupCommonController {
     });
 
     return this.groupService.save(createGroup);
+  }
+
+  @ClientResponse('group.active')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductActive, {
+    tags: ['group'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Patch('active/:id')
+  async activeProduct(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.groupService.updateGroupActiveStatus({
+      id,
+      isActive: true,
+    });
+
+    return {
+      updated: affected,
+    };
+  }
+
+  @ClientResponse('group.inactive')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CatalogProductInactive, {
+    tags: ['group'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Patch('inactive/:id')
+  async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
+    const { affected } = await this.groupService.updateGroupActiveStatus({
+      id,
+      isActive: false,
+    });
+
+    return {
+      updated: affected,
+    };
+  }
+
+  @ClientResponse('group.update', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.CreateGroup, {
+    tags: ['group', 'update'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Patch('/:id')
+  async update(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') id: string,
+    @Body()
+    body: GroupUpdateDto,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id,
+        owner: {
+          id: userId,
+        },
+      },
+    });
+
+    if (findGroup) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    return this.groupService.save({ ...findGroup, ...body });
   }
 }
