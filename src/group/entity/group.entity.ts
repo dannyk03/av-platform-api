@@ -30,24 +30,4 @@ export class Group extends BaseEntity<Group> {
     default: true,
   })
   isActive!: boolean;
-
-  @ManyToMany(() => User, (user) => user.groups)
-  @JoinTable({
-    name: 'groups_users',
-    joinColumn: {
-      name: 'group_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
-  })
-  users: User[];
-
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({
-    name: 'owner_user_id',
-  })
-  owner!: User;
 }

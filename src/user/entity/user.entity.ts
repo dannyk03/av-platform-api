@@ -73,12 +73,6 @@ export class User extends BaseEntity<User> {
   })
   stripe: StripePayment;
 
-  @ManyToMany(() => Group, (group) => group.users, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  groups: Group[];
-
   @BeforeInsert()
   beforeInsert() {
     this.email = this.email?.toLowerCase();
