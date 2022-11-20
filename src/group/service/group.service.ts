@@ -3,17 +3,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumGroupStatusCodeError } from '@avo/type';
 
+import { isNumber } from 'class-validator';
 import {
+  Brackets,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
 
 import { Group } from '../entity';
 
 import { HelperSlugService } from '@/utils/helper/service';
+
+import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -88,5 +93,64 @@ export class GroupService {
     }
 
     return this.groupRepository.remove(findGroup);
+  }
+
+  async getListSearchBuilder({
+    userId,
+    search,
+    isActive,
+  }: IGroupSearch): Promise<SelectQueryBuilder<Group>> {
+    const builder = this.groupRepository
+      .createQueryBuilder('group')
+      .setParameters({ isActive, userId })
+      .leftJoinAndSelect('group.users', 'user')
+      .where('group.isActive = ANY(:isActive)')
+      .andWhere('user.id = :userId');
+
+    if (search) {
+      builder.andWhere(
+        new Brackets((qb) => {
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+          qb.where('group.name ILIKE :likeSearch').orWhere(
+            'group.description ILIKE :likeSearch',
+          );
+        }),
+      );
+    }
+
+    return builder;
+  }
+
+  async paginatedSearchBy({
+    userId,
+    search,
+    isActive,
+    options,
+  }: IGroupSearch): Promise<Group[]> {
+    const searchBuilder = await this.getListSearchBuilder({
+      userId,
+      search,
+      isActive,
+    });
+
+    if (options.order) {
+      searchBuilder.orderBy(options.order);
+    }
+
+    if (isNumber(options.take) && isNumber(options.skip)) {
+      searchBuilder.take(options.take).skip(options.skip);
+    }
+
+    return searchBuilder.getMany();
+  }
+
+  async getTotal({ userId, search, isActive }: IGroupSearch): Promise<number> {
+    const searchBuilder = await this.getListSearchBuilder({
+      userId,
+      search,
+      isActive,
+    });
+
+    return searchBuilder.getCount();
   }
 }

@@ -3,28 +3,38 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
-import { EnumGroupStatusCodeError, IResponseData } from '@avo/type';
+import {
+  EnumGroupStatusCodeError,
+  IResponseData,
+  IResponsePagingData,
+} from '@avo/type';
 
 import { User } from '@/user/entity';
 
 import { GroupService } from '../service';
+import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
-import { ClientResponse } from '@/utils/response/decorator';
+import {
+  ClientResponse,
+  ClientResponsePaging,
+} from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { GroupCreateDto, GroupUpdateDto } from '../dto';
+import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import { GroupGetSerialization } from '../serialization';
@@ -35,7 +45,10 @@ import { EnumLogAction } from '@/log/constant';
   version: '1',
 })
 export class GroupCommonController {
-  constructor(private readonly groupService: GroupService) {}
+  constructor(
+    private readonly groupService: GroupService,
+    private readonly paginationService: PaginationService,
+  ) {}
 
   @ClientResponse('group.create', {
     classSerialization: GroupGetSerialization,
@@ -217,5 +230,60 @@ export class GroupCommonController {
     const removeGroup = await this.groupService.removeGroupBy({ id });
 
     return { deleted: removeGroup ? 1 : 0 };
+  }
+
+  @ClientResponsePaging('group.list', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/list')
+  async list(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      isActive,
+    }: GroupListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const groups = await this.groupService.paginatedSearchBy({
+      userId,
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+      isActive,
+    });
+
+    const totalData = await this.groupService.getTotal({
+      userId,
+      search,
+      isActive,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: groups,
+    };
   }
 }
