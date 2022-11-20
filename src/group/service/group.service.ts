@@ -16,8 +16,6 @@ import {
 
 import { Group } from '../entity';
 
-import { HelperSlugService } from '@/utils/helper/service';
-
 import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
@@ -27,10 +25,9 @@ export class GroupService {
   constructor(
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
-    private readonly slugService: HelperSlugService,
   ) {}
 
-  async create(props: DeepPartial<Omit<Group, 'slug'>>): Promise<Group> {
+  async create(props: DeepPartial<Group>): Promise<Group> {
     return this.groupRepository.create(props);
   }
 

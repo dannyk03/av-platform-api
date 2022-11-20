@@ -6,8 +6,10 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
+import { GroupMember } from './group-member.entity';
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
@@ -31,23 +33,8 @@ export class Group extends BaseEntity<Group> {
   })
   isActive!: boolean;
 
-  @ManyToMany(() => User, (user) => user.groups)
-  @JoinTable({
-    name: 'groups_users',
-    joinColumn: {
-      name: 'group_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'user_id',
-      referencedColumnName: 'id',
-    },
+  @OneToMany(() => GroupMember, (member) => member.group, {
+    cascade: true,
   })
-  users: User[];
-
-  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({
-    name: 'owner_user_id',
-  })
-  owner!: User;
+  members: GroupMember[];
 }
