@@ -48,4 +48,5 @@ export enum EnumLogAction {
   // Group
   CreateGroup = 'CREATE_GROUP',
   UpdateGroup = 'UPDATE_GROUP',
+  DeleteGroup = 'DELETE_GROUP',
 }

@@ -75,6 +75,7 @@ export class User extends BaseEntity<User> {
 
   @ManyToMany(() => Group, (group) => group.users, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   groups: Group[];
 

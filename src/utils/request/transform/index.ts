@@ -9,3 +9,4 @@ export * from './UniqueArray.transform';
 export * from './CompactArray.transform';
 export * from './BooleanString.transform';
 export * from './IsEnumCaseInsensitive.transform';
+export * from './ConsecutiveWhitespace.transform';

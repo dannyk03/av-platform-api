@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   Index,
@@ -7,6 +8,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  Unique,
 } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
@@ -22,13 +24,6 @@ export class Group extends BaseEntity<Group> {
     length: 300,
   })
   name!: string;
-
-  @Index()
-  @Column({
-    unique: true,
-    length: 300,
-  })
-  slug!: string;
 
   @Column({
     nullable: true,
@@ -60,9 +55,4 @@ export class Group extends BaseEntity<Group> {
     name: 'owner_user_id',
   })
   owner!: User;
-
-  @BeforeInsert()
-  beforeInsert() {
-    this.slug = slugify(this.name);
-  }
 }

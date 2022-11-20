@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -183,5 +184,38 @@ export class GroupCommonController {
     }
 
     return this.groupService.save({ ...findGroup, ...body });
+  }
+
+  @ClientResponse('group.delete')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.DeleteGroup, {
+    tags: ['group', 'delete'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Delete('/:id')
+  async deleteProduct(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') id: string,
+  ): Promise<{ deleted: number }> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id,
+        owner: {
+          id: userId,
+        },
+      },
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+    const removeGroup = await this.groupService.removeGroupBy({ id });
+
+    return { deleted: removeGroup ? 1 : 0 };
   }
 }

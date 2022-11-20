@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { EnumGroupStatusCodeError } from '@avo/type';
 
 import {
   DeepPartial,
@@ -27,9 +29,7 @@ export class GroupService {
     return this.groupRepository.create(props);
   }
 
-  async createMany(
-    props: DeepPartial<Omit<Group, 'slug'>>[],
-  ): Promise<Group[]> {
+  async createMany(props: DeepPartial<Group>[]): Promise<Group[]> {
     return this.groupRepository.create(props);
   }
 
@@ -50,14 +50,13 @@ export class GroupService {
   }
 
   async checkExistsByName(name: string): Promise<boolean> {
-    const exists = await this.groupRepository.findOne({
-      where: { slug: this.slugService.slugify(name) },
-      select: {
-        id: true,
-      },
-    });
+    const findOne = await this.groupRepository
+      .createQueryBuilder('group')
+      .select(['group.id'])
+      .where('LOWER(name) = LOWER(:name)', { name })
+      .getOne();
 
-    return Boolean(exists);
+    return Boolean(findOne);
   }
 
   async updateGroupActiveStatus({
@@ -74,5 +73,20 @@ export class GroupService {
       .where('id = :id', { id })
       .andWhere('isActive != :isActive', { isActive })
       .execute();
+  }
+
+  async removeGroupBy(find: FindOptionsWhere<Group>): Promise<Group> {
+    const findGroup = await this.groupRepository.findOne({
+      where: find,
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    return this.groupRepository.remove(findGroup);
   }
 }
