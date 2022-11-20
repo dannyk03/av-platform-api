@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -46,7 +47,7 @@ export class GroupCommonController {
   @Post()
   async create(
     @ReqAuthUser()
-    { id: userId }: User,
+    reqAuthUser: User,
     @Body()
     { name, description }: GroupCreateDto,
   ): Promise<IResponseData> {
@@ -63,8 +64,9 @@ export class GroupCommonController {
       name,
       description,
       owner: {
-        id: userId,
+        id: reqAuthUser.id,
       },
+      users: [reqAuthUser],
     });
 
     return this.groupService.save(createGroup);
@@ -72,13 +74,33 @@ export class GroupCommonController {
 
   @ClientResponse('group.active')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.CatalogProductActive, {
-    tags: ['group'],
+  @LogTrace(EnumLogAction.UpdateGroup, {
+    tags: ['group', 'active'],
   })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
-  async activeProduct(@Param('id') id: string): Promise<IResponseData> {
+  async activeProduct(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') id: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id,
+        owner: {
+          id: userId,
+        },
+      },
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
     const { affected } = await this.groupService.updateGroupActiveStatus({
       id,
       isActive: true,
@@ -91,13 +113,32 @@ export class GroupCommonController {
 
   @ClientResponse('group.inactive')
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.CatalogProductInactive, {
-    tags: ['group'],
+  @LogTrace(EnumLogAction.UpdateGroup, {
+    tags: ['group', 'inactive'],
   })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
-  async inactiveProduct(@Param('id') id: string): Promise<IResponseData> {
+  async inactiveProduct(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') id: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id,
+        owner: {
+          id: userId,
+        },
+      },
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
     const { affected } = await this.groupService.updateGroupActiveStatus({
       id,
       isActive: false,
@@ -112,7 +153,7 @@ export class GroupCommonController {
     classSerialization: GroupGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @LogTrace(EnumLogAction.CreateGroup, {
+  @LogTrace(EnumLogAction.UpdateGroup, {
     tags: ['group', 'update'],
   })
   @AclGuard()
@@ -134,8 +175,8 @@ export class GroupCommonController {
       },
     });
 
-    if (findGroup) {
-      throw new BadRequestException({
+    if (!findGroup) {
+      throw new NotFoundException({
         statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
         message: 'group.error.notFound',
       });
