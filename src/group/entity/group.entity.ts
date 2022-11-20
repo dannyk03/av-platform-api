@@ -1,6 +1,4 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   Index,
@@ -8,13 +6,10 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  Unique,
 } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
-
-import { slugify } from '@/utils/helper';
 
 @Entity()
 export class Group extends BaseEntity<Group> {
