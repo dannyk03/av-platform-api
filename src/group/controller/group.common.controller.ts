@@ -84,20 +84,10 @@ export class GroupCommonController {
       role: EnumGroupRole.Owner,
     });
 
-    const users = await this.userService.find();
-
-    const members = await this.groupMemberService.createMany(
-      users
-        .filter((user) => user.id !== reqAuthUser.id)
-        .map((user) => {
-          return { user };
-        }),
-    );
-
     const createGroup = await this.groupService.create({
       name,
       description,
-      members: [createOwner, ...members],
+      members: [createOwner],
     });
 
     return this.groupService.save(createGroup);
