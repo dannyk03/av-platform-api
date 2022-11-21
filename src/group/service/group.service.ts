@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumGroupStatusCodeError } from '@avo/type';
 
-import { isNumber } from 'class-validator';
+import { isNumber, isUUID } from 'class-validator';
 import {
   Brackets,
   DeepPartial,
@@ -16,7 +16,7 @@ import {
 
 import { Group, GroupMember } from '../entity';
 
-import { IGroupSearch } from '../type';
+import { EnumGroupRole, IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -49,6 +49,40 @@ export class GroupService {
 
   async findOneBy(find?: FindOptionsWhere<Group>): Promise<Group> {
     return this.groupRepository.findOneBy({ ...find });
+  }
+
+  async findOwningGroup({
+    groupId,
+    userId,
+  }: {
+    userId: string;
+    groupId: string;
+  }): Promise<Group> {
+    return this.findOne({
+      where: {
+        id: groupId,
+        members: {
+          role: EnumGroupRole.Owner,
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        members: {
+          role: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
   }
 
   async checkExistsByName(name: string): Promise<boolean> {

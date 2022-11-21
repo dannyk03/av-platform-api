@@ -116,30 +116,9 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOne({
-      where: {
-        id: groupId,
-        members: {
-          role: EnumGroupRole.Owner,
-          user: {
-            id: userId,
-          },
-        },
-      },
-      relations: {
-        members: {
-          user: true,
-        },
-      },
-      select: {
-        id: true,
-        members: {
-          role: true,
-          user: {
-            id: true,
-          },
-        },
-      },
+    const findGroup = await this.groupService.findOwningGroup({
+      userId,
+      groupId,
     });
 
     if (!findGroup) {
@@ -172,30 +151,9 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOne({
-      where: {
-        id: groupId,
-        members: {
-          role: EnumGroupRole.Owner,
-          user: {
-            id: userId,
-          },
-        },
-      },
-      relations: {
-        members: {
-          user: true,
-        },
-      },
-      select: {
-        id: true,
-        members: {
-          role: true,
-          user: {
-            id: true,
-          },
-        },
-      },
+    const findGroup = await this.groupService.findOwningGroup({
+      userId,
+      groupId,
     });
 
     if (!findGroup) {
@@ -231,30 +189,9 @@ export class GroupCommonController {
     @Body()
     body: GroupUpdateDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOne({
-      where: {
-        id: groupId,
-        members: {
-          role: EnumGroupRole.Owner,
-          user: {
-            id: userId,
-          },
-        },
-      },
-      relations: {
-        members: {
-          user: true,
-        },
-      },
-      select: {
-        id: true,
-        members: {
-          role: true,
-          user: {
-            id: true,
-          },
-        },
-      },
+    const findGroup = await this.groupService.findOwningGroup({
+      userId,
+      groupId,
     });
 
     if (!findGroup) {
@@ -280,30 +217,9 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<{ deleted: number }> {
-    const findGroup = await this.groupService.findOne({
-      where: {
-        id: groupId,
-        members: {
-          role: EnumGroupRole.Owner,
-          user: {
-            id: userId,
-          },
-        },
-      },
-      relations: {
-        members: {
-          user: true,
-        },
-      },
-      select: {
-        id: true,
-        members: {
-          role: true,
-          user: {
-            id: true,
-          },
-        },
-      },
+    const findGroup = await this.groupService.findOwningGroup({
+      userId,
+      groupId,
     });
 
     if (!findGroup) {
