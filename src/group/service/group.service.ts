@@ -140,34 +140,13 @@ export class GroupService {
       .leftJoinAndSelect('user.profile', 'userProfile')
       .select([
         'group',
+        'member.id',
         'member.role',
         'user.email',
         'userProfile.firstName',
         'userProfile.lastName',
       ])
       .loadRelationCountAndMap('group.membersCount', 'group.members')
-      // .leftJoinAndSelect(
-      //   (sq) =>
-      //     sq
-      //       .subQuery()
-      //       .createQueryBuilder()
-      //       .from(GroupMember, 'member')
-      //       .leftJoinAndSelect('member.user', 'memberUser')
-      //       .leftJoinAndSelect('member.group', 'memberGroup'),
-      //   'member',
-      //   'memberGroup.id = group.id',
-      // )
-      // .leftJoinAndMapMany()
-      // .addSelect((subQuery) => {
-      //   return subQuery
-      //     .select('memberUser.id')
-      //     .from(GroupMember, 'member')
-      //     .leftJoinAndSelect('member.group', 'memberGroup')
-      //     .leftJoinAndSelect('member.user', 'memberUser')
-      //     .where('memberGroup.id = group.id')
-      //     .orderBy('RANDOM()')
-      //     .take(5);
-      // }, 'random5')
       .where('group.isActive = ANY(:isActive)')
       .andWhere('user.id = :userId');
 

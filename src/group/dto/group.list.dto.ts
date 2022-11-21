@@ -2,6 +2,8 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import { IPaginationList, IPaginationSort } from '@avo/type';
 
+import { ParamBoolean } from '@/utils/request/decorator';
+
 import {
   GROUP_DEFAULT_ACTIVE,
   GROUP_DEFAULT_AVAILABLE_SEARCH,
@@ -53,4 +55,8 @@ export class GroupListDto implements IPaginationList {
   @ApiProperty({ default: GROUP_DEFAULT_ACTIVE })
   @PaginationFilterBoolean(GROUP_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
+
+  @ApiProperty({ default: true })
+  @ParamBoolean(true)
+  readonly preview: boolean;
 }

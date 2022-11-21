@@ -86,20 +86,10 @@ export class GroupCommonController {
       role: EnumGroupRole.Owner,
     });
 
-    const users = await this.userService.find();
-
-    const members = await this.groupMemberService.createMany(
-      users
-        .filter((user) => user.id !== reqAuthUser.id)
-        .map((user) => {
-          return { user };
-        }),
-    );
-
     const createGroup = await this.groupService.create({
       name,
       description,
-      members: [createOwner, ...members],
+      members: [createOwner],
     });
 
     return this.groupService.save(createGroup);
@@ -253,11 +243,12 @@ export class GroupCommonController {
       availableSort,
       availableSearch,
       isActive,
+      preview,
     }: GroupListDto,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const groups = await this.groupService.paginatedSearchBy({
+    let groups = await this.groupService.paginatedSearchBy({
       userId,
       options: {
         skip: skip,
@@ -268,24 +259,27 @@ export class GroupCommonController {
       isActive,
     });
 
-    // TODO Make it more efficient, rewrite when there is time for it
-    // (shitty code mapping) not scalable ...
-    const randomGroupMembers = await Promise.all(
-      groups.map((group) =>
-        this.groupMemberService.findRandomNonOwnerMembers({
-          groupId: group.id,
-          count: 4,
-        }),
-      ),
-    );
+    if (preview) {
+      // TODO Make it more efficient, rewrite when there is time for it
+      const previewMembersCount = 5;
+      const randomGroupMembers = await Promise.all(
+        groups.map((group) =>
+          this.groupMemberService.findRandomGroupMembers({
+            groupId: group.id,
+            count: previewMembersCount - group.members.length,
+            exclude: group.members.map(({ id }) => id),
+          }),
+        ),
+      );
 
-    const mergedData = groups.map((group, i) => {
-      (group as any).membersPreview = [
-        ...group.members,
-        ...randomGroupMembers[i],
-      ];
-      return group;
-    });
+      groups = groups.map((group, i) => {
+        (group as any).membersPreview = [
+          ...group.members,
+          ...randomGroupMembers[i],
+        ];
+        return group;
+      });
+    }
 
     const totalData = await this.groupService.getTotal({
       userId,
@@ -305,7 +299,7 @@ export class GroupCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data: mergedData,
+      data: groups,
     };
   }
 }

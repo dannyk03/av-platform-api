@@ -7,6 +7,7 @@ import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
+  Not,
   Repository,
 } from 'typeorm';
 
@@ -47,33 +48,34 @@ export class GroupMemberService {
     return this.groupMemberRepository.findOneBy({ ...find });
   }
 
-  async findRandomNonOwnerMembers({
+  async findRandomGroupMembers({
     groupId,
     count,
+    exclude,
   }: {
     groupId: string;
     count: number;
+    exclude?: string[];
   }): Promise<GroupMember[]> {
-    const xxx = await this.groupMemberRepository
+    const builder = await this.groupMemberRepository
       .createQueryBuilder('member')
       .leftJoinAndSelect('member.user', 'memberUser')
       .leftJoinAndSelect('memberUser.profile', 'userProfile')
       .leftJoinAndSelect('member.group', 'memberGroup')
       .select([
-        'member',
+        'member.id',
+        'member.role',
         'memberUser.email',
         'userProfile.firstName',
         'userProfile.lastName',
       ])
-      .setParameters({ groupId })
-      .where('member.role != :ownerRole', {
-        ownerRole: EnumGroupRole.Owner,
-      })
-      .andWhere('memberGroup.id = :groupId')
+      .setParameters({ groupId, exclude })
+      .where('memberGroup.id = :groupId')
+      .andWhere('member.id NOT IN (:...exclude)')
       .orderBy('RANDOM()')
       .limit(count);
 
-    console.log(xxx.getQueryAndParameters());
-    return xxx.getMany();
+    console.log(builder.getQueryAndParameters());
+    return builder.getMany();
   }
 }
