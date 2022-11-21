@@ -3,7 +3,6 @@ import {
   Column,
   Entity,
   Index,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -12,7 +11,6 @@ import {
 import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
 import { BaseEntity } from '@/database/entity';
-import { Group } from '@/group/entity';
 import { InvitationLink } from '@/networking/entity';
 import { GiftOrder } from '@/order/entity';
 import { Organization } from '@/organization/entity';

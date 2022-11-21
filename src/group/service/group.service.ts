@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumGroupStatusCodeError } from '@avo/type';
 
-import { isNumber, isUUID } from 'class-validator';
+import { isNumber } from 'class-validator';
 import {
   Brackets,
   DeepPartial,
@@ -14,7 +14,7 @@ import {
   UpdateResult,
 } from 'typeorm';
 
-import { Group, GroupMember } from '../entity';
+import { Group } from '../entity';
 
 import { EnumGroupRole, IGroupSearch } from '../type';
 
