@@ -1,10 +1,10 @@
+import { EnumGroupRole } from '@avo/type';
+
 import { Column, Entity, ManyToOne, Unique } from 'typeorm';
 
 import { Group } from './group.entity';
 import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
-
-import { EnumGroupRole } from '../type';
 
 @Entity()
 @Unique(['user', 'group'])

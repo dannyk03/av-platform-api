@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { EnumGroupRole } from '@avo/type';
+
 import {
   DeepPartial,
   FindOneOptions,
@@ -43,5 +45,35 @@ export class GroupMemberService {
 
   async findOneBy(find?: FindOptionsWhere<GroupMember>): Promise<GroupMember> {
     return this.groupMemberRepository.findOneBy({ ...find });
+  }
+
+  async findRandomNonOwnerMembers({
+    groupId,
+    count,
+  }: {
+    groupId: string;
+    count: number;
+  }): Promise<GroupMember[]> {
+    const xxx = await this.groupMemberRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.user', 'memberUser')
+      .leftJoinAndSelect('memberUser.profile', 'userProfile')
+      .leftJoinAndSelect('member.group', 'memberGroup')
+      .select([
+        'member',
+        'memberUser.email',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ])
+      .setParameters({ groupId })
+      .where('member.role != :ownerRole', {
+        ownerRole: EnumGroupRole.Owner,
+      })
+      .andWhere('memberGroup.id = :groupId')
+      .orderBy('RANDOM()')
+      .limit(count);
+
+    console.log(xxx.getQueryAndParameters());
+    return xxx.getMany();
   }
 }

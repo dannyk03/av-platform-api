@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 
 import {
+  EnumGroupRole,
   EnumGroupStatusCodeError,
   IResponseData,
   IResponsePagingData,
@@ -35,12 +36,13 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { EnumGroupRole } from '../type';
-
 import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
-import { GroupGetSerialization } from '../serialization';
+import {
+  GroupGetSerialization,
+  GroupGetWithPreviewSerialization,
+} from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -84,10 +86,20 @@ export class GroupCommonController {
       role: EnumGroupRole.Owner,
     });
 
+    const users = await this.userService.find();
+
+    const members = await this.groupMemberService.createMany(
+      users
+        .filter((user) => user.id !== reqAuthUser.id)
+        .map((user) => {
+          return { user };
+        }),
+    );
+
     const createGroup = await this.groupService.create({
       name,
       description,
-      members: [createOwner],
+      members: [createOwner, ...members],
     });
 
     return this.groupService.save(createGroup);
@@ -224,7 +236,7 @@ export class GroupCommonController {
   }
 
   @ClientResponsePaging('group.list', {
-    classSerialization: GroupGetSerialization,
+    classSerialization: GroupGetWithPreviewSerialization,
   })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
@@ -256,6 +268,25 @@ export class GroupCommonController {
       isActive,
     });
 
+    // TODO Make it more efficient, rewrite when there is time for it
+    // (shitty code mapping) not scalable ...
+    const randomGroupMembers = await Promise.all(
+      groups.map((group) =>
+        this.groupMemberService.findRandomNonOwnerMembers({
+          groupId: group.id,
+          count: 4,
+        }),
+      ),
+    );
+
+    const mergedData = groups.map((group, i) => {
+      (group as any).membersPreview = [
+        ...group.members,
+        ...randomGroupMembers[i],
+      ];
+      return group;
+    });
+
     const totalData = await this.groupService.getTotal({
       userId,
       search,
@@ -274,7 +305,7 @@ export class GroupCommonController {
       perPage,
       availableSearch,
       availableSort,
-      data: groups,
+      data: mergedData,
     };
   }
 }

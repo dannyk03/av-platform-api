@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumGroupStatusCodeError } from '@avo/type';
+import { EnumGroupRole, EnumGroupStatusCodeError } from '@avo/type';
 
 import { isNumber } from 'class-validator';
 import {
@@ -16,7 +16,7 @@ import {
 
 import { Group } from '../entity';
 
-import { EnumGroupRole, IGroupSearch } from '../type';
+import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -137,7 +137,26 @@ export class GroupService {
       .setParameters({ isActive, userId })
       .leftJoinAndSelect('group.members', 'member')
       .leftJoinAndSelect('member.user', 'user')
+      .leftJoinAndSelect('user.profile', 'userProfile')
+      .select([
+        'group',
+        'member.role',
+        'user.email',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ])
       .loadRelationCountAndMap('group.membersCount', 'group.members')
+      // .leftJoinAndSelect(
+      //   (sq) =>
+      //     sq
+      //       .subQuery()
+      //       .createQueryBuilder()
+      //       .from(GroupMember, 'member')
+      //       .leftJoinAndSelect('member.user', 'memberUser')
+      //       .leftJoinAndSelect('member.group', 'memberGroup'),
+      //   'member',
+      //   'memberGroup.id = group.id',
+      // )
       // .leftJoinAndMapMany()
       // .addSelect((subQuery) => {
       //   return subQuery
