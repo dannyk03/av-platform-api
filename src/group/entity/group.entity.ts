@@ -1,17 +1,7 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 import { GroupMember } from './group-member.entity';
 import { BaseEntity } from '@/database/entity';
-import { User } from '@/user/entity';
 
 @Entity()
 export class Group extends BaseEntity<Group> {

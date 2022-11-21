@@ -14,7 +14,7 @@ import {
   UpdateResult,
 } from 'typeorm';
 
-import { Group } from '../entity';
+import { Group, GroupMember } from '../entity';
 
 import { IGroupSearch } from '../type';
 
@@ -97,10 +97,24 @@ export class GroupService {
     search,
     isActive,
   }: IGroupSearch): Promise<SelectQueryBuilder<Group>> {
-    const builder = this.groupRepository
-      .createQueryBuilder('group')
+    const groupQueryBuilder = this.groupRepository.createQueryBuilder('group');
+
+    const builder = groupQueryBuilder
       .setParameters({ isActive, userId })
-      .leftJoinAndSelect('group.users', 'user')
+      .leftJoinAndSelect('group.members', 'member')
+      .leftJoinAndSelect('member.user', 'user')
+      .loadRelationCountAndMap('group.membersCount', 'group.members')
+      // .leftJoinAndMapMany()
+      // .addSelect((subQuery) => {
+      //   return subQuery
+      //     .select('memberUser.id')
+      //     .from(GroupMember, 'member')
+      //     .leftJoinAndSelect('member.group', 'memberGroup')
+      //     .leftJoinAndSelect('member.user', 'memberUser')
+      //     .where('memberGroup.id = group.id')
+      //     .orderBy('RANDOM()')
+      //     .take(5);
+      // }, 'random5')
       .where('group.isActive = ANY(:isActive)')
       .andWhere('user.id = :userId');
 

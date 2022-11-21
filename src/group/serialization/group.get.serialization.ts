@@ -12,4 +12,7 @@ export class GroupGetSerialization implements IGroupGetSerialization {
 
   @Expose()
   readonly description: string;
+
+  @Expose()
+  readonly membersCount: number;
 }

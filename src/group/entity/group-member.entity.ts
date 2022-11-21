@@ -9,10 +9,16 @@ import { EnumGroupRole } from '../type';
 @Entity()
 @Unique(['user', 'group'])
 export class GroupMember extends BaseEntity<GroupMember> {
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   user!: User;
 
-  @ManyToOne(() => Group, (group) => group.members)
+  @ManyToOne(() => Group, (group) => group.members, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   group!: Group;
 
   @Column({

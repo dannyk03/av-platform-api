@@ -22,6 +22,7 @@ import {
 import { User } from '@/user/entity';
 
 import { GroupMemberService, GroupService } from '../service';
+import { UserService } from '@/user/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
@@ -51,6 +52,7 @@ export class GroupCommonController {
     private readonly groupService: GroupService,
     private readonly groupMemberService: GroupMemberService,
     private readonly paginationService: PaginationService,
+    private readonly userService: UserService,
   ) {}
 
   @ClientResponse('group.create', {
@@ -82,10 +84,20 @@ export class GroupCommonController {
       role: EnumGroupRole.Owner,
     });
 
+    const users = await this.userService.find();
+
+    const members = await this.groupMemberService.createMany(
+      users
+        .filter((user) => user.id !== reqAuthUser.id)
+        .map((user) => {
+          return { user };
+        }),
+    );
+
     const createGroup = await this.groupService.create({
       name,
       description,
-      members: [createOwner],
+      members: [createOwner, ...members],
     });
 
     return this.groupService.save(createGroup);
@@ -104,32 +116,33 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroupMember = await this.groupMemberService.findOne({
+    const findGroup = await this.groupService.findOne({
       where: {
-        user: {
-          id: userId,
+        id: groupId,
+        members: {
+          role: EnumGroupRole.Owner,
+          user: {
+            id: userId,
+          },
         },
-        group: {
-          id: groupId,
-        },
-        role: EnumGroupRole.Owner,
       },
       relations: {
-        group: true,
-        user: true,
+        members: {
+          user: true,
+        },
       },
       select: {
-        user: {
-          id: true,
-        },
-        group: {
-          id: true,
-          isActive: true,
+        id: true,
+        members: {
+          role: true,
+          user: {
+            id: true,
+          },
         },
       },
     });
 
-    if (!findGroupMember) {
+    if (!findGroup) {
       throw new NotFoundException({
         statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
         message: 'group.error.notFound',
@@ -146,165 +159,216 @@ export class GroupCommonController {
     };
   }
 
-  // @ClientResponse('group.inactive')
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.UpdateGroup, {
-  //   tags: ['group', 'inactive'],
-  // })
-  // @AclGuard()
-  // @RequestParamGuard(IdParamDto)
-  // @Patch('inactive/:id')
-  // async inactiveProduct(
-  //   @ReqAuthUser()
-  //   { id: userId }: User,
-  //   @Param('id') id: string,
-  // ): Promise<IResponseData> {
-  //   const findGroup = await this.groupService.findOne({
-  //     where: {
-  //       id,
-  //       owner: {
-  //         id: userId,
-  //       },
-  //     },
-  //   });
+  @ClientResponse('group.inactive')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UpdateGroup, {
+    tags: ['group', 'inactive'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Patch('inactive/:id')
+  async inactiveProduct(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id: groupId,
+        members: {
+          role: EnumGroupRole.Owner,
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        members: {
+          role: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
 
-  //   if (!findGroup) {
-  //     throw new NotFoundException({
-  //       statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-  //       message: 'group.error.notFound',
-  //     });
-  //   }
-  //   const { affected } = await this.groupService.updateGroupActiveStatus({
-  //     id,
-  //     isActive: false,
-  //   });
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+    const { affected } = await this.groupService.updateGroupActiveStatus({
+      id: groupId,
+      isActive: false,
+    });
 
-  //   return {
-  //     updated: affected,
-  //   };
-  // }
+    return {
+      updated: affected,
+    };
+  }
 
-  // @ClientResponse('group.update', {
-  //   classSerialization: GroupGetSerialization,
-  // })
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.UpdateGroup, {
-  //   tags: ['group', 'update'],
-  // })
-  // @AclGuard()
-  // @RequestParamGuard(IdParamDto)
-  // @Patch('/:id')
-  // async update(
-  //   @ReqAuthUser()
-  //   { id: userId }: User,
-  //   @Param('id') id: string,
-  //   @Body()
-  //   body: GroupUpdateDto,
-  // ): Promise<IResponseData> {
-  //   const findGroup = await this.groupService.findOne({
-  //     where: {
-  //       id,
-  //       owner: {
-  //         id: userId,
-  //       },
-  //     },
-  //   });
+  @ClientResponse('group.update', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UpdateGroup, {
+    tags: ['group', 'update'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Patch('/:id')
+  async update(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+    @Body()
+    body: GroupUpdateDto,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id: groupId,
+        members: {
+          role: EnumGroupRole.Owner,
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        members: {
+          role: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
 
-  //   if (!findGroup) {
-  //     throw new NotFoundException({
-  //       statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-  //       message: 'group.error.notFound',
-  //     });
-  //   }
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
 
-  //   return this.groupService.save({ ...findGroup, ...body });
-  // }
+    return this.groupService.save({ ...findGroup, ...body });
+  }
 
-  // @ClientResponse('group.delete')
-  // @HttpCode(HttpStatus.OK)
-  // @LogTrace(EnumLogAction.DeleteGroup, {
-  //   tags: ['group', 'delete'],
-  // })
-  // @AclGuard()
-  // @RequestParamGuard(IdParamDto)
-  // @Delete('/:id')
-  // async deleteProduct(
-  //   @ReqAuthUser()
-  //   { id: userId }: User,
-  //   @Param('id') id: string,
-  // ): Promise<{ deleted: number }> {
-  //   const findGroup = await this.groupService.findOne({
-  //     where: {
-  //       id,
-  //       owner: {
-  //         id: userId,
-  //       },
-  //     },
-  //   });
+  @ClientResponse('group.delete')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.DeleteGroup, {
+    tags: ['group', 'delete'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Delete('/:id')
+  async deleteProduct(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+  ): Promise<{ deleted: number }> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id: groupId,
+        members: {
+          role: EnumGroupRole.Owner,
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        members: {
+          role: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
 
-  //   if (!findGroup) {
-  //     throw new NotFoundException({
-  //       statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-  //       message: 'group.error.notFound',
-  //     });
-  //   }
-  //   const removeGroup = await this.groupService.removeGroupBy({ id });
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+    const removeGroup = await this.groupService.removeGroupBy({ id: groupId });
 
-  //   return { deleted: removeGroup ? 1 : 0 };
-  // }
+    return { deleted: removeGroup ? 1 : 0 };
+  }
 
-  // @ClientResponsePaging('group.list', {
-  //   classSerialization: GroupGetSerialization,
-  // })
-  // @HttpCode(HttpStatus.OK)
-  // @AclGuard()
-  // @Get('/list')
-  // async list(
-  //   @ReqAuthUser()
-  //   { id: userId }: User,
-  //   @Query()
-  //   {
-  //     page,
-  //     perPage,
-  //     sort,
-  //     search,
-  //     availableSort,
-  //     availableSearch,
-  //     isActive,
-  //   }: GroupListDto,
-  // ): Promise<IResponsePagingData> {
-  //   const skip: number = await this.paginationService.skip(page, perPage);
+  @ClientResponsePaging('group.list', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/list')
+  async list(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      isActive,
+    }: GroupListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
 
-  //   const groups = await this.groupService.paginatedSearchBy({
-  //     userId,
-  //     options: {
-  //       skip: skip,
-  //       take: perPage,
-  //       order: sort,
-  //     },
-  //     search,
-  //     isActive,
-  //   });
+    const groups = await this.groupService.paginatedSearchBy({
+      userId,
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+      isActive,
+    });
 
-  //   const totalData = await this.groupService.getTotal({
-  //     userId,
-  //     search,
-  //     isActive,
-  //   });
+    const totalData = await this.groupService.getTotal({
+      userId,
+      search,
+      isActive,
+    });
 
-  //   const totalPage: number = await this.paginationService.totalPage(
-  //     totalData,
-  //     perPage,
-  //   );
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
 
-  //   return {
-  //     totalData,
-  //     totalPage,
-  //     currentPage: page,
-  //     perPage,
-  //     availableSearch,
-  //     availableSort,
-  //     data: groups,
-  //   };
-  // }
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: groups,
+    };
+  }
 }

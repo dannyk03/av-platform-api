@@ -19,20 +19,22 @@ export class GroupMemberService {
     private readonly groupMemberRepository: Repository<GroupMember>,
   ) {}
 
-  async create(props: DeepPartial<GroupMember>): Promise<GroupMember> {
-    return this.groupMemberRepository.create(props);
+  async create(member: DeepPartial<GroupMember>): Promise<GroupMember> {
+    return this.groupMemberRepository.create(member);
   }
 
-  async createMany(props: DeepPartial<GroupMember>[]): Promise<GroupMember[]> {
-    return this.groupMemberRepository.create(props);
+  async createMany(
+    members: DeepPartial<GroupMember>[],
+  ): Promise<GroupMember[]> {
+    return this.groupMemberRepository.create(members);
   }
 
-  async save(props: DeepPartial<GroupMember>): Promise<GroupMember> {
-    return this.groupMemberRepository.save(props);
+  async save(member: DeepPartial<GroupMember>): Promise<GroupMember> {
+    return this.groupMemberRepository.save(member);
   }
 
-  async saveBulk(props: DeepPartial<GroupMember>[]): Promise<GroupMember[]> {
-    return this.groupMemberRepository.save(props);
+  async saveBulk(members: DeepPartial<GroupMember>[]): Promise<GroupMember[]> {
+    return this.groupMemberRepository.save(members);
   }
 
   async findOne(find?: FindOneOptions<GroupMember>): Promise<GroupMember> {

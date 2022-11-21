@@ -1,12 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1668974241617 implements MigrationInterface {
-  name = 'migration1668974241617';
+export class migration1668976443897 implements MigrationInterface {
+  name = 'migration1668976443897';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            ALTER TABLE "groups" DROP CONSTRAINT "fk_groups_owner_user_id"
-        `);
     await queryRunner.query(`
             CREATE TYPE "public"."group_members_role_enum" AS ENUM('owner')
         `);
@@ -22,9 +19,6 @@ export class migration1668974241617 implements MigrationInterface {
                 CONSTRAINT "uq_group_members_group_id_user_id" UNIQUE ("user_id", "group_id"),
                 CONSTRAINT "pk_group_members_id" PRIMARY KEY ("id")
             )
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "groups" DROP COLUMN "owner_user_id"
         `);
     await queryRunner.query(`
             ALTER TABLE "group_members"
@@ -44,18 +38,10 @@ export class migration1668974241617 implements MigrationInterface {
             ALTER TABLE "group_members" DROP CONSTRAINT "fk_group_members_user_id"
         `);
     await queryRunner.query(`
-            ALTER TABLE "groups"
-            ADD "owner_user_id" uuid NOT NULL
-        `);
-    await queryRunner.query(`
             DROP TABLE "group_members"
         `);
     await queryRunner.query(`
             DROP TYPE "public"."group_members_role_enum"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "groups"
-            ADD CONSTRAINT "fk_groups_owner_user_id" FOREIGN KEY ("owner_user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
   }
 }
