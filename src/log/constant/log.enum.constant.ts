@@ -15,7 +15,6 @@ export enum EnumLogAction {
   Refresh = 'REFRESH',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreatePayment = 'CREATE_PAYMENT',
-  CreateGroup = 'CREATE_GROUP',
 
   SendConnectionRequest = 'SEND_CONNECTION_REQUEST',
   ApproveConnectionRequest = 'APPROVE_CONNECTION_REQUEST',
@@ -45,4 +44,9 @@ export enum EnumLogAction {
   CloudinaryWebhookError = 'CLOUDINARY_WEBHOOK_ERROR',
 
   StripeWebhook = 'STRIPE_WEBHOOK',
+
+  // Group
+  CreateGroup = 'CREATE_GROUP',
+  UpdateGroup = 'UPDATE_GROUP',
+  DeleteGroup = 'DELETE_GROUP',
 }

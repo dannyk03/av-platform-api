@@ -27,59 +27,20 @@ export class migration1668691534148 implements MigrationInterface {
             CREATE INDEX "idx_groups_slug" ON "groups" ("slug")
         `);
     await queryRunner.query(`
-            CREATE TABLE "groups_users" (
-                "group_id" uuid NOT NULL,
-                "user_id" uuid NOT NULL,
-                CONSTRAINT "pk_groups_users_group_id_user_id" PRIMARY KEY ("group_id", "user_id")
-            )
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_groups_users_group_id" ON "groups_users" ("group_id")
-        `);
-    await queryRunner.query(`
-            CREATE INDEX "idx_groups_users_user_id" ON "groups_users" ("user_id")
-        `);
-    await queryRunner.query(`
             ALTER TABLE "groups"
             ADD CONSTRAINT "fk_groups_owner_id" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
-    await queryRunner.query(`
-            ALTER TABLE "groups_users"
-            ADD CONSTRAINT "fk_groups_users_group_id" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "groups_users"
-            ADD CONSTRAINT "fk_groups_users_user_id" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
   }
-
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-            ALTER TABLE "groups_users" DROP CONSTRAINT "fk_groups_users_user_id"
-        `);
-    await queryRunner.query(`
-            ALTER TABLE "groups_users" DROP CONSTRAINT "fk_groups_users_group_id"
-        `);
     await queryRunner.query(`
             ALTER TABLE "groups" DROP CONSTRAINT "fk_groups_owner_id"
         `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_groups_users_user_id"
-        `);
-    await queryRunner.query(`
-            DROP INDEX "public"."idx_groups_users_group_id"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "groups_users"
-        `);
+
     await queryRunner.query(`
             DROP INDEX "public"."idx_groups_slug"
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_groups_name"
-        `);
-    await queryRunner.query(`
-            DROP TABLE "groups"
         `);
   }
 }

@@ -1,12 +1,16 @@
 import { Type } from 'class-transformer';
 import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
-import { NormalizeStringInputTransform } from '@/utils/request/transform';
+import {
+  ConsecutiveWhitespaceTransform,
+  NormalizeStringInputTransform,
+} from '@/utils/request/transform';
 
 export class GroupCreateDto {
   @IsString()
   @Length(3, 300)
   @IsString()
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly name!: string;
