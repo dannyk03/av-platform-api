@@ -81,11 +81,6 @@ export class StripeService {
     return await this.stripeClient.paymentIntents.retrieve(id);
   }
 
-  async getTaxAmount({ taxCode, recipientZipCode, basePrice }) {
-    // ask stripe what is the tax for this product
-    return 10;
-  }
-
   async constructEventFromPayload(signature: string, payload: Buffer) {
     const webhookSecretKey = this.configService.get<string>(
       'stripe.webhookSecretKey',

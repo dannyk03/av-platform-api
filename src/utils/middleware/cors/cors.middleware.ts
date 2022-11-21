@@ -9,8 +9,6 @@ export class CorsMiddleware implements NestMiddleware {
   constructor(private readonly configService: ConfigService) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
     const isProduction = this.configService.get<boolean>('app.isProduction');
     const isStaging = this.configService.get<boolean>('app.isStaging');
 

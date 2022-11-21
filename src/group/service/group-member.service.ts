@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumGroupRole } from '@avo/type';
-
 import {
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
-  Not,
   Repository,
 } from 'typeorm';
 
