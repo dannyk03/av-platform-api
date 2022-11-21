@@ -77,9 +77,7 @@ export class SurveyAddressDto {
   readonly zipCode?: string;
 }
 
-export class SurveyPersonalShippingDto extends SurveyAddressDto {}
-
-export class SurveyPersonalMailingDto extends SurveyAddressDto {
+export class SurveyPersonalShippingDto extends SurveyAddressDto {
   @IsOptional()
   @MaxLength(1000)
   @NormalizeStringInputTransform()
@@ -161,13 +159,6 @@ export class SurveyPersonalDto {
   @Type(() => SurveyPersonalShippingDto)
   @ApiProperty()
   readonly shipping: SurveyPersonalShippingDto;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => SurveyPersonalMailingDto)
-  @ApiProperty()
-  readonly mailing: SurveyPersonalMailingDto;
 
   @IsOptional()
   @IsArray()

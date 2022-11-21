@@ -1,7 +1,6 @@
 import {
   IUserProfileGetSerialization,
   IUserProfileHomeGetSerialization,
-  IUserProfileMailingGetSerialization,
   IUserProfileShippingGetSerialization,
 } from '@avo/type';
 
@@ -28,29 +27,6 @@ export class UserProfileHomeGetSerialization
 @Exclude()
 export class UserProfileShippingGetSerialization
   implements IUserProfileShippingGetSerialization
-{
-  @Expose()
-  addressLine1?: string;
-
-  @Expose()
-  addressLine2?: string;
-
-  @Expose()
-  city?: string;
-
-  @Expose()
-  state?: string;
-
-  @Expose()
-  zipCode?: string;
-
-  @Expose()
-  country?: string;
-}
-
-@Exclude()
-export class UserProfileMailingGetSerialization
-  implements IUserProfileMailingGetSerialization
 {
   @Expose()
   addressLine1?: string;
@@ -132,12 +108,6 @@ export class UserProfileGetSerialization
     ),
   )
   readonly shipping: IUserProfileShippingGetSerialization;
-
-  @Expose()
-  @Transform(({ obj }) =>
-    plainToInstance(UserProfileMailingGetSerialization, obj?.profile?.mailing),
-  )
-  readonly mailing: IUserProfileMailingGetSerialization;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)
