@@ -18,7 +18,6 @@ import {
   User,
   UserProfile,
   UserProfileHome,
-  UserProfileMailing,
   UserProfileShipping,
 } from '../entity';
 
@@ -109,7 +108,6 @@ export class UserCommonController {
         shipping,
         funFacts,
         desiredSkills,
-        mailing,
       },
       personas,
       dietary,
@@ -161,17 +159,6 @@ export class UserCommonController {
             })
             .execute();
         }
-
-        if (mailing) {
-          await transactionalEntityManager
-            .getRepository(UserProfileMailing)
-            .createQueryBuilder()
-            .update<UserProfileMailing>(UserProfileMailing, mailing)
-            .where('user_profile_id = :userProfileId', {
-              userProfileId: reqUser.profile.id,
-            })
-            .execute();
-        }
       },
     );
 
@@ -179,12 +166,7 @@ export class UserCommonController {
       where: {
         id: reqUser.id,
       },
-      relations: [
-        'profile',
-        'profile.home',
-        'profile.shipping',
-        'profile.mailing',
-      ],
+      relations: ['profile', 'profile.home', 'profile.shipping'],
     });
 
     return user;
