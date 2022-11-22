@@ -260,7 +260,6 @@ export class NetworkingCommonController {
           take: perPage,
           order: sort,
         },
-
         search,
         userEmail: reqUser.email,
       });
