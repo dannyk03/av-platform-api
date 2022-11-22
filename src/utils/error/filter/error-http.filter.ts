@@ -160,7 +160,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         .setHeader('x-request-id', __correlationId)
         .setHeader('x-version', __version)
         .setHeader('x-repo-version', __repoVersion)
-        .status(statusHttp)
+        .status(silent ? HttpStatus.OK : statusHttp)
         .json(silent ? { status: 'OK' } : resResponse);
     } else {
       // In certain situations `httpAdapter` might not be available in the
