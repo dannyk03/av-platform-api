@@ -265,7 +265,7 @@ export class GroupCommonController {
               groups.map((group) =>
                 this.groupMemberService.findRandomGroupMembers({
                   groupId: group.id,
-                  count: previewCount - group.members.length,
+                  count: previewCount - group?.members?.length ?? 0,
                   exclude: group.members.map(({ id }) => id),
                 }),
               ),
