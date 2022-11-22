@@ -117,7 +117,7 @@ export class AuthCommonController {
     });
 
     if (!findUser?.phoneNumber) {
-      throw new BadRequestException({
+      throw new NotFoundException({
         silent: true,
         statusCode: EnumUserStatusCodeError.UserPhoneNumberNotFoundError,
         message: 'user.error.phoneNumberNotFound',
@@ -158,6 +158,47 @@ export class AuthCommonController {
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<IResponseData> {
+    const findUser = await this.userService.findOne({
+      where: {
+        phoneNumber,
+      },
+      relations: {
+        authConfig: true,
+        organization: true,
+        role: true,
+      },
+      select: {
+        authConfig: {
+          id: true,
+          phoneVerifiedAt: true,
+          emailVerifiedAt: true,
+          passwordExpiredAt: true,
+        },
+        organization: {
+          isActive: true,
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    });
+
+    if (!findUser?.phoneNumber) {
+      throw new NotFoundException({
+        silent: true,
+        statusCode: EnumUserStatusCodeError.UserPhoneNumberNotFoundError,
+        message: 'user.error.phoneNumberNotFound',
+      });
+    }
+
+    if (findUser?.authConfig?.phoneVerifiedAt) {
+      throw new BadRequestException({
+        silent: true,
+        statusCode: EnumAuthStatusCodeError.AuthPhoneNumberAlreadyVerifiedError,
+        message: 'auth.error.phoneVerified',
+      });
+    }
+
     try {
       const isProduction = this.configService.get<boolean>('app.isProduction');
 
@@ -186,31 +227,6 @@ export class AuthCommonController {
     }
 
     await this.authService.setUserPhoneNumberVerified({ phoneNumber });
-
-    const findUser = await this.userService.findOne({
-      where: {
-        phoneNumber,
-      },
-      relations: {
-        authConfig: true,
-        organization: true,
-        role: true,
-      },
-      select: {
-        authConfig: {
-          id: true,
-          phoneVerifiedAt: true,
-          emailVerifiedAt: true,
-          passwordExpiredAt: true,
-        },
-        organization: {
-          isActive: true,
-          id: true,
-          name: true,
-          slug: true,
-        },
-      },
-    });
 
     const safeData: AuthUserLoginSerialization =
       await this.authService.serializationLogin(findUser);
