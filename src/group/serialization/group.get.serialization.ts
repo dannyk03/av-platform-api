@@ -1,5 +1,4 @@
 import {
-  EnumGroupRole,
   IGroupGetSerialization,
   IGroupGetWithPreviewSerialization,
   IGroupMemberPreviewGetSerialization,
