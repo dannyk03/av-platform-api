@@ -1,7 +1,7 @@
 import {
-  EnumGroupRole,
   IGroupGetSerialization,
   IGroupGetWithPreviewSerialization,
+  IGroupMemberPreviewGetSerialization,
 } from '@avo/type';
 
 import { Exclude, Expose, Transform } from 'class-transformer';
@@ -36,10 +36,5 @@ export class GroupGetWithPreviewSerialization
       };
     }),
   )
-  membersPreview: {
-    role: EnumGroupRole;
-    email: string;
-    firstName: string;
-    lastName: string;
-  }[];
+  membersPreview: IGroupMemberPreviewGetSerialization[];
 }
