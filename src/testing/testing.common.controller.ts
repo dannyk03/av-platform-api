@@ -17,7 +17,7 @@ import { LogService } from '@/log/service';
 import { HelperDateService, HelperService } from '@/utils/helper/service';
 
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import {
   ExecMeta,
   RequestTimezone,
@@ -70,7 +70,7 @@ export class TestingCommonController {
   async helloAuth(
     @RequestUserAgent() userAgent: IResult,
     @RequestTimezone() timezone: string,
-    @ReqUser() reqUser,
+    @ReqAuthUser() reqUser,
   ): Promise<IResponseData> {
     const newDate = this.helperDateService.create({
       timezone,

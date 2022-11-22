@@ -45,6 +45,9 @@ export class UserProfileShippingGetSerialization
 
   @Expose()
   country?: string;
+
+  @Expose()
+  deliveryInstructions?: string;
 }
 
 @Exclude()

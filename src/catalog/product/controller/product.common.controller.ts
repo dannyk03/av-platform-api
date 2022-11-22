@@ -78,7 +78,7 @@ export class ProductCommonController {
   })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CatalogProductCreate, {
-    tags: ['catalog', 'product'],
+    tags: ['catalog', 'product', 'create'],
   })
   @AclGuard({
     abilities: [
@@ -259,7 +259,7 @@ export class ProductCommonController {
   @ClientResponse('product.delete')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CatalogProductDelete, {
-    tags: ['catalog', 'product'],
+    tags: ['catalog', 'product', 'delete'],
   })
   @AclGuard({
     abilities: [
@@ -344,7 +344,7 @@ export class ProductCommonController {
   })
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.CatalogProductUpdate, {
-    tags: ['catalog', 'product'],
+    tags: ['catalog', 'product', 'update'],
   })
   @AclGuard({
     abilities: [

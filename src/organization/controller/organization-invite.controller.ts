@@ -36,7 +36,7 @@ import {
 import { AclRoleService } from '@acl/role/service';
 
 import { ReqOrganizationIdentifierCtx } from '../decorator/organization.decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
@@ -83,7 +83,7 @@ export class OrganizationInviteController {
   })
   @Post('/invite')
   async invite(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     { email, role }: OrganizationInviteDto,
@@ -259,7 +259,7 @@ export class OrganizationInviteController {
   })
   @Post('/user/role')
   async updateUserRole(
-    @ReqUser()
+    @ReqAuthUser()
     reqUser: User,
     @Body()
     { email, role }: OrganizationChangeRoleDto,

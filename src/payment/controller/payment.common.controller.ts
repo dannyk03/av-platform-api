@@ -29,7 +29,7 @@ import { StripeService } from '../stripe/service';
 import { GiftOrderService } from '@/order/service';
 
 import { LogTrace } from '@/log/decorator';
-import { ReqUser } from '@/user/decorator';
+import { ReqAuthUser } from '@/user/decorator';
 import { ClientResponse } from '@/utils/response/decorator';
 
 import { AclGuard } from '@/auth/guard';
@@ -61,7 +61,7 @@ export class PaymentCommonController {
   @AclGuard()
   @Post()
   async createPayment(
-    @ReqUser()
+    @ReqAuthUser()
     { id: reqUserId }: User,
     @Body()
     { giftOrderId }: PaymentCreateDto,
@@ -175,7 +175,7 @@ export class PaymentCommonController {
   @RequestParamGuard(IdParamDto)
   @Get('/:id')
   async getPayment(
-    @ReqUser()
+    @ReqAuthUser()
     { id: reqUserId }: User,
     @Param('id') giftOrderId: string,
   ): Promise<IResponseData> {

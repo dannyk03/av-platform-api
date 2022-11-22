@@ -171,8 +171,7 @@ export class UserService {
           qb.where('user.email ILIKE :likeSearch')
             .orWhere('user.phoneNumber ILIKE :likeSearch')
             .orWhere('profile.firstName ILIKE :likeSearch')
-            .orWhere('profile.lastName ILIKE :likeSearch')
-            .orWhere('profile.title ILIKE :likeSearch');
+            .orWhere('profile.lastName ILIKE :likeSearch');
         }),
       );
     }
