@@ -15,8 +15,9 @@ import { CustomerIOService } from './customer-io';
     TwilioModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
+        apiKey: configService.get<string>('twilio.apiKey'),
+        apiSecretKey: configService.get<string>('twilio.apiSecretKey'),
         accountSid: configService.get<string>('twilio.accountSid'),
-        authToken: configService.get<string>('twilio.authToken'),
         logLevel: configService.get<string>('twilio.logLevel'),
       }),
     }),

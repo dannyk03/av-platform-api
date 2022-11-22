@@ -1,12 +1,12 @@
-import Twilio from 'twilio';
+import { Twilio } from 'twilio';
 import TwilioClient from 'twilio/lib/rest/Twilio';
 
 import { TwilioOptions } from '../type';
 
 export function getTwilioClient({
-  accountSid,
-  authToken,
+  apiKey,
+  apiSecretKey,
   ...options
 }: TwilioOptions): TwilioClient {
-  return Twilio(accountSid, authToken, options);
+  return new Twilio(apiKey, apiSecretKey, options);
 }

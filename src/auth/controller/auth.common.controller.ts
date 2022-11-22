@@ -105,6 +105,9 @@ export class AuthCommonController {
   @ClientResponse('auth.smsOtpGet')
   @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.OtpSmsRequest, {
+    tags: ['otp', 'sms'],
+  })
   @Post('/otp/sms')
   async createSmsVerificationOTP(
     @Body() { phoneNumber }: AuthSmsOtpGetDto,
@@ -130,8 +133,8 @@ export class AuthCommonController {
     }
 
     try {
-      const isStaging = this.configService.get<boolean>('app.isStaging');
-      if (isStaging) {
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+      if (isProduction) {
         await this.authService.createVerificationsSmsOPT({
           phoneNumber,
         });
@@ -148,14 +151,17 @@ export class AuthCommonController {
   @ClientResponse('auth.smsOtpVerify')
   @Throttle(1, 5)
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.OtpSmsVerify, {
+    tags: ['otp', 'sms'],
+  })
   @Post('/otp/sms/verify')
   async verifySmsVerificationOTP(
     @Body() { phoneNumber, code }: AuthSmsOtpVerifyDto,
   ): Promise<IResponseData> {
     try {
-      const isStaging = this.configService.get<boolean>('app.isStaging');
+      const isProduction = this.configService.get<boolean>('app.isProduction');
 
-      const isOtpApproved = isStaging
+      const isOtpApproved = isProduction
         ? await this.authService.checkVerificationSmsOTP({
             phoneNumber,
             code,
@@ -597,8 +603,9 @@ export class AuthCommonController {
         try {
           // Skip sending sms on non production environments
           // instead use nonProdMagicOTP
-          const isStaging = this.configService.get<boolean>('app.isStaging');
-          if (phoneNumber && isStaging) {
+          const isProduction =
+            this.configService.get<boolean>('app.isProduction');
+          if (phoneNumber && isProduction) {
             await this.authService.createVerificationsSmsOPT({ phoneNumber });
           }
         } catch (error) {

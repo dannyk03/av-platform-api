@@ -40,11 +40,14 @@ export enum EnumLogAction {
   OrganizationJoinMagic = 'ORG_JOIN_MAGIC',
 
   UserProfileRequest = 'USER_PROFILE_REQUEST',
+  // Cloudinary
   CloudinaryWebhook = 'CLOUDINARY_WEBHOOK',
   CloudinaryWebhookError = 'CLOUDINARY_WEBHOOK_ERROR',
-
+  // Stripe
   StripeWebhook = 'STRIPE_WEBHOOK',
-
+  // OTP
+  OtpSmsRequest = 'OTP_SMS_REQUEST',
+  OtpSmsVerify = 'OTP_SMS_VERIFY',
   // Group
   CreateGroup = 'CREATE_GROUP',
   UpdateGroup = 'UPDATE_GROUP',

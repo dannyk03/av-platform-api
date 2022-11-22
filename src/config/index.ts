@@ -99,12 +99,13 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string().required(),
           CLOUDINARY_CLOUD_NAME: Joi.string().required(),
           CLOUDINARY_API_KEY: Joi.string().required(),
-          CLOUDINARY_API_SECRET: Joi.string().required(),
+          CLOUDINARY_API_SECRET_KEY: Joi.string().required(),
 
           CUSTOMER_IO_API_KEY: Joi.string().required(),
 
           TWILIO_ACCOUNT_SID: Joi.string().required(),
-          TWILIO_AUTH_TOKEN: Joi.string().required(),
+          TWILIO_API_KEY: Joi.string().required(),
+          TWILIO_API_SECRET_KEY: Joi.string().required(),
         }),
   validationOptions: {
     allowUnknown: true,
