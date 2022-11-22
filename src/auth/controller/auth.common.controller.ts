@@ -135,9 +135,10 @@ export class AuthCommonController {
     try {
       const isProduction = this.configService.get<boolean>('app.isProduction');
       if (isProduction) {
-        await this.authService.createVerificationsSmsOPT({
+        const xxx = await this.authService.createVerificationsSmsOPT({
           phoneNumber,
         });
+        console.log(xxx);
       }
     } catch (error) {
       throw new InternalServerErrorException({
