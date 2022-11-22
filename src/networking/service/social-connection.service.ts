@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { isNumber } from 'class-validator';
 import {
+  Brackets,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -58,6 +59,7 @@ export class SocialConnectionService {
       .createQueryBuilder('socialConnection')
       .leftJoinAndSelect('socialConnection.user1', 'user1')
       .leftJoinAndSelect('socialConnection.user2', 'user2')
+      .leftJoinAndSelect('user2.profile', 'user2Profile')
       .setParameters({ userEmail })
       .where('user1.email = :userEmail');
 
@@ -66,8 +68,15 @@ export class SocialConnectionService {
     }
 
     if (search) {
-      builder.setParameters({ search, likeSearch: `%${search}%` });
-      builder.andWhere('user2.email ILIKE :likeSearch');
+      builder.andWhere(
+        new Brackets((qb) => {
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+
+          qb.where('user2.email ILIKE :likeSearch')
+            .orWhere('user2Profile.firstName ILIKE :likeSearch')
+            .orWhere('user2Profile.lastName ILIKE :likeSearch');
+        }),
+      );
     }
 
     return builder;
