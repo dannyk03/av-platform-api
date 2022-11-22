@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { EnumGroupStatusCodeError } from '@avo/type';
+import { EnumGroupRole, EnumGroupStatusCodeError } from '@avo/type';
 
 import { isNumber } from 'class-validator';
 import {
@@ -16,7 +16,7 @@ import {
 
 import { Group } from '../entity';
 
-import { EnumGroupRole, IGroupSearch } from '../type';
+import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -137,18 +137,16 @@ export class GroupService {
       .setParameters({ isActive, userId })
       .leftJoinAndSelect('group.members', 'member')
       .leftJoinAndSelect('member.user', 'user')
+      .leftJoinAndSelect('user.profile', 'userProfile')
+      .select([
+        'group',
+        'member.id',
+        'member.role',
+        'user.email',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ])
       .loadRelationCountAndMap('group.membersCount', 'group.members')
-      // .leftJoinAndMapMany()
-      // .addSelect((subQuery) => {
-      //   return subQuery
-      //     .select('memberUser.id')
-      //     .from(GroupMember, 'member')
-      //     .leftJoinAndSelect('member.group', 'memberGroup')
-      //     .leftJoinAndSelect('member.user', 'memberUser')
-      //     .where('memberGroup.id = group.id')
-      //     .orderBy('RANDOM()')
-      //     .take(5);
-      // }, 'random5')
       .where('group.isActive = ANY(:isActive)')
       .andWhere('user.id = :userId');
 

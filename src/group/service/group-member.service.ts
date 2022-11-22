@@ -44,4 +44,35 @@ export class GroupMemberService {
   async findOneBy(find?: FindOptionsWhere<GroupMember>): Promise<GroupMember> {
     return this.groupMemberRepository.findOneBy({ ...find });
   }
+
+  async findRandomGroupMembers({
+    groupId,
+    count,
+    exclude,
+  }: {
+    groupId: string;
+    count: number;
+    exclude?: string[];
+  }): Promise<GroupMember[]> {
+    const builder = await this.groupMemberRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.user', 'memberUser')
+      .leftJoinAndSelect('memberUser.profile', 'userProfile')
+      .leftJoinAndSelect('member.group', 'memberGroup')
+      .select([
+        'member.id',
+        'member.role',
+        'memberUser.email',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ])
+      .setParameters({ groupId, exclude })
+      .where('memberGroup.id = :groupId')
+      .andWhere('member.id NOT IN (:...exclude)')
+      .orderBy('RANDOM()')
+      .limit(count);
+
+    console.log(builder.getQueryAndParameters());
+    return builder.getMany();
+  }
 }

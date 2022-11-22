@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 
 import {
+  EnumGroupRole,
   EnumGroupStatusCodeError,
   IResponseData,
   IResponsePagingData,
@@ -22,7 +23,6 @@ import {
 import { User } from '@/user/entity';
 
 import { GroupMemberService, GroupService } from '../service';
-import { UserService } from '@/user/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
@@ -35,12 +35,13 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { EnumGroupRole } from '../type';
-
 import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
-import { GroupGetSerialization } from '../serialization';
+import {
+  GroupGetSerialization,
+  GroupGetWithPreviewSerialization,
+} from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -52,7 +53,6 @@ export class GroupCommonController {
     private readonly groupService: GroupService,
     private readonly groupMemberService: GroupMemberService,
     private readonly paginationService: PaginationService,
-    private readonly userService: UserService,
   ) {}
 
   @ClientResponse('group.create', {
@@ -224,7 +224,7 @@ export class GroupCommonController {
   }
 
   @ClientResponsePaging('group.list', {
-    classSerialization: GroupGetSerialization,
+    classSerialization: GroupGetWithPreviewSerialization,
   })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
@@ -241,11 +241,12 @@ export class GroupCommonController {
       availableSort,
       availableSearch,
       isActive,
+      preview: previewCount,
     }: GroupListDto,
   ): Promise<IResponsePagingData> {
     const skip: number = await this.paginationService.skip(page, perPage);
 
-    const groups = await this.groupService.paginatedSearchBy({
+    let groups = await this.groupService.paginatedSearchBy({
       userId,
       options: {
         skip: skip,
@@ -255,6 +256,30 @@ export class GroupCommonController {
       search,
       isActive,
     });
+
+    if (previewCount) {
+      // TODO Make it more efficient, rewrite when there is time for it
+      const randomGroupMembers =
+        previewCount > 1
+          ? await Promise.all(
+              groups.map((group) =>
+                this.groupMemberService.findRandomGroupMembers({
+                  groupId: group.id,
+                  count: previewCount - group?.members?.length ?? 0,
+                  exclude: group.members.map(({ id }) => id),
+                }),
+              ),
+            )
+          : null;
+
+      groups = groups.map((group, i) => {
+        (group as any).membersPreview = [
+          ...group.members,
+          ...(randomGroupMembers?.[i] ?? []),
+        ];
+        return group;
+      });
+    }
 
     const totalData = await this.groupService.getTotal({
       userId,
