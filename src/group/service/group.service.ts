@@ -54,17 +54,17 @@ export class GroupService {
   async findGroup({
     groupId,
     userId,
-    isOwner,
+    isOwner = false,
   }: {
     userId: string;
     groupId: string;
-    isOwner: boolean;
+    isOwner?: boolean;
   }): Promise<Group> {
     return this.findOne({
       where: {
         id: groupId,
         members: {
-          role: EnumGroupRole.Owner,
+          ...(isOwner ? { role: EnumGroupRole.Owner } : null),
           user: {
             id: userId,
           },
