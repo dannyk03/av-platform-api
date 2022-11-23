@@ -38,5 +38,6 @@
   "MinGreaterThanConstraint": "{property} invalid, should be bigger number",
   "RangeTupleConstraint": "{property} range is invalid",
   "IsSmsOtpCodeConstraint": "{property} is invalid OTP validation code",
-  "IsRegisteredUserConstraint": "{property} is not valid"
+  "IsRegisteredUserConstraint": "{property} is not valid",
+  "isRFC3339": "{property} is not valid RFC3339 timestamp"
 }

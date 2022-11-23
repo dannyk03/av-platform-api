@@ -2,12 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -44,6 +46,8 @@ import {
 } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
+
+import { TimestampPipe } from '@/utils/date-time/pipes';
 
 @Controller({
   version: '1',
@@ -106,7 +110,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -141,7 +146,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -179,7 +185,8 @@ export class GroupCommonController {
     @Body()
     body: GroupUpdateDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -207,7 +214,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<{ deleted: number }> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -301,5 +309,41 @@ export class GroupCommonController {
       availableSort,
       data: groups,
     };
+  }
+
+  @ClientResponse(
+    'group.upcomingMilestones',
+    // {classSerialization: GroupGetWithPreviewSerialization,}
+  )
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/upcoming-milestones')
+  async upcomingMilestones(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+    @Query('start', TimestampPipe())
+    fromTimestamp: number,
+    @Query('end', TimestampPipe(60)) toTimestamp: number,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findGroup({
+      userId,
+      groupId,
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    const xxx = await this.groupService.getUpcomingMilestones({
+      groupId,
+      fromTimestamp,
+      toTimestamp,
+    });
+    return;
   }
 }

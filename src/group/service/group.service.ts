@@ -51,12 +51,14 @@ export class GroupService {
     return this.groupRepository.findOneBy({ ...find });
   }
 
-  async findOwningGroup({
+  async findGroup({
     groupId,
     userId,
+    isOwner,
   }: {
     userId: string;
     groupId: string;
+    isOwner: boolean;
   }): Promise<Group> {
     return this.findOne({
       where: {
@@ -195,5 +197,36 @@ export class GroupService {
     });
 
     return searchBuilder.getCount();
+  }
+
+  async getUpcomingMilestones({
+    groupId,
+    fromTimestamp,
+    toTimestamp,
+  }: {
+    groupId: string;
+    fromTimestamp: number;
+    toTimestamp: number;
+  }) {
+    return this.groupRepository
+      .createQueryBuilder('group')
+      .setParameters({ groupId, fromTimestamp, toTimestamp })
+      .leftJoinAndSelect('group.members', 'member')
+      .leftJoinAndSelect('member.user', 'user')
+      .leftJoinAndSelect('user.profile', 'userProfile')
+      .select([
+        'group',
+        'member.id',
+        'member.role',
+        'user.email',
+        'userProfile.firstName',
+        'userProfile.lastName',
+        'userProfile.birthMonth',
+        'userProfile.birthDay',
+        'userProfile.workAnniversaryMonth',
+        'userProfile.workAnniversaryDay',
+      ])
+      .where('group.id = :groupId')
+      .getMany();
   }
 }
