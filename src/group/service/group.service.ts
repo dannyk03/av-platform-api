@@ -226,7 +226,7 @@ export class GroupService {
         FROM
         (
           SELECT m.role, m.user_id, u.email, 
-          up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year,'birthday' AS e_name
+          up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, upcoming_event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year,'birthday' AS e_name
           FROM public.groups AS g
             LEFT JOIN public.group_members AS m
               ON g.id = m.group_id
@@ -238,7 +238,7 @@ export class GroupService {
           UNION
           SELECT m.role, m.user_id, u.email, 
             up.first_name, up.last_name, up.work_anniversary_day AS e_day,
-            up.work_anniversary_month AS e_month, event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, 'work anniversary' AS e_name
+            up.work_anniversary_month AS e_month, upcoming_event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, 'work anniversary' AS e_name
           FROM public.groups AS g
             LEFT JOIN public.group_members AS m
               ON g.id = m.group_id
