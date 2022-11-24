@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -311,7 +310,7 @@ export class GroupCommonController {
     };
   }
 
-  @ClientResponse(
+  @ClientResponsePaging(
     'group.upcomingMilestones',
     // {classSerialization: GroupGetWithPreviewSerialization,}
   )
@@ -339,11 +338,9 @@ export class GroupCommonController {
       });
     }
 
-    const xxx = await this.groupService.getUpcomingMilestones({
+    return this.groupService.getUpcomingMilestones({
       groupId,
-      fromTimestamp,
-      toTimestamp,
+      days: 60,
     });
-    return;
   }
 }

@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { EnumGroupRole, EnumGroupStatusCodeError } from '@avo/type';
 
 import { isNumber } from 'class-validator';
+import values from 'lodash/values';
 import {
   Brackets,
+  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -23,6 +25,8 @@ import { ConnectionNames } from '@/database/constant';
 @Injectable()
 export class GroupService {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private readonly defaultDataSource: DataSource,
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
   ) {}
@@ -201,32 +205,57 @@ export class GroupService {
 
   async getUpcomingMilestones({
     groupId,
-    fromTimestamp,
-    toTimestamp,
+    days = 60,
+    skip = 0,
+    limit = 0,
   }: {
     groupId: string;
-    fromTimestamp: number;
-    toTimestamp: number;
+    days?: number;
+    skip?: number;
+    limit?: number;
   }) {
-    return this.groupRepository
-      .createQueryBuilder('group')
-      .setParameters({ groupId, fromTimestamp, toTimestamp })
-      .leftJoinAndSelect('group.members', 'member')
-      .leftJoinAndSelect('member.user', 'user')
-      .leftJoinAndSelect('user.profile', 'userProfile')
-      .select([
-        'group',
-        'member.id',
-        'member.role',
-        'user.email',
-        'userProfile.firstName',
-        'userProfile.lastName',
-        'userProfile.birthMonth',
-        'userProfile.birthDay',
-        'userProfile.workAnniversaryMonth',
-        'userProfile.workAnniversaryDay',
-      ])
-      .where('group.id = :groupId')
-      .getMany();
+    const LIMIT = limit || 'ALL';
+    const OFFSET = skip;
+
+    const resObj = await this.defaultDataSource.query(
+      `
+      SELECT role, user_id AS userId, email, first_name AS firstName, last_name AS lastName, e_day AS day, e_month AS month, e_name AS description
+      FROM
+      (
+        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_name, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date
+        FROM
+        (
+          SELECT m.role, m.user_id, u.email, 
+          up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year,'birthday' AS e_name
+          FROM public.groups AS g
+            LEFT JOIN public.group_members AS m
+              ON g.id = m.group_id
+            LEFT JOIN public.users AS u
+              ON m.user_id = u.id
+            LEFT JOIN public.user_profiles AS up
+              ON up.user_id = u.id
+          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
+          UNION
+          SELECT m.role, m.user_id, u.email, 
+            up.first_name, up.last_name, up.work_anniversary_day AS e_day,
+            up.work_anniversary_month AS e_month, event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, 'work anniversary' AS e_name
+          FROM public.groups AS g
+            LEFT JOIN public.group_members AS m
+              ON g.id = m.group_id
+            LEFT JOIN public.users AS u
+              ON m.user_id = u.id
+            LEFT JOIN public.user_profiles AS up
+              ON up.user_id = u.id
+          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL
+        ) AS temp_events
+      ) AS events
+      WHERE e_date <= NOW() + ($2 || 'DAY')::INTERVAL
+      ORDER BY e_date
+      LIMIT ${LIMIT} OFFSET ${OFFSET}
+    `,
+      [groupId, days],
+    );
+
+    return values(resObj);
   }
 }
