@@ -36,12 +36,18 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
+import {
+  GroupCreateDto,
+  GroupListDto,
+  GroupUpcomingMilestonesListDto,
+  GroupUpdateDto,
+} from '../dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
+  GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
@@ -310,10 +316,9 @@ export class GroupCommonController {
     };
   }
 
-  @ClientResponsePaging(
-    'group.upcomingMilestones',
-    // {classSerialization: GroupGetWithPreviewSerialization,}
-  )
+  @ClientResponsePaging('group.upcomingMilestones', {
+    classSerialization: GroupUpcomingMilestonesListSerialization,
+  })
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
@@ -322,9 +327,8 @@ export class GroupCommonController {
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
-    @Query('start', TimestampPipe())
-    fromTimestamp: number,
-    @Query('end', TimestampPipe(60)) toTimestamp: number,
+    @Query()
+    { days, page, perPage }: GroupUpcomingMilestonesListDto,
   ): Promise<IResponseData> {
     const findGroup = await this.groupService.findGroup({
       userId,
@@ -338,9 +342,25 @@ export class GroupCommonController {
       });
     }
 
-    return this.groupService.getUpcomingMilestones({
+    const skip: number = page
+      ? await this.paginationService.skip(page, perPage)
+      : 0;
+
+    const upcomingMilestones = await this.groupService.getUpcomingMilestones({
       groupId,
-      days: 60,
+      days,
+      skip,
+      limit: perPage,
     });
+
+    const totalData = upcomingMilestones?.length ?? 0;
+
+    return {
+      totalData,
+      perPage,
+      currentPage: perPage ? page : 0,
+      period: `${days} days`,
+      data: upcomingMilestones,
+    };
   }
 }

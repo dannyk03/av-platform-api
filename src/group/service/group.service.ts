@@ -210,22 +210,22 @@ export class GroupService {
     limit = 0,
   }: {
     groupId: string;
-    days?: number;
-    skip?: number;
-    limit?: number;
+    days: number;
+    skip: number;
+    limit: number;
   }) {
     const LIMIT = limit || 'ALL';
     const OFFSET = skip;
 
-    const resObj = await this.defaultDataSource.query(
+    return this.defaultDataSource.query(
       `
-      SELECT role, user_id AS userId, email, first_name AS firstName, last_name AS lastName, e_day AS day, e_month AS month, e_name AS description
+      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month, e_name AS description, u_created_at AS created_at
       FROM
       (
-        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_name, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date
+        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_name, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
         FROM
         (
-          SELECT m.role, m.user_id, u.email, 
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
           up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, upcoming_event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year,'birthday' AS e_name
           FROM public.groups AS g
             LEFT JOIN public.group_members AS m
@@ -236,7 +236,7 @@ export class GroupService {
               ON up.user_id = u.id
           WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
           UNION
-          SELECT m.role, m.user_id, u.email, 
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
             up.first_name, up.last_name, up.work_anniversary_day AS e_day,
             up.work_anniversary_month AS e_month, upcoming_event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, 'work anniversary' AS e_name
           FROM public.groups AS g
@@ -255,7 +255,5 @@ export class GroupService {
     `,
       [groupId, days],
     );
-
-    return values(resObj);
   }
 }

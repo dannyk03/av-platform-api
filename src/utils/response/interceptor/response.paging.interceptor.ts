@@ -15,6 +15,7 @@ import {
   plainToInstance,
 } from 'class-transformer';
 import { Response } from 'express';
+import { rest } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -89,6 +90,7 @@ export class ResponsePagingInterceptor<T>
             availableSort,
             availableSearch,
             totalPage,
+            ...rest
           } = meta;
           const statusCode: number = responseExpress.statusCode;
           const properties: IMessageOptionsProperties = messageProperties;
@@ -139,6 +141,7 @@ export class ResponsePagingInterceptor<T>
               perPage,
               availableSort,
               availableSearch,
+              ...rest,
             },
             results: serialization,
           };
