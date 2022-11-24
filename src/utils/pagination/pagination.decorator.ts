@@ -8,12 +8,13 @@ import {
   IsBoolean,
   IsDate,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
-  IsPositive,
   IsString,
+  Max,
   Min,
   ValidateIf,
 } from 'class-validator';
@@ -70,8 +71,8 @@ export function PaginationAvailableSearch(availableSearch: string[]): any {
 export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
   return applyDecorators(
     Expose(),
-    Min(1),
-    IsPositive(),
+    IsInt(),
+    Min(0),
     Type(() => Number),
     Transform(({ value }) => (Number.isInteger(value) ? value : page)),
   );
@@ -80,8 +81,8 @@ export function PaginationPage(page = PAGINATION_DEFAULT_PAGE): any {
 export function PaginationPerPage(perPage = PAGINATION_DEFAULT_PER_PAGE): any {
   return applyDecorators(
     Expose(),
-    Min(1),
-    IsPositive(),
+    IsInt(),
+    Min(0),
     Type(() => Number),
     Transform(({ value }) => (Number.isInteger(value) ? value : perPage)),
   );
@@ -154,7 +155,7 @@ export function PaginationFilterRange(): any {
   return applyDecorators(
     Expose(),
     IsNumber(
-      { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 },
+      { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
       { each: true },
     ),
     RangeTuple(),
@@ -236,5 +237,21 @@ export function PaginationFilterString(
       : Skip(),
     options?.required ? IsNotEmpty() : IsOptional(),
     options?.required ? Skip() : ValidateIf((e) => e[field] !== '' && e[field]),
+  );
+}
+
+export function PaginationFilterDays(defaultDays: number, maxDays = 365): any {
+  return applyDecorators(
+    Expose(),
+    IsInt(),
+    Min(0),
+    Max(maxDays),
+    Transform(({ value }) =>
+      value
+        ? Number(value) <= maxDays
+          ? Number(value)
+          : maxDays
+        : defaultDays,
+    ),
   );
 }

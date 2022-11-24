@@ -89,6 +89,7 @@ export class ResponsePagingInterceptor<T>
             availableSort,
             availableSearch,
             totalPage,
+            ...rest
           } = meta;
           const statusCode: number = responseExpress.statusCode;
           const properties: IMessageOptionsProperties = messageProperties;
@@ -139,6 +140,7 @@ export class ResponsePagingInterceptor<T>
               perPage,
               availableSort,
               availableSearch,
+              ...rest,
             },
             results: serialization,
           };

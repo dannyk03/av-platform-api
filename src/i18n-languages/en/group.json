@@ -6,6 +6,7 @@
   "update": "Update group success",
   "inactive": "Group inactive succeed",
   "active": "Group active succeed",
+  "upcomingMilestones": "Group upcoming milestones get success",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",
