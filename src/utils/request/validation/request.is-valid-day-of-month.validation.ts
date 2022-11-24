@@ -29,12 +29,6 @@ export class IsValidDayOfMonthConstraint
     } else if (value === 29 && relatedValueMonth === 2 && !relatedValueYear) {
       return true;
     } else if (!relatedValueYear) {
-      console.log(
-        moment(
-          `${new Date().getFullYear()}-${relatedValueMonth}-${value}`,
-          'YYYY-MM-DD',
-        ).isValid(),
-      );
       return moment(
         `${new Date().getFullYear()}-${relatedValueMonth}-${value}`,
         'YYYY-MM-DD',
