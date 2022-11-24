@@ -39,5 +39,6 @@
   "RangeTupleConstraint": "{property} range is invalid",
   "IsSmsOtpCodeConstraint": "{property} is invalid OTP validation code",
   "IsRegisteredUserConstraint": "{property} is not valid",
-  "isRFC3339": "{property} is not valid RFC3339 timestamp"
+  "isRFC3339": "{property} is not valid RFC3339 timestamp",
+  "IsValidDayOfMonthConstraint": "{property} is not valid day of month"
 }
