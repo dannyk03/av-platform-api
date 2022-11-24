@@ -33,5 +33,5 @@ export class GroupUpcomingMilestonesListSerialization
   month: number;
 
   @Expose()
-  description: string;
+  type: string;
 }
