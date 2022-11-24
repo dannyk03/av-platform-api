@@ -9,8 +9,3 @@ export const ProductOrderByNestingAliasMap = {
   name: 'group.name',
   description: 'group.description',
 };
-
-export const GROUP_USER_DEFAULT_PAGE = 1;
-export const GROUP_USER_DEFAULT_PER_PAGE = 10;
-export const GROUP_USER_DEFAULT_SORT = 'createdAt@asc';
-export const GROUP_USER_DEFAULT_ACTIVE = [true];
