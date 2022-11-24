@@ -8,10 +8,11 @@ import {
   GROUP_DEFAULT_ACTIVE,
   GROUP_DEFAULT_AVAILABLE_SEARCH,
   GROUP_DEFAULT_AVAILABLE_SORT,
+  GROUP_DEFAULT_MEMBER_PREVIEW_COUNT,
   GROUP_DEFAULT_PAGE,
   GROUP_DEFAULT_PER_PAGE,
   GROUP_DEFAULT_SORT,
-  ProductOrderByNestingAliasMap,
+  GroupOrderByNestingAliasMap,
 } from '../constant';
 
 import {
@@ -44,7 +45,7 @@ export class GroupListDto implements IPaginationList {
   @PaginationSort(
     GROUP_DEFAULT_SORT,
     GROUP_DEFAULT_AVAILABLE_SORT,
-    ProductOrderByNestingAliasMap,
+    GroupOrderByNestingAliasMap,
   )
   readonly sort: IPaginationSort;
 
@@ -56,7 +57,7 @@ export class GroupListDto implements IPaginationList {
   @PaginationFilterBoolean(GROUP_DEFAULT_ACTIVE)
   readonly isActive: boolean[];
 
-  @ApiProperty({ default: 5 })
-  @ParamInt(5)
+  @ApiProperty({ default: GROUP_DEFAULT_MEMBER_PREVIEW_COUNT })
+  @ParamInt(GROUP_DEFAULT_MEMBER_PREVIEW_COUNT)
   readonly preview: number;
 }

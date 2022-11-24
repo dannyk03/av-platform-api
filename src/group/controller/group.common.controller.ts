@@ -39,13 +39,19 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
-import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
+import {
+  GroupCreateDto,
+  GroupListDto,
+  GroupUpcomingMilestonesListDto,
+  GroupUpdateDto,
+} from '../dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
+  GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
 
@@ -114,7 +120,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -149,7 +156,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -187,7 +195,8 @@ export class GroupCommonController {
     @Body()
     body: GroupUpdateDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -215,7 +224,8 @@ export class GroupCommonController {
     { id: userId }: User,
     @Param('id') groupId: string,
   ): Promise<{ deleted: number }> {
-    const findGroup = await this.groupService.findOwningGroup({
+    const findGroup = await this.groupService.findGroup({
+      isOwner: true,
       userId,
       groupId,
     });
@@ -308,6 +318,54 @@ export class GroupCommonController {
       availableSearch,
       availableSort,
       data: groups,
+    };
+  }
+
+  @ClientResponsePaging('group.upcomingMilestones', {
+    classSerialization: GroupUpcomingMilestonesListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/upcoming-milestones')
+  async upcomingMilestones(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+    @Query()
+    { days, page, perPage }: GroupUpcomingMilestonesListDto,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findGroup({
+      userId,
+      groupId,
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    const skip: number = page
+      ? await this.paginationService.skip(page, perPage)
+      : 0;
+
+    const upcomingMilestones = await this.groupService.getUpcomingMilestones({
+      groupId,
+      days,
+      skip,
+      limit: perPage,
+    });
+
+    const totalData = upcomingMilestones?.length ?? 0;
+
+    return {
+      totalData,
+      perPage,
+      currentPage: perPage ? page : 0,
+      period: `${days} days`,
+      data: upcomingMilestones,
     };
   }
 

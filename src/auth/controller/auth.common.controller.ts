@@ -86,7 +86,7 @@ import { EnumLogAction } from '@/log/constant';
 export class AuthCommonController {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
+    private readonly defaultDataSource: DataSource,
     private readonly helperDateService: HelperDateService,
     private readonly userService: UserService,
     private readonly invitationLinkService: InvitationLinkService,

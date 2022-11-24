@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
-import { EnumGroupRole, EnumGroupStatusCodeError } from '@avo/type';
+import {
+  EnumGroupRole,
+  EnumGroupStatusCodeError,
+  EnumGroupUpcomingMilestoneType,
+} from '@avo/type';
 
 import { isNumber } from 'class-validator';
 import {
   Brackets,
+  DataSource,
   DeepPartial,
   FindOneOptions,
   FindOptionsWhere,
@@ -23,6 +28,8 @@ import { ConnectionNames } from '@/database/constant';
 @Injectable()
 export class GroupService {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private readonly defaultDataSource: DataSource,
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
   ) {}
@@ -51,18 +58,20 @@ export class GroupService {
     return this.groupRepository.findOneBy({ ...find });
   }
 
-  async findOwningGroup({
+  async findGroup({
     groupId,
     userId,
+    isOwner = false,
   }: {
     userId: string;
     groupId: string;
+    isOwner?: boolean;
   }): Promise<Group> {
     return this.findOne({
       where: {
         id: groupId,
         members: {
-          role: EnumGroupRole.Owner,
+          ...(isOwner ? { role: EnumGroupRole.Owner } : null),
           user: {
             id: userId,
           },
@@ -195,5 +204,59 @@ export class GroupService {
     });
 
     return searchBuilder.getCount();
+  }
+
+  async getUpcomingMilestones({
+    groupId,
+    days = 60,
+    skip = 0,
+    limit = 0,
+  }: {
+    groupId: string;
+    days: number;
+    skip: number;
+    limit: number;
+  }) {
+    const LIMIT = limit || 'ALL';
+    const OFFSET = skip;
+
+    return this.defaultDataSource.query(
+      `
+      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month, e_type AS type, u_created_at AS created_at
+      FROM
+      (
+        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
+        FROM
+        (
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+          up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, upcoming_event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.Birthday}' AS e_type
+          FROM public.groups AS g
+            LEFT JOIN public.group_members AS m
+              ON g.id = m.group_id
+            LEFT JOIN public.users AS u
+              ON m.user_id = u.id
+            LEFT JOIN public.user_profiles AS up
+              ON up.user_id = u.id
+          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
+          UNION
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+            up.first_name, up.last_name, up.work_anniversary_day AS e_day,
+            up.work_anniversary_month AS e_month, upcoming_event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.WorkAnniversary}' AS e_type
+          FROM public.groups AS g
+            LEFT JOIN public.group_members AS m
+              ON g.id = m.group_id
+            LEFT JOIN public.users AS u
+              ON m.user_id = u.id
+            LEFT JOIN public.user_profiles AS up
+              ON up.user_id = u.id
+          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL
+        ) AS temp_events
+      ) AS events
+      WHERE e_date <= NOW() + ($2 || 'DAY')::INTERVAL
+      ORDER BY e_date
+      LIMIT ${LIMIT} OFFSET ${OFFSET}
+    `,
+      [groupId, days],
+    );
   }
 }
