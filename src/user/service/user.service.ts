@@ -209,6 +209,46 @@ export class UserService {
     return searchBuilder.getMany();
   }
 
+  async getUserSearchGroupBuilder({
+    search,
+  }: IUserSearch): Promise<SelectQueryBuilder<User>> {
+    const builder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile');
+
+    if (search) {
+      builder.andWhere(
+        new Brackets((qb) => {
+          builder.setParameters({ search, likeSearch: `%${search}%` });
+          qb.where('user.email ILIKE :likeSearch')
+            .orWhere('profile.firstName ILIKE :likeSearch')
+            .orWhere('profile.lastName ILIKE :likeSearch');
+        }),
+      );
+    }
+
+    return builder;
+  }
+
+  async paginatedSearchForGroup({
+    search,
+    options,
+  }: IUserSearch): Promise<User[]> {
+    const searchBuilder = await this.getUserSearchGroupBuilder({
+      search,
+    });
+
+    if (options.order) {
+      searchBuilder.orderBy(options.order);
+    }
+
+    if (isNumber(options.take) && isNumber(options.skip)) {
+      searchBuilder.take(options.take).skip(options.skip);
+    }
+
+    return searchBuilder.getMany();
+  }
+
   async removeUserBy(find: FindOptionsWhere<User>): Promise<User> {
     const findUser = await this.userRepository.findOne({
       where: find,

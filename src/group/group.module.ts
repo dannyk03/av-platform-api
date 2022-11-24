@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
 import { Group, GroupMember } from './entity';
@@ -13,6 +14,7 @@ import { ConnectionNames } from '@/database/constant';
   imports: [
     TypeOrmModule.forFeature([Group, GroupMember], ConnectionNames.Default),
     UserModule,
+    NetworkingModule,
   ],
   exports: [GroupService, GroupMemberService],
   providers: [GroupService, GroupMemberService],
