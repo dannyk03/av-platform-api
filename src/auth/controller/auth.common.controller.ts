@@ -455,7 +455,7 @@ export class AuthCommonController {
       });
     }
 
-    return this.defaultDataSource.transaction(
+    const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { passwordHash, passwordExpiredAt } =
@@ -616,22 +616,6 @@ export class AuthCommonController {
           },
         });
 
-        try {
-          // Skip sending sms on non production environments
-          // instead use nonProdMagicOTP
-          const isProduction =
-            this.configService.get<boolean>('app.isProduction');
-          if (phoneNumber && isProduction) {
-            await this.authService.createVerificationsSmsOPT({ phoneNumber });
-          }
-        } catch (error) {
-          throw new InternalServerErrorException({
-            statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
-            message: 'auth.error.otp',
-            error,
-          });
-        }
-
         // For local development/testing
         const isDevelopment =
           this.configService.get<boolean>('app.isDevelopment');
@@ -643,6 +627,23 @@ export class AuthCommonController {
         }
       },
     );
+
+    try {
+      // Skip sending sms on non production environments
+      // instead use nonProdMagicOTP
+      const isProduction = this.configService.get<boolean>('app.isProduction');
+      if (phoneNumber && isProduction) {
+        await this.authService.createVerificationsSmsOPT({ phoneNumber });
+      }
+    } catch (error) {
+      throw new InternalServerErrorException({
+        statusCode: EnumAuthStatusCodeError.AuthOtpCreateError,
+        message: 'auth.error.otp',
+        error,
+      });
+    }
+
+    return result;
   }
 
   @ClientResponse('auth.refresh')
