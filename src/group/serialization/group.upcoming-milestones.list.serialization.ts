@@ -1,5 +1,6 @@
 import {
   EnumGroupRole,
+  EnumGroupUpcomingMilestoneType,
   IGroupUpcomingMilestonesGetSerialization,
 } from '@avo/type';
 
@@ -30,5 +31,5 @@ export class GroupUpcomingMilestonesListSerialization
   month: number;
 
   @Expose()
-  type: string;
+  type: EnumGroupUpcomingMilestoneType;
 }
