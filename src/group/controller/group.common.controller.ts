@@ -20,9 +20,13 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
+import { isEmail } from 'class-validator';
+
 import { User } from '@/user/entity';
 
 import { GroupMemberService, GroupService } from '../service';
+import { SocialConnectionService } from '@/networking/service';
+import { UserService } from '@/user/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
@@ -36,12 +40,14 @@ import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
 import { GroupCreateDto, GroupListDto, GroupUpdateDto } from '../dto';
+import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
 } from '../serialization';
+import { GroupUserSerialization } from '@/group/serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -51,8 +57,10 @@ import { EnumLogAction } from '@/log/constant';
 export class GroupCommonController {
   constructor(
     private readonly groupService: GroupService,
+    private readonly userService: UserService,
     private readonly groupMemberService: GroupMemberService,
     private readonly paginationService: PaginationService,
+    private readonly socialConnectionService: SocialConnectionService,
   ) {}
 
   @ClientResponse('group.create', {
@@ -300,6 +308,52 @@ export class GroupCommonController {
       availableSearch,
       availableSort,
       data: groups,
+    };
+  }
+
+  @ClientResponsePaging('group.userSearch', {
+    classSerialization: GroupUserSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/user-search')
+  async userSearch(
+    @ReqAuthUser()
+    reqUser: User,
+    @Query()
+    { page, perPage, sort, search }: UserListDto,
+  ): Promise<IResponseData> {
+    const skip = await this.paginationService.skip(page, perPage);
+
+    let users = await this.userService.paginatedSearchForGroup({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      search,
+    });
+
+    if (!isEmail(search)) {
+      users = await Promise.all(
+        users.map(async (u) => {
+          const isConnectedUser =
+            await this.socialConnectionService.checkIsBiDirectionalSocialConnected(
+              {
+                user1Email: reqUser.email,
+                user2Email: u.email,
+              },
+            );
+          console.log(isConnectedUser);
+          return isConnectedUser;
+        }),
+      ).then((results) => users.filter((_v, index) => results[index]));
+    }
+
+    return {
+      currentPage: page,
+      perPage,
+      data: users,
     };
   }
 }

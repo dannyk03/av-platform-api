@@ -2,6 +2,7 @@ import {
   IGroupGetSerialization,
   IGroupGetWithPreviewSerialization,
   IGroupMemberPreviewGetSerialization,
+  IGroupUserSerialization,
 } from '@avo/type';
 
 import { Exclude, Expose, Transform } from 'class-transformer';
@@ -37,4 +38,27 @@ export class GroupGetWithPreviewSerialization
     }),
   )
   membersPreview: IGroupMemberPreviewGetSerialization[];
+}
+
+@Exclude()
+export class GroupUserSerialization implements IGroupUserSerialization {
+  @Expose()
+  readonly id: string;
+
+  @Expose()
+  readonly email: string;
+
+  @Expose()
+  readonly phoneNumber: string;
+
+  @Expose()
+  readonly isActive: boolean;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.firstName)
+  readonly firstName: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.lastName)
+  readonly lastName: string;
 }
