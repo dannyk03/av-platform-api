@@ -4,7 +4,6 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { EnumGroupRole, EnumGroupStatusCodeError } from '@avo/type';
 
 import { isNumber } from 'class-validator';
-import values from 'lodash/values';
 import {
   Brackets,
   DataSource,

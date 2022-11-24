@@ -8,7 +8,6 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -51,8 +50,6 @@ import {
 } from '../serialization';
 
 import { EnumLogAction } from '@/log/constant';
-
-import { TimestampPipe } from '@/utils/date-time/pipes';
 
 @Controller({
   version: '1',

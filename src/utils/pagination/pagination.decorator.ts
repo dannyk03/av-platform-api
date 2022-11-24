@@ -13,7 +13,6 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
-  IsPositive,
   IsString,
   Max,
   Min,
