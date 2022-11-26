@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Expose, Transform } from 'class-transformer';
-import { IsEmail, MaxLength } from 'class-validator';
+import { IsEmail, Length } from 'class-validator';
 import normalizeEmail from 'validator/lib/normalizeEmail';
 
 import { NormalizeStringInputTransform } from './NormalizeStringInput.transform';
@@ -23,14 +23,15 @@ export function NormalizeEmail(options?: ITransformOptions): any {
 
   return applyDecorators(
     Expose(),
-    MaxLength(50),
+    Length(3, 50),
     IsEmail(undefined, { each }),
     NormalizeStringInputTransform({ each }),
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => normalizeEmail(v, emailNormalizeOptions))
+        ? value.length &&
+          value.map((v) => normalizeEmail(v, emailNormalizeOptions))
         : isString(value)
-        ? normalizeEmail(value, emailNormalizeOptions)
+        ? value && normalizeEmail(value, emailNormalizeOptions)
         : value,
     ),
   );

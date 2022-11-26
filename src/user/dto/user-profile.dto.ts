@@ -101,23 +101,20 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly firstName: string;
 
-  @IsString()
   @IsNotEmpty()
   @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
-  @EmptyStringToUndefinedTransform()
   @IsPhoneNumber()
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly phoneNumber?: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @MaxLength(2)
@@ -126,7 +123,6 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly birthMonth?: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @MaxLength(2)
@@ -136,7 +132,6 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly birthDay?: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @IsNumberString({ no_symbols: true })
@@ -144,7 +139,6 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly workAnniversaryMonth?: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @MaxLength(2)

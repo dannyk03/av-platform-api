@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 
-import { AuthModule } from '@/auth/auth.module';
-import { AwsModule } from '@/aws/aws.module';
-import { UserModule } from '@/user/user.module';
+import { PublicModule } from '@/public/public.module';
+
+import {
+  PublicController,
+  PublicValidationController,
+} from '@/public/controller';
 
 @Module({
-  controllers: [],
+  controllers: [PublicValidationController, PublicController],
   providers: [],
   exports: [],
-  imports: [UserModule, AwsModule, AuthModule],
+  imports: [PublicModule],
 })
 export class RouterPublicModule {}
