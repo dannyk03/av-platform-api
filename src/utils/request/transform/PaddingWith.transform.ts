@@ -21,16 +21,19 @@ export function PaddingWith(
   options?: ITransformOptions & IPaddingWithTransform,
 ): any {
   const each = options?.each;
-  const from = options.from ?? EnumPaddingFrom.Start;
-  const padString = options?.padString;
-  const targetLength = options?.targetLength ?? 0;
+  const from = options?.from ?? EnumPaddingFrom.Start;
+  const padString = options.padString;
+  const targetLength = options.targetLength;
 
   return applyDecorators(
     Transform(({ value }) => {
       if (each && Array.isArray(value)) {
         return value.map((v) =>
           isString(v) && v.length
-            ? (from ? v.padEnd : v.padStart)?.(targetLength, padString)
+            ? (from ? v.padEnd : v.padStart)?.apply(v, [
+                targetLength,
+                padString,
+              ])
             : v,
         );
       }
