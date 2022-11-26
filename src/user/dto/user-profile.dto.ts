@@ -18,7 +18,11 @@ import {
   NormalizeEmail,
   NormalizeStringInputTransform,
 } from '@/utils/request/transform';
-import { IsPhoneNumber, IsValidDayOfMonth } from '@/utils/request/validation';
+import {
+  IsIsAcceptableEmail,
+  IsPhoneNumber,
+  IsValidDayOfMonth,
+} from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
   @MaxLength(50)
@@ -87,6 +91,7 @@ export class SurveyPersonalShippingDto extends SurveyAddressDto {
 }
 
 export class SurveyPersonalDto {
+  @IsIsAcceptableEmail()
   @NormalizeEmail()
   readonly email!: string;
 

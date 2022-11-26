@@ -74,6 +74,7 @@
     "currency-symbol-map": "^5.1.0",
     "customerio-node": "^3.3.6",
     "dayjs": "^1.11.6",
+    "disposable-email-domains": "^1.0.62",
     "express-rate-limit": "^6.6.0",
     "file-type": "16.5.4",
     "geolib": "^3.3.3",
