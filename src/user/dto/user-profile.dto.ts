@@ -17,6 +17,7 @@ import {
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
+  PaddingWith,
 } from '@/utils/request/transform';
 import { IsPhoneNumber, IsValidDayOfMonth } from '@/utils/request/validation';
 
@@ -96,14 +97,12 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly firstName: string;
 
-  @IsString()
   @IsNotEmpty()
   @Length(1, 50)
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @EmptyStringToUndefinedTransform()
@@ -112,40 +111,49 @@ export class SurveyPersonalDto {
   @Type(() => String)
   readonly phoneNumber?: string;
 
-  @IsString()
   @IsOptional()
-  @IsNotEmpty()
   @MaxLength(2)
+  @PaddingWith({
+    padString: '0',
+    targetLength: 2,
+  })
   @IsNumberString({ no_symbols: true })
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly birthMonth?: string;
 
-  @IsString()
   @IsOptional()
-  @IsNotEmpty()
   @MaxLength(2)
   @IsValidDayOfMonth('birthMonth', 'birthYear')
+  @PaddingWith({
+    padString: '0',
+    targetLength: 2,
+  })
   @IsNumberString({ no_symbols: true })
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly birthDay?: string;
 
-  @IsString()
   @IsOptional()
-  @IsNotEmpty()
+  @PaddingWith({
+    padString: '0',
+    targetLength: 2,
+  })
   @IsNumberString({ no_symbols: true })
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly workAnniversaryMonth?: string;
 
-  @IsString()
   @IsOptional()
   @IsNotEmpty()
   @MaxLength(2)
   @IsValidDayOfMonth('workAnniversaryMonth', 'workAnniversaryYear')
-  @NormalizeStringInputTransform()
+  @PaddingWith({
+    padString: '0',
+    targetLength: 2,
+  })
   @IsNumberString({ no_symbols: true })
+  @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
