@@ -18,6 +18,7 @@ import FileConfig from './file.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
+import RedisConfig from './redis.config';
 import StripeConfig from './stripe.config';
 import TwilioConfig from './twilio.config';
 import UserConfig from './user.config';
@@ -38,6 +39,7 @@ export const Configs = [
   TwilioConfig,
   DebuggerConfig,
   DefaultConfig,
+  RedisConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
@@ -106,6 +108,9 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           TWILIO_ACCOUNT_SID: Joi.string().required(),
           TWILIO_API_KEY: Joi.string().required(),
           TWILIO_API_SECRET_KEY: Joi.string().required(),
+
+          REDIS_HOST: Joi.string().required(),
+          REDIS_PORT: Joi.number().port(),
         }),
   validationOptions: {
     allowUnknown: true,

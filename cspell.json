@@ -34,7 +34,8 @@
     "tlds",
     "uuidv5",
     "idempotency",
-    "capturable"
+    "capturable",
+    "backoff"
   ],
   "ignorePaths": [
     "node_modules/**",
