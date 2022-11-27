@@ -44,7 +44,6 @@ export class HelperHashService implements IHelperHashService {
   }
 
   sha1Compare(hashOne: string, hashTwo: string): boolean {
-    console.log({ hashOne, hashTwo });
     return hashOne === hashTwo;
   }
 

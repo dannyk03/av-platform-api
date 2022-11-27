@@ -72,7 +72,6 @@ export class GroupMemberService {
       .orderBy('RANDOM()')
       .limit(count);
 
-    console.log(builder.getQueryAndParameters());
     return builder.getMany();
   }
 }
