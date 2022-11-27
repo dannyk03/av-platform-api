@@ -1,4 +1,4 @@
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -13,7 +13,7 @@ import { EmailService } from '@/messaging/email/service';
 import { EnumJobsQueue } from '@/queue/constant';
 
 import { CronEmailJobProducer } from './cron';
-import { EmailBirthdayNotificationJobConsumer } from './processor';
+import { EmailBirthdayNotificationJobProcessor } from './processor';
 import { JobsRouterModule } from './router';
 
 @Module({})
@@ -23,7 +23,15 @@ export class JobsModule {
       return {
         module: JobsModule,
         controllers: [],
-        providers: [CronEmailJobProducer, EmailBirthdayNotificationJobConsumer],
+        providers: [
+          {
+            provide: 'EmailService',
+            useClass: EmailService,
+          },
+          CronEmailJobProducer,
+          EmailService,
+          EmailBirthdayNotificationJobProcessor,
+        ],
         exports: [CronEmailJobProducer],
         imports: [
           UserModule,

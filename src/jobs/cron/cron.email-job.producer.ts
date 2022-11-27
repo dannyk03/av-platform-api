@@ -1,8 +1,8 @@
-import { InjectQueue } from '@nestjs/bull';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { Queue } from 'bull';
+import { Queue } from 'bullmq';
 
 import { UserProfileService } from '@/user/service';
 

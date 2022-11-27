@@ -1,20 +1,19 @@
-import { Process, Processor } from '@nestjs/bull';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Inject } from '@nestjs/common';
 
-import { Job } from 'bull';
+import { Job } from 'bullmq';
 
 import { EmailService } from '@/messaging/email/service';
 
-import { EnumJobsCronName } from '../constant';
 import { EnumJobsQueue } from '@/queue/constant';
 
 @Processor(EnumJobsQueue.Email)
-export class EmailBirthdayNotificationJobConsumer {
-  constructor(private readonly emailService: EmailService) {}
+export class EmailBirthdayNotificationJobProcessor extends WorkerHost {
+  constructor(@Inject('EmailService') appService: EmailService) {
+    super();
+  }
 
-  @Process(EnumJobsCronName.NextWeekBirthday)
-  async sendBirthdayNotification(job: Job<unknown>) {
-    console.log('xxx');
-    // const xxx = await job.moveToFailed({ message: 'aaaaaaxxxx' });
-    console.log('xxx');
+  process(job: Job<any, any, string>, token?: string): Promise<any> {
+    return Promise.resolve();
   }
 }

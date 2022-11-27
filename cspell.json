@@ -35,6 +35,7 @@
     "uuidv5",
     "idempotency",
     "capturable",
+    "bullmq",
     "backoff"
   ],
   "ignorePaths": [
