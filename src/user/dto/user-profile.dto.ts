@@ -17,7 +17,7 @@ import {
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
-  PaddingWith,
+  PadWith,
 } from '@/utils/request/transform';
 import { IsPhoneNumber, IsValidDayOfMonth } from '@/utils/request/validation';
 
@@ -113,7 +113,7 @@ export class SurveyPersonalDto {
 
   @IsOptional()
   @MaxLength(2)
-  @PaddingWith({
+  @PadWith({
     padString: '0',
     targetLength: 2,
   })
@@ -125,7 +125,7 @@ export class SurveyPersonalDto {
   @IsOptional()
   @MaxLength(2)
   @IsValidDayOfMonth('birthMonth', 'birthYear')
-  @PaddingWith({
+  @PadWith({
     padString: '0',
     targetLength: 2,
   })
@@ -135,7 +135,7 @@ export class SurveyPersonalDto {
   readonly birthDay?: string;
 
   @IsOptional()
-  @PaddingWith({
+  @PadWith({
     padString: '0',
     targetLength: 2,
   })
@@ -148,7 +148,7 @@ export class SurveyPersonalDto {
   @IsNotEmpty()
   @MaxLength(2)
   @IsValidDayOfMonth('workAnniversaryMonth', 'workAnniversaryYear')
-  @PaddingWith({
+  @PadWith({
     padString: '0',
     targetLength: 2,
   })

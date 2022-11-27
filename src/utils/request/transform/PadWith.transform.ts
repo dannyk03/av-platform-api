@@ -2,7 +2,6 @@ import { applyDecorators } from '@nestjs/common';
 import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Transform } from 'class-transformer';
-import { string } from 'yargs';
 
 import { ITransformOptions } from './transform.interface';
 
@@ -11,15 +10,13 @@ enum EnumPaddingFrom {
   End,
 }
 
-interface IPaddingWithTransform {
+interface IPadWithTransform {
   from?: EnumPaddingFrom;
   targetLength: number;
   padString: string;
 }
 
-export function PaddingWith(
-  options?: ITransformOptions & IPaddingWithTransform,
-): any {
+export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
   const each = options?.each;
   const from = options?.from ?? EnumPaddingFrom.Start;
   const padString = options.padString;

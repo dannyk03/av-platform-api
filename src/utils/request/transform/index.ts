@@ -10,4 +10,4 @@ export * from './CompactArray.transform';
 export * from './BooleanString.transform';
 export * from './IsEnumCaseInsensitive.transform';
 export * from './ConsecutiveWhitespace.transform';
-export * from './PaddingWith.transform';
+export * from './PadWith.transform';
