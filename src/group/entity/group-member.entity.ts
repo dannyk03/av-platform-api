@@ -25,7 +25,6 @@ export class GroupMember extends BaseEntity<GroupMember> {
     type: 'enum',
     enum: EnumGroupRole,
     default: EnumGroupRole.Basic,
-    nullable: true,
   })
   role!: EnumGroupRole;
 }
