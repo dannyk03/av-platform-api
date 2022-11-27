@@ -24,7 +24,8 @@ export class GroupMember extends BaseEntity<GroupMember> {
   @Column({
     type: 'enum',
     enum: EnumGroupRole,
+    default: EnumGroupRole.Basic,
     nullable: true,
   })
-  role?: EnumGroupRole;
+  role!: EnumGroupRole;
 }
