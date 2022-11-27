@@ -14,7 +14,7 @@ export default registerAs(
       verify: {
         otp: {
           // cspell:disable-next-line
-          sid: 'VA6f0d385e0bfc36efed6019991a57353d',
+          sid: 'VA18a60eb70c1965dbf17c696418ab76f8',
           channel: 'sms',
           codeLength: 6,
         },
