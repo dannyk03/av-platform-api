@@ -11,7 +11,12 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { IErrors, IMessage } from '@avo/type';
+import {
+  IErrorHttpMetadata,
+  IErrors,
+  IMessage,
+  IResponseError,
+} from '@avo/type';
 
 import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
@@ -20,13 +25,7 @@ import { DebuggerService } from '@/debugger/service';
 import { ResponseMessageService } from '@/response-message/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import {
-  IErrorException,
-  IErrorHttpFilter,
-  IErrorHttpFilterMetadata,
-  IErrorsImport,
-  IValidationErrorImport,
-} from '../type';
+import { IErrorException, IValidationErrorImport } from '../type';
 import { IRequestApp } from '@/utils/request/type';
 
 import { EnumErrorType } from '../constant';
@@ -41,7 +40,10 @@ export class ErrorHttpFilter implements ExceptionFilter {
     private readonly helperDateService: HelperDateService,
   ) {}
 
-  async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
+  async catch(
+    exception: unknown,
+    host: ArgumentsHost,
+  ): Promise<IResponseError> {
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const request = ctx.getRequest<IRequestApp>();
 
@@ -80,12 +82,12 @@ export class ErrorHttpFilter implements ExceptionFilter {
         statusCode,
         message,
         silent,
-        detailed,
         error,
         errorType,
         data,
         properties,
         metadata,
+        detailed = true,
       } = response;
 
       // Debugger
@@ -130,7 +132,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
           properties,
         });
 
-      const resMetadata: IErrorHttpFilterMetadata = {
+      const resMetadata: IErrorHttpMetadata = {
         timestamp: __timestamp,
         timezone: __timezone,
         correlationId: __correlationId,
@@ -140,7 +142,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         ...metadata,
       };
 
-      const resResponse: IErrorHttpFilter = {
+      const resResponse: IResponseError = {
         statusCode: statusCode || statusHttp,
         message: mapMessage,
         error: detailed
@@ -148,7 +150,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
             ? error
             : exception.message
           : undefined,
-        errors: errors as IErrors[] | IErrorsImport[],
+        errors: errors as IErrors[],
         meta: resMetadata,
         data,
       };
@@ -170,7 +172,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         'http.serverError.internalServerError',
       )) as string;
 
-      const metadata: IErrorHttpFilterMetadata = {
+      const metadata: IErrorHttpMetadata = {
         timestamp: __timestamp,
         timezone: __timezone,
         requestId: __correlationId,
