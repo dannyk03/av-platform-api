@@ -696,8 +696,4 @@ export class EmailService {
 
     return sendResult.status === EmailStatus.success;
   }
-
-  async sendBirthdayNotification(data) {
-    console.log(data);
-  }
 }
