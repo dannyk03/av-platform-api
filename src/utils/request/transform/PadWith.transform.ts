@@ -35,9 +35,11 @@ export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
         );
       }
 
-      const fn = from ? value.padEnd : value.padStart;
       return isString(value) && value.length
-        ? fn.apply(value, [targetLength, padString])
+        ? (from ? value.padEnd : value.padStart)?.apply(value, [
+            targetLength,
+            padString,
+          ])
         : value;
     }),
   );
