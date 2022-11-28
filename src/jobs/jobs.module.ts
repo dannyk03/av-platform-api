@@ -8,12 +8,12 @@ import { name } from 'package.json';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
-import { EmailService } from '@/messaging/email/service';
+import { ProactiveEmailService } from './service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
-import { CronEmailJobProducer } from './cron';
-import { EmailBirthdayNotificationJobProcessor } from './processor';
+import { ProactiveEmailProcessor } from './processor';
+import { ProactiveEmailProducer } from './producer';
 import { JobsRouterModule } from './router';
 
 @Module({})
@@ -22,17 +22,11 @@ export class JobsModule {
     if (process.env.APP_JOB_ON === 'true') {
       return {
         module: JobsModule,
-        controllers: [],
         providers: [
-          {
-            provide: 'EmailService',
-            useClass: EmailService,
-          },
-          CronEmailJobProducer,
-          EmailService,
-          EmailBirthdayNotificationJobProcessor,
+          ProactiveEmailService,
+          ProactiveEmailProducer,
+          ProactiveEmailProcessor,
         ],
-        exports: [CronEmailJobProducer],
         imports: [
           UserModule,
           MessagingModule,
@@ -58,7 +52,7 @@ export class JobsModule {
             }),
           }),
           BullModule.registerQueue({
-            name: EnumJobsQueue.Email,
+            name: EnumJobsQueue.ProactiveEmail,
           }),
         ],
       };

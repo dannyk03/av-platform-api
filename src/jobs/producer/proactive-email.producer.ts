@@ -10,10 +10,10 @@ import { EnumJobsCronName } from '../constant';
 import { EnumJobsQueue } from '@/queue/constant';
 
 @Injectable()
-export class CronEmailJobProducer {
+export class ProactiveEmailProducer {
   constructor(
-    @InjectQueue(EnumJobsQueue.Email)
-    private readonly emailQueue: Queue,
+    @InjectQueue(EnumJobsQueue.ProactiveEmail)
+    private readonly proactiveEmailQueue: Queue,
     private readonly userProfileService: UserProfileService,
   ) {}
 
@@ -22,7 +22,7 @@ export class CronEmailJobProducer {
   })
   async handleNextWeekBirthdayProactiveNotification() {
     try {
-      await this.emailQueue.add(EnumJobsCronName.NextWeekBirthday, {
+      await this.proactiveEmailQueue.add(EnumJobsCronName.NextWeekBirthday, {
         foo: 'bar',
       });
     } catch (error) {

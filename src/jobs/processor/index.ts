@@ -1,1 +1,1 @@
-export * from './email-birthday-notification.processor';
+export * from './proactive-email.processor';
