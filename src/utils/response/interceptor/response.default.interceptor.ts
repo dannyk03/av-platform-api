@@ -7,7 +7,7 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 
-import { IResponse, IResponseData } from '@avo/type';
+import { IErrorHttpMetadata, IResponse, IResponseData } from '@avo/type';
 
 import {
   ClassConstructor,
@@ -19,7 +19,6 @@ import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IErrorHttpFilterMetadata } from '@/utils/error/type';
 import { IRequestApp } from '@/utils/request/type';
 
 import {
@@ -90,7 +89,7 @@ export class ResponseDefaultInterceptor<T = any>
             const __version = requestExpress.version;
             const __repoVersion = requestExpress.repoVersion;
 
-            const resMetadata: IErrorHttpFilterMetadata = {
+            const resMetadata: IErrorHttpMetadata = {
               timestamp: __timestamp,
               timezone: __timezone,
               correlationId: __correlationId,

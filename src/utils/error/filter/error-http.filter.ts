@@ -11,7 +11,7 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { IErrors, IMessage } from '@avo/type';
+import { IErrorHttp, IErrorHttpMetadata, IErrors, IMessage } from '@avo/type';
 
 import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
@@ -22,8 +22,6 @@ import { HelperDateService } from '@/utils/helper/service';
 
 import {
   IErrorException,
-  IErrorHttpFilter,
-  IErrorHttpFilterMetadata,
   IErrorsImport,
   IValidationErrorImport,
 } from '../type';
@@ -130,7 +128,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
           properties,
         });
 
-      const resMetadata: IErrorHttpFilterMetadata = {
+      const resMetadata: IErrorHttpMetadata = {
         timestamp: __timestamp,
         timezone: __timezone,
         correlationId: __correlationId,
@@ -140,7 +138,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         ...metadata,
       };
 
-      const resResponse: IErrorHttpFilter = {
+      const resResponse: IErrorHttp = {
         statusCode: statusCode || statusHttp,
         message: mapMessage,
         error: detailed
@@ -148,7 +146,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
             ? error
             : exception.message
           : undefined,
-        errors: errors as IErrors[] | IErrorsImport[],
+        errors: errors as IErrors[],
         meta: resMetadata,
         data,
       };
@@ -170,7 +168,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         'http.serverError.internalServerError',
       )) as string;
 
-      const metadata: IErrorHttpFilterMetadata = {
+      const metadata: IErrorHttpMetadata = {
         timestamp: __timestamp,
         timezone: __timezone,
         requestId: __correlationId,

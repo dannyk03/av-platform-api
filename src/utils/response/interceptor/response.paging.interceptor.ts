@@ -7,7 +7,12 @@ import {
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
 
-import { IMessage, IResponsePaging, IResponsePagingData } from '@avo/type';
+import {
+  IErrorHttpMetadata,
+  IMessage,
+  IResponsePaging,
+  IResponsePagingData,
+} from '@avo/type';
 
 import {
   ClassConstructor,
@@ -20,7 +25,6 @@ import { map } from 'rxjs/operators';
 
 import { ResponseMessageService } from '@/response-message/service';
 
-import { IErrorHttpFilterMetadata } from '@/utils/error/type';
 import { IRequestApp } from '@/utils/request/type';
 
 import {
@@ -111,7 +115,7 @@ export class ResponsePagingInterceptor<T>
           const __version = requestExpress.version;
           const __repoVersion = requestExpress.repoVersion;
 
-          const resMetadata: IErrorHttpFilterMetadata = {
+          const resMetadata: IErrorHttpMetadata = {
             timestamp: __timestamp,
             timezone: __timezone,
             requestId: __correlationId,
