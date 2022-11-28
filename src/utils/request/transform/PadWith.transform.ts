@@ -27,7 +27,7 @@ export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
       if (each && Array.isArray(value)) {
         return value.map((v) =>
           isString(v) && v.length
-            ? (from ? v.padEnd : v.padStart)?.apply(v, [
+            ? (from ? v?.padEnd : v?.padStart)?.apply(v, [
                 targetLength,
                 padString,
               ])
@@ -35,9 +35,8 @@ export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
         );
       }
 
-      const fn = from ? value.padEnd : value.padStart;
       return isString(value) && value.length
-        ? fn.apply(value, [targetLength, padString])
+        ? (from ? value.padEnd : value.padStart)?.(targetLength, padString)
         : value;
     }),
   );
