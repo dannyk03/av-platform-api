@@ -20,11 +20,7 @@ import { DebuggerService } from '@/debugger/service';
 import { ResponseMessageService } from '@/response-message/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import {
-  IErrorException,
-  IErrorsImport,
-  IValidationErrorImport,
-} from '../type';
+import { IErrorException, IValidationErrorImport } from '../type';
 import { IRequestApp } from '@/utils/request/type';
 
 import { EnumErrorType } from '../constant';
