@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { name } from 'package.json';
 
+import { RedisServerModule } from '@/cache/redis/redis-server/redis-server.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
@@ -32,28 +33,28 @@ export class JobsModule {
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
-          BullModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
-              prefix: name,
-              redis: {
-                host: configService.get<string>('redis.host'),
-                port: parseInt(configService.get<string>('redis.port')),
-              },
-              defaultJobOptions: {
-                removeOnComplete: true,
-                attempts: 3,
-                backoff: {
-                  type: 'exponential',
-                  delay: 10000,
-                },
-              },
-            }),
-          }),
-          BullModule.registerQueue({
-            name: EnumJobsQueue.ProactiveEmail,
-          }),
+          // BullModule.forRootAsync({
+          //   imports: [ConfigModule],
+          //   inject: [ConfigService],
+          //   useFactory: (configService: ConfigService) => ({
+          //     prefix: name,
+          //     redis: {
+          //       host: configService.get<string>('redis.host'),
+          //       port: parseInt(configService.get<string>('redis.port')),
+          //     },
+          //     defaultJobOptions: {
+          //       removeOnComplete: true,
+          //       attempts: 3,
+          //       backoff: {
+          //         type: 'exponential',
+          //         delay: 10000,
+          //       },
+          //     },
+          //   }),
+          // }),
+          // BullModule.registerQueue({
+          //   name: EnumJobsQueue.ProactiveEmail,
+          // }),
         ],
       };
     }

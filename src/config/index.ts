@@ -110,7 +110,7 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           TWILIO_API_SECRET_KEY: Joi.string().required(),
 
           REDIS_HOST: Joi.string().required(),
-          REDIS_PORT: Joi.number().port(),
+          REDIS_PORT: Joi.number().port().required(),
         }),
   validationOptions: {
     allowUnknown: true,
