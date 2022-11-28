@@ -11,7 +11,12 @@ import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { IErrorHttp, IErrorHttpMetadata, IErrors, IMessage } from '@avo/type';
+import {
+  IErrorHttpMetadata,
+  IErrors,
+  IMessage,
+  IResponseError,
+} from '@avo/type';
 
 import { ValidationError, isObject } from 'class-validator';
 import { Response } from 'express';
@@ -35,7 +40,10 @@ export class ErrorHttpFilter implements ExceptionFilter {
     private readonly helperDateService: HelperDateService,
   ) {}
 
-  async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
+  async catch(
+    exception: unknown,
+    host: ArgumentsHost,
+  ): Promise<IResponseError> {
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const request = ctx.getRequest<IRequestApp>();
 
@@ -74,12 +82,12 @@ export class ErrorHttpFilter implements ExceptionFilter {
         statusCode,
         message,
         silent,
-        detailed,
         error,
         errorType,
         data,
         properties,
         metadata,
+        detailed = true,
       } = response;
 
       // Debugger
@@ -134,7 +142,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         ...metadata,
       };
 
-      const resResponse: IErrorHttp = {
+      const resResponse: IResponseError = {
         statusCode: statusCode || statusHttp,
         message: mapMessage,
         error: detailed
