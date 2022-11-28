@@ -20,9 +20,9 @@ export class CorsMiddleware implements NestMiddleware {
       'middleware.cors.allowOriginStaging',
     );
 
-    // const allowOriginFeatureBranches = this.configService.get<string[]>(
-    //   'middleware.cors.allowOriginFeatureBranches',
-    // );
+    const allowOriginFeatureBranches = this.configService.get<string[]>(
+      'middleware.cors.allowOriginFeatureBranches',
+    );
 
     const allowOriginLocalhost = this.configService.get<string[]>(
       'middleware.cors.allowOriginLocalhost',
@@ -43,7 +43,7 @@ export class CorsMiddleware implements NestMiddleware {
           callback(null, [
             ...allowOriginStaging,
             ...allowOriginLocalhost,
-            // ...allowOriginFeatureBranches,
+            ...allowOriginFeatureBranches,
           ]);
         } else {
           callback(null, true);

@@ -1,4 +1,4 @@
-import { IErrors, IMessage } from '@avo/type';
+import { IErrors } from '@avo/type';
 
 import { ValidationError } from 'class-validator';
 
