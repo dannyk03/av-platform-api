@@ -19,7 +19,11 @@ import {
   NormalizeStringInputTransform,
   PadWith,
 } from '@/utils/request/transform';
-import { IsPhoneNumber, IsValidDayOfMonth } from '@/utils/request/validation';
+import {
+  IsIsAcceptableEmail,
+  IsPhoneNumber,
+  IsValidDayOfMonth,
+} from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
   @MaxLength(50)
@@ -88,6 +92,7 @@ export class SurveyPersonalShippingDto extends SurveyAddressDto {
 }
 
 export class SurveyPersonalDto {
+  @IsIsAcceptableEmail()
   @NormalizeEmail()
   readonly email!: string;
 
@@ -105,8 +110,8 @@ export class SurveyPersonalDto {
 
   @IsOptional()
   @IsNotEmpty()
-  @EmptyStringToUndefinedTransform()
   @IsPhoneNumber()
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly phoneNumber?: string;

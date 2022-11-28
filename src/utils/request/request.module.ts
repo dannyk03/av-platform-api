@@ -16,6 +16,7 @@ import { ExecMetaGuard } from './guard/exec-meta.guard';
 
 import { RequestTimestampInterceptor } from './interceptor/request.timestamp.interceptor';
 import {
+  IsAcceptableEmailConstraint,
   IsNotEmptyForEnvConstraint,
   IsOnlyDigitsConstraint,
   IsPasswordMediumConstraint,
@@ -86,6 +87,7 @@ import {
     IsSmsOtpCodeConstraint,
     IsNotEmptyForEnvConstraint,
     IsRegisteredUserConstraint,
+    IsAcceptableEmailConstraint,
   ],
   imports: [UserModule],
 })
