@@ -132,17 +132,17 @@ export class LogInterceptor implements NestInterceptor<any> {
         tap(async (response: Promise<Record<string, any>>) => {
           this.logHttp(ctx, response, { loggerAction, loggerOptions });
         }),
-        catchError((err) => {
-          this.logHttpError(ctx, err, { loggerAction, loggerOptions });
-          if (err instanceof TypeError) {
+        catchError((error) => {
+          this.logHttpError(ctx, error, { loggerAction, loggerOptions });
+          if (error instanceof TypeError) {
             throw new InternalServerErrorException({
               detailed: false,
               statusCode: EnumInternalStatusCodeError.TypeError,
               message: 'http.serverError.internalServerError',
-              data: err,
+              error,
             });
           } else {
-            throw err;
+            throw error;
           }
         }),
       );

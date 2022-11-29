@@ -146,10 +146,10 @@ export class ErrorHttpFilter implements ExceptionFilter {
         statusCode: statusCode || statusHttp,
         message: mapMessage,
         error: detailed
-          ? error && Object.keys(error).length
-            ? error
+          ? error instanceof Error
+            ? error?.message
             : exception.message
-          : undefined,
+          : exception.message,
         errors: errors as IErrors[],
         meta: resMetadata,
         data,
