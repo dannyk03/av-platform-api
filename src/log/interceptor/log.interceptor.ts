@@ -16,7 +16,6 @@ import isFunction from 'lodash/isFunction';
 import { Observable, catchError, tap } from 'rxjs';
 
 import { LogService } from '../service';
-import { DebuggerService } from '@/debugger/service';
 
 import { ILogOptions } from '../type/log.interface';
 import { IRequestApp } from '@/utils/request/type';
@@ -34,7 +33,6 @@ export class LogInterceptor implements NestInterceptor<any> {
   constructor(
     private readonly reflector: Reflector,
     private readonly loggerService: LogService,
-    private readonly debuggerService: DebuggerService,
   ) {}
 
   private async logHttp(
@@ -137,10 +135,11 @@ export class LogInterceptor implements NestInterceptor<any> {
         catchError((err) => {
           this.logHttpError(ctx, err, { loggerAction, loggerOptions });
           if (err instanceof TypeError) {
-            // this.debuggerService.error()
             throw new InternalServerErrorException({
+              detailed: false,
               statusCode: EnumInternalStatusCodeError.TypeError,
               message: 'http.serverError.internalServerError',
+              data: err,
             });
           } else {
             throw err;
