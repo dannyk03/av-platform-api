@@ -179,13 +179,6 @@ export class UserSystemCommonController {
       isActive: false,
     });
 
-    throw new NotFoundException({
-      data: {
-        a: 'A',
-        v: 'v',
-      },
-    });
-
     return {
       updated: affected,
     };

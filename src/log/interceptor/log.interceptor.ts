@@ -13,7 +13,7 @@ import { EnumInternalStatusCodeError } from '@avo/type';
 import { Response } from 'express';
 import { compact } from 'lodash';
 import isFunction from 'lodash/isFunction';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, tap } from 'rxjs';
 
 import { LogService } from '../service';
 
