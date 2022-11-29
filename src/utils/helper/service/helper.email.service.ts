@@ -25,10 +25,6 @@ export class HelperEmailService implements IHelperEmailService {
   }
 
   isAcceptableEmail(email: string): boolean {
-    const xxx = isEmail(email);
-    const xxx1 = isEmail(this.isDisposableEmailDomain(email));
-    const xxx2 = isEmail(this.isFreeEmailDomain(email));
-
     return (
       isEmail(email) &&
       !this.isDisposableEmailDomain(email) &&
