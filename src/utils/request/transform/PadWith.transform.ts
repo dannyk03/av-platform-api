@@ -35,9 +35,13 @@ export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
         );
       }
 
-      return isString(value) && value.length
-        ? (from ? value.padEnd : value.padStart)?.(targetLength, padString)
-        : value;
+      if (isString(value) && value.length) {
+        return from
+          ? value.padEnd(targetLength, padString)
+          : value?.padStart(targetLength, padString);
+      }
+
+      return value;
     }),
   );
 }

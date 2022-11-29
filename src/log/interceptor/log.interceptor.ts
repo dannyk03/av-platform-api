@@ -136,8 +136,10 @@ export class LogInterceptor implements NestInterceptor<any> {
           this.logHttpError(ctx, err, { loggerAction, loggerOptions });
           if (err instanceof TypeError) {
             throw new InternalServerErrorException({
+              detailed: false,
               statusCode: EnumInternalStatusCodeError.TypeError,
               message: 'http.serverError.internalServerError',
+              data: err,
             });
           } else {
             throw err;
