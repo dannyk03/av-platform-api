@@ -1,5 +1,4 @@
 import {
-  ArgumentMetadata,
   BadRequestException,
   Injectable,
   PipeTransform,
@@ -19,7 +18,7 @@ export function TimestampPipe(
   class TimestampPipe implements PipeTransform<string, number> {
     constructor(private readonly helperDateService: HelperDateService) {}
 
-    transform(value: any, metadata: ArgumentMetadata): number {
+    transform(value: any): number {
       if (value && !isRFC3339(value)) {
         throw new BadRequestException({
           statusCode: EnumRequestStatusCodeError.RequestValidationError,
