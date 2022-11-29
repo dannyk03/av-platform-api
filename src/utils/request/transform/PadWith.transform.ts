@@ -35,6 +35,7 @@ export function PadWith(options?: ITransformOptions & IPadWithTransform): any {
         );
       }
 
+      value.padEnd(targetLength, padString);
       if (isString(value) && value.length) {
         return from
           ? value.padEnd(targetLength, padString)

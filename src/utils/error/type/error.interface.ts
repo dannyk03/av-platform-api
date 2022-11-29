@@ -24,7 +24,7 @@ export interface IErrorException {
   detailed: boolean;
   statusCode: number;
   message: string;
-  error?: string;
+  error?: Error;
   errors?: ValidationError[] | IValidationErrorImport[];
   errorType?: EnumErrorType;
   metadata?: Record<string, any>;
