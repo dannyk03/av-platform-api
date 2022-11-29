@@ -118,10 +118,10 @@ export class SurveyPersonalDto {
 
   @IsOptional()
   @MaxLength(2)
-  @PadWith({
-    padString: '0',
-    targetLength: 2,
-  })
+  //   @PadWith({
+  //     padString: '0',
+  //     targetLength: 2,
+  //   })
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
@@ -131,10 +131,10 @@ export class SurveyPersonalDto {
   @IsOptional()
   @MaxLength(2)
   @IsValidDayOfMonth('birthMonth', 'birthYear')
-  @PadWith({
-    padString: '0',
-    targetLength: 2,
-  })
+  //   @PadWith({
+  //     padString: '0',
+  //     targetLength: 2,
+  //   })
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
@@ -142,10 +142,10 @@ export class SurveyPersonalDto {
   readonly birthDay?: string;
 
   @IsOptional()
-  @PadWith({
-    padString: '0',
-    targetLength: 2,
-  })
+  //   @PadWith({
+  //     padString: '0',
+  //     targetLength: 2,
+  //   })
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
@@ -156,16 +156,20 @@ export class SurveyPersonalDto {
   @IsNotEmpty()
   @MaxLength(2)
   @IsValidDayOfMonth('workAnniversaryMonth', 'workAnniversaryYear')
-  @PadWith({
-    padString: '0',
-    targetLength: 2,
-  })
+  //   @PadWith({
+  //     padString: '0',
+  //     targetLength: 2,
+  //   })
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  readonly workAnniversaryYear?: string;
 
   @Allow()
   @ApiProperty()
