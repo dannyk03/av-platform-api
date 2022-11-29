@@ -21,6 +21,8 @@ import {
 
 import { Group } from '../entity';
 
+import { HelperStringService } from '@/utils/helper/service';
+
 import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
@@ -32,6 +34,7 @@ export class GroupService {
     private readonly defaultDataSource: DataSource,
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(props: DeepPartial<Group>): Promise<Group> {
@@ -160,11 +163,13 @@ export class GroupService {
       .andWhere('user.id = :userId');
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
+
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('group.name ILIKE :likeSearch').orWhere(
-            'group.description ILIKE :likeSearch',
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', group.name, group.description)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
           );
         }),
       );

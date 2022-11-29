@@ -13,6 +13,8 @@ import {
 
 import { SocialConnection } from '../entity';
 
+import { HelperStringService } from '@/utils/helper/service';
+
 import { ISocialConnectionSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
@@ -21,7 +23,8 @@ import { ConnectionNames } from '@/database/constant';
 export class SocialConnectionService {
   constructor(
     @InjectRepository(SocialConnection, ConnectionNames.Default)
-    private socialConnectionRepository: Repository<SocialConnection>,
+    private readonly socialConnectionRepository: Repository<SocialConnection>,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(
@@ -68,13 +71,13 @@ export class SocialConnectionService {
     }
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-
-          qb.where('user2.email ILIKE :likeSearch')
-            .orWhere('user2Profile.firstName ILIKE :likeSearch')
-            .orWhere('user2Profile.lastName ILIKE :likeSearch');
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', user2.email, user2Profile.firstName, user2Profile.lastName)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
+          );
         }),
       );
     }

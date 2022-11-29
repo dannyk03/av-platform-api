@@ -34,7 +34,9 @@
     "tlds",
     "uuidv5",
     "idempotency",
-    "capturable"
+    "capturable",
+    "tsvector",
+    "tsquery"
   ],
   "ignorePaths": [
     "node_modules/**",
