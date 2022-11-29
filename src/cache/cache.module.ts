@@ -10,21 +10,30 @@ import { RedisServerService } from './redis/redis-server/service';
 @Module({})
 export class AppCacheModule {
   static register(): DynamicModule {
-    if (process.env.REDIS_HOST === 'localhost') {
+    if (process.env.INTEGRATION_TEST === 'true') {
+      return {
+        module: AppCacheModule,
+        providers: [],
+        exports: [],
+        controllers: [],
+        imports: [],
+      };
+    }
+
+    if (process.env.REDIS_HOST === '0.0.0.0') {
       return {
         module: AppCacheModule,
         providers: [],
         imports: [
-          RedisServerModule,
           CacheModule.registerAsync({
             isGlobal: true,
-            imports: [RedisServerModule],
+            imports: [RedisServerModule.register()],
             inject: [RedisServerService],
             useFactory: async (redisServerService: RedisServerService) => {
               const store = await redisStore({
                 socket: {
-                  host: await redisServerService.getHost(),
-                  port: await redisServerService.getPort(),
+                  host: await redisServerService?.getHost(),
+                  port: await redisServerService?.getPort(),
                 },
               } as any);
 
@@ -43,7 +52,26 @@ export class AppCacheModule {
       providers: [],
       exports: [],
       controllers: [],
-      imports: [],
+      imports: [
+        CacheModule.registerAsync({
+          isGlobal: true,
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: async (configService: ConfigService) => {
+            const store = await redisStore({
+              socket: {
+                host: configService.get('redis.host'),
+                port: configService.get('redis.port'),
+              },
+            } as any);
+
+            return {
+              store: store as unknown as CacheStore,
+              ttl: 60 * 60 * 24 * 7,
+            };
+          },
+        }),
+      ],
     };
   }
 }

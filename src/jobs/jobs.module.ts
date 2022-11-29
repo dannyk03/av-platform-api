@@ -10,6 +10,7 @@ import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
 import { ProactiveEmailService } from './service';
+import { RedisServerService } from '@/cache/redis/redis-server/service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
@@ -33,28 +34,35 @@ export class JobsModule {
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
-          // BullModule.forRootAsync({
-          //   imports: [ConfigModule],
-          //   inject: [ConfigService],
-          //   useFactory: (configService: ConfigService) => ({
-          //     prefix: name,
-          //     redis: {
-          //       host: configService.get<string>('redis.host'),
-          //       port: parseInt(configService.get<string>('redis.port')),
-          //     },
-          //     defaultJobOptions: {
-          //       removeOnComplete: true,
-          //       attempts: 3,
-          //       backoff: {
-          //         type: 'exponential',
-          //         delay: 10000,
-          //       },
-          //     },
-          //   }),
-          // }),
-          // BullModule.registerQueue({
-          //   name: EnumJobsQueue.ProactiveEmail,
-          // }),
+          BullModule.forRootAsync({
+            imports: [ConfigModule, RedisServerModule.register()],
+            inject: [ConfigService, RedisServerService],
+            useFactory: async (
+              configService: ConfigService,
+              redisServerService: RedisServerService,
+            ) => ({
+              prefix: name,
+              redis: {
+                host:
+                  (await redisServerService?.getHost()) ??
+                  configService.get('redis.host'),
+                port:
+                  (await redisServerService?.getPort()) ??
+                  configService.get('redis.port'),
+              },
+              defaultJobOptions: {
+                removeOnComplete: true,
+                attempts: 3,
+                backoff: {
+                  type: 'exponential',
+                  delay: 10000,
+                },
+              },
+            }),
+          }),
+          BullModule.registerQueue({
+            name: EnumJobsQueue.ProactiveEmail,
+          }),
         ],
       };
     }

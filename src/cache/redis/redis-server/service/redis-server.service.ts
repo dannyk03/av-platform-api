@@ -5,6 +5,10 @@ import { RedisMemoryServer } from 'redis-memory-server';
 export class RedisServerService implements OnModuleInit, OnModuleDestroy {
   private readonly server = new RedisMemoryServer({
     autoStart: true,
+    instance: {
+      port: parseInt(process.env.REDIS_PORT),
+      ip: process.env.REDIS_HOST,
+    },
   });
 
   async onModuleInit() {
@@ -22,11 +26,15 @@ export class RedisServerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async getPort(): Promise<number> {
-    return this.server.getPort();
+  async getPort(): Promise<number | undefined> {
+    return this.server?.getPort();
   }
 
-  async getHost(): Promise<string> {
-    return this.server.getHost();
+  async getHost(): Promise<string | undefined> {
+    return this.server?.getHost();
+  }
+
+  async stop(): Promise<boolean> {
+    return this.server.stop();
   }
 }
