@@ -19,7 +19,7 @@ import { ConnectionNames } from '@/database/constant';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         apiKey: configService.get<string>('stripe.secretKey'),
-        apiVersion: '2022-08-01',
+        apiVersion: '2022-11-15',
       }),
     }),
     TypeOrmModule.forFeature(
