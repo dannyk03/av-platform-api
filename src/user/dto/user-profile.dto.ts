@@ -123,6 +123,7 @@ export class SurveyPersonalDto {
     targetLength: 2,
   })
   @IsNumberString({ no_symbols: true })
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly birthMonth?: string;
@@ -135,6 +136,7 @@ export class SurveyPersonalDto {
     targetLength: 2,
   })
   @IsNumberString({ no_symbols: true })
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly birthDay?: string;
@@ -145,6 +147,7 @@ export class SurveyPersonalDto {
     targetLength: 2,
   })
   @IsNumberString({ no_symbols: true })
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly workAnniversaryMonth?: string;
@@ -158,6 +161,7 @@ export class SurveyPersonalDto {
     targetLength: 2,
   })
   @IsNumberString({ no_symbols: true })
+  @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   @ApiProperty({ required: false })
