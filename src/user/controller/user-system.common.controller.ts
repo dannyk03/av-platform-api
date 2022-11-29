@@ -114,6 +114,9 @@ export class UserSystemCommonController {
 
   @ClientResponse('user.delete')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.UserDelete, {
+    tags: ['user', 'delete'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -130,6 +133,9 @@ export class UserSystemCommonController {
   }
 
   @ClientResponse('user.active')
+  @LogTrace(EnumLogAction.UserActive, {
+    tags: ['user', 'active'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -153,6 +159,9 @@ export class UserSystemCommonController {
   }
 
   @ClientResponse('user.inactive')
+  @LogTrace(EnumLogAction.UserActive, {
+    tags: ['user', 'inactive'],
+  })
   @AclGuard({
     abilities: [
       {
@@ -168,6 +177,13 @@ export class UserSystemCommonController {
     const { affected } = await this.userService.updateUserActiveStatus({
       id,
       isActive: false,
+    });
+
+    throw new NotFoundException({
+      data: {
+        a: 'A',
+        v: 'v',
+      },
     });
 
     return {
