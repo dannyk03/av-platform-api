@@ -29,6 +29,7 @@ import {
 
 import { RequestAddDatePipe } from '@/utils/request/pipe';
 
+import { SqlStringEscapeTransform } from '../request/transform';
 import { MinGreaterThan, RangeTuple, Skip } from '../request/validation';
 import {
   IPaginationFilterDateOptions,
@@ -41,8 +42,9 @@ export function PaginationSearch(): any {
     Expose(),
     IsOptional(),
     IsString(),
+    SqlStringEscapeTransform(),
     Transform(({ value }) => {
-      return value ? value : undefined;
+      return value || undefined;
     }),
   );
 }
@@ -53,6 +55,7 @@ export function PaginationMultiSearch(): any {
     IsOptional(),
     IsArray(),
     IsString({ each: true }),
+    SqlStringEscapeTransform({ each: true }),
     Transform(({ value }) => {
       return value ? Array.from(new Set(value.split(','))) : undefined;
     }),
