@@ -175,5 +175,11 @@
   "moduleNameMapper": {
     "@/(.*)": "<rootDir>/$1",
     "@acl/(.*)": "<rootDir>/access-control-list/$1"
+  },
+  "config": {
+    "redisMemoryServer": {
+      "disablePostinstall": "1",
+      "systemBinary": "/usr/local/bin/redis"
+    }
   }
 }
