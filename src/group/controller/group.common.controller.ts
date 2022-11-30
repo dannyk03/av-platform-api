@@ -414,4 +414,55 @@ export class GroupCommonController {
       data: users,
     };
   }
+
+  @ClientResponse('group.get', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
+  async get(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id: groupId,
+        members: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        isActive: true,
+        createdAt: true,
+        members: {
+          id: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    return findGroup;
+  }
 }
