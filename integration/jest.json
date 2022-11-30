@@ -22,5 +22,6 @@
   "moduleNameMapper": {
     "@/(.*)": "<rootDir>/src/$1",
     "@acl/(.*)": "<rootDir>/src/access-control-list/$1"
-  }
+  },
+  "setupFiles": ["<rootDir>/integration/setEnvVars.ts"]
 }

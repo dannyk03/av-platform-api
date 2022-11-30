@@ -128,35 +128,35 @@ export class CloudinaryService {
     );
   }
 
-  // WIP test code
-  async deleteMany() {
-    const subFolders = util.promisify(v2.api.sub_folders);
-    try {
-      const res = await subFolders('jul/products');
-      res.folders.forEach((folder) => {
-        v2.api.resources(
-          {
-            type: 'upload',
-            prefix: folder.path,
-            max_results: 500,
-          },
-          function (error, res1) {
-            if (res1?.resources.length) {
-              v2.api.delete_resources_by_prefix(folder.path, (err, res) => {
-                // v2.api.delete_folder(folder.path, (err, res) => {
-                //   debugger;
-                // });
-              });
-            } else {
-              v2.api.delete_folder(folder.path, (err, res2) => {
-                console.log(err, res2);
-              });
-            }
-          },
-        );
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // WIP test code for delete empty folder
+  // async deleteMany() {
+  //   const subFolders = util.promisify(v2.api.sub_folders);
+  //   try {
+  //     const res = await subFolders('jul/products');
+  //     res.folders.forEach((folder) => {
+  //       v2.api.resources(
+  //         {
+  //           type: 'upload',
+  //           prefix: folder.path,
+  //           max_results: 500,
+  //         },
+  //         function (error, res1) {
+  //           if (res1?.resources.length) {
+  //             v2.api.delete_resources_by_prefix(folder.path, (err, res) => {
+  //               // v2.api.delete_folder(folder.path, (err, res) => {
+  //               //   debugger;
+  //               // });
+  //             });
+  //           } else {
+  //             v2.api.delete_folder(folder.path, (err, res2) => {
+  //               console.log(err, res2);
+  //             });
+  //           }
+  //         },
+  //       );
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 }

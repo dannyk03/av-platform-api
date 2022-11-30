@@ -35,6 +35,8 @@
     "uuidv5",
     "idempotency",
     "capturable",
+    "bullmq",
+    "backoff",
     "tsvector",
     "tsquery"
   ],
