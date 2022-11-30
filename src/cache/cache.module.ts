@@ -10,7 +10,7 @@ import { RedisServerService } from './redis/redis-server/service';
 @Module({})
 export class AppCacheModule {
   static register(): DynamicModule {
-    if (process.env.INTEGRATION_TEST === 'true') {
+    if (!process.env.REDIS_HOST || process.env.INTEGRATION_TEST === 'true') {
       return {
         module: AppCacheModule,
         providers: [],
