@@ -19,6 +19,7 @@ import {
 import { Product } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
+import { HelperStringService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -36,6 +37,7 @@ export class ProductService {
     @InjectRepository(Product, ConnectionNames.Default)
     private readonly productRepository: Repository<Product>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(props: DeepPartial<Product>): Promise<Product> {
@@ -137,13 +139,14 @@ export class ProductService {
     }
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
+
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('product.sku ILIKE :likeSearch')
-            .orWhere('product.brand ILIKE :likeSearch')
-            .orWhere('displayOptions.name ILIKE :likeSearch')
-            .orWhere('displayOptions.description ILIKE :likeSearch');
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', product.sku, product.brand, displayOptions.name, displayOptions.description)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
+          );
         }),
       );
     }

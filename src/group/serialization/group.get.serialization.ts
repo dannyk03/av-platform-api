@@ -20,6 +20,12 @@ export class GroupGetSerialization implements IGroupGetSerialization {
 
   @Expose()
   readonly membersCount: number;
+
+  @Expose()
+  isActive: boolean;
+
+  @Expose()
+  createdAt: Date;
 }
 @Exclude()
 export class GroupGetWithPreviewSerialization

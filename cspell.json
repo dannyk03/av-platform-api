@@ -36,7 +36,9 @@
     "idempotency",
     "capturable",
     "bullmq",
-    "backoff"
+    "backoff",
+    "tsvector",
+    "tsquery"
   ],
   "ignorePaths": [
     "node_modules/**",

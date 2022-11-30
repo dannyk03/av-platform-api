@@ -73,10 +73,10 @@
   dependencies:
     "@casl/ability" "^6.3.2"
 
-"@avo/type@^0.0.147":
-  version "0.0.147"
-  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.147.tgz#6ed6501bc7add57d480993f75bd979fe0efe5769"
-  integrity sha512-mfz1LrEhMxeTJGcyM6/a6OuskEUlZObQ9EEZhOM5jkHMmQGJ1orRBAYKPP7ssJL081IMxAr39uMvmi1012DjDw==
+"@avo/type@^0.0.148":
+  version "0.0.148"
+  resolved "https://avonow.jfrog.io/artifactory/api/npm/avo-npm/@avo/type/-/@avo/type-0.0.148.tgz#9100ed87ae57ed67be2adcc8f4e7925f2dca6768"
+  integrity sha512-QsLLtIBcEtvq77xdBwEfUdDq1G+E+4KITEczL6L6OGdCq90lZLCp92KgTRVdrSlgG9EMUeYm/W+nXjbEz42StQ==
 
 "@aws-crypto/crc32@2.0.0":
   version "2.0.0"
@@ -2738,6 +2738,11 @@
   dependencies:
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/sqlstring@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@types/sqlstring/-/sqlstring-2.3.0.tgz#5960ade0166cfaaa4673fc74ec8157a08d06c89e"
+  integrity sha512-kMFecDYYFk/f5fljO0UFrSPwU1JxY4mIjX6ic7MHv5nD6sEd3NYLoWcOV/3s6Drs7RHdCwTQdD5NdgVl0I2zzg==
 
 "@types/stack-utils@^2.0.0":
   version "2.0.1"
@@ -8117,6 +8122,11 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
+
+sqlstring@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.3.tgz#2ddc21f03bce2c387ed60680e739922c65751d0c"
+  integrity sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==
 
 ssf@~0.11.2:
   version "0.11.2"
