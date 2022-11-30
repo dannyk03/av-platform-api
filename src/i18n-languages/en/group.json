@@ -8,6 +8,7 @@
   "active": "Group active succeed",
   "upcomingMilestones": "Group upcoming milestones list success",
   "desiredSkills": "Group desired skills list success",
+  "funFacts": "Group fun facts list success",
   "userSearch": "Users search success",
   "error": {
     "notFound": "Group not found",

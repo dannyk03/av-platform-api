@@ -43,6 +43,7 @@ import { RequestParamGuard } from '@/utils/request/guard';
 import {
   GroupCreateDto,
   GroupDesiredSkillsListDto,
+  GroupFunFactsListDto,
   GroupListDto,
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
@@ -52,6 +53,7 @@ import { IdParamDto } from '@/utils/request/dto';
 
 import {
   GroupDesiredSkillsListSerialization,
+  GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
   GroupUpcomingMilestonesListSerialization,
@@ -359,6 +361,39 @@ export class GroupCommonController {
     };
   }
 
+  @ClientResponsePaging('group.funFacts', {
+    classSerialization: GroupFunFactsListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/fun-facts')
+  async funFacts(
+    @Param('id') groupId: string,
+    @Query()
+    { page, perPage }: GroupFunFactsListDto,
+  ): Promise<IResponseData> {
+    const skip: number = page
+      ? await this.paginationService.skip(page, perPage)
+      : 0;
+
+    const funFacts = await this.groupService.getFunFacts({
+      groupId,
+      skip,
+      limit: perPage,
+    });
+
+    const totalData = funFacts?.length ?? 0;
+
+    return {
+      totalData,
+      perPage,
+      currentPage: perPage ? page : 0,
+      data: funFacts,
+    };
+  }
+
   @ClientResponsePaging('group.desiredSkills', {
     classSerialization: GroupDesiredSkillsListSerialization,
   })
@@ -382,7 +417,7 @@ export class GroupCommonController {
       limit: perPage,
     });
 
-    const totalData = desiredSkills.length ?? 0;
+    const totalData = desiredSkills?.length ?? 0;
 
     return {
       totalData,

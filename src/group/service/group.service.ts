@@ -19,6 +19,7 @@ import {
   SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
+import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { Group } from '../entity';
 
@@ -37,6 +38,39 @@ export class GroupService {
     private readonly groupRepository: Repository<Group>,
     private readonly helperStringService: HelperStringService,
   ) {}
+
+  private async getNotEmptyArrayOfSomethingFromUserProfile({
+    groupId,
+    column,
+    skip = 0,
+    limit = 0,
+  }: {
+    column: 'desiredSkills' | 'funFacts';
+    skip: number;
+    limit: number;
+    groupId: string;
+  }): Promise<any[]> {
+    const LIMIT = limit || 'ALL';
+    const OFFSET = skip;
+
+    return this.defaultDataSource.query(
+      `
+      SELECT u.email, up.first_name, up.last_name, up.${snakeCase(
+        column,
+      )}, up.created_at FROM public.groups AS g
+      LEFT JOIN public.group_members AS m
+                  ON g.id = m.group_id
+      LEFT JOIN public.users AS u
+                  ON m.user_id = u.id
+        LEFT JOIN public.user_profiles AS up
+                  ON up.user_id = u.id
+      WHERE g.id = $1 AND cardinality(up.${snakeCase(column)}) > 0
+      ORDER BY up.created_at
+      LIMIT ${LIMIT} OFFSET ${OFFSET}
+    `,
+      [groupId],
+    );
+  }
 
   async create(props: DeepPartial<Group>): Promise<Group> {
     return this.groupRepository.create(props);
@@ -224,25 +258,30 @@ export class GroupService {
     groupId: string;
     skip: number;
     limit: number;
-  }) {
-    const LIMIT = limit || 'ALL';
-    const OFFSET = skip;
+  }): Promise<any[]> {
+    return this.getNotEmptyArrayOfSomethingFromUserProfile({
+      column: 'desiredSkills',
+      groupId,
+      skip,
+      limit,
+    });
+  }
 
-    return this.defaultDataSource.query(
-      `
-      SELECT u.email, up.first_name, up.last_name, up.desired_skills, up.created_at FROM public.groups AS g
-      LEFT JOIN public.group_members AS m
-                  ON g.id = m.group_id
-      LEFT JOIN public.users AS u
-                  ON m.user_id = u.id
-        LEFT JOIN public.user_profiles AS up
-                  ON up.user_id = u.id
-      WHERE g.id = $1 AND cardinality(up.desired_skills) > 0
-      ORDER BY up.created_at
-      LIMIT ${LIMIT} OFFSET ${OFFSET}
-    `,
-      [groupId],
-    );
+  async getFunFacts({
+    groupId,
+    skip = 0,
+    limit = 0,
+  }: {
+    groupId: string;
+    skip: number;
+    limit: number;
+  }): Promise<any[]> {
+    return this.getNotEmptyArrayOfSomethingFromUserProfile({
+      column: 'funFacts',
+      groupId,
+      skip,
+      limit,
+    });
   }
 
   async getUpcomingMilestones({
@@ -255,7 +294,7 @@ export class GroupService {
     days: number;
     skip: number;
     limit: number;
-  }) {
+  }): Promise<any[]> {
     const LIMIT = limit || 'ALL';
     const OFFSET = skip;
 
