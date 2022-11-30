@@ -6,7 +6,8 @@
   "update": "Update group success",
   "inactive": "Group inactive succeed",
   "active": "Group active succeed",
-  "upcomingMilestones": "Group upcoming milestones get success",
+  "upcomingMilestones": "Group upcoming milestones list success",
+  "desiredSkills": "Group desired skills list success",
   "userSearch": "Users search success",
   "error": {
     "notFound": "Group not found",
