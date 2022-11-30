@@ -15,6 +15,7 @@ import DatabaseConfig from './database.config';
 import DebuggerConfig from './debugger.config';
 import DefaultConfig from './default.config';
 import FileConfig from './file.config';
+import GroupConfig from './group.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
@@ -38,6 +39,7 @@ export const Configs = [
   TwilioConfig,
   DebuggerConfig,
   DefaultConfig,
+  GroupConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({

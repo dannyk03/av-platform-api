@@ -6,27 +6,39 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
+import { EnumAddGroupMemberType, EnumGroupInviteStatus } from '@avo/type';
 import {
   EnumGroupRole,
   EnumGroupStatusCodeError,
+  EnumMessagingStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
 
 import { isEmail } from 'class-validator';
+import { DataSource } from 'typeorm';
 
+import { GroupInviteMember } from '../entity';
 import { User } from '@/user/entity';
 
-import { GroupMemberService, GroupService } from '../service';
+import {
+  GroupInviteMemberService,
+  GroupMemberService,
+  GroupService,
+} from '../service';
+import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
+import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { LogTrace } from '@/log/decorator';
@@ -45,6 +57,11 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
+import {
+  GroupAddMemberDto,
+  GroupAddMemberRefDto,
+} from '../dto/group.add-member.dto';
+import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
@@ -65,8 +82,14 @@ export class GroupCommonController {
     private readonly groupService: GroupService,
     private readonly userService: UserService,
     private readonly groupMemberService: GroupMemberService,
+    private readonly groupInviteMemberService: GroupInviteMemberService,
     private readonly paginationService: PaginationService,
     private readonly socialConnectionService: SocialConnectionService,
+    private readonly helperHashService: HelperHashService,
+    private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
+    private readonly defaultDataSource: DataSource,
+    private readonly emailService: EmailService,
   ) {}
 
   @ClientResponse('group.create', {
@@ -413,5 +436,192 @@ export class GroupCommonController {
       perPage,
       data: users,
     };
+  }
+
+  @ClientResponse('group.addMember', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/add-member')
+  async addMember(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Body()
+    { groupId }: GroupAddMemberDto,
+    @Query() { ref, type }: GroupAddMemberRefDto,
+  ): Promise<IResponseData> {
+    const isExist = await this.groupMemberService.findOne({
+      where: {
+        group: {
+          id: groupId,
+        },
+        user: {
+          id: reqAuthUser.id,
+        },
+      },
+    });
+    if (isExist) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupExistsError,
+        message: 'group.error.memberExists',
+      });
+    }
+
+    if (ref) {
+      if (type == EnumAddGroupMemberType.PersonalInvite) {
+        const invitedUser = await this.groupInviteMemberService.findOne({
+          where: {
+            user: {
+              id: reqAuthUser.id,
+            },
+            code: ref,
+          },
+        });
+        if (!invitedUser) {
+          throw new BadRequestException({
+            statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
+            message: 'group.error.inviteNotExists',
+          });
+        }
+        const now = this.helperDateService.create();
+        const expiresAt =
+          invitedUser.expiresAt &&
+          this.helperDateService.create({
+            date: invitedUser.expiresAt,
+          });
+
+        if (expiresAt && now > expiresAt) {
+          throw new BadRequestException({
+            statusCode: EnumGroupStatusCodeError.GroupInviteExpiredError,
+            message: 'group.error.inviteExpired',
+          });
+        }
+        const result = await this.defaultDataSource.transaction(
+          'SERIALIZABLE',
+          async (transactionalEntityManager) => {
+            const addedMember = await this.groupMemberService.create({
+              role: EnumGroupRole.Basic,
+              user: {
+                id: reqAuthUser.id,
+              },
+              group: {
+                id: groupId,
+              },
+            });
+
+            await transactionalEntityManager.save(addedMember);
+
+            await transactionalEntityManager.update(
+              GroupInviteMember,
+              { code: ref },
+              { inviteStatus: EnumGroupInviteStatus.Accept },
+            );
+          },
+        );
+      } else {
+      }
+    }
+
+    return {};
+  }
+
+  @ClientResponse('group.inviteMember', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/invite-member')
+  async inviteMember(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Body()
+    { members, groupId }: GroupInviteMemberDto,
+  ): Promise<IResponseData> {
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const expiresInDays = this.configService.get<number>(
+          'group.groupInviteCodeExpiresInDays',
+        );
+
+        const inviteMembers = await Promise.all(
+          members.map(async (member) => {
+            const potentialMemberUser = await this.userService.findOneBy({
+              email: member.email,
+            });
+
+            const isExistOne = await this.groupMemberService.findOne({
+              where: {
+                group: {
+                  id: groupId,
+                },
+                user: {
+                  id: potentialMemberUser.id,
+                },
+              },
+            });
+            if (isExistOne) {
+              throw new BadRequestException({
+                statusCode: EnumGroupStatusCodeError.GroupExistsError,
+                message: 'group.error.memberExists',
+              });
+            }
+
+            return {
+              user: {
+                id: potentialMemberUser.id,
+              },
+              group: {
+                id: groupId,
+              },
+              role: EnumGroupRole.Basic,
+              code: await this.helperHashService.magicCode(),
+              expiresAt: this.helperDateService.forwardInDays(expiresInDays),
+            };
+          }),
+        );
+
+        const groupMembersInvite =
+          await this.groupInviteMemberService.createMany(inviteMembers);
+
+        await transactionalEntityManager.save(groupMembersInvite);
+
+        inviteMembers.map(async (member) => {
+          const invitedUser = await this.userService.findOne({
+            where: {
+              id: member.user.id,
+            },
+            relations: ['profile'],
+          });
+          console.log(invitedUser);
+          const emailSent = await this.emailService.sendGroupInviteEmail({
+            email: invitedUser.email,
+            code: member.code,
+            expiresInDays,
+            firstName: invitedUser.profile.firstName,
+          });
+
+          if (!emailSent) {
+            throw new InternalServerErrorException({
+              statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+              message: 'messaging.error.email.send',
+            });
+          }
+        });
+
+        // For local development/testing
+        const isDevelopment =
+          this.configService.get<boolean>('app.isDevelopment');
+        const isSecureMode: boolean =
+          this.configService.get<boolean>('app.isSecureMode');
+
+        if (isDevelopment || !isSecureMode) {
+          return { inviteMembers };
+        }
+      },
+    );
+
+    return result;
   }
 }

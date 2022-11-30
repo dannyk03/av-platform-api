@@ -12,6 +12,9 @@
     "notFound": "Group not found",
     "inactive": "Group not active",
     "exists": "Group already exists",
+    "memberExists": "Group member already exists",
+    "inviteExpired": "Group member invite expired",
+    "inviteNotExists": "Group member invite expired",
     "unprocessable": "Unprocessable"
   }
 }
