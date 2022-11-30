@@ -35,6 +35,6 @@ export class RedisServerService implements OnModuleInit, OnModuleDestroy {
   }
 
   async stop(): Promise<boolean> {
-    return this.server.stop();
+    return this.server?.stop();
   }
 }
