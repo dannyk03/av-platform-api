@@ -2704,13 +2704,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/redis@^4.0.11":
-  version "4.0.11"
-  resolved "https://registry.yarnpkg.com/@types/redis/-/redis-4.0.11.tgz#0bb4c11ac9900a21ad40d2a6768ec6aaf651c0e1"
-  integrity sha512-bI+gth8La8Wg/QCR1+V1fhrL9+LZUSWfcqpOj2Kc80ZQ4ffbdL173vQd5wovmoV9i071FU9oP2g6etLuEwb6Rg==
-  dependencies:
-    redis "*"
-
 "@types/response-time@^2.3.5":
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/@types/response-time/-/response-time-2.3.5.tgz#e85ff348caefd0f8d3e8902424c681a59aafc31e"
@@ -7684,7 +7677,7 @@ redis-parser@^3.0.0:
   dependencies:
     redis-errors "^1.0.0"
 
-redis@*, redis@^4.3.1, redis@^4.5.1:
+redis@^4.3.1, redis@^4.5.1:
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/redis/-/redis-4.5.1.tgz#f5a818970bb2dc5d60540bab41308640604c7d33"
   integrity sha512-oxXSoIqMJCQVBTfxP6BNTCtDMyh9G6Vi5wjdPdV/sRKkufyZslDqCScSGcOr6XGR/reAWZefz7E4leM31RgdBA==
