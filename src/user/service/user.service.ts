@@ -19,6 +19,8 @@ import {
 
 import { User } from '../entity';
 
+import { HelperStringService } from '@/utils/helper/service';
+
 import { IUserCheckExist, IUserSearch } from '../type/user.interface';
 import { IAuthPassword } from '@/auth/type/auth.interface';
 
@@ -28,7 +30,8 @@ import { ConnectionNames } from '@/database/constant';
 export class UserService {
   constructor(
     @InjectRepository(User, ConnectionNames.Default)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(props: DeepPartial<User>): Promise<User> {
@@ -165,13 +168,13 @@ export class UserService {
     }
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('user.email ILIKE :likeSearch')
-            .orWhere('user.phoneNumber ILIKE :likeSearch')
-            .orWhere('profile.firstName ILIKE :likeSearch')
-            .orWhere('profile.lastName ILIKE :likeSearch');
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', user.email, profile.firstName, profile.lastName, user.phoneNumber)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
+          );
         }),
       );
     }

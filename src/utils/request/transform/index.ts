@@ -12,3 +12,4 @@ export * from './IsEnumCaseInsensitive.transform';
 export * from './ConsecutiveWhitespace.transform';
 export * from './ParsePhoneNumberFromString.transform';
 export * from './PadWith.transform';
+export * from './SqlStringEscape.transform';
