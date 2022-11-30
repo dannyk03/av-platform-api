@@ -2,6 +2,7 @@ import { CacheModule, CacheStore, DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { redisStore } from 'cache-manager-redis-store';
+import { isEmpty } from 'class-validator';
 
 import { RedisServerModule } from '@/cache/redis/redis-server/redis-server.module';
 
@@ -10,7 +11,10 @@ import { RedisServerService } from './redis/redis-server/service';
 @Module({})
 export class AppCacheModule {
   static register(): DynamicModule {
-    if (!process.env.REDIS_HOST || process.env.INTEGRATION_TEST === 'true') {
+    if (
+      isEmpty(process.env.REDIS_HOST) ||
+      process.env.INTEGRATION_TEST === 'true'
+    ) {
       return {
         module: AppCacheModule,
         providers: [],

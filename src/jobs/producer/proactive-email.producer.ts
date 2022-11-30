@@ -17,7 +17,7 @@ export class ProactiveEmailProducer {
     private readonly userProfileService: UserProfileService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+  @Cron(CronExpression.EVERY_HOUR, {
     name: EnumJobsCronName.NextWeekBirthday,
   })
   async handleNextWeekBirthdayProactiveNotification() {
