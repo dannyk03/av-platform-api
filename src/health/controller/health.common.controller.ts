@@ -44,10 +44,10 @@ export class HealthCommonController {
     });
 
   private checkMemoryHeap = () =>
-    this.memoryHealthIndicator.checkHeap('memory heap', 300 * 1024 * 1024);
+    this.memoryHealthIndicator.checkHeap('memory heap', 450 * 1024 * 1024);
 
   private checkMemoryRss = () =>
-    this.memoryHealthIndicator.checkRSS('memory RSS', 300 * 1024 * 1024);
+    this.memoryHealthIndicator.checkRSS('memory RSS', 450 * 1024 * 1024);
 
   private checkStorage = () =>
     this.diskHealthIndicator.checkStorage('disk health', {
