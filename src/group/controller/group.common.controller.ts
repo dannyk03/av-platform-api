@@ -29,6 +29,7 @@ import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { CanAccessAsGroupMember } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
 import {
@@ -327,28 +328,15 @@ export class GroupCommonController {
     classSerialization: GroupUpcomingMilestonesListSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/upcoming-milestones')
   async upcomingMilestones(
-    @ReqAuthUser()
-    { id: userId }: User,
     @Param('id') groupId: string,
     @Query()
     { days, page, perPage }: GroupUpcomingMilestonesListDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findGroup({
-      userId,
-      groupId,
-    });
-
-    if (!findGroup) {
-      throw new NotFoundException({
-        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-        message: 'group.error.notFound',
-      });
-    }
-
     const skip: number = page
       ? await this.paginationService.skip(page, perPage)
       : 0;
@@ -375,28 +363,15 @@ export class GroupCommonController {
     classSerialization: GroupDesiredSkillsListSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/desired-skills')
   async desiredSkills(
-    @ReqAuthUser()
-    { id: userId }: User,
     @Param('id') groupId: string,
     @Query()
     { page, perPage }: GroupDesiredSkillsListDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findGroup({
-      userId,
-      groupId,
-    });
-
-    if (!findGroup) {
-      throw new NotFoundException({
-        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-        message: 'group.error.notFound',
-      });
-    }
-
     const skip: number = page
       ? await this.paginationService.skip(page, perPage)
       : 0;
