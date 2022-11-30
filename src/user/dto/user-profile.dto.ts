@@ -23,6 +23,7 @@ import {
   IsIsAcceptableEmail,
   IsPhoneNumber,
   IsValidDayOfMonth,
+  NotAfterThisYear,
 } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
@@ -140,6 +141,18 @@ export class SurveyPersonalDto {
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly birthDay?: string;
+
+  @IsOptional()
+  @NotAfterThisYear()
+  @IsNumberString({ no_symbols: true })
+  @PadWith({
+    padString: '20',
+    targetLength: 4,
+  })
+  @EmptyStringToUndefinedTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly workAnniversaryYear?: string;
 
   @IsOptional()
   @PadWith({

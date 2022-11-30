@@ -87,6 +87,10 @@ export class UserProfileGetSerialization
   readonly birthDay: string;
 
   @Expose()
+  @Transform(({ obj }) => obj.profile?.workAnniversaryYear)
+  readonly workAnniversaryYear: string;
+
+  @Expose()
   @Transform(({ obj }) => obj.profile?.workAnniversaryMonth)
   readonly workAnniversaryMonth: string;
 
