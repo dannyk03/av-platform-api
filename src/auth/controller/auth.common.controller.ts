@@ -420,6 +420,8 @@ export class AuthCommonController {
         funFacts,
         desiredSkills,
         company,
+        jobRole,
+        department,
       },
       personas,
       dietary,
@@ -472,7 +474,6 @@ export class AuthCommonController {
             lastName,
             home,
             shipping,
-            company,
             personas,
             dietary,
             birthMonth,
@@ -483,6 +484,11 @@ export class AuthCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
+            company: {
+              name: company,
+              jobRole,
+              department,
+            },
           },
           authConfig: {
             password: passwordHash,

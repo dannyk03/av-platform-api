@@ -15,7 +15,7 @@ export class UserProfileCompany extends BaseEntity<UserProfileCompany> {
     length: 100,
     nullable: true,
   })
-  role?: string;
+  jobRole?: string;
 
   @Column({
     length: 100,

@@ -46,31 +46,6 @@ export class SurveyPersonalAddressDto {
   @Type(() => String)
   readonly country?: string;
 }
-export class SurveyPersonalCompanyDto {
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  @ConsecutiveWhitespaceTransform()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly name?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  @ConsecutiveWhitespaceTransform()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly role?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  @ConsecutiveWhitespaceTransform()
-  @NormalizeStringInputTransform()
-  @Type(() => String)
-  readonly department?: string;
-}
 
 export class SurveyAddressDto {
   @IsOptional()
@@ -225,11 +200,28 @@ export class SurveyPersonalDto {
   readonly shipping?: SurveyPersonalShippingDto;
 
   @IsOptional()
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => SurveyPersonalCompanyDto)
-  @ApiProperty()
-  readonly company: SurveyPersonalCompanyDto;
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly company?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly jobRole?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly department?: string;
 
   @IsOptional()
   @IsArray()

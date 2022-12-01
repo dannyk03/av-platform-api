@@ -77,7 +77,7 @@ export class Log {
     default: [],
     update: false,
   })
-  tags?: string[];
+  tags!: string[];
 
   @Column({
     length: 25,

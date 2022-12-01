@@ -110,6 +110,8 @@ export class UserCommonController {
         home,
         shipping,
         company,
+        jobRole,
+        department,
         funFacts,
         desiredSkills,
       },
@@ -139,6 +141,11 @@ export class UserCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
+            company: {
+              name: company,
+              jobRole,
+              department,
+            },
           })
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
@@ -159,17 +166,6 @@ export class UserCommonController {
             .getRepository(UserProfileShipping)
             .createQueryBuilder()
             .update<UserProfileShipping>(UserProfileShipping, shipping)
-            .where('user_profile_id = :userProfileId', {
-              userProfileId: reqUser.profile.id,
-            })
-            .execute();
-        }
-
-        if (company) {
-          await transactionalEntityManager
-            .getRepository(UserProfileCompany)
-            .createQueryBuilder()
-            .update<UserProfileCompany>(UserProfileCompany, company)
             .where('user_profile_id = :userProfileId', {
               userProfileId: reqUser.profile.id,
             })
