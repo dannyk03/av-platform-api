@@ -17,6 +17,7 @@ import { DataSource } from 'typeorm';
 import {
   User,
   UserProfile,
+  UserProfileCompany,
   UserProfileHome,
   UserProfileShipping,
 } from '../entity';
@@ -69,6 +70,7 @@ export class UserCommonController {
       'profile',
       'profile.home',
       'profile.shipping',
+      'profile.company',
       'invitationLink',
     ],
   })
@@ -107,6 +109,7 @@ export class UserCommonController {
         kidFriendlyActivities,
         home,
         shipping,
+        company,
         funFacts,
         desiredSkills,
       },
@@ -161,6 +164,17 @@ export class UserCommonController {
             })
             .execute();
         }
+
+        if (company) {
+          await transactionalEntityManager
+            .getRepository(UserProfileCompany)
+            .createQueryBuilder()
+            .update<UserProfileCompany>(UserProfileCompany, company)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
       },
     );
 
@@ -168,7 +182,7 @@ export class UserCommonController {
       where: {
         id: reqUser.id,
       },
-      relations: ['profile', 'profile.home', 'profile.shipping'],
+      relations: ['profile.home', 'profile.shipping', 'profile.company'],
     });
 
     return user;

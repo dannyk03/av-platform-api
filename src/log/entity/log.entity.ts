@@ -73,7 +73,7 @@ export class Log {
   @Column({
     type: 'varchar',
     array: true,
-    length: 20,
+    length: 200,
     default: [],
     update: false,
   })

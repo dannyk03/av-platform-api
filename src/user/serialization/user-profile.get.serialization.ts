@@ -1,4 +1,5 @@
 import {
+  IUserProfileCompanyGetSerialization,
   IUserProfileGetSerialization,
   IUserProfileHomeGetSerialization,
   IUserProfileShippingGetSerialization,
@@ -48,6 +49,20 @@ export class UserProfileShippingGetSerialization
 
   @Expose()
   deliveryInstructions?: string;
+}
+
+@Exclude()
+export class UserProfileCompanyGetSerialization
+  implements IUserProfileCompanyGetSerialization
+{
+  @Expose()
+  name?: string;
+
+  @Expose()
+  role?: string;
+
+  @Expose()
+  department?: string;
 }
 
 @Exclude()
@@ -112,6 +127,12 @@ export class UserProfileGetSerialization
     ),
   )
   readonly shipping: IUserProfileShippingGetSerialization;
+
+  @Expose()
+  @Transform(({ obj }) =>
+    plainToInstance(UserProfileCompanyGetSerialization, obj?.profile?.company),
+  )
+  readonly company: IUserProfileCompanyGetSerialization;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)

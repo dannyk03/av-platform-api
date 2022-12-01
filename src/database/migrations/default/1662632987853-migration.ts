@@ -13,6 +13,10 @@ export class migration1662632987853 implements MigrationInterface {
             ADD "birth_day" character varying(2)
         `);
     await queryRunner.query(`
+        ALTER TABLE "user_profiles"
+        ADD "work_anniversary_year" character varying(4)
+    `);
+    await queryRunner.query(`
             ALTER TABLE "user_profiles"
             ADD "work_anniversary_month" character varying(2)
         `);
@@ -118,6 +122,9 @@ export class migration1662632987853 implements MigrationInterface {
         `);
     await queryRunner.query(`
             ALTER TABLE "user_profiles" DROP COLUMN "work_anniversary_month"
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "user_profiles" DROP COLUMN "work_anniversary_year"
         `);
     await queryRunner.query(`
             ALTER TABLE "user_profiles" DROP COLUMN "birth_day"

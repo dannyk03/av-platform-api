@@ -18,7 +18,7 @@ import {
   IResponseError,
 } from '@avo/type';
 
-import { ValidationError, isObject } from 'class-validator';
+import { ValidationError, isObject, isString } from 'class-validator';
 import { Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
@@ -148,7 +148,9 @@ export class ErrorHttpFilter implements ExceptionFilter {
         message: mapMessage,
         error: detailed
           ? error instanceof Error
-            ? error?.message
+            ? error?.message ?? 'Error'
+            : isString(error)
+            ? error
             : exception.message
           : exception.message,
         errors: errors as IErrors[],
@@ -160,9 +162,16 @@ export class ErrorHttpFilter implements ExceptionFilter {
         .setHeader('x-custom-lang', customLang)
         .setHeader('x-timestamp', __timestamp)
         .setHeader('x-timezone', __timezone)
-        .setHeader('x-request-id', __correlationId)
-        .setHeader('x-version', __version)
-        .setHeader('x-repo-version', __repoVersion)
+        .setHeader('x-repo-version', __repoVersion);
+
+      if (__correlationId) {
+        responseExpress.setHeader('x-request-id', __correlationId);
+      }
+      if (__version) {
+        responseExpress.setHeader('x-version', __version);
+      }
+
+      responseExpress
         .status(silent ? HttpStatus.OK : statusHttp)
         .json(silent ? { status: 'OK' } : resResponse);
     } else {

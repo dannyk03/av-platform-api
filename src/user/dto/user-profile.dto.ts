@@ -14,6 +14,7 @@ import {
 } from 'class-validator';
 
 import {
+  ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
@@ -44,6 +45,31 @@ export class SurveyPersonalAddressDto {
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly country?: string;
+}
+export class SurveyPersonalCompanyDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly role?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly department?: string;
 }
 
 export class SurveyAddressDto {
@@ -184,17 +210,26 @@ export class SurveyPersonalDto {
   @ApiProperty()
   readonly kidFriendlyActivities: object;
 
+  @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
   @ApiProperty()
-  readonly home: SurveyPersonalAddressDto;
+  readonly home?: SurveyPersonalAddressDto;
 
+  @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalShippingDto)
   @ApiProperty()
-  readonly shipping: SurveyPersonalShippingDto;
+  readonly shipping?: SurveyPersonalShippingDto;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => SurveyPersonalCompanyDto)
+  @ApiProperty()
+  readonly company: SurveyPersonalCompanyDto;
 
   @IsOptional()
   @IsArray()

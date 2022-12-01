@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
+import { UserProfileCompany } from './user-profile-company.entity';
 import { UserProfileHome } from './user-profile-home.entity';
 import { UserProfileShipping } from './user-profile-shipping.entity';
 import { User } from './user.entity';
@@ -80,6 +81,16 @@ export class UserProfile extends BaseEntity<UserProfile> {
     },
   )
   home?: UserProfileHome;
+
+  @OneToOne(
+    () => UserProfileCompany,
+    (userProfileCompany) => userProfileCompany.userProfile,
+    {
+      cascade: true,
+      nullable: true,
+    },
+  )
+  company: UserProfileCompany;
 
   @OneToOne(
     () => UserProfileShipping,
