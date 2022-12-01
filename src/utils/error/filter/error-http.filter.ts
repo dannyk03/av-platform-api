@@ -20,7 +20,7 @@ import {
 
 import { ValidationError, isObject, isString } from 'class-validator';
 import { Response } from 'express';
-import { QueryFailedError } from 'typeorm';
+import { TypeORMError } from 'typeorm';
 
 import { DebuggerService } from '@/debugger/service';
 import { ResponseMessageService } from '@/response-message/service';
@@ -195,7 +195,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message,
         error:
-          exception instanceof QueryFailedError
+          exception instanceof TypeORMError
             ? 'http.serverError.internalServerError'
             : exception instanceof Error &&
               'message' in exception &&

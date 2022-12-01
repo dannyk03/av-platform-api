@@ -1,3 +1,5 @@
+import { EnumWorkType } from '@avo/type';
+
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { UserProfile } from './user-profile.entity';
@@ -16,6 +18,13 @@ export class UserProfileCompany extends BaseEntity<UserProfileCompany> {
     nullable: true,
   })
   jobRole?: string;
+
+  @Column({
+    type: 'enum',
+    enum: EnumWorkType,
+    nullable: true,
+  })
+  jobType?: EnumWorkType;
 
   @Column({
     length: 100,

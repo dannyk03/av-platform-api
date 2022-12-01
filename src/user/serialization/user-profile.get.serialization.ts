@@ -1,4 +1,5 @@
 import {
+  EnumWorkType,
   IUserProfileCompanyGetSerialization,
   IUserProfileGetSerialization,
   IUserProfileHomeGetSerialization,
@@ -49,20 +50,6 @@ export class UserProfileShippingGetSerialization
 
   @Expose()
   deliveryInstructions?: string;
-}
-
-@Exclude()
-export class UserProfileCompanyGetSerialization
-  implements IUserProfileCompanyGetSerialization
-{
-  @Expose()
-  name?: string;
-
-  @Expose()
-  role?: string;
-
-  @Expose()
-  department?: string;
 }
 
 @Exclude()
@@ -129,10 +116,20 @@ export class UserProfileGetSerialization
   readonly shipping: IUserProfileShippingGetSerialization;
 
   @Expose()
-  @Transform(({ obj }) =>
-    plainToInstance(UserProfileCompanyGetSerialization, obj?.profile?.company),
-  )
-  readonly company: IUserProfileCompanyGetSerialization;
+  @Transform(({ obj }) => obj.profile?.company?.name)
+  readonly company: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.department)
+  readonly department: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.jobRole)
+  readonly jobRole: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.jobType)
+  readonly jobType: EnumWorkType;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)

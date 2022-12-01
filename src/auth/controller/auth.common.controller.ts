@@ -421,6 +421,7 @@ export class AuthCommonController {
         desiredSkills,
         company,
         jobRole,
+        jobType,
         department,
       },
       personas,
@@ -487,6 +488,7 @@ export class AuthCommonController {
             company: {
               name: company,
               jobRole,
+              jobType,
               department,
             },
           },

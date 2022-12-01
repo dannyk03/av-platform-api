@@ -22,7 +22,7 @@ import {
   UserProfileShipping,
 } from '../entity';
 
-import { UserProfileService } from '../service';
+import { UserProfileCompanyService, UserProfileService } from '../service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service/user.service';
 
@@ -56,6 +56,7 @@ export class UserCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly userService: UserService,
     private readonly userProfileService: UserProfileService,
+    private readonly userProfileCompanyService: UserProfileCompanyService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -111,6 +112,7 @@ export class UserCommonController {
         shipping,
         company,
         jobRole,
+        jobType,
         department,
         funFacts,
         desiredSkills,
@@ -141,11 +143,6 @@ export class UserCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
-            company: {
-              name: company,
-              jobRole,
-              department,
-            },
           })
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
@@ -166,6 +163,22 @@ export class UserCommonController {
             .getRepository(UserProfileShipping)
             .createQueryBuilder()
             .update<UserProfileShipping>(UserProfileShipping, shipping)
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
+
+        if (company || jobRole || jobType || department) {
+          await transactionalEntityManager
+            .getRepository(UserProfileCompany)
+            .createQueryBuilder()
+            .update<UserProfileCompany>(UserProfileCompany, {
+              name: company,
+              jobRole,
+              jobType,
+              department,
+            })
             .where('user_profile_id = :userProfileId', {
               userProfileId: reqUser.profile.id,
             })

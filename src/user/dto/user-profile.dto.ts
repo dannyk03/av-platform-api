@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EnumWorkType } from '@avo/type';
+
 import { Type } from 'class-transformer';
 import {
   Allow,
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
@@ -214,6 +217,10 @@ export class SurveyPersonalDto {
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly jobRole?: string;
+
+  @IsOptional()
+  @IsEnum(EnumWorkType)
+  readonly jobType?: EnumWorkType;
 
   @IsOptional()
   @IsString()
