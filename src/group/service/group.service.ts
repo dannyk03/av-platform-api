@@ -73,11 +73,8 @@ export class GroupService {
     );
   }
 
-  async create(props: DeepPartial<Omit<Group, 'inviteCode'>>): Promise<Group> {
-    return this.groupRepository.create({
-      ...props,
-      inviteCode: await this.helperHashService.magicCode(),
-    });
+  async create(props: DeepPartial<Group>): Promise<Group> {
+    return this.groupRepository.create(props);
   }
 
   async createMany(props: DeepPartial<Group>[]): Promise<Group[]> {

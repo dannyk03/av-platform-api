@@ -4,9 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
-import { Group, GroupInviteMember, GroupMember } from './entity';
+import {
+  Group,
+  GroupInviteLink,
+  GroupInviteMember,
+  GroupMember,
+} from './entity';
 
 import {
+  GroupInviteLinkService,
   GroupInviteMemberService,
   GroupMemberService,
   GroupService,
@@ -17,14 +23,24 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Group, GroupMember, GroupInviteMember],
+      [Group, GroupMember, GroupInviteMember, GroupInviteLink],
       ConnectionNames.Default,
     ),
     UserModule,
     NetworkingModule,
   ],
-  exports: [GroupService, GroupMemberService, GroupInviteMemberService],
-  providers: [GroupService, GroupMemberService, GroupInviteMemberService],
+  exports: [
+    GroupService,
+    GroupMemberService,
+    GroupInviteMemberService,
+    GroupInviteLinkService,
+  ],
+  providers: [
+    GroupService,
+    GroupMemberService,
+    GroupInviteMemberService,
+    GroupInviteLinkService,
+  ],
   controllers: [],
 })
 export class GroupModule {}
