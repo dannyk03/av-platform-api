@@ -79,8 +79,6 @@ USER node
 ##############
 
 FROM node:${NODE_IMAGE_TAG} As production
-RUN apk --update add redis
-ENV REDISMS_DISABLE_POSTINSTALL=1
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
