@@ -27,4 +27,12 @@ export class Group extends BaseEntity<Group> {
     cascade: true,
   })
   members: GroupMember[];
+
+  @Index()
+  @Column({
+    unique: true,
+    length: 21,
+    update: false,
+  })
+  inviteCode!: string;
 }

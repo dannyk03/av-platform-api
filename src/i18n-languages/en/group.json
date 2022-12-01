@@ -17,6 +17,7 @@
     "memberExists": "Group member already exists",
     "inviteExpired": "Group member invite expired",
     "inviteNotExists": "Group member invite expired",
+    "groupCode": "Group shareable code is incorrect",
     "unprocessable": "Unprocessable"
   }
 }

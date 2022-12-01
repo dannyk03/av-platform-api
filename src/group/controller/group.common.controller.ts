@@ -558,8 +558,15 @@ export class GroupCommonController {
     reqAuthUser: User,
     @Body()
     { groupId }: GroupAddMemberDto,
-    @Query() { ref, type }: GroupAddMemberRefDto,
+    @Query() { inviteCode, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
+    const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+    if (!isGroupExist) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
     const isExist = await this.groupMemberService.findOne({
       where: {
         group: {
@@ -577,14 +584,14 @@ export class GroupCommonController {
       });
     }
 
-    if (ref) {
+    if (inviteCode) {
       if (type == EnumAddGroupMemberType.PersonalInvite) {
         const invitedUser = await this.groupInviteMemberService.findOne({
           where: {
             user: {
               id: reqAuthUser.id,
             },
-            code: ref,
+            code: inviteCode,
           },
         });
         if (!invitedUser) {
@@ -623,12 +630,29 @@ export class GroupCommonController {
 
             await transactionalEntityManager.update(
               GroupInviteMember,
-              { code: ref },
+              { code: inviteCode },
               { inviteStatus: EnumGroupInviteStatus.Accept },
             );
           },
         );
-      } else {
+      } else if (type == EnumAddGroupMemberType.ShareableLink) {
+        const currentGroup = await this.groupService.findOneBy({ id: groupId });
+        if (currentGroup.inviteCode !== inviteCode) {
+          throw new BadRequestException({
+            statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
+            message: 'group.error.groupCode',
+          });
+        }
+        const addedMember = await this.groupMemberService.create({
+          role: EnumGroupRole.Basic,
+          user: {
+            id: reqAuthUser.id,
+          },
+          group: {
+            id: groupId,
+          },
+        });
+        await this.groupMemberService.save(addedMember);
       }
     }
 

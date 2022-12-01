@@ -3,7 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EnumAddGroupMemberType } from '@avo/type';
 
 import { Type } from 'class-transformer';
-import { IsEnum, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
 export class GroupAddMemberDto {
   @IsUUID()
@@ -12,11 +19,12 @@ export class GroupAddMemberDto {
 }
 
 export class GroupAddMemberRefDto {
-  @IsOptional()
-  @IsUUID()
+  @IsNotEmpty()
+  @Length(21, 21)
+  @IsString()
   @Type(() => String)
   @ApiProperty()
-  readonly ref: string;
+  readonly inviteCode: string;
 
   @IsOptional()
   @IsEnum(EnumAddGroupMemberType)

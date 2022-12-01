@@ -23,7 +23,7 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { Group } from '../entity';
 
-import { HelperStringService } from '@/utils/helper/service';
+import { HelperHashService, HelperStringService } from '@/utils/helper/service';
 
 import { IGroupSearch } from '../type';
 
@@ -37,6 +37,7 @@ export class GroupService {
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
     private readonly helperStringService: HelperStringService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   private async getNotEmptyArrayOfSomethingFromUserProfile({
@@ -72,8 +73,11 @@ export class GroupService {
     );
   }
 
-  async create(props: DeepPartial<Group>): Promise<Group> {
-    return this.groupRepository.create(props);
+  async create(props: DeepPartial<Omit<Group, 'inviteCode'>>): Promise<Group> {
+    return this.groupRepository.create({
+      ...props,
+      inviteCode: await this.helperHashService.magicCode(),
+    });
   }
 
   async createMany(props: DeepPartial<Group>[]): Promise<Group[]> {
