@@ -220,12 +220,13 @@ export class UserService {
       .leftJoinAndSelect('user.profile', 'profile');
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('user.email ILIKE :likeSearch')
-            .orWhere('profile.firstName ILIKE :likeSearch')
-            .orWhere('profile.lastName ILIKE :likeSearch');
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', user.email, profile.firstName, profile.lastName)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
+          );
         }),
       );
     }
