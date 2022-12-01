@@ -49,10 +49,10 @@ jobs:
       AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: 30m
     steps:
       - checkout
-      - run:
-          name: redis install
-          command: |
-            which redis
+      # - run:
+      #     name: redis install
+      #     command: |
+      #       which redis
       - node/install-packages:
           pkg-manager: yarn
       - run:
