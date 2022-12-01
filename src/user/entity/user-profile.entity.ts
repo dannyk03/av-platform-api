@@ -32,6 +32,12 @@ export class UserProfile extends BaseEntity<UserProfile> {
   birthDay: string;
 
   @Column({
+    length: 4,
+    nullable: true,
+  })
+  workAnniversaryYear: string;
+
+  @Column({
     length: 2,
     nullable: true,
   })
