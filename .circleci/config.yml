@@ -16,7 +16,6 @@ jobs:
     docker:
       - image: cimg/node:18.8
       - image: cimg/postgres:14.4
-      - image: cimg/redis:7.0.5
         environment:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
           POSTGRES_USER: ${POSTGRES_USERNAME}
@@ -49,10 +48,6 @@ jobs:
       AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: 30m
     steps:
       - checkout
-      # - run:
-      #     name: redis install
-      #     command: |
-      #       which redis
       - node/install-packages:
           pkg-manager: yarn
       - run:
