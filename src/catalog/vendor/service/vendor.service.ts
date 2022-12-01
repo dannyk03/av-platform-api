@@ -17,6 +17,7 @@ import {
 import { Vendor } from '../entity';
 
 import { CloudinaryService } from '@/cloudinary/service';
+import { HelperStringService } from '@/utils/helper/service';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -28,6 +29,7 @@ export class VendorService {
     @InjectRepository(Vendor, ConnectionNames.Default)
     private readonly vendorRepository: Repository<Vendor>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(props: DeepPartial<Omit<Vendor, 'slug'>>): Promise<Vendor> {
@@ -138,11 +140,12 @@ export class VendorService {
     }
 
     if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
       builder.andWhere(
         new Brackets((qb) => {
-          builder.setParameters({ search, likeSearch: `%${search}%` });
-          qb.where('vendor.name ILIKE :likeSearch').orWhere(
-            'vendor.description ILIKE :likeSearch',
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', vendor.name, vendor.description)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
           );
         }),
       );

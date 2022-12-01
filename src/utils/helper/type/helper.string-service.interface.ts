@@ -22,4 +22,6 @@ export interface IHelperStringService {
   checkPasswordStrong(password: string, length?: number): boolean;
 
   checkSafeString(text: string): boolean;
+
+  tsQueryParam(text: string): string;
 }

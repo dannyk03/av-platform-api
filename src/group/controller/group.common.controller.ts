@@ -41,6 +41,7 @@ import { UserService } from '@/user/service';
 import { HelperDateService, HelperHashService } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
+import { CanAccessAsGroupMember } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
 import {
@@ -53,6 +54,8 @@ import { RequestParamGuard } from '@/utils/request/guard';
 
 import {
   GroupCreateDto,
+  GroupDesiredSkillsListDto,
+  GroupFunFactsListDto,
   GroupListDto,
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
@@ -66,6 +69,8 @@ import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
 import {
+  GroupDesiredSkillsListSerialization,
+  GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
   GroupUpcomingMilestonesListSerialization,
@@ -348,28 +353,15 @@ export class GroupCommonController {
     classSerialization: GroupUpcomingMilestonesListSerialization,
   })
   @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/upcoming-milestones')
   async upcomingMilestones(
-    @ReqAuthUser()
-    { id: userId }: User,
     @Param('id') groupId: string,
     @Query()
     { days, page, perPage }: GroupUpcomingMilestonesListDto,
   ): Promise<IResponseData> {
-    const findGroup = await this.groupService.findGroup({
-      userId,
-      groupId,
-    });
-
-    if (!findGroup) {
-      throw new NotFoundException({
-        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-        message: 'group.error.notFound',
-      });
-    }
-
     const skip: number = page
       ? await this.paginationService.skip(page, perPage)
       : 0;
@@ -389,6 +381,72 @@ export class GroupCommonController {
       currentPage: perPage ? page : 0,
       period: `${days} days`,
       data: upcomingMilestones,
+    };
+  }
+
+  @ClientResponsePaging('group.funFacts', {
+    classSerialization: GroupFunFactsListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/fun-facts')
+  async funFacts(
+    @Param('id') groupId: string,
+    @Query()
+    { page, perPage }: GroupFunFactsListDto,
+  ): Promise<IResponseData> {
+    const skip: number = page
+      ? await this.paginationService.skip(page, perPage)
+      : 0;
+
+    const funFacts = await this.groupService.getFunFacts({
+      groupId,
+      skip,
+      limit: perPage,
+    });
+
+    const totalData = funFacts?.length ?? 0;
+
+    return {
+      totalData,
+      perPage,
+      currentPage: perPage ? page : 0,
+      data: funFacts,
+    };
+  }
+
+  @ClientResponsePaging('group.desiredSkills', {
+    classSerialization: GroupDesiredSkillsListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/desired-skills')
+  async desiredSkills(
+    @Param('id') groupId: string,
+    @Query()
+    { page, perPage }: GroupDesiredSkillsListDto,
+  ): Promise<IResponseData> {
+    const skip: number = page
+      ? await this.paginationService.skip(page, perPage)
+      : 0;
+
+    const desiredSkills = await this.groupService.getDesiredSkills({
+      groupId,
+      skip,
+      limit: perPage,
+    });
+
+    const totalData = desiredSkills?.length ?? 0;
+
+    return {
+      totalData,
+      perPage,
+      currentPage: perPage ? page : 0,
+      data: desiredSkills,
     };
   }
 
@@ -436,6 +494,57 @@ export class GroupCommonController {
       perPage,
       data: users,
     };
+  }
+
+  @ClientResponse('group.get', {
+    classSerialization: GroupGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id')
+  async get(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Param('id') groupId: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findOne({
+      where: {
+        id: groupId,
+        members: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        isActive: true,
+        createdAt: true,
+        members: {
+          id: true,
+          user: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    return findGroup;
   }
 
   @ClientResponse('group.addMember', {

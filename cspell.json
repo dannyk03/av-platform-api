@@ -34,7 +34,11 @@
     "tlds",
     "uuidv5",
     "idempotency",
-    "capturable"
+    "capturable",
+    "bullmq",
+    "backoff",
+    "tsvector",
+    "tsquery"
   ],
   "ignorePaths": [
     "node_modules/**",

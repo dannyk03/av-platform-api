@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from '@/auth/auth.module';
+import { AppCacheModule } from '@/cache/cache.module';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { DatabaseModule } from '@/database/database.module';
 import { DebuggerModule } from '@/debugger/debugger.module';
@@ -33,8 +34,9 @@ import { ConfigDynamicModule } from '@/config';
   ],
   imports: [
     ConfigDynamicModule,
-    CloudinaryModule,
+    AppCacheModule.register(),
     DebuggerModule.register(),
+    CloudinaryModule,
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       name: ConnectionNames.Default,

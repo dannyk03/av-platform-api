@@ -84,6 +84,7 @@ workflows:
             - cloudinary
             - customerio
             - twilio
+            - redis
       - build-and-push-image:
           context:
             - eu-ecr

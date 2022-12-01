@@ -40,6 +40,9 @@ export enum EnumLogAction {
   OrganizationJoinMagic = 'ORG_JOIN_MAGIC',
 
   UserProfileRequest = 'USER_PROFILE_REQUEST',
+  UserDelete = 'USER_DELETE',
+  UserActive = 'USER_ACTIVE',
+  UserInactive = 'USER_INACTIVE',
   // Cloudinary
   CloudinaryWebhook = 'CLOUDINARY_WEBHOOK',
   CloudinaryWebhookError = 'CLOUDINARY_WEBHOOK_ERROR',

@@ -4,10 +4,9 @@ import { ConfigService } from '@nestjs/config';
 
 import { TwilioModule } from '@/messaging/twilio/twilio.module';
 
+import { CustomerIOService } from './customer-io/service';
 import { EmailService } from './email/service';
 import { TwilioService } from './twilio/service';
-
-import { CustomerIOService } from './customer-io';
 
 @Module({
   imports: [

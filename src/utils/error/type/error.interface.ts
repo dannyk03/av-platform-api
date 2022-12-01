@@ -1,4 +1,4 @@
-import { IErrors, IMessage } from '@avo/type';
+import { IErrors } from '@avo/type';
 
 import { ValidationError } from 'class-validator';
 
@@ -24,30 +24,10 @@ export interface IErrorException {
   detailed: boolean;
   statusCode: number;
   message: string;
-  error?: string;
+  error?: Error;
   errors?: ValidationError[] | IValidationErrorImport[];
   errorType?: EnumErrorType;
   metadata?: Record<string, any>;
   data?: Record<string, any>;
   properties?: IMessageOptionsProperties;
-}
-
-// final error
-export interface IErrorHttpFilterMetadata {
-  languages?: string[];
-  timestamp: number;
-  timezone: string;
-  path: string;
-  version: string;
-  repoVersion: string;
-  [key: string]: any;
-}
-
-export interface IErrorHttpFilter {
-  statusCode: number;
-  message: string | IMessage;
-  error?: string;
-  errors?: IErrors[] | IErrorsImport[];
-  meta: IErrorHttpFilterMetadata;
-  data?: Record<string, any>;
 }

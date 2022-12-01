@@ -94,4 +94,13 @@ export class HelperStringService implements IHelperStringService {
     const regex = /'^[A-Za-z0-9_-]+$'/;
     return regex.test(text);
   }
+
+  tsQueryParam(text: string): string {
+    return text
+      .trim()
+      .replace?.(/\s+/g, ' ')
+      .split(' ')
+      .map((word) => `${word}:*`)
+      .join(' & ');
+  }
 }
