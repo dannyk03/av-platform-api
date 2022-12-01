@@ -7,13 +7,14 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique(['user', 'code'])
+@Unique(['code'])
 export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
+    nullable: true,
   })
-  user!: User;
+  user?: User;
 
   @ManyToOne(() => Group, (group) => group.members, {
     onDelete: 'CASCADE',

@@ -10,6 +10,8 @@
   "desiredSkills": "Group desired skills list success",
   "funFacts": "Group fun facts list success",
   "userSearch": "Users search success",
+  "addMember": "Add member success",
+  "inviteMember": "Invite member success",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",

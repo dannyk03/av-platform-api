@@ -547,9 +547,7 @@ export class GroupCommonController {
     return findGroup;
   }
 
-  @ClientResponse('group.addMember', {
-    classSerialization: GroupGetSerialization,
-  })
+  @ClientResponse('group.addMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Post('/add-member')
@@ -659,9 +657,7 @@ export class GroupCommonController {
     return {};
   }
 
-  @ClientResponse('group.inviteMember', {
-    classSerialization: GroupGetSerialization,
-  })
+  @ClientResponse('group.inviteMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Post('/invite-member')
@@ -684,27 +680,41 @@ export class GroupCommonController {
               email: member.email,
             });
 
-            const isExistOne = await this.groupMemberService.findOne({
-              where: {
-                group: {
-                  id: groupId,
+            if (potentialMemberUser) {
+              const isExistOne = await this.groupMemberService.findOne({
+                where: {
+                  group: {
+                    id: groupId,
+                  },
+                  user: {
+                    id: potentialMemberUser.id,
+                  },
                 },
+              });
+              if (isExistOne) {
+                throw new BadRequestException({
+                  statusCode: EnumGroupStatusCodeError.GroupExistsError,
+                  message: 'group.error.memberExists',
+                });
+              }
+              return {
                 user: {
                   id: potentialMemberUser.id,
                 },
-              },
-            });
-            if (isExistOne) {
-              throw new BadRequestException({
-                statusCode: EnumGroupStatusCodeError.GroupExistsError,
-                message: 'group.error.memberExists',
-              });
+                group: {
+                  id: groupId,
+                },
+                role: EnumGroupRole.Basic,
+                code: await this.helperHashService.magicCode(),
+                expiresAt: this.helperDateService.forwardInDays(expiresInDays),
+              };
             }
 
             return {
               user: {
-                id: potentialMemberUser.id,
+                id: null,
               },
+              tempEmail: member.email,
               group: {
                 id: groupId,
               },
