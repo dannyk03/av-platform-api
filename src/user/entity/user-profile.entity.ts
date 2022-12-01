@@ -11,43 +11,43 @@ export class UserProfile extends BaseEntity<UserProfile> {
     length: 50,
     nullable: true,
   })
-  firstName: string;
+  firstName?: string;
 
   @Column({
     length: 50,
     nullable: true,
   })
-  lastName: string;
+  lastName?: string;
 
   @Column({
     length: 2,
     nullable: true,
   })
-  birthMonth: string;
+  birthMonth?: string;
 
   @Column({
     length: 2,
     nullable: true,
   })
-  birthDay: string;
+  birthDay?: string;
 
   @Column({
     length: 4,
     nullable: true,
   })
-  workAnniversaryYear: string;
+  workAnniversaryYear?: string;
 
   @Column({
     length: 2,
     nullable: true,
   })
-  workAnniversaryMonth: string;
+  workAnniversaryMonth?: string;
 
   @Column({
     length: 2,
     nullable: true,
   })
-  workAnniversaryDay: string;
+  workAnniversaryDay?: string;
 
   @Column({
     type: 'varchar',
@@ -79,7 +79,7 @@ export class UserProfile extends BaseEntity<UserProfile> {
       nullable: true,
     },
   )
-  home: UserProfileHome;
+  home?: UserProfileHome;
 
   @OneToOne(
     () => UserProfileShipping,
@@ -89,7 +89,7 @@ export class UserProfile extends BaseEntity<UserProfile> {
       nullable: true,
     },
   )
-  shipping: UserProfileShipping;
+  shipping?: UserProfileShipping;
 
   @Column({
     type: 'jsonb',
