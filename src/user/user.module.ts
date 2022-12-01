@@ -3,19 +3,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NetworkingModule } from '@/networking/networking.module';
 
-import { User, UserProfile } from './entity';
+import { User, UserProfile, UserProfileCompany } from './entity';
 
-import { UserProfileService, UserService } from './service';
+import {
+  UserProfileCompanyService,
+  UserProfileService,
+  UserService,
+} from './service';
 
 import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserProfile], ConnectionNames.Default),
+    TypeOrmModule.forFeature(
+      [User, UserProfile, UserProfileCompany],
+      ConnectionNames.Default,
+    ),
     forwardRef(() => NetworkingModule),
   ],
-  exports: [UserService, UserProfileService],
-  providers: [UserService, UserProfileService],
+  exports: [UserService, UserProfileService, UserProfileCompanyService],
+  providers: [UserService, UserProfileService, UserProfileCompanyService],
   controllers: [],
 })
 export class UserModule {}

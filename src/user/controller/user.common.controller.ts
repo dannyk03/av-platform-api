@@ -17,11 +17,12 @@ import { DataSource } from 'typeorm';
 import {
   User,
   UserProfile,
+  UserProfileCompany,
   UserProfileHome,
   UserProfileShipping,
 } from '../entity';
 
-import { UserProfileService } from '../service';
+import { UserProfileCompanyService, UserProfileService } from '../service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service/user.service';
 
@@ -55,6 +56,7 @@ export class UserCommonController {
     private readonly socialConnectionService: SocialConnectionService,
     private readonly userService: UserService,
     private readonly userProfileService: UserProfileService,
+    private readonly userProfileCompanyService: UserProfileCompanyService,
   ) {}
 
   @ClientResponse('user.profile', {
@@ -69,6 +71,7 @@ export class UserCommonController {
       'profile',
       'profile.home',
       'profile.shipping',
+      'profile.company',
       'invitationLink',
     ],
   })
@@ -107,6 +110,10 @@ export class UserCommonController {
         kidFriendlyActivities,
         home,
         shipping,
+        company,
+        jobRole,
+        jobType,
+        department,
         funFacts,
         desiredSkills,
       },
@@ -161,6 +168,22 @@ export class UserCommonController {
             })
             .execute();
         }
+
+        if (company || jobRole || jobType || department) {
+          await transactionalEntityManager
+            .getRepository(UserProfileCompany)
+            .createQueryBuilder()
+            .update<UserProfileCompany>(UserProfileCompany, {
+              name: company,
+              jobRole,
+              jobType,
+              department,
+            })
+            .where('user_profile_id = :userProfileId', {
+              userProfileId: reqUser.profile.id,
+            })
+            .execute();
+        }
       },
     );
 
@@ -168,7 +191,13 @@ export class UserCommonController {
       where: {
         id: reqUser.id,
       },
-      relations: ['profile', 'profile.home', 'profile.shipping'],
+      relations: {
+        profile: {
+          home: true,
+          shipping: true,
+          company: true,
+        },
+      },
     });
 
     return user;

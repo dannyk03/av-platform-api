@@ -1,4 +1,5 @@
 import {
+  EnumWorkType,
   IUserProfileGetSerialization,
   IUserProfileHomeGetSerialization,
   IUserProfileShippingGetSerialization,
@@ -112,6 +113,22 @@ export class UserProfileGetSerialization
     ),
   )
   readonly shipping: IUserProfileShippingGetSerialization;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.name)
+  readonly company: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.department)
+  readonly department: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.jobRole)
+  readonly jobRole: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile?.company?.jobType)
+  readonly jobType: EnumWorkType;
 
   @Expose()
   @Transform(({ obj }) => obj.profile?.kidFriendlyActivities)
