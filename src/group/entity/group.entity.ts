@@ -33,6 +33,7 @@ export class Group extends BaseEntity<Group> {
     unique: true,
     length: 21,
     update: false,
+    nullable: true,
   })
   inviteCode!: string;
 }
