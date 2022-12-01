@@ -51,7 +51,7 @@ jobs:
       - run:
           name: redis install
           command: |
-            apk --no-cache add --virtual native-deps redis
+            apk update && apk --no-cache add --virtual native-deps redis
             which redis
       - node/install-packages:
           pkg-manager: yarn
