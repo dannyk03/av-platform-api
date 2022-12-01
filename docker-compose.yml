@@ -27,8 +27,10 @@ services:
       - dev
     links:
       - postgres
+      - redis
     depends_on:
       - postgres
+      - redis
     command: >
       sh -c "yarn start:dev"
 
@@ -50,6 +52,41 @@ services:
     profiles:
       - dev
       - db
+
+  redis:
+    container_name: redis
+    image: 'bitnami/redis:latest'
+    env_file:
+      - .env
+    environment:
+      REDIS_PORT_NUMBER: 6379
+      ALLOW_EMPTY_PASSWORD: yes
+      # - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    command: /opt/bitnami/scripts/redis/run.sh --maxmemory 100mb
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - app-network
+    restart: unless-stopped
+    profiles:
+      - dev
+      - redis
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    networks:
+      - app-network
+    restart: unless-stopped
+    environment:
+      - REDIS_HOSTS=local:redis:${REDIS_PORT}
+    ports:
+      - '8081:8081'
+    depends_on:
+      - redis
+    profiles:
+      - monitor
 
 networks:
   app-network:
