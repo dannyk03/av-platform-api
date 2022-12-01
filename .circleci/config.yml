@@ -16,6 +16,7 @@ jobs:
     docker:
       - image: cimg/node:18.8
       - image: cimg/postgres:14.4
+      - image: cimg/redis:7.0.5
         environment:
           POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
           POSTGRES_USER: ${POSTGRES_USERNAME}
@@ -51,7 +52,6 @@ jobs:
       - run:
           name: redis install
           command: |
-            apk update && apk --no-cache add --virtual native-deps redis
             which redis
       - node/install-packages:
           pkg-manager: yarn
