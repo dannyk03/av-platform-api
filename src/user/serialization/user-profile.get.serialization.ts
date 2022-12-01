@@ -1,6 +1,5 @@
 import {
   EnumWorkType,
-  IUserProfileCompanyGetSerialization,
   IUserProfileGetSerialization,
   IUserProfileHomeGetSerialization,
   IUserProfileShippingGetSerialization,
