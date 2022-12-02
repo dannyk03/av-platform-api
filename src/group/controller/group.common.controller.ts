@@ -744,27 +744,30 @@ export class GroupCommonController {
 
         await transactionalEntityManager.save(groupMembersInvite);
 
-        inviteMembers.map(async (member) => {
-          const invitedUser = await this.userService.findOne({
-            where: {
-              id: member.user.id,
-            },
-            relations: ['profile'],
-          });
-          const emailSent = await this.emailService.sendGroupInviteEmail({
-            email: invitedUser.email,
-            code: member.code,
-            expiresInDays,
-            firstName: invitedUser.profile.firstName,
-          });
-
-          if (!emailSent) {
-            throw new InternalServerErrorException({
-              statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-              message: 'messaging.error.email.send',
+        await Promise.all([
+          inviteMembers.map(async (member) => {
+            const invitedUser = await this.userService.findOne({
+              where: {
+                id: member.user.id,
+              },
+              relations: ['profile'],
             });
-          }
-        });
+            const emailSent = await this.emailService.sendGroupInviteEmail({
+              email: invitedUser.email,
+              code: member.code,
+              expiresInDays,
+              firstName: invitedUser.profile.firstName,
+            });
+
+            if (!emailSent) {
+              throw new InternalServerErrorException({
+                statusCode:
+                  EnumMessagingStatusCodeError.MessagingEmailSendError,
+                message: 'messaging.error.email.send',
+              });
+            }
+          }),
+        ]);
 
         // For local development/testing
         const isDevelopment =
