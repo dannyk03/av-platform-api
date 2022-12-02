@@ -7,7 +7,6 @@ import {
   IsArray,
   IsNotEmpty,
   IsObject,
-  IsUUID,
 } from 'class-validator';
 import { isArray } from 'lodash';
 

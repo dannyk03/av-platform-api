@@ -15,8 +15,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { EnumAddGroupMemberType, EnumGroupInviteStatus } from '@avo/type';
 import {
+  EnumAddGroupMemberType,
+  EnumGroupInviteStatus,
   EnumGroupRole,
   EnumGroupStatusCodeError,
   EnumMessagingStatusCodeError,
@@ -567,12 +568,14 @@ export class GroupCommonController {
     @Query() { inviteCode, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
     const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+
     if (!isGroupExist) {
       throw new BadRequestException({
         statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
         message: 'group.error.notFound',
       });
     }
+
     const isExist = await this.groupMemberService.findOne({
       where: {
         group: {
@@ -593,76 +596,72 @@ export class GroupCommonController {
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
-        if (inviteCode) {
-          if (type == EnumAddGroupMemberType.PersonalInvite) {
-            const invitedUser = await this.groupInviteMemberService.findOne({
-              where: {
-                user: {
-                  id: reqAuthUser.id,
-                },
-                code: inviteCode,
-              },
-            });
-            if (!invitedUser) {
-              throw new BadRequestException({
-                statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
-                message: 'group.error.inviteNotExists',
-              });
-            }
-            const now = this.helperDateService.create();
-            const expiresAt =
-              invitedUser.expiresAt &&
-              this.helperDateService.create({
-                date: invitedUser.expiresAt,
-              });
-
-            if (expiresAt && now > expiresAt) {
-              throw new BadRequestException({
-                statusCode: EnumGroupStatusCodeError.GroupInviteExpiredError,
-                message: 'group.error.inviteExpired',
-              });
-            }
-            const addedMember = await this.groupMemberService.create({
-              role: EnumGroupRole.Basic,
+        if (type == EnumAddGroupMemberType.PersonalInvite) {
+          const invitedUser = await this.groupInviteMemberService.findOne({
+            where: {
               user: {
                 id: reqAuthUser.id,
               },
-              group: {
-                id: groupId,
-              },
+              code: inviteCode,
+            },
+          });
+          if (!invitedUser) {
+            throw new BadRequestException({
+              statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
+              message: 'group.error.inviteNotExists',
             });
-
-            await transactionalEntityManager.save(addedMember);
-
-            await transactionalEntityManager.update(
-              GroupInviteMember,
-              { code: inviteCode },
-              { inviteStatus: EnumGroupInviteStatus.Accept },
-            );
-
-            return addedMember;
-          } else if (type == EnumAddGroupMemberType.ShareableLink) {
-            const groupInviteLink = await this.groupInviteLinkService.findOne({
-              where: { group: { id: groupId } },
-            });
-            if (groupInviteLink.code !== inviteCode) {
-              throw new BadRequestException({
-                statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
-                message: 'group.error.groupCode',
-              });
-            }
-
-            const addedMember = await this.groupMemberService.create({
-              role: EnumGroupRole.Basic,
-              user: {
-                id: reqAuthUser.id,
-              },
-              group: {
-                id: groupId,
-              },
-            });
-            return this.groupMemberService.save(addedMember);
           }
+          const now = this.helperDateService.create();
+          const expiresAt = this.helperDateService.create({
+            date: invitedUser.expiresAt,
+          });
+
+          if (expiresAt && now > expiresAt) {
+            throw new BadRequestException({
+              statusCode: EnumGroupStatusCodeError.GroupInviteExpiredError,
+              message: 'group.error.inviteExpired',
+            });
+          }
+          const addedMember = await this.groupMemberService.create({
+            role: EnumGroupRole.Basic,
+            user: {
+              id: reqAuthUser.id,
+            },
+            group: {
+              id: groupId,
+            },
+          });
+
+          await transactionalEntityManager.save(addedMember);
+
+          await transactionalEntityManager.update(
+            GroupInviteMember,
+            { code: inviteCode },
+            { inviteStatus: EnumGroupInviteStatus.Accept },
+          );
+
+          return addedMember;
+        } else {
+          const groupInviteLink = await this.groupInviteLinkService.findOne({
+            where: { group: { id: groupId } },
+          });
+          if (groupInviteLink.code !== inviteCode) {
+            throw new BadRequestException({
+              statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
+              message: 'group.error.groupCode',
+            });
+          }
+
+          const addedMember = await this.groupMemberService.create({
+            role: EnumGroupRole.Basic,
+            user: {
+              id: reqAuthUser.id,
+            },
+            group: {
+              id: groupId,
+            },
+          });
+          return this.groupMemberService.save(addedMember);
         }
       },
     );
