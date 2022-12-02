@@ -61,10 +61,7 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
-import {
-  GroupAddMemberDto,
-  GroupAddMemberRefDto,
-} from '../dto/group.add-member.dto';
+import { GroupAddMemberRefDto } from '../dto/group.add-member.dto';
 import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
@@ -496,7 +493,6 @@ export class GroupCommonController {
                 user2Email: u.email,
               },
             );
-          console.log(isConnectedUser);
           return isConnectedUser;
         }),
       ).then((results) => users.filter((_v, index) => results[index]));
@@ -563,12 +559,11 @@ export class GroupCommonController {
   @ClientResponse('group.addMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/add-member')
+  @Post('/add-member/:groupId')
   async addMember(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Body()
-    { groupId }: GroupAddMemberDto,
+    @Param('groupId') groupId: string,
     @Query() { inviteCode, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
     const isGroupExist = await this.groupService.findOneBy({ id: groupId });
@@ -678,12 +673,13 @@ export class GroupCommonController {
   @ClientResponse('group.inviteMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/invite-member')
+  @Post('/invite-member/:groupId')
   async inviteMember(
     @ReqAuthUser()
     reqAuthUser: User,
     @Body()
-    { members, groupId }: GroupInviteMemberDto,
+    { members }: GroupInviteMemberDto,
+    @Param('groupId') groupId: string,
   ): Promise<IResponseData> {
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
@@ -755,7 +751,6 @@ export class GroupCommonController {
             },
             relations: ['profile'],
           });
-          console.log(invitedUser);
           const emailSent = await this.emailService.sendGroupInviteEmail({
             email: invitedUser.email,
             code: member.code,

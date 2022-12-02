@@ -8,15 +8,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   Length,
 } from 'class-validator';
-
-export class GroupAddMemberDto {
-  @IsUUID()
-  @ApiProperty()
-  readonly groupId: string;
-}
 
 export class GroupAddMemberRefDto {
   @IsNotEmpty()

@@ -30,8 +30,4 @@ export class GroupInviteMemberDto {
   @Type(() => MemberDto)
   @ApiProperty()
   readonly members: MemberDto[];
-
-  @IsUUID()
-  @ApiProperty()
-  readonly groupId: string;
 }
