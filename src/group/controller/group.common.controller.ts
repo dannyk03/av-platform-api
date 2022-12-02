@@ -560,11 +560,12 @@ export class GroupCommonController {
   @ClientResponse('group.addMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/add-member/:groupId')
+  @RequestParamGuard(IdParamDto)
+  @Post('/:id/add-member')
   async addMember(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Param('groupId') groupId: string,
+    @Param('id') groupId: string,
     @Query() { inviteCode, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
     const isGroupExist = await this.groupService.findOneBy({ id: groupId });
@@ -672,13 +673,14 @@ export class GroupCommonController {
   @ClientResponse('group.inviteMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/invite-member/:groupId')
+  @RequestParamGuard(IdParamDto)
+  @Post('/:id/invite-member')
   async inviteMember(
     @ReqAuthUser()
     reqAuthUser: User,
     @Body()
     { members }: GroupInviteMemberDto,
-    @Param('groupId') groupId: string,
+    @Param('id') groupId: string,
   ): Promise<IResponseData> {
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
