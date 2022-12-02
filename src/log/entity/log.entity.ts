@@ -73,11 +73,11 @@ export class Log {
   @Column({
     type: 'varchar',
     array: true,
-    length: 20,
+    length: 200,
     default: [],
     update: false,
   })
-  tags?: string[];
+  tags!: string[];
 
   @Column({
     length: 25,

@@ -38,7 +38,8 @@
     "bullmq",
     "backoff",
     "tsvector",
-    "tsquery"
+    "tsquery",
+    "sqlstring"
   ],
   "ignorePaths": [
     "node_modules/**",

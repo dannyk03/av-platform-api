@@ -3,16 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 
-import { User, UserProfile } from '../entity';
+import { UserProfile } from '../entity';
 
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class UserProfileService {
-  private readonly uploadPath: string;
-
   constructor(
-    @InjectRepository(User, ConnectionNames.Default)
+    @InjectRepository(UserProfile, ConnectionNames.Default)
     private userProfileRepository: Repository<UserProfile>,
   ) {}
 

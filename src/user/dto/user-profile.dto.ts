@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { EnumWorkType } from '@avo/type';
+
 import { Type } from 'class-transformer';
 import {
   Allow,
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
@@ -14,6 +17,7 @@ import {
 } from 'class-validator';
 
 import {
+  ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
   NormalizeStringInputTransform,
@@ -23,6 +27,7 @@ import {
   IsIsAcceptableEmail,
   IsPhoneNumber,
   IsValidDayOfMonth,
+  NotAfterThisYear,
 } from '@/utils/request/validation';
 
 export class SurveyPersonalAddressDto {
@@ -142,6 +147,18 @@ export class SurveyPersonalDto {
   readonly birthDay?: string;
 
   @IsOptional()
+  @NotAfterThisYear()
+  @IsNumberString({ no_symbols: true })
+  @PadWith({
+    padString: '20',
+    targetLength: 4,
+  })
+  @EmptyStringToUndefinedTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly workAnniversaryYear?: string;
+
+  @IsOptional()
   @PadWith({
     padString: '0',
     targetLength: 2,
@@ -171,17 +188,47 @@ export class SurveyPersonalDto {
   @ApiProperty()
   readonly kidFriendlyActivities: object;
 
+  @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalAddressDto)
   @ApiProperty()
-  readonly home: SurveyPersonalAddressDto;
+  readonly home?: SurveyPersonalAddressDto;
 
+  @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => SurveyPersonalShippingDto)
   @ApiProperty()
-  readonly shipping: SurveyPersonalShippingDto;
+  readonly shipping?: SurveyPersonalShippingDto;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly company?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly jobRole?: string;
+
+  @IsOptional()
+  @IsEnum(EnumWorkType)
+  readonly jobType?: EnumWorkType;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
+  @NormalizeStringInputTransform()
+  @Type(() => String)
+  readonly department?: string;
 
   @IsOptional()
   @IsArray()

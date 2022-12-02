@@ -17,3 +17,4 @@ export * from './request.is-not-empty-for-env.validation';
 export * from './request.is-registered-user.validation';
 export * from './request.is-valid-day-of-month.validation';
 export * from './request.is-acceptable-email.validation';
+export * from './request.not-after-this-year.validation';

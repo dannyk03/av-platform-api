@@ -411,6 +411,7 @@ export class AuthCommonController {
         lastName,
         birthMonth,
         birthDay,
+        workAnniversaryYear,
         workAnniversaryMonth,
         workAnniversaryDay,
         kidFriendlyActivities,
@@ -418,6 +419,10 @@ export class AuthCommonController {
         shipping,
         funFacts,
         desiredSkills,
+        company,
+        jobRole,
+        jobType,
+        department,
       },
       personas,
       dietary,
@@ -455,7 +460,7 @@ export class AuthCommonController {
       });
     }
 
-    const result = await this.defaultDataSource.transaction(
+    const result = this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const { passwordHash, passwordExpiredAt } =
@@ -474,11 +479,18 @@ export class AuthCommonController {
             dietary,
             birthMonth,
             birthDay,
+            workAnniversaryYear,
             workAnniversaryMonth,
             workAnniversaryDay,
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
+            company: {
+              name: company,
+              jobRole,
+              jobType,
+              department,
+            },
           },
           authConfig: {
             password: passwordHash,
