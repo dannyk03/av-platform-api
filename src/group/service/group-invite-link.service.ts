@@ -10,6 +10,8 @@ import {
 
 import { GroupInviteLink } from '../entity';
 
+import { HelperHashService } from '@/utils/helper/service';
+
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
@@ -17,10 +19,16 @@ export class GroupInviteLinkService {
   constructor(
     @InjectRepository(GroupInviteLink, ConnectionNames.Default)
     private readonly groupInviteLinkRepository: Repository<GroupInviteLink>,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
-  async create(props: DeepPartial<GroupInviteLink>): Promise<GroupInviteLink> {
-    return this.groupInviteLinkRepository.create(props);
+  async create(
+    props: DeepPartial<Omit<GroupInviteLink, 'code'>>,
+  ): Promise<GroupInviteLink> {
+    return this.groupInviteLinkRepository.create({
+      ...props,
+      code: await this.helperHashService.magicCode(),
+    });
   }
 
   async createMany(

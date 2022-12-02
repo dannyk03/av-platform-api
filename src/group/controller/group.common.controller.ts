@@ -138,7 +138,6 @@ export class GroupCommonController {
       group: {
         id: createGroup.id,
       },
-      code: await this.helperHashService.magicCode(),
     });
 
     await this.groupInviteLinkService.save(createInviteLink);
@@ -712,24 +711,13 @@ export class GroupCommonController {
                   message: 'group.error.memberExists',
                 });
               }
-              return {
-                user: {
-                  id: potentialMemberUser.id,
-                },
-                group: {
-                  id: groupId,
-                },
-                role: EnumGroupRole.Basic,
-                code: await this.helperHashService.magicCode(),
-                expiresAt: this.helperDateService.forwardInDays(expiresInDays),
-              };
             }
 
             return {
               user: {
-                id: null,
+                id: potentialMemberUser ? potentialMemberUser.id : null,
               },
-              tempEmail: member.email,
+              tempEmail: !potentialMemberUser ? member.email : null,
               group: {
                 id: groupId,
               },
