@@ -24,6 +24,7 @@ export class GroupUpcomingMilestonesListSerialization
   firstName?: string;
 
   @Expose()
+  @Transform(({ obj }) => obj.last_name)
   lastName?: string;
 
   @Expose()
