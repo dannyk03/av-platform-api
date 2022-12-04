@@ -1,3 +1,6 @@
+import { Group, GroupMember } from "@/group/entity";
+import { User } from "@/user/entity";
+
 export enum EmailTemplate {
   // ================= MVP =================
   // - gift option select
@@ -32,6 +35,8 @@ export enum EmailTemplate {
   SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
   SendGroupInvite = 'Group Invite', // TODO: verify the context
+  SendGroupInviteNewUser = 'Group Invite New User',
+  SendGroupInviteExistingUser = 'Group Invite Existing User',
 }
 
 export enum EmailStatus {
@@ -205,4 +210,39 @@ export type SurveyCompletedMessageData = {
     firstName: string;
   };
   socialConnectionRequestId: string; // TODO: delete
+};
+
+export type GroupInviteNewUserMessageData = {
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+    }[];
+  };
+};
+
+export type GroupInviteExistingUserMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+    }[];
+  };
 };
