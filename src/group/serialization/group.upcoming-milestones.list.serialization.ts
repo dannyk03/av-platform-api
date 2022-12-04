@@ -5,6 +5,8 @@ import {
 } from '@avo/type';
 
 import { Exclude, Expose, Transform } from 'class-transformer';
+import lowerCase from 'lodash/lowerCase';
+import upperFirst from 'lodash/upperFirst';
 
 @Exclude()
 export class GroupUpcomingMilestonesListSerialization
@@ -32,4 +34,8 @@ export class GroupUpcomingMilestonesListSerialization
 
   @Expose()
   type: EnumGroupUpcomingMilestoneType;
+
+  @Expose()
+  @Transform(({ obj }) => upperFirst(lowerCase(obj.type)))
+  typeDisplay: string;
 }
