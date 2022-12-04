@@ -300,7 +300,7 @@ export class GroupService {
 
     return this.defaultDataSource.query(
       `
-      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month, e_type AS type, u_created_at AS created_at
+      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month,  CAST(e_year AS INT) AS year, e_date AS date, e_type AS type, u_created_at AS created_at
       FROM
       (
         SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at

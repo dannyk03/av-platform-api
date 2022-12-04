@@ -5,6 +5,7 @@ import {
 } from '@avo/type';
 
 import { Exclude, Expose, Transform } from 'class-transformer';
+import dayjs from 'dayjs';
 import lowerCase from 'lodash/lowerCase';
 import upperFirst from 'lodash/upperFirst';
 
@@ -31,6 +32,13 @@ export class GroupUpcomingMilestonesListSerialization
 
   @Expose()
   month: number;
+
+  @Expose()
+  year: number;
+
+  @Expose()
+  @Transform(({ obj }) => dayjs(obj.date).format('MMM Do'))
+  dateFormat: string;
 
   @Expose()
   type: EnumGroupUpcomingMilestoneType;
