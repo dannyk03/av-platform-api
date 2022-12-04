@@ -1,11 +1,29 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class migration1669813724449 implements MigrationInterface {
-  name = 'migration1669813724449';
+export class migration1670153710064 implements MigrationInterface {
+  name = 'migration1670153710064';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
+            CREATE TABLE "group_invite_links" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "deleted_at" TIMESTAMP,
+                "code" character varying(21) NOT NULL,
+                "group_id" uuid,
+                CONSTRAINT "uq_group_invite_links_code" UNIQUE ("code"),
+                CONSTRAINT "pk_group_invite_links_id" PRIMARY KEY ("id")
+            )
+        `);
+    await queryRunner.query(`
+            CREATE INDEX "idx_group_invite_links_code" ON "group_invite_links" ("code")
+        `);
+    await queryRunner.query(`
             CREATE TYPE "public"."group_invite_members_role_enum" AS ENUM('owner', 'basic')
+        `);
+    await queryRunner.query(`
+            CREATE TYPE "public"."group_invite_members_invite_status_enum" AS ENUM('accept', 'reject', 'pending')
         `);
     await queryRunner.query(`
             CREATE TABLE "group_invite_members" (
@@ -22,7 +40,7 @@ export class migration1669813724449 implements MigrationInterface {
                 "group_id" uuid,
                 CONSTRAINT "uq_group_invite_members_code" UNIQUE ("code"),
                 CONSTRAINT "uq_group_invite_members_temp_email" UNIQUE ("temp_email"),
-                CONSTRAINT "uq_group_invite_members_code_user_id" UNIQUE ("user_id", "code"),
+                CONSTRAINT "uq_group_invite_members_code" UNIQUE ("code"),
                 CONSTRAINT "pk_group_invite_members_id" PRIMARY KEY ("id")
             )
         `);
@@ -34,6 +52,10 @@ export class migration1669813724449 implements MigrationInterface {
         `);
     await queryRunner.query(`
             CREATE INDEX "idx_group_invite_members_temp_email" ON "group_invite_members" ("temp_email")
+        `);
+    await queryRunner.query(`
+            ALTER TABLE "group_invite_links"
+            ADD CONSTRAINT "fk_group_invite_links_group_id" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     await queryRunner.query(`
             ALTER TABLE "group_invite_members"
@@ -53,6 +75,9 @@ export class migration1669813724449 implements MigrationInterface {
             ALTER TABLE "group_invite_members" DROP CONSTRAINT "fk_group_invite_members_user_id"
         `);
     await queryRunner.query(`
+            ALTER TABLE "group_invite_links" DROP CONSTRAINT "fk_group_invite_links_group_id"
+        `);
+    await queryRunner.query(`
             DROP INDEX "public"."idx_group_invite_members_temp_email"
         `);
     await queryRunner.query(`
@@ -62,10 +87,19 @@ export class migration1669813724449 implements MigrationInterface {
             DROP INDEX "public"."idx_group_invite_members_code"
         `);
     await queryRunner.query(`
+            DROP TABLE "group_invite_members"
+        `);
+    await queryRunner.query(`
+            DROP TYPE "public"."group_invite_members_invite_status_enum"
+        `);
+    await queryRunner.query(`
             DROP TYPE "public"."group_invite_members_role_enum"
         `);
     await queryRunner.query(`
-            DROP TABLE "group_invite_members"
+            DROP INDEX "public"."idx_group_invite_links_code"
+        `);
+    await queryRunner.query(`
+            DROP TABLE "group_invite_links"
         `);
   }
 }
