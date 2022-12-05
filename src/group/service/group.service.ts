@@ -300,13 +300,13 @@ export class GroupService {
 
     return this.defaultDataSource.query(
       `
-      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month,  CAST(e_year AS INT) AS year, e_date AS date, e_type AS type, u_created_at AS created_at
+      SELECT role, user_id, profile_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month,  CAST(e_year AS INT) AS year, e_date AS date, e_type AS type, u_created_at AS created_at
       FROM
       (
-        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
+        SELECT role, user_id, profile_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
         FROM
         (
-          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at, up.id AS profile_id,
           up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, upcoming_event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.Birthday}' AS e_type
           FROM public.groups AS g
             LEFT JOIN public.group_members AS m
@@ -317,7 +317,7 @@ export class GroupService {
               ON up.user_id = u.id
           WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
           UNION
-          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at, up.id AS profile_id,
             up.first_name, up.last_name, up.work_anniversary_day AS e_day,
             up.work_anniversary_month AS e_month, upcoming_event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.WorkAnniversary}' AS e_type
           FROM public.groups AS g
