@@ -46,4 +46,12 @@ export class GroupUpcomingMilestonesListSerialization
   @Expose()
   @Transform(({ obj }) => upperFirst(lowerCase(obj.type)))
   typeDisplay: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.user_id)
+  userId: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.profile_id)
+  profileId: string;
 }
