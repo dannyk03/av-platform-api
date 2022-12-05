@@ -556,7 +556,7 @@ export class GroupCommonController {
     return findGroup;
   }
 
-  @ClientResponse('group.addMember')
+  @ClientResponse('group.join')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @RequestParamGuard(IdParamDto)
@@ -567,14 +567,16 @@ export class GroupCommonController {
     @Param('id') groupId: string,
     @Query() { inviteCode, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
-    const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+    // TODO search by inviteCode + pending
 
-    if (!isGroupExist) {
-      throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-        message: 'group.error.notFound',
-      });
-    }
+    // const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+
+    // if (!isGroupExist) {
+    //   throw new BadRequestException({
+    //     statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+    //     message: 'group.error.notFound',
+    //   });
+    // }
 
     const isExist = await this.groupMemberService.findOne({
       where: {
@@ -588,8 +590,8 @@ export class GroupCommonController {
     });
     if (isExist) {
       throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupExistsError,
-        message: 'group.error.memberExists',
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
       });
     }
 
@@ -676,11 +678,24 @@ export class GroupCommonController {
   @Post('/:id/invite-member')
   async inviteMember(
     @ReqAuthUser()
-    reqAuthUser: User,
+    { id: userId }: User,
     @Body()
     { members }: GroupInviteMemberDto,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findGroup({
+      isOwner: false,
+      userId,
+      groupId,
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
@@ -690,8 +705,14 @@ export class GroupCommonController {
 
         const inviteMembers = await Promise.all(
           members.map(async (member) => {
-            const potentialMemberUser = await this.userService.findOneBy({
-              email: member.email,
+            const potentialMemberUser = await this.userService.findOne({
+              where: {
+                email: member.email,
+              },
+              select: {
+                id: true,
+                email: true,
+              },
             });
 
             if (potentialMemberUser) {
@@ -722,12 +743,13 @@ export class GroupCommonController {
                 id: groupId,
               },
               role: EnumGroupRole.Basic,
-              code: await this.helperHashService.magicCode(),
+              code: await this.helperHashService.magicCode(), // TODO check beforeInsert?
               expiresAt: this.helperDateService.forwardInDays(expiresInDays),
             };
           }),
         );
 
+        // TODO check tempEmail OR id already exists + groupId
         const groupMembersInvite =
           await this.groupInviteMemberService.createMany(inviteMembers);
 
@@ -740,6 +762,11 @@ export class GroupCommonController {
                 id: member.user.id,
               },
               relations: ['profile'],
+              select: {
+                profile: {
+                  firstName: true,
+                },
+              },
             });
             const emailSent = await this.emailService.sendGroupInviteEmail({
               email: invitedUser.email,

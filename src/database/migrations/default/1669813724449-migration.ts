@@ -5,6 +5,12 @@ export class migration1669813724449 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
+            CREATE TYPE "public"."group_invite_members_role_enum" AS ENUM('owner', 'basic')
+        `);
+    await queryRunner.query(`
+            CREATE TYPE "public"."group_invite_members_invite_status_enum" AS ENUM('pending', 'accept', 'reject')
+        `);
+    await queryRunner.query(`
             CREATE TABLE "group_invite_members" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(),
@@ -57,6 +63,12 @@ export class migration1669813724449 implements MigrationInterface {
         `);
     await queryRunner.query(`
             DROP INDEX "public"."idx_group_invite_members_code"
+        `);
+    await queryRunner.query(`
+            DROP TYPE "public"."group_invite_members_role_enum"
+        `);
+    await queryRunner.query(`
+            DROP TYPE "public"."group_invite_members_invite_status_enum"
         `);
     await queryRunner.query(`
             DROP TABLE "group_invite_members"

@@ -7,7 +7,7 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique(['code'])
+@Unique('uq_group_id_temp_email', ['group', 'tempEmail'])
 export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
@@ -47,7 +47,6 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
 
   @Index()
   @Column({
-    unique: true,
     length: 50,
     nullable: true,
   })

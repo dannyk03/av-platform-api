@@ -7,10 +7,14 @@ import {
   IsArray,
   IsNotEmpty,
   IsObject,
+  ValidateNested,
 } from 'class-validator';
 import { isArray } from 'lodash';
 
-import { NormalizeEmail } from '@/utils/request/transform';
+import {
+  NormalizeEmail,
+  UniqueArrayByTransform,
+} from '@/utils/request/transform';
 
 class MemberDto {
   @NormalizeEmail()
@@ -26,6 +30,8 @@ export class GroupInviteMemberDto {
   @Transform(({ value }) => {
     return isArray(value) ? value : [value];
   })
+  @UniqueArrayByTransform('email')
+  @ValidateNested()
   @Type(() => MemberDto)
   @ApiProperty()
   readonly members: MemberDto[];

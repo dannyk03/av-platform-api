@@ -6,7 +6,7 @@ export class migration1669854983638 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE "groups"
-            ADD "invite_code" character varying(21) NOT NULL
+            ADD "invite_code" character varying(21)
         `);
     await queryRunner.query(`
             ALTER TABLE "groups"
