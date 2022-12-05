@@ -721,7 +721,7 @@ export class EmailService {
       to: [email],
       emailTemplatePayload: {
         path,
-        activationCode: code,
+        code,
         user: { firstName },
         transport: {
           origin: this.origin,

@@ -495,7 +495,7 @@ export class GroupCommonController {
             );
           return isConnectedUser;
         }),
-      ).then((results) => users.filter((_v, index) => results[index]));
+      ).then((results) => users.filter((_, index) => results[index]));
     }
 
     return {
@@ -565,7 +565,7 @@ export class GroupCommonController {
     @ReqAuthUser()
     reqAuthUser: User,
     @Param('id') groupId: string,
-    @Query() { inviteCode, type }: GroupAddMemberRefDto,
+    @Query() { code, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
     // TODO search by inviteCode + pending
 
@@ -604,7 +604,7 @@ export class GroupCommonController {
               user: {
                 id: reqAuthUser.id,
               },
-              code: inviteCode,
+              code,
             },
           });
           if (!invitedUser) {
@@ -638,7 +638,7 @@ export class GroupCommonController {
 
           await transactionalEntityManager.update(
             GroupInviteMember,
-            { code: inviteCode },
+            { code },
             { inviteStatus: EnumGroupInviteStatus.Accept },
           );
 
@@ -647,7 +647,7 @@ export class GroupCommonController {
           const groupInviteLink = await this.groupInviteLinkService.findOne({
             where: { group: { id: groupId } },
           });
-          if (groupInviteLink.code !== inviteCode) {
+          if (groupInviteLink.code !== code) {
             throw new BadRequestException({
               statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
               message: 'group.error.groupCode',

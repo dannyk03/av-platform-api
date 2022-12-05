@@ -17,7 +17,7 @@ export class GroupAddMemberRefDto {
   @IsString()
   @Type(() => String)
   @ApiProperty()
-  readonly inviteCode: string;
+  readonly code: string;
 
   @IsOptional()
   @IsEnum(EnumAddGroupMemberType)
