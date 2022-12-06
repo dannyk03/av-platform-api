@@ -26,7 +26,7 @@ export class GroupInviteAcceptRefDto {
   readonly type: EnumAddGroupMemberType;
 }
 
-export class GroupInviteRejectRefDto {
+export class GroupInviteRefDto {
   @IsNotEmpty()
   @Length(21, 21)
   @IsString()

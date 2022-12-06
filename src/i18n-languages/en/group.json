@@ -14,6 +14,8 @@
   "inviteMember": "Invite member success",
   "inviteAccept": "Invite accept success",
   "inviteReject": "Invite reject success",
+  "inviteResend": "Invite resend success",
+  "inviteCancel": "Invite cancel success",
   "inviteList": "Invite list success",
   "error": {
     "notFound": "Group not found",

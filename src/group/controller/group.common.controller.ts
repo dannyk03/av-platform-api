@@ -64,7 +64,7 @@ import {
 } from '../dto';
 import {
   GroupInviteAcceptRefDto,
-  GroupInviteRejectRefDto,
+  GroupInviteRefDto,
 } from '../dto/group.add-member.dto';
 import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
@@ -700,7 +700,7 @@ export class GroupCommonController {
   async inviteReject(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRejectRefDto,
+    @Query() { code }: GroupInviteRefDto,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
@@ -734,7 +734,7 @@ export class GroupCommonController {
   async inviteCancel(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRejectRefDto,
+    @Query() { code }: GroupInviteRefDto,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
@@ -768,7 +768,7 @@ export class GroupCommonController {
   async inviteResend(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRejectRefDto,
+    @Query() { code }: GroupInviteRefDto,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
