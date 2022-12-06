@@ -22,6 +22,7 @@ import {
   EnumGroupStatusCodeError,
   EnumMessagingStatusCodeError,
   IResponseData,
+  IResponsePaging,
   IResponsePagingData,
 } from '@avo/type';
 
@@ -62,7 +63,10 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
-import { GroupAddMemberRefDto } from '../dto/group.add-member.dto';
+import {
+  GroupInviteAcceptRefDto,
+  GroupInviteRejectRefDto,
+} from '../dto/group.add-member.dto';
 import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
@@ -72,6 +76,7 @@ import {
   GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
+  GroupInviteListSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
@@ -556,27 +561,45 @@ export class GroupCommonController {
     return findGroup;
   }
 
-  @ClientResponse('group.join')
+  @ClientResponse('group.inviteAccept')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @RequestParamGuard(IdParamDto)
-  @Post('/:id/add-member')
-  async addMember(
+  @Post('/invite-accept')
+  async inviteAccept(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Param('id') groupId: string,
-    @Query() { code, type }: GroupAddMemberRefDto,
+    @Query() { code, type }: GroupInviteAcceptRefDto,
   ): Promise<IResponseData> {
-    // TODO search by inviteCode + pending
+    const groupInvite = await this.groupInviteMemberService.findOne({
+      where: {
+        code,
+        inviteStatus: EnumGroupInviteStatus.Pending,
+      },
+      relations: ['group'],
+      select: {
+        group: {
+          id: true,
+        },
+      },
+    });
 
-    // const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+    if (!groupInvite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
 
-    // if (!isGroupExist) {
-    //   throw new BadRequestException({
-    //     statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-    //     message: 'group.error.notFound',
-    //   });
-    // }
+    const groupId = groupInvite.group.id;
+
+    const isGroupExist = await this.groupService.findOneBy({ id: groupId });
+
+    if (!isGroupExist) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
 
     const isExist = await this.groupMemberService.findOne({
       where: {
@@ -671,6 +694,40 @@ export class GroupCommonController {
     return result;
   }
 
+  @ClientResponse('group.inviteReject')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/invite-reject')
+  async inviteReject(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Query() { code }: GroupInviteRejectRefDto,
+  ): Promise<IResponseData> {
+    const invite = await this.groupInviteMemberService.findOne({
+      where: {
+        user: {
+          id: reqAuthUser.id,
+        },
+        code,
+        inviteStatus: EnumGroupInviteStatus.Pending,
+      },
+    });
+
+    if (!invite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
+
+    await this.groupInviteMemberService.updateInviteStatus({
+      code,
+      inviteStatus: EnumGroupInviteStatus.Reject,
+    });
+
+    return { inviteStatus: EnumGroupInviteStatus.Reject };
+  }
+
   @ClientResponse('group.inviteMember')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
@@ -728,10 +785,38 @@ export class GroupCommonController {
               });
               if (isExistOne) {
                 throw new BadRequestException({
-                  statusCode: EnumGroupStatusCodeError.GroupExistsError,
+                  statusCode:
+                    EnumGroupStatusCodeError.GroupInviteMemberAlreadyExistsError,
                   message: 'group.error.memberExists',
                 });
               }
+            }
+
+            const isInviteExist = await this.groupInviteMemberService.findOne({
+              where: [
+                {
+                  group: {
+                    id: groupId,
+                  },
+                  user: {
+                    id: potentialMemberUser?.id,
+                  },
+                },
+                {
+                  group: {
+                    id: groupId,
+                  },
+                  tempEmail: member.email,
+                },
+              ],
+            });
+
+            if (isInviteExist) {
+              throw new BadRequestException({
+                statusCode:
+                  EnumGroupStatusCodeError.GroupInviteUnprocessableError,
+                message: 'group.error.inviteAlreadyExists',
+              });
             }
 
             return {
@@ -742,6 +827,9 @@ export class GroupCommonController {
               group: {
                 id: groupId,
               },
+              userInviteCreator: {
+                id: userId,
+              },
               role: EnumGroupRole.Basic,
               code: await this.helperHashService.magicCode(), // TODO check beforeInsert?
               expiresAt: this.helperDateService.forwardInDays(expiresInDays),
@@ -749,7 +837,6 @@ export class GroupCommonController {
           }),
         );
 
-        // TODO check tempEmail OR id already exists + groupId
         const groupMembersInvite =
           await this.groupInviteMemberService.createMany(inviteMembers);
 
@@ -798,5 +885,39 @@ export class GroupCommonController {
     );
 
     return result;
+  }
+
+  @ClientResponse('group.inviteList')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/invite-list')
+  async inviteList(
+    @ReqAuthUser()
+    reqAuthUser: User,
+  ): Promise<IResponseData> {
+    const foundInvites = await this.groupInviteMemberService.find({
+      where: {
+        user: {
+          id: reqAuthUser.id,
+        },
+        inviteStatus: EnumGroupInviteStatus.Pending,
+      },
+      relations: ['group', 'userInviteCreator', 'userInviteCreator.profile'],
+      select: {
+        group: {
+          id: true,
+          name: true,
+          description: true,
+        },
+        userInviteCreator: {
+          id: true,
+          profile: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+    return { data: foundInvites };
   }
 }

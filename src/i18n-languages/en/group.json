@@ -12,6 +12,9 @@
   "userSearch": "Users search success",
   "addMember": "Add member success",
   "inviteMember": "Invite member success",
+  "inviteAccept": "Invite accept success",
+  "inviteReject": "Invite reject success",
+  "inviteList": "Invite list success",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",
@@ -19,6 +22,7 @@
     "memberExists": "Group member already exists",
     "inviteExpired": "Group member invite expired",
     "inviteNotExists": "Group member invite expired",
+    "inviteAlreadyExists": "Group member already invited",
     "groupCode": "Group shareable code is incorrect",
     "unprocessable": "Unprocessable"
   }

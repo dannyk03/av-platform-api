@@ -22,6 +22,13 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
   })
   group!: Group;
 
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+    nullable: true,
+  })
+  userInviteCreator?: User;
+
   @Column({
     type: 'enum',
     enum: EnumGroupRole,

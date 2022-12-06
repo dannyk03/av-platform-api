@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { EnumGroupInviteStatus } from '@avo/type';
+
 import {
   DeepPartial,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 
 import { GroupInviteMember } from '../entity';
@@ -49,9 +53,31 @@ export class GroupInviteMemberService {
     return this.groupInviteMemberRepository.findOne({ ...find });
   }
 
+  async find(
+    find?: FindManyOptions<GroupInviteMember>,
+  ): Promise<GroupInviteMember[]> {
+    return this.groupInviteMemberRepository.find(find);
+  }
+
   async findOneBy(
     find?: FindOptionsWhere<GroupInviteMember>,
   ): Promise<GroupInviteMember> {
     return this.groupInviteMemberRepository.findOneBy({ ...find });
+  }
+
+  async updateInviteStatus({
+    code,
+    inviteStatus,
+  }: {
+    code: string;
+    inviteStatus: EnumGroupInviteStatus;
+  }): Promise<UpdateResult> {
+    return this.groupInviteMemberRepository
+      .createQueryBuilder()
+      .update(GroupInviteMember)
+      .set({ inviteStatus })
+      .setParameters({ code })
+      .where('code = :code')
+      .execute();
   }
 }

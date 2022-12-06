@@ -11,7 +11,7 @@ import {
   Length,
 } from 'class-validator';
 
-export class GroupAddMemberRefDto {
+export class GroupInviteAcceptRefDto {
   @IsNotEmpty()
   @Length(21, 21)
   @IsString()
@@ -24,4 +24,13 @@ export class GroupAddMemberRefDto {
   @Type(() => Number)
   @ApiProperty()
   readonly type: EnumAddGroupMemberType;
+}
+
+export class GroupInviteRejectRefDto {
+  @IsNotEmpty()
+  @Length(21, 21)
+  @IsString()
+  @Type(() => String)
+  @ApiProperty()
+  readonly code: string;
 }
