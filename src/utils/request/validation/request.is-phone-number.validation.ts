@@ -8,6 +8,7 @@ import {
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  isString,
   registerDecorator,
 } from 'class-validator';
 import get from 'lodash/get';
@@ -26,52 +27,42 @@ export class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
   ) {}
 
   validate(value: string, args: ValidationArguments) {
-    const [countryCodeProperty, allowEmptyForEnvs] = args.constraints;
+    const [countryCodeProperty] = args.constraints;
     const relatedValue = args.object[countryCodeProperty];
 
-    if (
-      allowEmptyForEnvs?.includes(this.configService.get<string>('app.env')) &&
-      (value === '' || value === null || value === undefined)
-    ) {
-      return true;
-    }
-
     return (
-      typeof value === 'string' &&
+      isString(value) &&
       this.helperPhoneNumberService.isValidPhoneNumber(
         value,
         relatedValue as CountryCode,
       )
     );
   }
+
+  defaultMessage(): string {
+    return `$property must be valid phone number '$value'`;
+  }
 }
 
 export function IsPhoneNumber(
   {
-    allowEmptyForEnvs = [],
     countryCodeProperty,
     validationOptions,
   }: {
-    allowEmptyForEnvs?: EnumAppEnv[];
     countryCodeProperty?: string;
     validationOptions?: ValidationOptions;
   } = {
-    allowEmptyForEnvs: [],
     countryCodeProperty: undefined,
     validationOptions: undefined,
   },
 ) {
   return function (object: Record<string, any>, propertyName: string): any {
-    if (!get(validationOptions, 'message')) {
-      const defaultValidationFailedMessage = `$property must be valid phone number '$value'.`;
-      set(validationOptions, 'message', defaultValidationFailedMessage);
-    }
     registerDecorator({
       name: 'IsPhoneNumber',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      constraints: [countryCodeProperty, allowEmptyForEnvs],
+      constraints: [countryCodeProperty],
       validator: IsPhoneNumberConstraint,
     });
   };
