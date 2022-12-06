@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
+import { EnumGroupUpcomingMilestoneType } from '@avo/type';
+
 import { ProactiveEmailService } from '../service';
 
 import { EnumJobsCronName } from '../constant';
@@ -21,8 +23,9 @@ export class ProactiveEmailProducer {
     name: EnumJobsCronName.NextWeekBirthday,
   })
   async handleNextWeekBirthdayProactiveNotification() {
-    const data = await this.proactiveEmailService.getBirthdayInXDaysConnections(
+    const data = await this.proactiveEmailService.getMilestoneInXDaysData(
       7,
+      EnumGroupUpcomingMilestoneType.Birthday,
     );
 
     console.log(data);
