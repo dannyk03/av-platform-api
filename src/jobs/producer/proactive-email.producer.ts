@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { UserProfileService } from '@/user/service';
+import { ProactiveEmailService } from '../service';
 
 import { EnumJobsCronName } from '../constant';
 
@@ -14,13 +14,17 @@ export class ProactiveEmailProducer {
   constructor(
     // @InjectQueue(EnumJobsQueue.ProactiveEmail)
     // private readonly proactiveEmailQueue: Queue,
-    private readonly userProfileService: UserProfileService,
+    private readonly proactiveEmailService: ProactiveEmailService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+  @Cron(CronExpression.EVERY_MINUTE, {
     name: EnumJobsCronName.NextWeekBirthday,
   })
   async handleNextWeekBirthdayProactiveNotification() {
-    console.log('first');
+    const data = await this.proactiveEmailService.getBirthdayInXDaysConnections(
+      7,
+    );
+
+    console.log(data);
   }
 }

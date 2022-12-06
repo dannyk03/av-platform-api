@@ -18,7 +18,8 @@ export class ProactiveEmailProcessor extends WorkerHost {
   process(job: Job<any, any, string>): Promise<any> {
     switch (job.name) {
       case EnumJobsCronName.NextWeekBirthday:
-        return this.proactiveEmailService.sendBirthdayNotification(job.data);
+        // return this.proactiveEmailService.sendBirthdayNotification(job.data);
+        return Promise.resolve();
 
       default:
         break;

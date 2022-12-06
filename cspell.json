@@ -39,7 +39,8 @@
     "backoff",
     "tsvector",
     "tsquery",
-    "sqlstring"
+    "sqlstring",
+    "abac"
   ],
   "ignorePaths": [
     "node_modules/**",

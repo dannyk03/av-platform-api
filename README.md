@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
   <a href="avonow.com" target="_blank"><img src="https://res.cloudinary.com/avonow/image/upload/v1662615810/github/platform_api.png" width="520" alt="platform-api" /></a>
 </p>
