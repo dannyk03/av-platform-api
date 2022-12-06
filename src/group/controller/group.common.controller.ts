@@ -22,7 +22,6 @@ import {
   EnumGroupStatusCodeError,
   EnumMessagingStatusCodeError,
   IResponseData,
-  IResponsePaging,
   IResponsePagingData,
 } from '@avo/type';
 
@@ -726,6 +725,111 @@ export class GroupCommonController {
     });
 
     return { inviteStatus: EnumGroupInviteStatus.Reject };
+  }
+
+  @ClientResponse('group.inviteCancel')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/invite-cancel')
+  async inviteCancel(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Query() { code }: GroupInviteRejectRefDto,
+  ): Promise<IResponseData> {
+    const invite = await this.groupInviteMemberService.findOne({
+      where: {
+        userInviteCreator: {
+          id: reqAuthUser.id,
+        },
+        code,
+        inviteStatus: EnumGroupInviteStatus.Pending,
+      },
+    });
+
+    if (!invite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
+
+    await this.groupInviteMemberService.updateInviteStatus({
+      code,
+      inviteStatus: EnumGroupInviteStatus.Cancel,
+    });
+
+    return { inviteStatus: EnumGroupInviteStatus.Cancel };
+  }
+
+  @ClientResponse('group.inviteResend')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Post('/invite-resend')
+  async inviteResend(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Query() { code }: GroupInviteRejectRefDto,
+  ): Promise<IResponseData> {
+    const invite = await this.groupInviteMemberService.findOne({
+      where: {
+        userInviteCreator: {
+          id: reqAuthUser.id,
+        },
+        code,
+        inviteStatus: EnumGroupInviteStatus.Pending,
+      },
+      relations: ['user', 'user.profile'],
+      select: {
+        user: {
+          email: true,
+          profile: {
+            firstName: true,
+          },
+        },
+      },
+    });
+
+    if (!invite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
+
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const expiresInDays = this.configService.get<number>(
+          'group.groupInviteCodeExpiresInDays',
+        );
+
+        const invitedUser = invite.user;
+
+        const emailSent = await this.emailService.sendGroupInviteEmail({
+          email: invitedUser.email,
+          code: code,
+          expiresInDays,
+          firstName: invitedUser.profile.firstName,
+        });
+
+        if (!emailSent) {
+          throw new InternalServerErrorException({
+            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+            message: 'messaging.error.email.send',
+          });
+        }
+
+        const updatedInvite = await transactionalEntityManager.update(
+          GroupInviteMember,
+          { code },
+          { expiresAt: this.helperDateService.forwardInDays(expiresInDays) },
+        );
+
+        return updatedInvite;
+      },
+    );
+
+    return result;
   }
 
   @ClientResponse('group.inviteMember')
