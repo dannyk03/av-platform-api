@@ -3,16 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { EnumGroupInviteStatus } from '@avo/type';
 
+import { isNumber } from 'class-validator';
 import {
+  Brackets,
   DeepPartial,
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
+  SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
 
 import { GroupInviteMember } from '../entity';
+
+import { EnumGroupInviteType, IGroupInviteSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -66,18 +71,114 @@ export class GroupInviteMemberService {
   }
 
   async updateInviteStatus({
-    code,
+    inviteId,
     inviteStatus,
   }: {
-    code: string;
+    inviteId: string;
     inviteStatus: EnumGroupInviteStatus;
   }): Promise<UpdateResult> {
     return this.groupInviteMemberRepository
       .createQueryBuilder()
       .update(GroupInviteMember)
       .set({ inviteStatus })
-      .setParameters({ code })
-      .where('code = :code')
+      .setParameters({ inviteId })
+      .where('id = :inviteId')
       .execute();
+  }
+
+  async getListSearchBuilder({
+    search,
+    status,
+    type,
+    userId,
+  }: IGroupInviteSearch): Promise<SelectQueryBuilder<GroupInviteMember>> {
+    const builder = this.groupInviteMemberRepository
+      .createQueryBuilder('groupInviteMember')
+      .leftJoinAndSelect('groupInviteMember.user', 'user')
+      .leftJoinAndSelect('user.profile', 'userProfile')
+      .leftJoinAndSelect(
+        'groupInviteMember.userInviteCreator',
+        'userInviteCreator',
+      )
+      .leftJoinAndSelect(
+        'userInviteCreator.profile',
+        'userInviteCreatorProfile',
+      )
+      .select([
+        'groupInviteMember',
+        'user.id',
+        'userInviteCreator.id',
+        'userInviteCreatorProfile.firstName',
+        'userInviteCreatorProfile.lastName',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ]);
+
+    if (type.includes(EnumGroupInviteType.Incoming)) {
+      console.log(11);
+      builder.andWhere('user.id = :userId', {
+        userId,
+      });
+    }
+
+    if (type.includes(EnumGroupInviteType.Outcoming)) {
+      builder.andWhere('userInviteCreator.id = :userId', {
+        userId,
+      });
+    }
+
+    if (status?.length) {
+      builder.andWhere('groupInviteMember.inviteStatus = ANY(:status)', {
+        status,
+      });
+    }
+
+    if (search) {
+      builder.setParameters({ search, likeSearch: `%${search}%` });
+      builder.andWhere('user.email ILIKE :likeSearch');
+      builder.andWhere('userInviteCreator.email ILIKE :likeSearch');
+    }
+
+    return builder;
+  }
+
+  async getTotal({
+    status,
+    search,
+    type,
+    userId,
+  }: IGroupInviteSearch): Promise<number> {
+    const searchBuilder = await this.getListSearchBuilder({
+      search,
+      status,
+      type,
+      userId,
+    });
+
+    return searchBuilder.getCount();
+  }
+
+  async paginatedSearchBy({
+    status = EnumGroupInviteStatus.Pending,
+    search,
+    options,
+    type,
+    userId,
+  }: IGroupInviteSearch): Promise<GroupInviteMember[]> {
+    const searchBuilder = await this.getListSearchBuilder({
+      search,
+      status,
+      type,
+      userId,
+    });
+
+    if (options.order) {
+      searchBuilder.orderBy(options.order);
+    }
+
+    if (isNumber(options.take) && isNumber(options.skip)) {
+      searchBuilder.take(options.take).skip(options.skip);
+    }
+    return searchBuilder.getMany();
   }
 }

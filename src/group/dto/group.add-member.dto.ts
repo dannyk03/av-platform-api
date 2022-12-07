@@ -25,12 +25,3 @@ export class GroupInviteAcceptRefDto {
   @ApiProperty()
   readonly type: EnumAddGroupMemberType;
 }
-
-export class GroupInviteRefDto {
-  @IsNotEmpty()
-  @Length(21, 21)
-  @IsString()
-  @Type(() => String)
-  @ApiProperty()
-  readonly code: string;
-}

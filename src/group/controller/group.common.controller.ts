@@ -62,10 +62,8 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
-import {
-  GroupInviteAcceptRefDto,
-  GroupInviteRefDto,
-} from '../dto/group.add-member.dto';
+import { GroupInviteAcceptRefDto } from '../dto/group.add-member.dto';
+import { GroupInviteListDto } from '../dto/group.invite-member-list.dto';
 import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
@@ -696,18 +694,16 @@ export class GroupCommonController {
   @ClientResponse('group.inviteReject')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/invite-reject')
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-reject/:id')
   async inviteReject(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRefDto,
+    @Param('id') inviteId: string,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
-        user: {
-          id: reqAuthUser.id,
-        },
-        code,
+        id: inviteId,
         inviteStatus: EnumGroupInviteStatus.Pending,
       },
     });
@@ -720,7 +716,7 @@ export class GroupCommonController {
     }
 
     await this.groupInviteMemberService.updateInviteStatus({
-      code,
+      inviteId,
       inviteStatus: EnumGroupInviteStatus.Reject,
     });
 
@@ -730,18 +726,19 @@ export class GroupCommonController {
   @ClientResponse('group.inviteCancel')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/invite-cancel')
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-cancel/:id')
   async inviteCancel(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRefDto,
+    @Param('id') inviteId: string,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
         userInviteCreator: {
           id: reqAuthUser.id,
         },
-        code,
+        id: inviteId,
         inviteStatus: EnumGroupInviteStatus.Pending,
       },
     });
@@ -754,7 +751,7 @@ export class GroupCommonController {
     }
 
     await this.groupInviteMemberService.updateInviteStatus({
-      code,
+      inviteId,
       inviteStatus: EnumGroupInviteStatus.Cancel,
     });
 
@@ -764,18 +761,19 @@ export class GroupCommonController {
   @ClientResponse('group.inviteResend')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
-  @Post('/invite-resend')
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-resend/:id')
   async inviteResend(
     @ReqAuthUser()
     reqAuthUser: User,
-    @Query() { code }: GroupInviteRefDto,
+    @Param('id') inviteId: string,
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
         userInviteCreator: {
           id: reqAuthUser.id,
         },
-        code,
+        id: inviteId,
         inviteStatus: EnumGroupInviteStatus.Pending,
       },
       relations: ['user', 'user.profile'],
@@ -807,7 +805,7 @@ export class GroupCommonController {
 
         const emailSent = await this.emailService.sendGroupInviteEmail({
           email: invitedUser.email,
-          code: code,
+          code: invite.code,
           expiresInDays,
           firstName: invitedUser.profile.firstName,
         });
@@ -821,7 +819,7 @@ export class GroupCommonController {
 
         const updatedInvite = await transactionalEntityManager.update(
           GroupInviteMember,
-          { code },
+          { id: inviteId },
           { expiresAt: this.helperDateService.forwardInDays(expiresInDays) },
         );
 
@@ -991,37 +989,59 @@ export class GroupCommonController {
     return result;
   }
 
-  @ClientResponse('group.inviteList')
+  @ClientResponsePaging('group.inviteList')
   @HttpCode(HttpStatus.OK)
   @AclGuard()
   @Post('/invite-list')
   async inviteList(
     @ReqAuthUser()
-    reqAuthUser: User,
-  ): Promise<IResponseData> {
-    const foundInvites = await this.groupInviteMemberService.find({
-      where: {
-        user: {
-          id: reqAuthUser.id,
-        },
-        inviteStatus: EnumGroupInviteStatus.Pending,
+    { id: userId }: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      status,
+      type,
+    }: GroupInviteListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const invites = await this.groupInviteMemberService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
       },
-      relations: ['group', 'userInviteCreator', 'userInviteCreator.profile'],
-      select: {
-        group: {
-          id: true,
-          name: true,
-          description: true,
-        },
-        userInviteCreator: {
-          id: true,
-          profile: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
+      status,
+      search,
+      type,
+      userId,
     });
-    return { data: foundInvites };
+
+    const totalData = await this.groupInviteMemberService.getTotal({
+      status,
+      search,
+      type,
+      userId,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: invites,
+    };
   }
 }
