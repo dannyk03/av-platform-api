@@ -185,7 +185,7 @@ export class ResponseDefaultInterceptor<T = any>
                 result: this.isPlainDevResponse(data)
                   ? undefined
                   : serialization,
-                ...(isDevelopment || !isSecureMode ? { dev } : {}),
+                ...((isDevelopment || !isSecureMode) && { dev }),
               };
             }
 

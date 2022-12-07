@@ -7,7 +7,6 @@ import {
   NotFoundException,
   Post,
   Query,
-  Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -20,7 +19,6 @@ import {
 } from '@avo/type';
 
 import { isUUID } from 'class-validator';
-import { Response } from 'express';
 import { DataSource } from 'typeorm';
 
 import { User } from '@/user/entity';
