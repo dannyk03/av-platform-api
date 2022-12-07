@@ -624,10 +624,20 @@ export class GroupCommonController {
     @Query() { code, type }: GroupInviteAcceptRefDto,
   ): Promise<IResponseData> {
     const groupInvite = await this.groupInviteMemberService.findOne({
-      where: {
-        code,
-        inviteStatus: EnumGroupInviteStatus.Pending,
-      },
+      where: [
+        {
+          code,
+          inviteStatus: EnumGroupInviteStatus.Pending,
+          userInvity: {
+            id: reqAuthUser.id,
+          },
+        },
+        {
+          code,
+          inviteStatus: EnumGroupInviteStatus.Pending,
+          tempEmail: reqAuthUser.email,
+        },
+      ],
       relations: ['group'],
       select: {
         group: {
