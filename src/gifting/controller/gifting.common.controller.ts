@@ -218,12 +218,7 @@ export class GiftingCommonController {
       },
     );
 
-    // For local development/testing
-    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
-    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (isDevelopment || !isSecureMode) {
-      return result;
-    }
+    return { dev: result };
   }
 
   @ClientResponsePaging('gift.intent.list', {

@@ -128,20 +128,13 @@ export class OrganizationInviteController {
       fromUser: reqUser,
     });
 
-    // For local development/testing
-    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
-    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (isDevelopment || !isSecureMode) {
-      return result;
-    }
+    return { dev: result };
   }
 
   @ClientResponse('organization.join')
   @HttpCode(HttpStatus.OK)
   @Post('/join')
   async join(
-    @Res({ passthrough: true })
-    response: Response,
     @Query()
     { code }: MagicLinkDto,
     @Body()
