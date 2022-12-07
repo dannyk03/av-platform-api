@@ -3,8 +3,8 @@ import { EnumGroupInviteStatus } from '@avo/type';
 import { IPaginationOptions } from '@/utils/pagination';
 
 export enum EnumGroupInviteType {
-  Incoming = 'incoming',
-  Outcoming = 'outcoming',
+  Income = 'income',
+  Outcome = 'outcome',
 }
 
 export interface IGroupSearch {

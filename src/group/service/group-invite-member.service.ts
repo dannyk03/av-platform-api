@@ -99,23 +99,25 @@ export class GroupInviteMemberService {
       .leftJoinAndSelect('groupInviteMember.inviterUser', 'inviterUser')
       .leftJoinAndSelect('inviterUser.profile', 'inviterUserProfile')
       .select([
-        'groupInviteMember',
+        'groupInviteMember.id',
+        'groupInviteMember.role',
+        'groupInviteMember.expiresAt',
+        'groupInviteMember.createdAt',
         'inviteeUser.id',
         'inviterUser.id',
-        'inviterUser.firstName',
-        'inviterUser.lastName',
+        'inviterUserProfile.firstName',
+        'inviterUserProfile.lastName',
         'inviteeUserProfile.firstName',
         'inviteeUserProfile.lastName',
       ]);
 
-    if (type.includes(EnumGroupInviteType.Incoming)) {
-      console.log(11);
+    if (type.includes(EnumGroupInviteType.Income)) {
       builder.andWhere('inviteeUser.id = :userId', {
         userId,
       });
     }
 
-    if (type.includes(EnumGroupInviteType.Outcoming)) {
+    if (type.includes(EnumGroupInviteType.Outcome)) {
       builder.andWhere('inviterUser.id = :userId', {
         userId,
       });

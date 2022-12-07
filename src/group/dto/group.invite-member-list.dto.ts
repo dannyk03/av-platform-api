@@ -59,7 +59,7 @@ export class GroupInviteListDto implements IPaginationList {
   readonly status: EnumGroupInviteStatus;
 
   @PaginationFilterEnum<EnumGroupInviteType>(
-    [EnumGroupInviteType.Incoming],
+    [EnumGroupInviteType.Income],
     EnumGroupInviteType,
   )
   readonly type: EnumGroupInviteType;
