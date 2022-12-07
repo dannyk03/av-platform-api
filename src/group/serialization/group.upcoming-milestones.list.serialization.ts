@@ -52,6 +52,11 @@ export class GroupUpcomingMilestonesListSerialization
   userId: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.profile_id)
-  profileId: string;
+  @Transform(
+    ({ obj }) =>
+      `${obj.year}-${obj?.month?.toString().padStart(2, 0)}-${obj?.day
+        ?.toString()
+        .padStart(2, 0)}`,
+  )
+  date: string;
 }

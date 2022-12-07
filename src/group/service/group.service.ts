@@ -23,11 +23,14 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { Group } from '../entity';
 
+import { GroupMemberService } from './group-member.service';
 import { HelperStringService } from '@/utils/helper/service';
 
 import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
+
+import { CommonGroupsTransformRowQuery } from '../transform';
 
 @Injectable()
 export class GroupService {
@@ -37,7 +40,25 @@ export class GroupService {
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
     private readonly helperStringService: HelperStringService,
+    private readonly groupMemberService: GroupMemberService,
   ) {}
+
+  async findCommonGroups({
+    user1Id,
+    user2Id,
+    options,
+  }: {
+    user1Id: string;
+    user2Id: string;
+    options?: { onlyCount: boolean };
+  }): Promise<{ count: number } | CommonGroupsTransformRowQuery[]> {
+    const onlyCount = options?.onlyCount ?? true;
+    return this.groupMemberService.findCommonGroups({
+      user1Id,
+      user2Id,
+      options: { onlyCount },
+    });
+  }
 
   private async getNotEmptyArrayOfSomethingFromUserProfile({
     groupId,
@@ -53,6 +74,23 @@ export class GroupService {
     const LIMIT = limit || 'ALL';
     const OFFSET = skip;
 
+    // TODO check errors with queryBuilder
+    // const groupQueryBuilder = this.groupRepository.createQueryBuilder('group');
+    // return groupQueryBuilder
+    //   .setParameters({ groupId })
+    //   .select([
+    //     'user.email',
+    //     'profile.firstName',
+    //     'profile.lastName',
+    //     `profile.${snakeCase(column)}`,
+    //   ])
+    //   .where('group.id = :groupId')
+    //   .andWhere(`cardinality(profile.${snakeCase(column)} > 0`)
+    //   .leftJoin('group.members', 'member')
+    //   .leftJoin('member.user', 'user')
+    //   .leftJoin('user.profile', 'profile')
+    //   .getRawMany();
+
     return this.defaultDataSource.query(
       `
       SELECT u.email, up.first_name, up.last_name, up.${snakeCase(
@@ -62,9 +100,11 @@ export class GroupService {
                   ON g.id = m.group_id
       LEFT JOIN public.users AS u
                   ON m.user_id = u.id
-        LEFT JOIN public.user_profiles AS up
+      LEFT JOIN public.user_profiles AS up
                   ON up.user_id = u.id
-      WHERE g.id = $1 AND cardinality(up.${snakeCase(column)}) > 0
+      WHERE g.id = $1 AND cardinality(up.${snakeCase(
+        column,
+      )}) > 0 AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
       ORDER BY up.created_at
       LIMIT ${LIMIT} OFFSET ${OFFSET}
     `,
@@ -193,7 +233,7 @@ export class GroupService {
         'group',
         'member.id',
         'member.role',
-        'user.email',
+        'user.id',
         'userProfile.firstName',
         'userProfile.lastName',
       ])
@@ -315,7 +355,7 @@ export class GroupService {
               ON m.user_id = u.id
             LEFT JOIN public.user_profiles AS up
               ON up.user_id = u.id
-          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
+          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
           UNION
           SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at, up.id AS profile_id,
             up.first_name, up.last_name, up.work_anniversary_day AS e_day,
@@ -327,7 +367,7 @@ export class GroupService {
               ON m.user_id = u.id
             LEFT JOIN public.user_profiles AS up
               ON up.user_id = u.id
-          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL
+          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
         ) AS temp_events
       ) AS events
       WHERE e_date <= NOW() + ($2 || 'DAY')::INTERVAL
