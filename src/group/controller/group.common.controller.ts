@@ -14,6 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   EnumAddGroupMemberType,
@@ -78,6 +79,7 @@ import {
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
 
+import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
 @Controller({
@@ -85,6 +87,8 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class GroupCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly groupService: GroupService,
     private readonly userService: UserService,
     private readonly groupMemberService: GroupMemberService,
@@ -95,7 +99,6 @@ export class GroupCommonController {
     private readonly helperHashService: HelperHashService,
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
-    private readonly defaultDataSource: DataSource,
     private readonly emailService: EmailService,
   ) {}
 
@@ -123,28 +126,31 @@ export class GroupCommonController {
       });
     }
 
-    const createOwner = await this.groupMemberService.create({
-      user: reqAuthUser,
-      role: EnumGroupRole.Owner,
-    });
+    const saveGroupRes = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const createOwner = await this.groupMemberService.create({
+          user: reqAuthUser,
+          role: EnumGroupRole.Owner,
+        });
 
-    const createGroup = await this.groupService.create({
-      name,
-      description,
-      members: [createOwner],
-    });
+        const createGroup = await this.groupService.create({
+          name,
+          description,
+          members: [createOwner],
+        });
 
-    const saveGroup = await this.groupService.save(createGroup);
+        const createInviteLink = await this.groupInviteLinkService.create({
+          group: createGroup,
+        });
 
-    const createInviteLink = await this.groupInviteLinkService.create({
-      group: {
-        id: createGroup.id,
+        await transactionalEntityManager.save(createInviteLink);
+
+        return createInviteLink.group;
       },
-    });
+    );
 
-    await this.groupInviteLinkService.save(createInviteLink);
-
-    return saveGroup;
+    return saveGroupRes;
   }
 
   @ClientResponsePaging('group.inviteList')
