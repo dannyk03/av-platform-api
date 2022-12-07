@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Type } from 'class-transformer';
-import { IsPhoneNumber } from 'class-validator';
 
 import { NormalizeStringInputTransform } from '@/utils/request/transform';
+import { IsPhoneNumber } from '@/utils/request/validation';
 
 export class AuthSmsOtpGetDto {
   @IsPhoneNumber()
