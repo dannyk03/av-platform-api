@@ -1,4 +1,5 @@
 {
+  "isUuid": "{property} is invalid uuid",
   "min": "{property} has less elements than the minimum allowed.",
   "max": "{property} has more elements than the maximum allowed.",
   "maxLength": "{property} has more elements than the maximum allowed.",
