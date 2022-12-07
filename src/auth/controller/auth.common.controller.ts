@@ -617,9 +617,6 @@ export class AuthCommonController {
             }
           }
         }
-        // else if (type == EnumNetworkingConnectionType.GroupJoin) {
-
-        // }
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);
         this.logService.info({
