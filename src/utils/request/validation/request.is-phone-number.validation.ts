@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { EnumAppEnv } from '@avo/type';
-
 import {
   ValidationArguments,
   ValidationOptions,
@@ -11,8 +9,6 @@ import {
   isString,
   registerDecorator,
 } from 'class-validator';
-import get from 'lodash/get';
-import set from 'lodash/set';
 
 import { HelperPhoneNumberService } from '@/utils/helper/service';
 
