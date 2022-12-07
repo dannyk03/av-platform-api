@@ -14,7 +14,7 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
     orphanedRowAction: 'delete',
     nullable: true,
   })
-  userInvity?: User;
+  inviteeUser?: User;
 
   @ManyToOne(() => Group, (group) => group.members, {
     onDelete: 'CASCADE',
@@ -27,7 +27,7 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
     orphanedRowAction: 'delete',
     nullable: true,
   })
-  userInvitor?: User;
+  inviterUser?: User;
 
   @Column({
     type: 'enum',

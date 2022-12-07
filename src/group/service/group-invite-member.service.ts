@@ -94,29 +94,29 @@ export class GroupInviteMemberService {
   }: IGroupInviteSearch): Promise<SelectQueryBuilder<GroupInviteMember>> {
     const builder = this.groupInviteMemberRepository
       .createQueryBuilder('groupInviteMember')
-      .leftJoinAndSelect('groupInviteMember.userInvity', 'userInvity')
-      .leftJoinAndSelect('userInvity.profile', 'userInvityProfile')
-      .leftJoinAndSelect('groupInviteMember.userInvitor', 'userInvitor')
-      .leftJoinAndSelect('userInvitor.profile', 'userInvitorProfile')
+      .leftJoinAndSelect('groupInviteMember.inviteeUser', 'inviteeUser')
+      .leftJoinAndSelect('inviteeUser.profile', 'inviteeUserProfile')
+      .leftJoinAndSelect('groupInviteMember.inviterUser', 'inviterUser')
+      .leftJoinAndSelect('inviterUser.profile', 'inviterUserProfile')
       .select([
         'groupInviteMember',
-        'userInvity.id',
-        'userInvitor.id',
-        'userInvitorProfile.firstName',
-        'userInvitorProfile.lastName',
-        'userInvityProfile.firstName',
-        'userInvityProfile.lastName',
+        'inviteeUser.id',
+        'inviterUser.id',
+        'inviterUser.firstName',
+        'inviterUser.lastName',
+        'inviteeUserProfile.firstName',
+        'inviteeUserProfile.lastName',
       ]);
 
     if (type.includes(EnumGroupInviteType.Incoming)) {
       console.log(11);
-      builder.andWhere('userInvity.id = :userId', {
+      builder.andWhere('inviteeUser.id = :userId', {
         userId,
       });
     }
 
     if (type.includes(EnumGroupInviteType.Outcoming)) {
-      builder.andWhere('userInvitor.id = :userId', {
+      builder.andWhere('inviterUser.id = :userId', {
         userId,
       });
     }
@@ -129,8 +129,8 @@ export class GroupInviteMemberService {
 
     if (search) {
       builder.setParameters({ search, likeSearch: `%${search}%` });
-      builder.andWhere('userInvity.email ILIKE :likeSearch');
-      builder.andWhere('userInvitor.email ILIKE :likeSearch');
+      builder.andWhere('inviteeUser.email ILIKE :likeSearch');
+      builder.andWhere('inviterUser.email ILIKE :likeSearch');
     }
 
     return builder;
