@@ -21,6 +21,7 @@ import {
 export class SocialConnectionAddresseeDto {
   @NormalizeEmail()
   @IsNotEmpty()
+  @MaxLength(100)
   readonly email: string;
 
   @IsOptional()
