@@ -621,7 +621,7 @@ export class GroupCommonController {
         if (type == EnumAddGroupMemberType.PersonalInvite) {
           const invitedUser = await this.groupInviteMemberService.findOne({
             where: {
-              user: {
+              userInvity: {
                 id: reqAuthUser.id,
               },
               code,
@@ -735,7 +735,7 @@ export class GroupCommonController {
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
-        userInviteCreator: {
+        userInvitor: {
           id: reqAuthUser.id,
         },
         id: inviteId,
@@ -770,7 +770,7 @@ export class GroupCommonController {
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
-        userInviteCreator: {
+        userInvitor: {
           id: reqAuthUser.id,
         },
         id: inviteId,
@@ -778,7 +778,7 @@ export class GroupCommonController {
       },
       relations: ['user', 'user.profile'],
       select: {
-        user: {
+        userInvity: {
           email: true,
           profile: {
             firstName: true,
@@ -801,7 +801,7 @@ export class GroupCommonController {
           'group.groupInviteCodeExpiresInDays',
         );
 
-        const invitedUser = invite.user;
+        const invitedUser = invite.userInvity;
 
         const emailSent = await this.emailService.sendGroupInviteEmail({
           email: invitedUser.email,
@@ -900,7 +900,7 @@ export class GroupCommonController {
                   group: {
                     id: groupId,
                   },
-                  user: {
+                  userInvity: {
                     id: potentialMemberUser?.id,
                   },
                 },
@@ -922,14 +922,14 @@ export class GroupCommonController {
             }
 
             return {
-              user: {
+              userInvity: {
                 id: potentialMemberUser ? potentialMemberUser.id : null,
               },
               tempEmail: !potentialMemberUser ? member.email : null,
               group: {
                 id: groupId,
               },
-              userInviteCreator: {
+              userInvitor: {
                 id: userId,
               },
               role: EnumGroupRole.Basic,
@@ -948,7 +948,7 @@ export class GroupCommonController {
           inviteMembers.map(async (member) => {
             const invitedUser = await this.userService.findOne({
               where: {
-                id: member.user.id,
+                id: member.userInvity.id,
               },
               relations: ['profile'],
               select: {
