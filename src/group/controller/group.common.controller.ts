@@ -961,22 +961,18 @@ export class GroupCommonController {
             }
 
             const isInviteExist = await this.groupInviteMemberService.findOne({
-              where: [
-                {
-                  group: {
-                    id: groupId,
-                  },
-                  inviteeUser: {
-                    id: potentialMemberUser?.id,
-                  },
+              where: {
+                group: {
+                  id: groupId,
                 },
-                {
-                  group: {
-                    id: groupId,
-                  },
-                  tempEmail: member.email,
-                },
-              ],
+                ...(potentialMemberUser
+                  ? {
+                      inviteeUser: {
+                        id: potentialMemberUser?.id,
+                      },
+                    }
+                  : { tempEmail: member.email }),
+              },
             });
 
             if (isInviteExist) {
