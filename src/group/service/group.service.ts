@@ -74,23 +74,6 @@ export class GroupService {
     const LIMIT = limit || 'ALL';
     const OFFSET = skip;
 
-    // TODO check errors with queryBuilder
-    // const groupQueryBuilder = this.groupRepository.createQueryBuilder('group');
-    // return groupQueryBuilder
-    //   .setParameters({ groupId })
-    //   .select([
-    //     'user.email',
-    //     'profile.firstName',
-    //     'profile.lastName',
-    //     `profile.${snakeCase(column)}`,
-    //   ])
-    //   .where('group.id = :groupId')
-    //   .andWhere(`cardinality(profile.${snakeCase(column)} > 0`)
-    //   .leftJoin('group.members', 'member')
-    //   .leftJoin('member.user', 'user')
-    //   .leftJoin('user.profile', 'profile')
-    //   .getRawMany();
-
     return this.defaultDataSource.query(
       `
       SELECT u.email, up.first_name, up.last_name, up.${snakeCase(
