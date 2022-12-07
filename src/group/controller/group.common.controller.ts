@@ -147,6 +147,62 @@ export class GroupCommonController {
     return saveGroup;
   }
 
+  @ClientResponsePaging('group.inviteList')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/invite-list')
+  async inviteList(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      status,
+      type,
+    }: GroupInviteListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const invites = await this.groupInviteMemberService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      status,
+      search,
+      type,
+      userId,
+    });
+
+    const totalData = await this.groupInviteMemberService.getTotal({
+      status,
+      search,
+      type,
+      userId,
+    });
+
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: invites,
+    };
+  }
+
   @ClientResponse('group.active')
   @HttpCode(HttpStatus.OK)
   @LogTrace(EnumLogAction.UpdateGroup, {
@@ -987,61 +1043,5 @@ export class GroupCommonController {
     );
 
     return result;
-  }
-
-  @ClientResponsePaging('group.inviteList')
-  @HttpCode(HttpStatus.OK)
-  @AclGuard()
-  @Post('/invite-list')
-  async inviteList(
-    @ReqAuthUser()
-    { id: userId }: User,
-    @Query()
-    {
-      page,
-      perPage,
-      sort,
-      search,
-      availableSort,
-      availableSearch,
-      status,
-      type,
-    }: GroupInviteListDto,
-  ): Promise<IResponsePagingData> {
-    const skip: number = await this.paginationService.skip(page, perPage);
-
-    const invites = await this.groupInviteMemberService.paginatedSearchBy({
-      options: {
-        skip: skip,
-        take: perPage,
-        order: sort,
-      },
-      status,
-      search,
-      type,
-      userId,
-    });
-
-    const totalData = await this.groupInviteMemberService.getTotal({
-      status,
-      search,
-      type,
-      userId,
-    });
-
-    const totalPage: number = await this.paginationService.totalPage(
-      totalData,
-      perPage,
-    );
-
-    return {
-      totalData,
-      totalPage,
-      currentPage: page,
-      perPage,
-      availableSearch,
-      availableSort,
-      data: invites,
-    };
   }
 }
