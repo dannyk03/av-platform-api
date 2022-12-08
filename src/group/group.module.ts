@@ -13,7 +13,7 @@ import {
 
 import {
   GroupInviteLinkService,
-  GroupInviteMemberService,
+  GroupInviteMemberLinkService,
   GroupMemberService,
   GroupService,
 } from './service';
@@ -32,13 +32,13 @@ import { ConnectionNames } from '@/database/constant';
   exports: [
     GroupService,
     GroupMemberService,
-    GroupInviteMemberService,
+    GroupInviteMemberLinkService,
     GroupInviteLinkService,
   ],
   providers: [
     GroupService,
     GroupMemberService,
-    GroupInviteMemberService,
+    GroupInviteMemberLinkService,
     GroupInviteLinkService,
   ],
   controllers: [],

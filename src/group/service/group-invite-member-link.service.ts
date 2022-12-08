@@ -13,45 +13,45 @@ import { GroupInviteMemberLink } from '../entity';
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
-export class GroupInviteMemberService {
+export class GroupInviteMemberLinkService {
   constructor(
     @InjectRepository(GroupInviteMemberLink, ConnectionNames.Default)
-    private readonly groupInviteMemberRepository: Repository<GroupInviteMemberLink>,
+    private readonly groupInviteMemberLinkRepository: Repository<GroupInviteMemberLink>,
   ) {}
 
   async create(
     member: DeepPartial<GroupInviteMemberLink>,
   ): Promise<GroupInviteMemberLink> {
-    return this.groupInviteMemberRepository.create(member);
+    return this.groupInviteMemberLinkRepository.create(member);
   }
 
   async createMany(
     members: DeepPartial<GroupInviteMemberLink>[],
   ): Promise<GroupInviteMemberLink[]> {
-    return this.groupInviteMemberRepository.create(members);
+    return this.groupInviteMemberLinkRepository.create(members);
   }
 
   async save(
     member: DeepPartial<GroupInviteMemberLink>,
   ): Promise<GroupInviteMemberLink> {
-    return this.groupInviteMemberRepository.save(member);
+    return this.groupInviteMemberLinkRepository.save(member);
   }
 
   async saveBulk(
     members: DeepPartial<GroupInviteMemberLink>[],
   ): Promise<GroupInviteMemberLink[]> {
-    return this.groupInviteMemberRepository.save(members);
+    return this.groupInviteMemberLinkRepository.save(members);
   }
 
   async findOne(
     find?: FindOneOptions<GroupInviteMemberLink>,
   ): Promise<GroupInviteMemberLink> {
-    return this.groupInviteMemberRepository.findOne({ ...find });
+    return this.groupInviteMemberLinkRepository.findOne({ ...find });
   }
 
   async findOneBy(
     find?: FindOptionsWhere<GroupInviteMemberLink>,
   ): Promise<GroupInviteMemberLink> {
-    return this.groupInviteMemberRepository.findOneBy({ ...find });
+    return this.groupInviteMemberLinkRepository.findOneBy({ ...find });
   }
 }

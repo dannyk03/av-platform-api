@@ -33,7 +33,7 @@ import { User } from '@/user/entity';
 
 import {
   GroupInviteLinkService,
-  GroupInviteMemberService,
+  GroupInviteMemberLinkService,
   GroupMemberService,
   GroupService,
 } from '../service';
@@ -86,7 +86,7 @@ export class GroupCommonController {
     private readonly groupService: GroupService,
     private readonly userService: UserService,
     private readonly groupMemberService: GroupMemberService,
-    private readonly groupInviteMemberService: GroupInviteMemberService,
+    private readonly groupInviteMemberLinkService: GroupInviteMemberLinkService,
     private readonly groupInviteLinkService: GroupInviteLinkService,
     private readonly paginationService: PaginationService,
     private readonly socialConnectionService: SocialConnectionService,
@@ -565,7 +565,7 @@ export class GroupCommonController {
     @ReqAuthUser()
     reqAuthUser: User,
     @Param('id') groupId: string,
-    @Query() { inviteCode, type }: GroupAddMemberRefDto,
+    @Query() { code, type }: GroupAddMemberRefDto,
   ): Promise<IResponseData> {
     const isGroupExist = await this.groupService.findOneBy({ id: groupId });
 
@@ -597,12 +597,12 @@ export class GroupCommonController {
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         if (type == EnumAddGroupMemberType.PersonalInvite) {
-          const invitedUser = await this.groupInviteMemberService.findOne({
+          const invitedUser = await this.groupInviteMemberLinkService.findOne({
             where: {
-              user: {
+              inviterUser: {
                 id: reqAuthUser.id,
               },
-              code: inviteCode,
+              code: code,
             },
           });
           if (!invitedUser) {
@@ -636,8 +636,8 @@ export class GroupCommonController {
 
           await transactionalEntityManager.update(
             GroupInviteMemberLink,
-            { code: inviteCode },
-            { inviteStatus: EnumGroupInviteStatus.Accept },
+            { code: code },
+            { status: EnumGroupInviteStatus.Accept },
           );
 
           return addedMember;
@@ -645,7 +645,7 @@ export class GroupCommonController {
           const groupInviteLink = await this.groupInviteLinkService.findOne({
             where: { group: { id: groupId } },
           });
-          if (groupInviteLink.code !== inviteCode) {
+          if (groupInviteLink.code !== code) {
             throw new BadRequestException({
               statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
               message: 'group.error.groupCode',
@@ -729,7 +729,7 @@ export class GroupCommonController {
         );
 
         const groupMembersInvite =
-          await this.groupInviteMemberService.createMany(inviteMembers);
+          await this.groupInviteMemberLinkService.createMany(inviteMembers);
 
         await transactionalEntityManager.save(groupMembersInvite);
 
