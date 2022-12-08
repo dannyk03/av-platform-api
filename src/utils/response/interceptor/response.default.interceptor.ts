@@ -2,12 +2,19 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
+  InternalServerErrorException,
   NestInterceptor,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
-import { IErrorHttpMetadata, IResponse, IResponseData } from '@avo/type';
+import {
+  EnumInternalStatusCodeError,
+  IErrorHttpMetadata,
+  IResponse,
+  IResponseData,
+} from '@avo/type';
 
 import {
   ClassConstructor,
@@ -15,6 +22,7 @@ import {
   plainToInstance,
 } from 'class-transformer';
 import { Response } from 'express';
+import isPlainObject from 'lodash/isPlainObject';
 import { Observable, map } from 'rxjs';
 
 import { ResponseMessageService } from '@/response-message/service';
@@ -37,7 +45,20 @@ export class ResponseDefaultInterceptor<T = any>
   constructor(
     private readonly reflector: Reflector,
     private readonly responseMessageService: ResponseMessageService,
+    private readonly configService: ConfigService,
   ) {}
+
+  private instanceOfIResponseData(object: any): object is IResponseData {
+    return isPlainObject(object);
+  }
+
+  private isPlainDevResponse(object: any): object is IResponseData {
+    return (
+      isPlainObject(object) &&
+      Object.keys(object).length === 1 &&
+      'dev' in object
+    );
+  }
 
   async intercept(
     context: ExecutionContext,
@@ -46,7 +67,9 @@ export class ResponseDefaultInterceptor<T = any>
     if (context.getType() === 'http') {
       return next.handle().pipe(
         map(
-          async (responseData: Promise<IResponseData>): Promise<IResponse> => {
+          async (
+            responseData: Promise<IResponseData>,
+          ): Promise<IResponse & { dev?: Record<string, any> }> => {
             const ctx: HttpArgumentsHost = context.switchToHttp();
             const responseExpress: Response = ctx.getResponse();
             const requestExpress: IRequestApp = ctx.getRequest<IRequestApp>();
@@ -99,13 +122,28 @@ export class ResponseDefaultInterceptor<T = any>
             };
 
             // response
-            const response = (await responseData) as IResponse;
+            const response = (await responseData) as IResponse & {
+              dev: Record<string, any>;
+            };
             if (response) {
+              if (!this.instanceOfIResponseData(response)) {
+                throw new InternalServerErrorException({
+                  silent: true,
+                  statusCode: EnumInternalStatusCodeError.TypeError,
+                  message: 'response type must be instanceof IResponseData',
+                });
+              }
+
               const { meta, ...data } = response;
               let properties: IMessageOptionsProperties = messageProperties;
-              let serialization = data;
+              const { dev, ...restData } = data;
+              let serialization = restData;
 
-              if (classSerialization) {
+              if (
+                classSerialization &&
+                isPlainObject(data) &&
+                Object.keys(data).length
+              ) {
                 serialization = plainToInstance(
                   classSerialization,
                   data,
@@ -134,11 +172,20 @@ export class ResponseDefaultInterceptor<T = any>
                   ? serialization
                   : null;
 
+              // For local development/testing
+              const isDevelopment =
+                this.configService.get<boolean>('app.isDevelopment');
+              const isSecureMode: boolean =
+                this.configService.get<boolean>('app.isSecureMode');
+
               return {
                 statusCode,
                 message,
                 meta: { ...resMetadata, ...meta },
-                result: serialization,
+                result: this.isPlainDevResponse(data)
+                  ? undefined
+                  : serialization,
+                ...((isDevelopment || !isSecureMode) && { dev }),
               };
             }
 
