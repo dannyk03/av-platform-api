@@ -585,7 +585,7 @@ export class EmailService {
     connectionId: string;
     personalNote: string;
   }): Promise<boolean> {
-    if (!this.isDevelopment) {
+    if (this.isDevelopment) {
       return true;
     }
     const payload: ConnectionRequestExistingUserMessageData = {
@@ -595,8 +595,7 @@ export class EmailService {
       receivingUser: {
         firstName: receivingUser.profile.firstName,
       },
-      connectionApproveLink: '',
-      connectionRejectLink: '',
+      personalNote,
       connectionId,
     };
 

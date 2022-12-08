@@ -37,7 +37,7 @@ export class GroupGetWithPreviewSerialization
     value.map(({ role, user }) => {
       return {
         role,
-        email: user?.email,
+        id: user?.id,
         firstName: user?.profile?.firstName,
         lastName: user?.profile?.lastName,
       };

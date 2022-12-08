@@ -89,6 +89,12 @@ export class NetworkingCommonController {
     const requestingUserWithProfile = await this.userService.findOne({
       where: { id: reqUser.id },
       relations: ['profile'],
+      select: {
+        id: true,
+        profile: {
+          firstName: true,
+        },
+      },
     });
 
     const promises = addressees.map(async ({ email, personalNote }) => {
@@ -147,6 +153,12 @@ export class NetworkingCommonController {
           const receivingUserWithProfile = await this.userService.findOne({
             where: { id: saveSocialConnectionRequest.addresseeUser.id },
             relations: ['profile'],
+            select: {
+              id: true,
+              profile: {
+                firstName: true,
+              },
+            },
           });
 
           isEmailSent =

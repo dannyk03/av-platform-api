@@ -20,7 +20,6 @@ import {
 
 export class SocialConnectionAddresseeDto {
   @NormalizeEmail()
-  @IsNotEmpty()
   readonly email: string;
 
   @IsOptional()
