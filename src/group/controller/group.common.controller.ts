@@ -26,7 +26,7 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { isEmail, isString } from 'class-validator';
+import { isEmail } from 'class-validator';
 import { DataSource } from 'typeorm';
 
 import { GroupInviteMemberLink, GroupMember } from '../entity';
@@ -172,7 +172,7 @@ export class GroupCommonController {
 
         await transactionalEntityManager.save(createInviteLink);
 
-        return createInviteLink.group;
+        return this.groupService.save(createGroup);
       },
     );
 
@@ -655,64 +655,50 @@ export class GroupCommonController {
     reqAuthUser: User,
     @Query() { code, type }: GroupInviteAcceptRefDto,
   ): Promise<IResponseData> {
-    const groupInviteMemberLink =
-      await this.groupInviteMemberLinkService.findOne({
-        where: [
-          {
-            code,
-            status: EnumGroupInviteStatus.Pending,
-            inviteeUser: {
-              id: reqAuthUser.id,
-            },
-          },
-          {
-            code,
-            status: EnumGroupInviteStatus.Pending,
-            tempEmail: reqAuthUser.email,
-          },
-        ],
-        relations: ['group'],
-        select: {
-          group: {
-            id: true,
-          },
-        },
-      });
-
-    if (!groupInviteMemberLink) {
-      throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
-        message: 'group.error.unprocessable',
-      });
-    }
-
-    const groupId = groupInviteMemberLink.group.id;
-
-    const findGroupMember = await this.groupMemberService.findOne({
-      where: {
-        group: {
-          id: groupId,
-        },
-        user: {
-          id: reqAuthUser.id,
-        },
-      },
-    });
-
-    if (findGroupMember) {
-      throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupAlreadyMemberError,
-        message: 'group.error.alreadyMember',
-      });
-    }
-
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         if (type == EnumAddGroupMemberType.PersonalInvite) {
+          const findGroupInviteMemberLink =
+            await this.groupInviteMemberLinkService.findOne({
+              where: [
+                {
+                  code,
+                  status: EnumGroupInviteStatus.Pending,
+                  inviteeUser: {
+                    id: reqAuthUser.id,
+                  },
+                },
+                {
+                  code,
+                  status: EnumGroupInviteStatus.Pending,
+                  tempEmail: reqAuthUser.email,
+                },
+              ],
+              relations: ['group'],
+              select: {
+                id: true,
+                expiresAt: true,
+                group: {
+                  id: true,
+                },
+                inviteeUser: {
+                  id: true,
+                },
+              },
+            });
+
+          if (!findGroupInviteMemberLink) {
+            throw new BadRequestException({
+              statusCode:
+                EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+              message: 'group.error.invite.unprocessable',
+            });
+          }
+
           const now = this.helperDateService.create();
           const expiresAt = this.helperDateService.create({
-            date: groupInviteMemberLink.expiresAt,
+            date: findGroupInviteMemberLink.expiresAt,
           });
 
           if (expiresAt && now > expiresAt) {
@@ -723,24 +709,18 @@ export class GroupCommonController {
           }
           const createGroupMember = await this.groupMemberService.create({
             role: EnumGroupRole.Basic,
-            user: {
-              id: reqAuthUser.id,
-            },
+            user: reqAuthUser,
             group: {
-              id: groupId,
+              id: findGroupInviteMemberLink.group.id,
             },
           });
-
-          // const saveGroupMember = await transactionalEntityManager.save(
-          //   createGroupMember,
-          // );
 
           await transactionalEntityManager.update(
             GroupInviteMemberLink,
             { code },
             {
-              status: EnumGroupInviteStatus.Accept,
-              ...(!groupInviteMemberLink?.inviteeUser?.id && {
+              status: EnumGroupInviteStatus.Accepted,
+              ...(!findGroupInviteMemberLink?.inviteeUser?.id && {
                 inviteeUser: reqAuthUser,
               }),
             },
@@ -748,13 +728,22 @@ export class GroupCommonController {
 
           return transactionalEntityManager.save(createGroupMember);
         } else {
-          const groupInviteLink = await this.groupInviteLinkService.findOne({
-            where: { group: { id: groupId } },
-          });
-          if (groupInviteLink.code !== code) {
+          const findGroupInviteLink = await this.groupInviteLinkService.findOne(
+            {
+              where: { code },
+              relations: {
+                group: {
+                  id: true,
+                },
+              },
+            },
+          );
+
+          if (!findGroupInviteLink) {
             throw new BadRequestException({
-              statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
-              message: 'group.error.groupCode',
+              statusCode:
+                EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+              message: 'group.error.invite.unprocessable',
             });
           }
 
@@ -764,10 +753,11 @@ export class GroupCommonController {
               id: reqAuthUser.id,
             },
             group: {
-              id: groupId,
+              id: findGroupInviteLink.group.id,
             },
           });
-          return this.groupMemberService.save(createGroupMember);
+
+          return transactionalEntityManager.save(createGroupMember);
         }
       },
     );
@@ -801,10 +791,10 @@ export class GroupCommonController {
 
     await this.groupInviteMemberLinkService.updateInviteStatus({
       inviteId,
-      inviteStatus: EnumGroupInviteStatus.Reject,
+      inviteStatus: EnumGroupInviteStatus.Rejected,
     });
 
-    return { inviteStatus: EnumGroupInviteStatus.Reject };
+    return { inviteStatus: EnumGroupInviteStatus.Rejected };
   }
 
   @ClientResponse('group.inviteCancel')
@@ -836,10 +826,10 @@ export class GroupCommonController {
 
     await this.groupInviteMemberLinkService.updateInviteStatus({
       inviteId,
-      inviteStatus: EnumGroupInviteStatus.Cancel,
+      inviteStatus: EnumGroupInviteStatus.Canceled,
     });
 
-    return { inviteStatus: EnumGroupInviteStatus.Cancel };
+    return { inviteStatus: EnumGroupInviteStatus.Canceled };
   }
 
   @ClientResponse('group.inviteResend')
@@ -1045,10 +1035,8 @@ export class GroupCommonController {
             }
 
             return Promise.resolve({
-              inviteeUser: {
-                id: potentialMemberUser ? potentialMemberUser.id : null,
-              },
-              tempEmail: !potentialMemberUser ? invitee.email : null,
+              inviteeUser: potentialMemberUser,
+              tempEmail: potentialMemberUser?.email,
               group: {
                 id: groupId,
               },

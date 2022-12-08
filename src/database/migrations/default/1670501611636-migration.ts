@@ -8,7 +8,7 @@ export class migration1670501611636 implements MigrationInterface {
             CREATE TYPE "public"."group_invite_member_links_role_enum" AS ENUM('owner', 'basic')
         `);
     await queryRunner.query(`
-            CREATE TYPE "public"."group_invite_member_links_status_enum" AS ENUM('accept', 'reject', 'pending', 'cancel')
+            CREATE TYPE "public"."group_invite_member_links_status_enum" AS ENUM('accepted', 'rejected', 'pending', 'canceled')
         `);
     await queryRunner.query(`
             CREATE TABLE "group_invite_member_links" (
