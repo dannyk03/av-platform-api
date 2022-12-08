@@ -48,10 +48,6 @@ export class ResponseDefaultInterceptor<T = any>
     private readonly configService: ConfigService,
   ) {}
 
-  private instanceOfIResponseData(object: any): object is IResponseData {
-    return isPlainObject(object);
-  }
-
   private isPlainDevResponse(object: any): object is IResponseData {
     return (
       isPlainObject(object) &&
@@ -126,7 +122,7 @@ export class ResponseDefaultInterceptor<T = any>
               dev: Record<string, any>;
             };
             if (response) {
-              if (!this.instanceOfIResponseData(response)) {
+              if (!Object.keys(response).length) {
                 throw new InternalServerErrorException({
                   silent: true,
                   statusCode: EnumInternalStatusCodeError.TypeError,
