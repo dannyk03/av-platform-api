@@ -25,7 +25,7 @@ export class SocialConnectionRequest extends BaseEntity<SocialConnectionRequest>
   addresseeUser?: User;
 
   @Column({
-    length: 30,
+    length: 100,
     nullable: true,
   })
   tempAddresseeEmail?: string;
