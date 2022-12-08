@@ -728,9 +728,9 @@ export class GroupCommonController {
             },
           });
 
-          const saveGroupMember = await transactionalEntityManager.save(
-            createGroupMember,
-          );
+          // const saveGroupMember = await transactionalEntityManager.save(
+          //   createGroupMember,
+          // );
 
           await transactionalEntityManager.update(
             GroupInviteMember,
@@ -743,7 +743,7 @@ export class GroupCommonController {
             },
           );
 
-          return saveGroupMember;
+          return transactionalEntityManager.save(createGroupMember);
         } else {
           const groupInviteLink = await this.groupInviteLinkService.findOne({
             where: { group: { id: groupId } },
@@ -755,7 +755,7 @@ export class GroupCommonController {
             });
           }
 
-          const addedMember = await this.groupMemberService.create({
+          const createGroupMember = await this.groupMemberService.create({
             role: EnumGroupRole.Basic,
             user: {
               id: reqAuthUser.id,
@@ -764,7 +764,7 @@ export class GroupCommonController {
               id: groupId,
             },
           });
-          return this.groupMemberService.save(addedMember);
+          return this.groupMemberService.save(createGroupMember);
         }
       },
     );
