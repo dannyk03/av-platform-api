@@ -28,7 +28,7 @@ import {
 import { isEmail } from 'class-validator';
 import { DataSource } from 'typeorm';
 
-import { GroupInviteMember } from '../entity';
+import { GroupInviteMemberLink } from '../entity';
 import { User } from '@/user/entity';
 
 import {
@@ -635,7 +635,7 @@ export class GroupCommonController {
           await transactionalEntityManager.save(addedMember);
 
           await transactionalEntityManager.update(
-            GroupInviteMember,
+            GroupInviteMemberLink,
             { code: inviteCode },
             { inviteStatus: EnumGroupInviteStatus.Accept },
           );

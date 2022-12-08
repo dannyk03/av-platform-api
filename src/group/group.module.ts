@@ -7,7 +7,7 @@ import { UserModule } from '@/user/user.module';
 import {
   Group,
   GroupInviteLink,
-  GroupInviteMember,
+  GroupInviteMemberLink,
   GroupMember,
 } from './entity';
 
@@ -23,7 +23,7 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Group, GroupMember, GroupInviteMember, GroupInviteLink],
+      [Group, GroupMember, GroupInviteMemberLink, GroupInviteLink],
       ConnectionNames.Default,
     ),
     UserModule,

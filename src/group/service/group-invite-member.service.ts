@@ -8,50 +8,50 @@ import {
   Repository,
 } from 'typeorm';
 
-import { GroupInviteMember } from '../entity';
+import { GroupInviteMemberLink } from '../entity';
 
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class GroupInviteMemberService {
   constructor(
-    @InjectRepository(GroupInviteMember, ConnectionNames.Default)
-    private readonly groupInviteMemberRepository: Repository<GroupInviteMember>,
+    @InjectRepository(GroupInviteMemberLink, ConnectionNames.Default)
+    private readonly groupInviteMemberRepository: Repository<GroupInviteMemberLink>,
   ) {}
 
   async create(
-    member: DeepPartial<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
+    member: DeepPartial<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
     return this.groupInviteMemberRepository.create(member);
   }
 
   async createMany(
-    members: DeepPartial<GroupInviteMember>[],
-  ): Promise<GroupInviteMember[]> {
+    members: DeepPartial<GroupInviteMemberLink>[],
+  ): Promise<GroupInviteMemberLink[]> {
     return this.groupInviteMemberRepository.create(members);
   }
 
   async save(
-    member: DeepPartial<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
+    member: DeepPartial<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
     return this.groupInviteMemberRepository.save(member);
   }
 
   async saveBulk(
-    members: DeepPartial<GroupInviteMember>[],
-  ): Promise<GroupInviteMember[]> {
+    members: DeepPartial<GroupInviteMemberLink>[],
+  ): Promise<GroupInviteMemberLink[]> {
     return this.groupInviteMemberRepository.save(members);
   }
 
   async findOne(
-    find?: FindOneOptions<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
+    find?: FindOneOptions<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
     return this.groupInviteMemberRepository.findOne({ ...find });
   }
 
   async findOneBy(
-    find?: FindOptionsWhere<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
+    find?: FindOptionsWhere<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
     return this.groupInviteMemberRepository.findOneBy({ ...find });
   }
 }

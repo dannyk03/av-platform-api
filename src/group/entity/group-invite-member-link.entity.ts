@@ -8,7 +8,7 @@ import { User } from '@/user/entity';
 
 @Entity()
 @Unique(['code'])
-export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
+export class GroupInviteMemberLink extends BaseEntity<GroupInviteMemberLink> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
@@ -43,7 +43,7 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
     enum: EnumGroupInviteStatus,
     default: EnumGroupInviteStatus.Pending,
   })
-  inviteStatus!: EnumGroupInviteStatus;
+  status!: EnumGroupInviteStatus;
 
   @Index()
   @Column({

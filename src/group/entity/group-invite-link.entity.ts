@@ -5,9 +5,7 @@ import { BaseEntity } from '@/database/entity';
 
 @Entity()
 export class GroupInviteLink extends BaseEntity<GroupInviteLink> {
-  @ManyToOne(() => Group, {
-    cascade: true,
-  })
+  @ManyToOne(() => Group)
   @JoinColumn()
   group!: Group;
 
