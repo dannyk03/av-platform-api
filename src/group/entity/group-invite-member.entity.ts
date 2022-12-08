@@ -8,7 +8,9 @@ import { User } from '@/user/entity';
 
 @Entity()
 @Unique('uq_group_id_temp_email', ['group', 'tempEmail'])
+@Unique('uq_group_id_user_id_status', ['group', 'inviteeUser', 'inviteStatus'])
 export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
+  //GroupInviteMemberLink
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',

@@ -1,22 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsNotEmpty,
-  IsObject,
   ValidateNested,
 } from 'class-validator';
-import { isArray } from 'lodash';
 
 import {
+  ArrayTransform,
   NormalizeEmail,
   UniqueArrayByTransform,
 } from '@/utils/request/transform';
 
-class MemberDto {
+class GroupInviteeDto {
   @NormalizeEmail()
   readonly email: string;
 }
@@ -24,15 +22,11 @@ class MemberDto {
 export class GroupInviteMemberDto {
   @ArrayMinSize(1)
   @ArrayMaxSize(100)
-  @IsNotEmpty({ each: true })
-  @IsObject({ each: true })
   @IsArray()
-  @Transform(({ value }) => {
-    return isArray(value) ? value : [value];
-  })
+  @ArrayTransform()
   @UniqueArrayByTransform('email')
-  @ValidateNested()
-  @Type(() => MemberDto)
+  @ValidateNested({ each: true })
+  @Type(() => GroupInviteeDto)
   @ApiProperty()
-  readonly members: MemberDto[];
+  readonly invitees: GroupInviteeDto[];
 }

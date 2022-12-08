@@ -26,10 +26,10 @@ import {
   IResponsePagingData,
 } from '@avo/type';
 
-import { isEmail } from 'class-validator';
+import { isEmail, isString } from 'class-validator';
 import { DataSource } from 'typeorm';
 
-import { GroupInviteMember } from '../entity';
+import { GroupInviteMember, GroupMember } from '../entity';
 import { User } from '@/user/entity';
 
 import {
@@ -41,7 +41,11 @@ import {
 import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
-import { HelperDateService, HelperHashService } from '@/utils/helper/service';
+import {
+  HelperDateService,
+  HelperHashService,
+  HelperPromiseService,
+} from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { CanAccessAsGroupMember } from '../decorator';
@@ -100,7 +104,27 @@ export class GroupCommonController {
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    private readonly helperPromiseService: HelperPromiseService,
   ) {}
+
+  private async mapGroupInvitePromiseBasedResultToResponseReport(
+    result: PromiseSettledResult<GroupInviteMember>[],
+  ) {
+    return result.reduce((acc, promiseValue) => {
+      if ('value' in promiseValue) {
+        acc[
+          promiseValue.value?.['inviteeUser']?.['email'] ||
+            promiseValue.value?.['tempEmail']
+        ] = 'success';
+      } else if ('reason' in promiseValue) {
+        acc[
+          promiseValue.reason?.['inviteeUser']?.['email'] ||
+            promiseValue.reason?.['tempEmail']
+        ] = 'fail';
+      }
+      return acc;
+    }, {});
+  }
 
   @ClientResponse('group.create', {
     classSerialization: GroupGetSerialization,
@@ -629,7 +653,7 @@ export class GroupCommonController {
     reqAuthUser: User,
     @Query() { code, type }: GroupInviteAcceptRefDto,
   ): Promise<IResponseData> {
-    const groupInvite = await this.groupInviteMemberService.findOne({
+    const groupInviteMemberLink = await this.groupInviteMemberService.findOne({
       where: [
         {
           code,
@@ -652,25 +676,16 @@ export class GroupCommonController {
       },
     });
 
-    if (!groupInvite) {
+    if (!groupInviteMemberLink) {
       throw new BadRequestException({
         statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
         message: 'group.error.unprocessable',
       });
     }
 
-    const groupId = groupInvite.group.id;
+    const groupId = groupInviteMemberLink.group.id;
 
-    const isGroupExist = await this.groupService.findOneBy({ id: groupId });
-
-    if (!isGroupExist) {
-      throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
-        message: 'group.error.notFound',
-      });
-    }
-
-    const isExist = await this.groupMemberService.findOne({
+    const findGroupMember = await this.groupMemberService.findOne({
       where: {
         group: {
           id: groupId,
@@ -680,10 +695,11 @@ export class GroupCommonController {
         },
       },
     });
-    if (isExist) {
+
+    if (findGroupMember) {
       throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
-        message: 'group.error.unprocessable',
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError, // Add new type
+        message: 'group.error.alreadyMember',
       });
     }
 
@@ -691,23 +707,9 @@ export class GroupCommonController {
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         if (type == EnumAddGroupMemberType.PersonalInvite) {
-          const invitedUser = await this.groupInviteMemberService.findOne({
-            where: {
-              inviteeUser: {
-                id: reqAuthUser.id,
-              },
-              code,
-            },
-          });
-          if (!invitedUser) {
-            throw new BadRequestException({
-              statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
-              message: 'group.error.inviteNotExists',
-            });
-          }
           const now = this.helperDateService.create();
           const expiresAt = this.helperDateService.create({
-            date: invitedUser.expiresAt,
+            date: groupInviteMemberLink.expiresAt,
           });
 
           if (expiresAt && now > expiresAt) {
@@ -716,7 +718,7 @@ export class GroupCommonController {
               message: 'group.error.inviteExpired',
             });
           }
-          const addedMember = await this.groupMemberService.create({
+          const createGroupMember = await this.groupMemberService.create({
             role: EnumGroupRole.Basic,
             user: {
               id: reqAuthUser.id,
@@ -726,15 +728,22 @@ export class GroupCommonController {
             },
           });
 
-          await transactionalEntityManager.save(addedMember);
+          const saveGroupMember = await transactionalEntityManager.save(
+            createGroupMember,
+          );
 
           await transactionalEntityManager.update(
             GroupInviteMember,
             { code },
-            { inviteStatus: EnumGroupInviteStatus.Accept },
+            {
+              inviteStatus: EnumGroupInviteStatus.Accept,
+              ...(!groupInviteMemberLink?.inviteeUser?.id && {
+                inviteeUser: reqAuthUser,
+              }),
+            },
           );
 
-          return addedMember;
+          return saveGroupMember;
         } else {
           const groupInviteLink = await this.groupInviteLinkService.findOne({
             where: { group: { id: groupId } },
@@ -760,7 +769,7 @@ export class GroupCommonController {
       },
     );
 
-    return result;
+    return { dev: result };
   }
 
   @ClientResponse('group.inviteReject')
@@ -842,14 +851,15 @@ export class GroupCommonController {
   ): Promise<IResponseData> {
     const invite = await this.groupInviteMemberService.findOne({
       where: {
+        id: inviteId,
         inviterUser: {
           id: reqAuthUser.id,
         },
-        id: inviteId,
         inviteStatus: EnumGroupInviteStatus.Pending,
       },
       relations: ['user', 'user.profile'],
       select: {
+        tempEmail: true,
         inviteeUser: {
           email: true,
           profile: {
@@ -862,7 +872,7 @@ export class GroupCommonController {
     if (!invite) {
       throw new BadRequestException({
         statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
-        message: 'group.error.unprocessable',
+        message: 'group.error.invite.unprocessable',
       });
     }
 
@@ -875,12 +885,18 @@ export class GroupCommonController {
 
         const invitedUser = invite.inviteeUser;
 
-        const emailSent = await this.emailService.sendGroupInviteEmail({
-          email: invitedUser.email,
-          code: invite.code,
-          expiresInDays,
-          firstName: invitedUser.profile.firstName,
-        });
+        const emailSent = invitedUser
+          ? await this.emailService.sendGroupInviteEmailExistingUser({
+              email: invitedUser.email,
+              code: invite.code,
+              expiresInDays,
+              firstName: invitedUser.profile.firstName,
+            })
+          : await this.emailService.sendGroupInviteEmailNewUser({
+              email: invite.tempEmail,
+              code: invite.code,
+              expiresInDays,
+            });
 
         if (!emailSent) {
           throw new InternalServerErrorException({
@@ -911,7 +927,7 @@ export class GroupCommonController {
     @ReqAuthUser()
     { id: userId }: User,
     @Body()
-    { members }: GroupInviteMemberDto,
+    { invitees }: GroupInviteMemberDto,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
     const findGroup = await this.groupService.findGroup({
@@ -934,20 +950,27 @@ export class GroupCommonController {
           'group.groupInviteCodeExpiresInDays',
         );
 
-        const inviteMembers = await Promise.all(
-          members.map(async (member) => {
+        const inviteMembersData = await Promise.all(
+          invitees.map(async (invitee) => {
             const potentialMemberUser = await this.userService.findOne({
               where: {
-                email: member.email,
+                email: invitee.email,
+              },
+              relations: {
+                profile: true,
               },
               select: {
                 id: true,
                 email: true,
+                profile: {
+                  id: true,
+                  firstName: true,
+                },
               },
             });
 
             if (potentialMemberUser) {
-              const isExistOne = await this.groupMemberService.findOne({
+              const existingMember = await this.groupMemberService.findOne({
                 where: {
                   group: {
                     id: groupId,
@@ -956,18 +979,19 @@ export class GroupCommonController {
                     id: potentialMemberUser.id,
                   },
                 },
+                select: {
+                  id: true,
+                },
               });
-              if (isExistOne) {
-                throw new BadRequestException({
-                  statusCode:
-                    EnumGroupStatusCodeError.GroupInviteMemberAlreadyExistsError,
-                  message: 'group.error.memberExists',
-                });
+
+              if (existingMember) {
+                return Promise.resolve(existingMember);
               }
             }
 
-            const isInviteExist = await this.groupInviteMemberService.findOne({
+            const existingInvite = await this.groupInviteMemberService.findOne({
               where: {
+                inviteStatus: EnumGroupInviteStatus.Pending,
                 group: {
                   id: groupId,
                 },
@@ -977,23 +1001,35 @@ export class GroupCommonController {
                         id: potentialMemberUser?.id,
                       },
                     }
-                  : { tempEmail: member.email }),
+                  : { tempEmail: invitee.email }),
+              },
+              relations: {
+                group: true,
+                inviteeUser: true,
+              },
+              select: {
+                id: true,
+                code: true,
+                group: {
+                  id: true,
+                },
+                tempEmail: true,
+                inviteeUser: {
+                  id: true,
+                  email: true,
+                },
               },
             });
 
-            if (isInviteExist) {
-              throw new BadRequestException({
-                statusCode:
-                  EnumGroupStatusCodeError.GroupInviteUnprocessableError,
-                message: 'group.error.inviteAlreadyExists',
-              });
+            if (existingInvite) {
+              return Promise.resolve(existingInvite);
             }
 
-            return {
+            return Promise.resolve({
               inviteeUser: {
                 id: potentialMemberUser ? potentialMemberUser.id : null,
               },
-              tempEmail: !potentialMemberUser ? member.email : null,
+              tempEmail: !potentialMemberUser ? invitee.email : null,
               group: {
                 id: groupId,
               },
@@ -1001,59 +1037,133 @@ export class GroupCommonController {
                 id: userId,
               },
               role: EnumGroupRole.Basic,
-              code: await this.helperHashService.magicCode(), // TODO check beforeInsert?
+              code: await this.helperHashService.magicCode(),
               expiresAt: this.helperDateService.forwardInDays(expiresInDays),
-            };
+            });
           }),
         );
 
-        const groupMembersInvite =
-          await this.groupInviteMemberService.createMany(inviteMembers);
+        const {
+          resolved,
+          nonExistingUserInvitesData,
+          existingUsersInvitesDat,
+        } = inviteMembersData.reduce(
+          (acc, curr) => {
+            if (
+              curr instanceof GroupInviteMember ||
+              curr instanceof GroupMember
+            ) {
+              acc.resolved.push(curr);
+            } else if (Boolean(curr.tempEmail)) {
+              acc.nonExistingUserInvitesData.push(curr);
+            } else {
+              acc.existingUsersInvitesDat.push(curr);
+            }
+            return acc;
+          },
+          {
+            resolved: [],
+            nonExistingUserInvitesData: [],
+            existingUsersInvitesDat: [],
+          },
+        );
 
-        await transactionalEntityManager.save(groupMembersInvite);
+        const nonExistingUsersRes = await Promise.allSettled(
+          nonExistingUserInvitesData.map(async (inviteData) => {
+            const createInvite = await this.groupInviteMemberService.create(
+              inviteData,
+            );
 
-        await Promise.all([
-          inviteMembers.map(async (member) => {
-            const invitedUser = await this.userService.findOne({
+            const saveInvite = await transactionalEntityManager.save(
+              createInvite,
+            );
+
+            const emailSent =
+              await this.emailService.sendGroupInviteEmailNewUser({
+                email: saveInvite.tempEmail,
+                code: saveInvite.code,
+                expiresInDays,
+              });
+
+            return Promise.reject(saveInvite);
+            if (!emailSent) {
+              return Promise.reject(saveInvite);
+            }
+            return Promise.resolve(saveInvite);
+          }),
+        );
+
+        const existingUsersRes = await Promise.allSettled(
+          existingUsersInvitesDat.map(async (inviteData) => {
+            const createInvite = await this.groupInviteMemberService.create(
+              inviteData,
+            );
+
+            const saveInvite = await transactionalEntityManager.save(
+              createInvite,
+            );
+
+            const findInviteeUser = await this.userService.findOne({
               where: {
-                id: member.inviteeUser.id,
+                id: saveInvite.inviteeUser.id,
               },
-              relations: ['profile'],
+              relations: {
+                profile: true,
+              },
               select: {
+                id: true,
                 profile: {
+                  id: true,
                   firstName: true,
                 },
               },
             });
-            const emailSent = await this.emailService.sendGroupInviteEmail({
-              email: invitedUser.email,
-              code: member.code,
-              expiresInDays,
-              firstName: invitedUser.profile.firstName,
-            });
+
+            const emailSent =
+              await this.emailService.sendGroupInviteEmailExistingUser({
+                email: saveInvite.inviteeUser.email,
+                firstName: findInviteeUser.profile.firstName,
+                code: saveInvite.code,
+                expiresInDays,
+              });
 
             if (!emailSent) {
-              throw new InternalServerErrorException({
-                statusCode:
-                  EnumMessagingStatusCodeError.MessagingEmailSendError,
-                message: 'messaging.error.email.send',
-              });
+              return Promise.reject(saveInvite);
             }
+            return Promise.resolve(saveInvite);
           }),
-        ]);
+        );
 
-        // For local development/testing
-        const isDevelopment =
-          this.configService.get<boolean>('app.isDevelopment');
-        const isSecureMode: boolean =
-          this.configService.get<boolean>('app.isSecureMode');
+        const resolvedRes = await Promise.allSettled(
+          resolved.map((inviteData) => Promise.resolve(inviteData)),
+          // It's possible to resend email here, skip for now if already email sent once
+        );
 
-        if (isDevelopment || !isSecureMode) {
-          return { inviteMembers };
-        }
+        return { resolvedRes, existingUsersRes, nonExistingUsersRes };
       },
     );
 
-    return result;
+    return {
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.nonExistingUsersRes,
+      )),
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.existingUsersRes,
+      )),
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.resolvedRes,
+      )),
+      dev: [
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.nonExistingUsersRes,
+        )),
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.existingUsersRes,
+        )),
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.resolvedRes,
+        )),
+      ],
+    };
   }
 }

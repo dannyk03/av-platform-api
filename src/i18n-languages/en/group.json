@@ -26,6 +26,10 @@
     "inviteNotExists": "Group member invite expired",
     "inviteAlreadyExists": "Group member already invited",
     "groupCode": "Group shareable code is incorrect",
-    "unprocessable": "Unprocessable"
+    "unprocessable": "Unprocessable",
+    "alreadyMember": "The user is already a member of the group.",
+    "invite": {
+      "unprocessable": "Unprocessable invite"
+    }
   }
 }
