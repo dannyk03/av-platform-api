@@ -23,10 +23,10 @@ import {
   GiftOptionSelectMessageData,
   GiftShippingDetails,
   GiftStatusUpdateMessageData,
-  SurveyCompletedMessageData,
-  SurveyInvitationMessageData,
   GroupInviteExistingUserMessageData,
   GroupInviteNewUserMessageData,
+  SurveyCompletedMessageData,
+  SurveyInvitationMessageData,
 } from '../constant';
 
 import {
@@ -699,46 +699,6 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  // async sendGroupInviteEmail({
-  //   email,
-  //   firstName,
-  //   code,
-  //   expiresInDays,
-  //   path = '/group-invite',
-  // }: {
-  //   email: string;
-  //   firstName: string;
-  //   code: string;
-  //   expiresInDays: number;
-  //   path?: string;
-  // }): Promise<boolean> {
-  //   // Stub for local development
-  //   if (this.isDevelopment) {
-  //     return true;
-  //   }
-
-  //   // TODO: Add server url to payload
-  //   const sendResult = await this.customerIOService.sendEmail({
-  //     template: EmailTemplate.SendGroupInvite.toString(),
-  //     to: [email],
-  //     emailTemplatePayload: {
-  //       path,
-  //       code,
-  //       user: { firstName },
-  //       transport: {
-  //         origin: this.origin,
-  //       },
-  //     },
-  //     identifier: { id: email },
-  //   });
-
-  //   return sendResult.status === EmailStatus.success;
-  // }
-
-  //
-  //
-  //
-
   async sendGroupInviteEmailNewUser({
     email,
     code,
@@ -854,7 +814,6 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-
   async sendGroupInviteExistingUser({
     inviteeUser,
     inviterUser,
@@ -906,6 +865,4 @@ export class EmailService {
 
     return sendResult.status === EmailStatus.success;
   }
-
-
 }

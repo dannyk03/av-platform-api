@@ -1,6 +1,3 @@
-import { Group, GroupMember } from "@/group/entity";
-import { User } from "@/user/entity";
-
 export enum EmailTemplate {
   // ================= MVP =================
   // - gift option select
@@ -36,7 +33,6 @@ export enum EmailTemplate {
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
   SendGroupInviteNewUser = 'Group Invite - New User', // TODO: verify the context
   SendGroupInviteExistingUser = 'Group Invite - Existing User', // TODO: verify the context
-
 }
 
 export enum EmailStatus {
