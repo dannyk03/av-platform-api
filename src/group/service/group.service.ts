@@ -23,11 +23,14 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { Group } from '../entity';
 
-import { HelperHashService, HelperStringService } from '@/utils/helper/service';
+import { GroupMemberService } from './group-member.service';
+import { HelperStringService } from '@/utils/helper/service';
 
 import { IGroupSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
+
+import { CommonGroupsTransformRowQuery } from '../transform';
 
 @Injectable()
 export class GroupService {
@@ -37,8 +40,25 @@ export class GroupService {
     @InjectRepository(Group, ConnectionNames.Default)
     private readonly groupRepository: Repository<Group>,
     private readonly helperStringService: HelperStringService,
-    private readonly helperHashService: HelperHashService,
+    private readonly groupMemberService: GroupMemberService,
   ) {}
+
+  async findCommonGroups({
+    user1Id,
+    user2Id,
+    options,
+  }: {
+    user1Id: string;
+    user2Id: string;
+    options?: { onlyCount: boolean };
+  }): Promise<{ count: number } | CommonGroupsTransformRowQuery[]> {
+    const onlyCount = options?.onlyCount ?? true;
+    return this.groupMemberService.findCommonGroups({
+      user1Id,
+      user2Id,
+      options: { onlyCount },
+    });
+  }
 
   private async getNotEmptyArrayOfSomethingFromUserProfile({
     groupId,
@@ -63,9 +83,11 @@ export class GroupService {
                   ON g.id = m.group_id
       LEFT JOIN public.users AS u
                   ON m.user_id = u.id
-        LEFT JOIN public.user_profiles AS up
+      LEFT JOIN public.user_profiles AS up
                   ON up.user_id = u.id
-      WHERE g.id = $1 AND cardinality(up.${snakeCase(column)}) > 0
+      WHERE g.id = $1 AND cardinality(up.${snakeCase(
+        column,
+      )}) > 0 AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
       ORDER BY up.created_at
       LIMIT ${LIMIT} OFFSET ${OFFSET}
     `,
@@ -194,7 +216,7 @@ export class GroupService {
         'group',
         'member.id',
         'member.role',
-        'user.email',
+        'user.id',
         'userProfile.firstName',
         'userProfile.lastName',
       ])
@@ -301,13 +323,13 @@ export class GroupService {
 
     return this.defaultDataSource.query(
       `
-      SELECT role, user_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month, e_type AS type, u_created_at AS created_at
+      SELECT role, user_id, profile_id, email, first_name, last_name, CAST(e_day AS INT) AS day, CAST(e_month AS INT) AS month,  CAST(e_year AS INT) AS year, e_date AS date, e_type AS type, u_created_at AS created_at
       FROM
       (
-        SELECT role, user_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
+        SELECT role, user_id, profile_id, email, first_name, last_name, e_day, e_month, e_type, e_year, make_date(CAST(e_year AS INT), CAST(e_month AS INT), CAST(e_day AS INT)) AS e_date, u_created_at
         FROM
         (
-          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at, up.id AS profile_id,
           up.first_name, up.last_name, up.birth_day AS e_day, up.birth_month AS e_month, upcoming_event_year(CAST(up.birth_day AS INT), CAST(up.birth_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.Birthday}' AS e_type
           FROM public.groups AS g
             LEFT JOIN public.group_members AS m
@@ -316,9 +338,9 @@ export class GroupService {
               ON m.user_id = u.id
             LEFT JOIN public.user_profiles AS up
               ON up.user_id = u.id
-          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL
+          WHERE g.id = $1 AND up.birth_day IS NOT NULL AND up.birth_month IS NOT NULL AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
           UNION
-          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at,
+          SELECT m.role, m.user_id, u.email, u.created_at AS u_created_at, up.id AS profile_id,
             up.first_name, up.last_name, up.work_anniversary_day AS e_day,
             up.work_anniversary_month AS e_month, upcoming_event_year(CAST(up.work_anniversary_day AS INT), CAST(up.work_anniversary_month AS INT)) AS e_year, '${EnumGroupUpcomingMilestoneType.WorkAnniversary}' AS e_type
           FROM public.groups AS g
@@ -328,7 +350,7 @@ export class GroupService {
               ON m.user_id = u.id
             LEFT JOIN public.user_profiles AS up
               ON up.user_id = u.id
-          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL
+          WHERE g.id = $1 AND up.work_anniversary_day IS NOT NULL AND up.work_anniversary_month IS NOT NULL AND g.deleted_at IS NULL AND u.deleted_at IS NULL AND m.deleted_at IS NULL AND up.deleted_at IS NULL
         ) AS temp_events
       ) AS events
       WHERE e_date <= NOW() + ($2 || 'DAY')::INTERVAL

@@ -180,8 +180,7 @@ export type ConnectionRequestExistingUserMessageData = {
   receivingUser: {
     firstName: string;
   };
-  connectionApproveLink: string;
-  connectionRejectLink: string;
+  personalNote: string;
   connectionId: string;
 };
 

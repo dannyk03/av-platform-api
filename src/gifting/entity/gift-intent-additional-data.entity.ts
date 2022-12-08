@@ -26,4 +26,9 @@ export class GiftIntentAdditionalData extends BaseEntity<GiftIntentAdditionalDat
     enum: EnumOccasion,
   })
   occasion: EnumOccasion;
+
+  @Column({
+    nullable: true,
+  })
+  targetDate: Date;
 }

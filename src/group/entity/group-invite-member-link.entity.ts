@@ -7,14 +7,21 @@ import { BaseEntity } from '@/database/entity';
 import { User } from '@/user/entity';
 
 @Entity()
-@Unique(['code'])
+@Unique('uq_group_id_temp_email', ['group', 'tempEmail'])
+@Unique('uq_group_id_user_id_status', ['group', 'inviteeUser', 'status'])
 export class GroupInviteMemberLink extends BaseEntity<GroupInviteMemberLink> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
     nullable: true,
   })
-  user?: User;
+  inviteeUser?: User;
+
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  inviterUser: User;
 
   @ManyToOne(() => Group, (group) => group.members, {
     onDelete: 'CASCADE',
@@ -47,7 +54,6 @@ export class GroupInviteMemberLink extends BaseEntity<GroupInviteMemberLink> {
 
   @Index()
   @Column({
-    unique: true,
     length: 50,
     nullable: true,
   })

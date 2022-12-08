@@ -487,7 +487,7 @@ export class GroupCommonController {
       users = await Promise.all(
         users.map(async (u) => {
           const isConnectedUser =
-            await this.socialConnectionService.checkIsBiDirectionalSocialConnected(
+            await this.socialConnectionService.checkIsBiDirectionalSocialConnectedByEmails(
               {
                 user1Email: reqUser.email,
                 user2Email: u.email,

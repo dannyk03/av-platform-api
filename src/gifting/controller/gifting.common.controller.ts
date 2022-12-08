@@ -34,8 +34,8 @@ import {
   GiftIntentService,
   GiftSubmitService,
 } from '../service';
+import { ConnectionService } from '@/connection/service';
 import { EmailService } from '@/messaging/email/service';
-import { SocialConnectionService } from '@/networking/service';
 import { GiftOrderService } from '@/order/service';
 import { UserService } from '@/user/service';
 import { HelperDateService } from '@/utils/helper/service';
@@ -74,7 +74,7 @@ export class GiftingCommonController {
     private readonly userService: UserService,
     private readonly giftConfirmationLinkService: GiftIntentConfirmationLinkService,
     private readonly paginationService: PaginationService,
-    private readonly socialConnectionService: SocialConnectionService,
+    private readonly connectionService: ConnectionService,
     private readonly giftOrderService: GiftOrderService,
   ) {}
 
@@ -101,7 +101,7 @@ export class GiftingCommonController {
       async (transactionalEntityManager) => {
         const giftIntents = await Promise.all(
           uniqueRecipients.map(async (recipient) => {
-            if (recipient.email === reqUser.email) {
+            if (recipient.userId === reqUser.id) {
               throw new BadRequestException({
                 statusCode:
                   EnumGiftingStatusCodeError.GiftSendUnprocessableError,
@@ -109,15 +109,14 @@ export class GiftingCommonController {
               });
             }
 
-            const isSocialConnected =
-              await this.socialConnectionService.checkIsBiDirectionalSocialConnected(
-                {
-                  user1Email: reqUser.email,
-                  user2Email: recipient.email,
-                },
-              );
+            const isConnected = await this.connectionService.checkConnection({
+              user1Id: reqUser.id,
+              user2Id: recipient.userId,
+            });
 
-            if (!isSocialConnected) {
+            if (
+              !(isConnected.networkConnection || isConnected.groupConnection)
+            ) {
               throw new BadRequestException({
                 statusCode:
                   EnumGiftingStatusCodeError.GiftSendNotSocialConnectionError,
@@ -125,11 +124,16 @@ export class GiftingCommonController {
               });
             }
 
-            const maybeRecipientUser = await this.userService.findOneBy({
-              email: recipient.email,
+            const recipientUser = await this.userService.findOne({
+              where: {
+                id: recipient.userId,
+              },
+              select: {
+                id: true,
+              },
             });
 
-            if (!maybeRecipientUser) {
+            if (!recipientUser) {
               throw new BadRequestException({
                 statusCode:
                   EnumGiftingStatusCodeError.GiftRecipientNotFoundError,
@@ -144,23 +148,24 @@ export class GiftingCommonController {
                 },
               },
               recipient: {
-                user: maybeRecipientUser ? { id: maybeRecipientUser.id } : null,
+                user: recipientUser,
               },
               additionalData: {
                 occasion: additionalData.occasion,
                 priceMin: additionalData.minPrice,
                 priceMax: additionalData.maxPrice,
                 currency: { code: additionalData.currency },
+                targetDate: additionalData.targetDate,
               },
             });
           }),
         );
 
-        // If sender email not verified, need to confirm gift send
+        // If sender email/phone not verified, need to confirm gift send
 
-        const isSenderVerifiedUser = Boolean(
-          reqUser?.authConfig.emailVerifiedAt,
-        );
+        const isSenderVerifiedUser =
+          reqUser?.authConfig.emailVerifiedAt ||
+          reqUser?.authConfig.phoneVerifiedAt;
 
         let confirmationLinkSave: GiftIntentConfirmationLink;
 
@@ -213,12 +218,7 @@ export class GiftingCommonController {
       },
     );
 
-    // For local development/testing
-    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
-    const isSecureMode = this.configService.get<boolean>('app.isSecureMode');
-    if (isDevelopment || !isSecureMode) {
-      return result;
-    }
+    return { dev: result };
   }
 
   @ClientResponsePaging('gift.intent.list', {
