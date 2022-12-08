@@ -7,6 +7,8 @@ import {
 
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
+import { EnumUserSerializationGroup } from './constant';
+
 // implements IUserOrganizationGetSerialization
 @Exclude()
 export class UserOrganizationGetSerialization
@@ -40,9 +42,11 @@ export class UserAuthConfigGetSerialization
 {
   @Expose()
   readonly emailVerifiedAt: Date;
+
+  @Expose()
+  readonly phoneVerifiedAt: Date;
 }
 
-// implements IUserGetSerialization
 @Exclude()
 export class UserGetSerialization implements IUserGetSerialization {
   @Expose()
@@ -51,7 +55,7 @@ export class UserGetSerialization implements IUserGetSerialization {
   @Expose()
   readonly email: string;
 
-  @Expose()
+  @Expose({ groups: [EnumUserSerializationGroup.System] })
   readonly phoneNumber: string;
 
   @Expose()
@@ -60,7 +64,7 @@ export class UserGetSerialization implements IUserGetSerialization {
   @Expose()
   readonly createdAt: Date;
 
-  @Expose()
+  @Expose({ groups: [EnumUserSerializationGroup.System] })
   readonly updatedAt: Date;
 
   @Expose()
@@ -83,7 +87,7 @@ export class UserGetSerialization implements IUserGetSerialization {
   @Type(() => UserRoleGetSerialization)
   readonly role: UserRoleGetSerialization;
 
-  @Expose()
+  @Expose({ groups: [EnumUserSerializationGroup.System] })
   @Type(() => UserAuthConfigGetSerialization)
   readonly authConfig: UserAuthConfigGetSerialization;
 }
