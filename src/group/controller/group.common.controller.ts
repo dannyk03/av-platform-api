@@ -59,6 +59,8 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { DeepPartial } from 'utility-types';
+
 import {
   GroupCreateDto,
   GroupDesiredSkillsListDto,
@@ -108,7 +110,7 @@ export class GroupCommonController {
   ) {}
 
   private async mapGroupInvitePromiseBasedResultToResponseReport(
-    result: PromiseSettledResult<GroupInviteMemberLink>[],
+    result: PromiseSettledResult<DeepPartial<GroupInviteMemberLink>>[],
   ) {
     return result.reduce((acc, promiseValue) => {
       if ('value' in promiseValue) {
@@ -699,7 +701,7 @@ export class GroupCommonController {
 
     if (findGroupMember) {
       throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupAlreadyMemberError, // Add new type
+        statusCode: EnumGroupStatusCodeError.GroupAlreadyMemberError,
         message: 'group.error.alreadyMember',
       });
     }
@@ -980,8 +982,20 @@ export class GroupCommonController {
                     id: potentialMemberUser.id,
                   },
                 },
+                relations: {
+                  user: true,
+                  group: true,
+                },
                 select: {
                   id: true,
+                  role: true,
+                  user: {
+                    id: true,
+                    email: true,
+                  },
+                  group: {
+                    id: true,
+                  },
                 },
               });
 
@@ -1016,6 +1030,9 @@ export class GroupCommonController {
                     id: true,
                   },
                   tempEmail: true,
+                  inviterUser: {
+                    id: true,
+                  },
                   inviteeUser: {
                     id: true,
                     email: true,
@@ -1080,18 +1097,32 @@ export class GroupCommonController {
               createInvite,
             );
 
+            const { code, inviteeUser, group, inviterUser, tempEmail } =
+              saveInvite;
+
             const emailSent =
               await this.emailService.sendGroupInviteEmailNewUser({
-                email: saveInvite.tempEmail,
-                code: saveInvite.code,
+                email: tempEmail,
+                code,
                 expiresInDays,
               });
 
-            return Promise.reject(saveInvite);
             if (!emailSent) {
-              return Promise.reject(saveInvite);
+              return Promise.reject({
+                code,
+                inviteeUser,
+                inviterUser,
+                group,
+                tempEmail,
+              });
             }
-            return Promise.resolve(saveInvite);
+            return Promise.resolve({
+              code,
+              inviteeUser,
+              inviterUser,
+              group,
+              tempEmail,
+            });
           }),
         );
 
