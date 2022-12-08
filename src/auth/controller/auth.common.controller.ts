@@ -342,7 +342,9 @@ export class AuthCommonController {
     tags: ['signup', 'auth', 'resend', 'email'],
   })
   @Post('/signup-resend')
-  async signUpResendEmail(@Body() { email }: AuthResendSignupEmailDto) {
+  async signUpResendEmail(
+    @Body() { email }: AuthResendSignupEmailDto,
+  ): Promise<IResponseData> {
     const findAuthSignUpVerificationLink =
       await this.authSignUpVerificationLinkService.findOne({
         where: { user: { email } },
@@ -377,13 +379,11 @@ export class AuthCommonController {
       });
     }
 
-    // For local development/testing
-    const isDevelopment = this.configService.get<boolean>('app.isDevelopment');
-    const isSecureMode: boolean =
-      this.configService.get<boolean>('app.isSecureMode');
-    if (isDevelopment || !isSecureMode) {
-      return { code: findAuthSignUpVerificationLink.code };
-    }
+    return {
+      dev: {
+        code: findAuthSignUpVerificationLink.code,
+      },
+    };
   }
 
   @ClientResponse('auth.signUp')
@@ -399,8 +399,6 @@ export class AuthCommonController {
   })
   @Post('/signup')
   async signUp(
-    @Res({ passthrough: true })
-    response: Response,
     @Body()
     {
       password,
@@ -630,15 +628,7 @@ export class AuthCommonController {
           },
         });
 
-        // For local development/testing
-        const isDevelopment =
-          this.configService.get<boolean>('app.isDevelopment');
-        const isSecureMode: boolean =
-          this.configService.get<boolean>('app.isSecureMode');
-
-        if (isDevelopment || !isSecureMode) {
-          return { code: signUpEmailVerificationLink.code };
-        }
+        return { dev: { code: signUpEmailVerificationLink.code } };
       },
     );
 

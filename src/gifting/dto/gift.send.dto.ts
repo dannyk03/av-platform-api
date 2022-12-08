@@ -2,74 +2,32 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { EnumCurrency, EnumOccasion } from '@avo/type';
 
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsEmail,
+  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
-  IsString,
+  IsUUID,
   Max,
-  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
-import { isArray } from 'lodash';
 
 import {
-  EmptyStringToUndefinedTransform,
-  NormalizeEmail,
-  NormalizeStringInputTransform,
+  ArrayTransform,
+  UniqueArrayByTransform,
 } from '@/utils/request/transform';
 import { MinGreaterThan } from '@/utils/request/validation';
 
 export class GiftSendRecipientDto {
-  @NormalizeEmail()
-  readonly email: string;
-
-  // @MaxLength(30)
-  // @IsOptional()
-  // @NormalizeStringInputTransform()
-  // @EmptyStringToUndefinedTransform()
-  // readonly firstName?: string;
-
-  // @MaxLength(30)
-  // @IsOptional()
-  // @NormalizeStringInputTransform()
-  // @EmptyStringToUndefinedTransform()
-  // readonly lastName?: string;
-}
-export class GiftSendSenderDto {
-  @MaxLength(50)
-  @IsEmail()
-  @NormalizeEmail()
-  readonly email: string;
-
-  @MaxLength(30)
-  @IsOptional()
-  @IsString()
-  @NormalizeStringInputTransform()
-  @EmptyStringToUndefinedTransform()
-  readonly firstName?: string;
-
-  @MaxLength(30)
-  @IsOptional()
-  @IsString()
-  @NormalizeStringInputTransform()
-  @EmptyStringToUndefinedTransform()
-  readonly lastName?: string;
-
-  @MaxLength(50)
-  @IsOptional()
-  @IsString()
-  @NormalizeStringInputTransform()
-  @EmptyStringToUndefinedTransform()
-  readonly organizationName?: string;
+  @IsUUID()
+  readonly userId: string;
 }
 
 export class GiftAdditionalDataDto {
@@ -98,6 +56,11 @@ export class GiftAdditionalDataDto {
   @IsEnum(EnumOccasion)
   @ApiProperty()
   readonly occasion: EnumOccasion;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsDateString()
+  targetDate: string;
 }
 
 export class GiftSendDto {
@@ -107,17 +70,11 @@ export class GiftSendDto {
   @IsObject({ each: true })
   @IsArray()
   @ValidateNested({ each: true })
-  @Transform(({ value }) => {
-    return isArray(value) ? value : [value];
-  })
+  @UniqueArrayByTransform('userId')
+  @ArrayTransform()
   @Type(() => GiftSendRecipientDto)
   @ApiProperty()
   readonly recipients: GiftSendRecipientDto[];
-
-  // @IsObject()
-  // @ValidateNested()
-  // @Type(() => GiftSendSenderDto)
-  // readonly sender: GiftSendSenderDto;
 
   @IsObject()
   @IsNotEmpty()
