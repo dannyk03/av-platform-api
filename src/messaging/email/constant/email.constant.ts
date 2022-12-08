@@ -34,9 +34,9 @@ export enum EmailTemplate {
   SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest', // TODO: verify the context
   SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
-  SendGroupInvite = 'Group Invite', // TODO: verify the context
-  SendGroupInviteNewUser = 'Group Invite New User',
-  SendGroupInviteExistingUser = 'Group Invite Existing User',
+  SendGroupInviteNewUser = 'Group Invite - New User', // TODO: verify the context
+  SendGroupInviteExistingUser = 'Group Invite - Existing User', // TODO: verify the context
+
 }
 
 export enum EmailStatus {
@@ -185,8 +185,7 @@ export type ConnectionRequestExistingUserMessageData = {
   receivingUser: {
     firstName: string;
   };
-  connectionApproveLink: string;
-  connectionRejectLink: string;
+  personalNote: string;
   connectionId: string;
 };
 

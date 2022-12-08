@@ -7,13 +7,13 @@ import { UserModule } from '@/user/user.module';
 import {
   Group,
   GroupInviteLink,
-  GroupInviteMember,
+  GroupInviteMemberLink,
   GroupMember,
 } from './entity';
 
 import {
   GroupInviteLinkService,
-  GroupInviteMemberService,
+  GroupInviteMemberLinkService,
   GroupMemberService,
   GroupService,
 } from './service';
@@ -23,7 +23,7 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Group, GroupMember, GroupInviteMember, GroupInviteLink],
+      [Group, GroupMember, GroupInviteMemberLink, GroupInviteLink],
       ConnectionNames.Default,
     ),
     UserModule,
@@ -32,13 +32,13 @@ import { ConnectionNames } from '@/database/constant';
   exports: [
     GroupService,
     GroupMemberService,
-    GroupInviteMemberService,
+    GroupInviteMemberLinkService,
     GroupInviteLinkService,
   ],
   providers: [
     GroupService,
     GroupMemberService,
-    GroupInviteMemberService,
+    GroupInviteMemberLinkService,
     GroupInviteLinkService,
   ],
   controllers: [],

@@ -5,7 +5,6 @@ import { EnumGroupInviteStatus } from '@avo/type';
 
 import { isNumber } from 'class-validator';
 import {
-  Brackets,
   DeepPartial,
   FindManyOptions,
   FindOneOptions,
@@ -15,59 +14,59 @@ import {
   UpdateResult,
 } from 'typeorm';
 
-import { GroupInviteMember } from '../entity';
+import { GroupInviteMemberLink } from '../entity';
 
 import { EnumGroupInviteType, IGroupInviteSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
-export class GroupInviteMemberService {
+export class GroupInviteMemberLinkService {
   constructor(
-    @InjectRepository(GroupInviteMember, ConnectionNames.Default)
-    private readonly groupInviteMemberRepository: Repository<GroupInviteMember>,
+    @InjectRepository(GroupInviteMemberLink, ConnectionNames.Default)
+    private readonly groupInviteMemberLinkRepository: Repository<GroupInviteMemberLink>,
   ) {}
 
   async create(
-    member: DeepPartial<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
-    return this.groupInviteMemberRepository.create(member);
+    member: DeepPartial<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
+    return this.groupInviteMemberLinkRepository.create(member);
   }
 
   async createMany(
-    members: DeepPartial<GroupInviteMember>[],
-  ): Promise<GroupInviteMember[]> {
-    return this.groupInviteMemberRepository.create(members);
+    members: DeepPartial<GroupInviteMemberLink>[],
+  ): Promise<GroupInviteMemberLink[]> {
+    return this.groupInviteMemberLinkRepository.create(members);
   }
 
   async save(
-    member: DeepPartial<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
-    return this.groupInviteMemberRepository.save(member);
+    member: DeepPartial<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
+    return this.groupInviteMemberLinkRepository.save(member);
   }
 
   async saveBulk(
-    members: DeepPartial<GroupInviteMember>[],
-  ): Promise<GroupInviteMember[]> {
-    return this.groupInviteMemberRepository.save(members);
+    members: DeepPartial<GroupInviteMemberLink>[],
+  ): Promise<GroupInviteMemberLink[]> {
+    return this.groupInviteMemberLinkRepository.save(members);
   }
 
   async findOne(
-    find?: FindOneOptions<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
-    return this.groupInviteMemberRepository.findOne({ ...find });
+    find?: FindOneOptions<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
+    return this.groupInviteMemberLinkRepository.findOne({ ...find });
   }
 
   async find(
-    find?: FindManyOptions<GroupInviteMember>,
-  ): Promise<GroupInviteMember[]> {
-    return this.groupInviteMemberRepository.find(find);
+    find?: FindManyOptions<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink[]> {
+    return this.groupInviteMemberLinkRepository.find(find);
   }
 
   async findOneBy(
-    find?: FindOptionsWhere<GroupInviteMember>,
-  ): Promise<GroupInviteMember> {
-    return this.groupInviteMemberRepository.findOneBy({ ...find });
+    find?: FindOptionsWhere<GroupInviteMemberLink>,
+  ): Promise<GroupInviteMemberLink> {
+    return this.groupInviteMemberLinkRepository.findOneBy({ ...find });
   }
 
   async updateInviteStatus({
@@ -77,10 +76,10 @@ export class GroupInviteMemberService {
     inviteId: string;
     inviteStatus: EnumGroupInviteStatus;
   }): Promise<UpdateResult> {
-    return this.groupInviteMemberRepository
+    return this.groupInviteMemberLinkRepository
       .createQueryBuilder()
-      .update(GroupInviteMember)
-      .set({ inviteStatus })
+      .update(GroupInviteMemberLink)
+      .set({ status: inviteStatus })
       .setParameters({ inviteId })
       .where('id = :inviteId')
       .execute();
@@ -91,8 +90,8 @@ export class GroupInviteMemberService {
     status,
     type,
     userId,
-  }: IGroupInviteSearch): Promise<SelectQueryBuilder<GroupInviteMember>> {
-    const builder = this.groupInviteMemberRepository
+  }: IGroupInviteSearch): Promise<SelectQueryBuilder<GroupInviteMemberLink>> {
+    const builder = this.groupInviteMemberLinkRepository
       .createQueryBuilder('groupInviteMember')
       .leftJoinAndSelect('groupInviteMember.inviteeUser', 'inviteeUser')
       .leftJoinAndSelect('inviteeUser.profile', 'inviteeUserProfile')
@@ -160,7 +159,7 @@ export class GroupInviteMemberService {
     options,
     type,
     userId,
-  }: IGroupInviteSearch): Promise<GroupInviteMember[]> {
+  }: IGroupInviteSearch): Promise<GroupInviteMemberLink[]> {
     const searchBuilder = await this.getListSearchBuilder({
       search,
       status,

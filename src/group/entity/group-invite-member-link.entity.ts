@@ -8,7 +8,8 @@ import { User } from '@/user/entity';
 
 @Entity()
 @Unique('uq_group_id_temp_email', ['group', 'tempEmail'])
-export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
+@Unique('uq_group_id_user_id_status', ['group', 'inviteeUser', 'status'])
+export class GroupInviteMemberLink extends BaseEntity<GroupInviteMemberLink> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
@@ -16,18 +17,17 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
   })
   inviteeUser?: User;
 
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  inviterUser: User;
+
   @ManyToOne(() => Group, (group) => group.members, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })
   group!: Group;
-
-  @ManyToOne(() => User, {
-    onDelete: 'CASCADE',
-    orphanedRowAction: 'delete',
-    nullable: true,
-  })
-  inviterUser?: User;
 
   @Column({
     type: 'enum',
@@ -50,7 +50,7 @@ export class GroupInviteMember extends BaseEntity<GroupInviteMember> {
     enum: EnumGroupInviteStatus,
     default: EnumGroupInviteStatus.Pending,
   })
-  inviteStatus!: EnumGroupInviteStatus;
+  status!: EnumGroupInviteStatus;
 
   @Index()
   @Column({

@@ -4,6 +4,13 @@ import { IHelperPromiseService } from '../type/helper.promise.interface';
 
 @Injectable()
 export class HelperPromiseService implements IHelperPromiseService {
+  async mapSettledPromiseData(
+    arr: PromiseSettledResult<any>[],
+  ): Promise<any[]> {
+    return arr.map((promiseData) =>
+      'value' in promiseData ? promiseData.value : promiseData.reason,
+    );
+  }
   async mapPromiseBasedResultToResponseReport(
     result: PromiseSettledResult<string>[],
   ) {
