@@ -137,7 +137,7 @@ export class GroupCommonController {
   })
   @AclGuard()
   @Post()
-  async create(
+  async createGroup(
     @ReqAuthUser()
     reqAuthUser: User,
     @Body()
@@ -243,7 +243,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
-  async activeProduct(
+  async activeGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -279,7 +279,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
-  async inactiveProduct(
+  async inactiveGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -316,7 +316,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
-  async update(
+  async updateGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -347,7 +347,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Delete('/:id')
-  async deleteProduct(
+  async deleteGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -648,6 +648,9 @@ export class GroupCommonController {
 
   @ClientResponse('group.inviteAccept')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteAccept, {
+    tags: ['group', 'invite', 'accept'],
+  })
   @AclGuard()
   @Post('/invite-accept')
   async inviteAccept(
@@ -771,6 +774,9 @@ export class GroupCommonController {
 
   @ClientResponse('group.inviteReject')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteReject, {
+    tags: ['group', 'invite', 'reject'],
+  })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Post('/invite-reject/:id')
@@ -794,16 +800,24 @@ export class GroupCommonController {
       });
     }
 
-    await this.groupInviteMemberLinkService.updateInviteStatus({
-      inviteId,
-      inviteStatus: EnumGroupInviteStatus.Rejected,
-    });
+    const { affected } =
+      await this.groupInviteMemberLinkService.updateInviteStatus({
+        inviteId,
+        inviteStatus: EnumGroupInviteStatus.Rejected,
+      });
 
-    return { inviteStatus: EnumGroupInviteStatus.Rejected };
+    return {
+      dev: {
+        affected,
+      },
+    };
   }
 
   @ClientResponse('group.inviteCancel')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteCancel, {
+    tags: ['group', 'invite', 'cancel'],
+  })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Post('/invite-cancel/:id')
@@ -812,7 +826,7 @@ export class GroupCommonController {
     reqAuthUser: User,
     @Param('id') inviteId: string,
   ): Promise<IResponseData> {
-    const invite = await this.groupInviteMemberLinkService.findOne({
+    const findInvite = await this.groupInviteMemberLinkService.findOne({
       where: {
         inviterUser: {
           id: reqAuthUser.id,
@@ -822,23 +836,31 @@ export class GroupCommonController {
       },
     });
 
-    if (!invite) {
+    if (!findInvite) {
       throw new BadRequestException({
         statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
         message: 'group.error.unprocessable',
       });
     }
 
-    await this.groupInviteMemberLinkService.updateInviteStatus({
-      inviteId,
-      inviteStatus: EnumGroupInviteStatus.Canceled,
-    });
+    const { affected } =
+      await this.groupInviteMemberLinkService.updateInviteStatus({
+        inviteId,
+        inviteStatus: EnumGroupInviteStatus.Canceled,
+      });
 
-    return { inviteStatus: EnumGroupInviteStatus.Canceled };
+    return {
+      dev: {
+        affected,
+      },
+    };
   }
 
   @ClientResponse('group.inviteResend')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteResend, {
+    tags: ['group', 'invite', 'send'],
+  })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Post('/invite-resend/:id')
@@ -881,7 +903,7 @@ export class GroupCommonController {
       });
     }
 
-    const result = await this.defaultDataSource.transaction(
+    const { affected } = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
         const expiresInDays = this.configService.get<number>(
@@ -910,21 +932,22 @@ export class GroupCommonController {
           });
         }
 
-        const { affected } = await transactionalEntityManager.update(
+        return transactionalEntityManager.update(
           GroupInviteMemberLink,
           { id: inviteId },
           { expiresAt: this.helperDateService.forwardInDays(expiresInDays) },
         );
-
-        return { dev: { affected } };
       },
     );
 
-    return result;
+    return { dev: { affected } };
   }
 
   @ClientResponse('group.inviteMember')
   @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteSend, {
+    tags: ['group', 'invite', 'send'],
+  })
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Post('/:id/invite-member')

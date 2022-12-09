@@ -55,4 +55,9 @@ export enum EnumLogAction {
   CreateGroup = 'CREATE_GROUP',
   UpdateGroup = 'UPDATE_GROUP',
   DeleteGroup = 'DELETE_GROUP',
+  GroupInviteAccept = 'GROUP_INVITE_ACCEPT',
+  GroupInviteReject = 'GROUP_INVITE_REJECT',
+  GroupInviteCancel = 'GROUP_INVITE_CANCEL',
+  GroupInviteSend = 'GROUP_INVITE_SEND',
+  GroupInviteResend = 'GROUP_INVITE_RESEND',
 }
