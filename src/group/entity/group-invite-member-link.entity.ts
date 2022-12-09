@@ -1,6 +1,6 @@
 import { EnumGroupInviteStatus, EnumGroupRole } from '@avo/type';
 
-import { Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
+import { Check, Column, Entity, Index, ManyToOne, Unique } from 'typeorm';
 
 import { Group } from './group.entity';
 import { BaseEntity } from '@/database/entity';
@@ -9,6 +9,14 @@ import { User } from '@/user/entity';
 @Entity()
 @Unique('uq_group_id_temp_email', ['group', 'tempEmail'])
 @Unique('uq_group_id_user_id_status', ['group', 'inviteeUser', 'status'])
+@Check(
+  'chk_group_invite_member_links_temp_email_or_user_invitee_id',
+  'temp_email IS NOT NULL OR invitee_user_id IS NOT NULL',
+)
+@Check(
+  'chk_group_invite_member_link_invitee_not_inviter',
+  'invitee_user_id != inviter_user_id',
+)
 export class GroupInviteMemberLink extends BaseEntity<GroupInviteMemberLink> {
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',

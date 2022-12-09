@@ -16,6 +16,8 @@ import {
 
 import { GroupInviteMemberLink } from '../entity';
 
+import { HelperHashService } from '@/utils/helper/service';
+
 import { EnumGroupInviteType, IGroupInviteSearch } from '../type';
 
 import { ConnectionNames } from '@/database/constant';
@@ -25,12 +27,16 @@ export class GroupInviteMemberLinkService {
   constructor(
     @InjectRepository(GroupInviteMemberLink, ConnectionNames.Default)
     private readonly groupInviteMemberLinkRepository: Repository<GroupInviteMemberLink>,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async create(
-    member: DeepPartial<GroupInviteMemberLink>,
+    member: DeepPartial<Omit<GroupInviteMemberLink, 'code'>>,
   ): Promise<GroupInviteMemberLink> {
-    return this.groupInviteMemberLinkRepository.create(member);
+    return this.groupInviteMemberLinkRepository.create({
+      ...member,
+      code: await this.helperHashService.magicCode(),
+    });
   }
 
   async createMany(

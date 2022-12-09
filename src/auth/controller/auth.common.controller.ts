@@ -425,7 +425,7 @@ export class AuthCommonController {
       personas,
       dietary,
     }: AuthSignUpDto,
-    @Query() { ref, type }: AuthSignUpRefDto,
+    @Query() { ref, gref, type }: AuthSignUpRefDto,
     @RequestUserAgent() userAgent: IResult,
   ): Promise<IResponseData> {
     const expiresInDays = this.configService.get<number>(
@@ -614,6 +614,9 @@ export class AuthCommonController {
               await transactionalEntityManager.save(socialConnection);
             }
           }
+        }
+
+        if (gref) {
         }
 
         await transactionalEntityManager.save(signUpEmailVerificationLink);

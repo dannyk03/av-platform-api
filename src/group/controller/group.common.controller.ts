@@ -27,7 +27,7 @@ import {
 } from '@avo/type';
 
 import { isEmail } from 'class-validator';
-import { DataSource } from 'typeorm';
+import { DataSource, Equal } from 'typeorm';
 
 import { GroupInviteMemberLink, GroupMember } from '../entity';
 import { User } from '@/user/entity';
@@ -665,9 +665,7 @@ export class GroupCommonController {
                 {
                   code,
                   status: EnumGroupInviteStatus.Pending,
-                  inviteeUser: {
-                    id: reqAuthUser.id,
-                  },
+                  inviteeUser: Equal(reqAuthUser.id),
                 },
                 {
                   code,
@@ -675,10 +673,16 @@ export class GroupCommonController {
                   tempEmail: reqAuthUser.email,
                 },
               ],
-              relations: ['group'],
+              relations: {
+                group: true,
+                inviteeUser: true,
+              },
               select: {
                 id: true,
+                code: true,
+                status: true,
                 expiresAt: true,
+                tempEmail: true,
                 group: {
                   id: true,
                 },
@@ -753,7 +757,7 @@ export class GroupCommonController {
               id: reqAuthUser.id,
             },
             group: {
-              id: findGroupInviteLink.group.id,
+              id: findGroupInviteLink?.group.id,
             },
           });
 
@@ -779,6 +783,7 @@ export class GroupCommonController {
       where: {
         id: inviteId,
         status: EnumGroupInviteStatus.Pending,
+        inviteeUser: Equal(reqAuthUser.id),
       },
     });
 
@@ -842,7 +847,7 @@ export class GroupCommonController {
     reqAuthUser: User,
     @Param('id') inviteId: string,
   ): Promise<IResponseData> {
-    const invite = await this.groupInviteMemberLinkService.findOne({
+    const findInvite = await this.groupInviteMemberLinkService.findOne({
       where: {
         id: inviteId,
         inviterUser: {
@@ -850,19 +855,26 @@ export class GroupCommonController {
         },
         status: EnumGroupInviteStatus.Pending,
       },
-      relations: ['user', 'user.profile'],
+      relations: {
+        inviteeUser: {
+          profile: true,
+        },
+      },
       select: {
+        id: true,
         tempEmail: true,
         inviteeUser: {
+          id: true,
           email: true,
           profile: {
+            id: true,
             firstName: true,
           },
         },
       },
     });
 
-    if (!invite) {
+    if (!findInvite) {
       throw new BadRequestException({
         statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
         message: 'group.error.invite.unprocessable',
@@ -876,18 +888,18 @@ export class GroupCommonController {
           'group.groupInviteCodeExpiresInDays',
         );
 
-        const invitedUser = invite.inviteeUser;
+        const inviteeUser = findInvite.inviteeUser;
 
-        const emailSent = invitedUser
+        const emailSent = inviteeUser
           ? await this.emailService.sendGroupInviteEmailExistingUser({
-              email: invitedUser.email,
-              code: invite.code,
+              email: inviteeUser.email,
+              code: findInvite.code,
               expiresInDays,
-              firstName: invitedUser.profile.firstName,
+              firstName: inviteeUser?.profile.firstName,
             })
           : await this.emailService.sendGroupInviteEmailNewUser({
-              email: invite.tempEmail,
-              code: invite.code,
+              email: findInvite.tempEmail,
+              code: findInvite.code,
               expiresInDays,
             });
 
@@ -898,13 +910,13 @@ export class GroupCommonController {
           });
         }
 
-        const updatedInvite = await transactionalEntityManager.update(
+        const { affected } = await transactionalEntityManager.update(
           GroupInviteMemberLink,
           { id: inviteId },
           { expiresAt: this.helperDateService.forwardInDays(expiresInDays) },
         );
 
-        return updatedInvite;
+        return { dev: { affected } };
       },
     );
 
@@ -1036,7 +1048,7 @@ export class GroupCommonController {
 
             return Promise.resolve({
               inviteeUser: potentialMemberUser,
-              tempEmail: potentialMemberUser?.email,
+              tempEmail: potentialMemberUser?.email ?? invitee.email,
               group: {
                 id: groupId,
               },
@@ -1044,7 +1056,6 @@ export class GroupCommonController {
                 id: userId,
               },
               role: EnumGroupRole.Basic,
-              code: await this.helperHashService.magicCode(),
               expiresAt: this.helperDateService.forwardInDays(expiresInDays),
             });
           }),
@@ -1085,7 +1096,7 @@ export class GroupCommonController {
               createInvite,
             );
 
-            const { code, inviteeUser, group, inviterUser, tempEmail } =
+            const { id, code, inviteeUser, group, inviterUser, tempEmail } =
               saveInvite;
 
             const emailSent =
@@ -1095,22 +1106,19 @@ export class GroupCommonController {
                 expiresInDays,
               });
 
-            if (!emailSent) {
-              return Promise.reject({
-                code,
-                inviteeUser,
-                inviterUser,
-                group,
-                tempEmail,
-              });
-            }
-            return Promise.resolve({
+            const inviteDate = {
+              id,
               code,
               inviteeUser,
               inviterUser,
               group,
               tempEmail,
-            });
+            };
+
+            if (!emailSent) {
+              return Promise.reject(inviteDate);
+            }
+            return Promise.resolve(inviteDate);
           }),
         );
 
@@ -1126,7 +1134,7 @@ export class GroupCommonController {
 
             const findInviteeUser = await this.userService.findOne({
               where: {
-                id: saveInvite.inviteeUser.id,
+                id: saveInvite.inviteeUser?.id,
               },
               relations: {
                 profile: true,
@@ -1142,7 +1150,7 @@ export class GroupCommonController {
 
             const emailSent =
               await this.emailService.sendGroupInviteEmailExistingUser({
-                email: saveInvite.inviteeUser.email,
+                email: saveInvite.inviteeUser?.email,
                 firstName: findInviteeUser.profile.firstName,
                 code: saveInvite.code,
                 expiresInDays,
