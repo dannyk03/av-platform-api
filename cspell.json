@@ -39,10 +39,7 @@
     "backoff",
     "tsvector",
     "tsquery",
-    "sqlstring",
-    "cref",
-    "oref",
-    "gref"
+    "sqlstring"
   ],
   "ignorePaths": [
     "node_modules/**",
