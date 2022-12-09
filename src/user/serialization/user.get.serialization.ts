@@ -9,7 +9,6 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { EnumUserSerializationGroup } from './constant';
 
-// implements IUserOrganizationGetSerialization
 @Exclude()
 export class UserOrganizationGetSerialization
   implements IUserOrganizationGetSerialization
