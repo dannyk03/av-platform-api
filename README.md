@@ -32,6 +32,8 @@ Made with following (WIP)
 4. [Prerequisites](#prerequisites)
 5. [How to run the project](#install-and-run)
 
+---
+
 ## Important
 
 - To be able to install `@avo` private packages, **JFROG_AUTH_TOKEN** Must be available on your local machine.
@@ -49,6 +51,8 @@ Made with following (WIP)
   2. `UserAgentMiddleware`, whitelist of user agent.
   3. `CorsMiddleware`, check cors based on configs.
 
+---
+
 ## Build with
 
 Version of the main packages and main tools.
@@ -64,6 +68,8 @@ Version of the main packages and main tools.
 | NPM            | v8.x    |
 | Docker         | v20.x   |
 | Docker Compose | v2.x    |
+
+---
 
 ## Features
 
@@ -90,6 +96,8 @@ Version of the main packages and main tools.
 - Swagger for API Documentation
 - Etc.
 
+---
+
 ## Prerequisites
 
 1. Understand [NestJs Fundamental](http://nestjs.com), Main Framework. NodeJs Framework with support fully TypeScript.
@@ -99,6 +107,8 @@ Version of the main packages and main tools.
 5. Understand [Microservice Architecture](https://microservices.io) and the design pattern (TBD).
 6. [The Twelve Factor Apps](https://12factor.net)
 7. Optional, Understand [Docker](ref-docker) that can help you to run the project
+
+---
 
 ## Install and Run
 
@@ -125,6 +135,14 @@ Version of the main packages and main tools.
   ```bash
   docker compose --profile dev up --build --force-recreate --renew-anon-volumes
   ```
+
+- Run only redis with redis-commander (optional)
+
+  ```bash
+    docker compose --profile redis --profile monitor up
+  ```
+
+  redis-commander => `http://localhost:8081/`
 
 <!-- BADGE LINKS -->
 
