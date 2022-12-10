@@ -4,7 +4,6 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   MaxLength,
   MinLength,
@@ -15,6 +14,7 @@ import {
   NormalizeStringInputTransform,
   TrimTransform,
 } from '@/utils/request/transform';
+import { IsPhoneNumber } from '@/utils/request/validation';
 import { IsPasswordStrong } from '@/utils/request/validation';
 
 export class UserCreateDto {

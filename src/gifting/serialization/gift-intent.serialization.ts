@@ -67,6 +67,7 @@ class GiftOptionsGetSerialization implements IGiftOptionGetSerialization {
   )
   products: ProductGetSerialization[];
 }
+
 @Exclude()
 class GiftSubmitGiftsGetSerialization
   implements IGiftSubmitGiftsGetSerialization
