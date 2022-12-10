@@ -129,7 +129,7 @@ export class GroupInviteMemberLinkService {
     }
 
     if (status?.length) {
-      builder.andWhere('groupInviteMember.inviteStatus = ANY(:status)', {
+      builder.andWhere('groupInviteMember.status = ANY(:status)', {
         status,
       });
     }
