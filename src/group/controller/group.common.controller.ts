@@ -739,6 +739,10 @@ export class GroupCommonController {
             {
               where: { code },
               relations: {
+                group: true,
+              },
+              select: {
+                id: true,
                 group: {
                   id: true,
                 },
