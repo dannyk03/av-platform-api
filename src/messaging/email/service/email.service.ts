@@ -39,8 +39,6 @@ export class EmailService {
   private readonly origin: string = this.request.get('origin');
   private readonly isDevelopment: boolean =
     this.configService.get<boolean>('app.isDevelopment');
-  private readonly isStaging: boolean =
-    this.configService.get<boolean>('app.isStaging');
 
   constructor(
     @Inject(REQUEST)
@@ -713,13 +711,14 @@ export class EmailService {
     inviterUser: User;
     group: Group;
     code: string;
+    // Not implemented
     groupMembers?: GroupMember[];
     expiresInDays: number;
   }): Promise<boolean> {
     // Stub for local development
-    // if (this.isDevelopment) {
-    //   return true;
-    // }
+    if (this.isDevelopment) {
+      return true;
+    }
 
     const payload: GroupInviteNewUserMessageData = {
       code,
@@ -759,6 +758,7 @@ export class EmailService {
     inviterUser,
     group,
     code,
+    // Not implemented
     groupMembers = [],
     expiresInDays,
   }: {
@@ -769,11 +769,10 @@ export class EmailService {
     groupMembers?: GroupMember[];
     expiresInDays: number;
   }): Promise<boolean> {
-    // TODO remove staging stub after customer io templates ready
     // Stub for local development
-    // if (this.isDevelopment || this.isStaging) {
-    //   return true;
-    // }
+    if (this.isDevelopment) {
+      return true;
+    }
 
     const payload: GroupInviteExistingUserMessageData = {
       code,
