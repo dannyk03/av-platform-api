@@ -206,3 +206,38 @@ export type SurveyCompletedMessageData = {
   };
   socialConnectionRequestId: string; // TODO: delete
 };
+
+export type GroupInviteNewUserMessageData = {
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+    }[];
+  };
+};
+
+export type GroupInviteExistingUserMessageData = {
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+    }[];
+  };
+};

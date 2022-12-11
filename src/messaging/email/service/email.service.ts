@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
 import { GiftIntent } from '@/gifting/entity';
+import { Group, GroupMember } from '@/group/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
@@ -22,6 +23,8 @@ import {
   GiftOptionSelectMessageData,
   GiftShippingDetails,
   GiftStatusUpdateMessageData,
+  GroupInviteExistingUserMessageData,
+  GroupInviteNewUserMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
 } from '../constant';
@@ -762,6 +765,106 @@ export class EmailService {
         },
       },
       identifier: { id: email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGroupInviteNewUsers({
+    inviteesAddresses,
+    inviterUser,
+    group,
+    groupMembers,
+  }: {
+    inviteesAddresses: string[];
+    inviterUser: User;
+    group: Group;
+    groupMembers: GroupMember[];
+  }): Promise<boolean> {
+    // Stub for local development
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const payload: GroupInviteNewUserMessageData = {
+      inviterUser: {
+        id: inviterUser.id,
+        firstName: inviterUser.profile.firstName,
+        lastName: inviterUser.profile.lastName,
+      },
+      group: {
+        id: group.id,
+        name: group.name,
+        members: groupMembers.map((member) => {
+          return {
+            firstName: member.user.profile.firstName,
+            lastName: member.user.profile.lastName,
+          };
+        }),
+      },
+    };
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGroupInviteNewUser.toString(),
+      to: inviteesAddresses,
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: inviterUser.email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGroupInviteExistingUser({
+    inviteeUser,
+    inviterUser,
+    group,
+    groupMembers,
+  }: {
+    inviteeUser: User;
+    inviterUser: User;
+    group: Group;
+    groupMembers: GroupMember[];
+  }): Promise<boolean> {
+    // Stub for local development
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const payload: GroupInviteExistingUserMessageData = {
+      inviteeUser: {
+        firstName: inviteeUser.profile.firstName,
+      },
+      inviterUser: {
+        id: inviterUser.id,
+        firstName: inviterUser.profile.firstName,
+        lastName: inviterUser.profile.lastName,
+      },
+      group: {
+        id: group.id,
+        name: group.name,
+        members: groupMembers.map((member) => {
+          return {
+            firstName: member.user.profile.firstName,
+            lastName: member.user.profile.lastName,
+          };
+        }),
+      },
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGroupInviteExistingUser.toString(),
+      to: [inviteeUser.email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: inviterUser.email },
     });
 
     return sendResult.status === EmailStatus.success;
