@@ -103,6 +103,7 @@ export class AppRouterModule {
                 module: RouterPaymentModule,
               },
               {
+                // TODO remove stub after tests (enable this roup as regular router in prod)
                 ...(process.env.APP_ENV !== EnumAppEnv.Production
                   ? {
                       path: '/group',

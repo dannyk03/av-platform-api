@@ -36,6 +36,8 @@ export class EmailService {
   private readonly origin: string = this.request.get('origin');
   private readonly isDevelopment: boolean =
     this.configService.get<boolean>('app.isDevelopment');
+  private readonly isStaging: boolean =
+    this.configService.get<boolean>('app.isStaging');
 
   constructor(
     @Inject(REQUEST)
@@ -696,46 +698,6 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  // async sendGroupInviteEmail({
-  //   email,
-  //   firstName,
-  //   code,
-  //   expiresInDays,
-  //   path = '/group-invite',
-  // }: {
-  //   email: string;
-  //   firstName: string;
-  //   code: string;
-  //   expiresInDays: number;
-  //   path?: string;
-  // }): Promise<boolean> {
-  //   // Stub for local development
-  //   if (this.isDevelopment) {
-  //     return true;
-  //   }
-
-  //   // TODO: Add server url to payload
-  //   const sendResult = await this.customerIOService.sendEmail({
-  //     template: EmailTemplate.SendGroupInvite.toString(),
-  //     to: [email],
-  //     emailTemplatePayload: {
-  //       path,
-  //       code,
-  //       user: { firstName },
-  //       transport: {
-  //         origin: this.origin,
-  //       },
-  //     },
-  //     identifier: { id: email },
-  //   });
-
-  //   return sendResult.status === EmailStatus.success;
-  // }
-
-  //
-  //
-  //
-
   async sendGroupInviteEmailNewUser({
     email,
     code,
@@ -747,8 +709,9 @@ export class EmailService {
     expiresInDays: number;
     path?: string;
   }): Promise<boolean> {
+    // TODO remove staging stub after tests
     // Stub for local development
-    if (this.isDevelopment) {
+    if (this.isDevelopment || this.isStaging) {
       return true;
     }
 
@@ -782,7 +745,8 @@ export class EmailService {
     path?: string;
   }): Promise<boolean> {
     // Stub for local development
-    if (this.isDevelopment) {
+    // TODO remove staging stub after tests
+    if (this.isDevelopment || this.isStaging) {
       return true;
     }
 
