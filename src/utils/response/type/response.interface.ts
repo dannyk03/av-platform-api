@@ -1,3 +1,5 @@
+import { ClassSerializerContextOptions } from '@nestjs/common';
+
 import { ClassConstructor } from 'class-transformer';
 
 import { IMessageOptionsProperties } from '@/response-message';
@@ -10,6 +12,7 @@ export interface IResponsePagingOptions {
 
 export interface IResponseOptions {
   classSerialization: ClassConstructor<any>;
+  classSerializationOptions?: ClassSerializerContextOptions;
   messageProperties?: IMessageOptionsProperties;
 }
 
