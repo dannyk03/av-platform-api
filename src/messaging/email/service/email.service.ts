@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 
 import { GiftIntent } from '@/gifting/entity';
+import { Group, GroupMember } from '@/group/entity';
 import { User } from '@/user/entity';
 
 import { CustomerIOService } from '../../customer-io/service/customer-io.service';
@@ -22,6 +23,8 @@ import {
   GiftOptionSelectMessageData,
   GiftShippingDetails,
   GiftStatusUpdateMessageData,
+  GroupInviteExistingUserMessageData,
+  GroupInviteNewUserMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
 } from '../constant';
@@ -684,6 +687,118 @@ export class EmailService {
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendSurveyCompleted.toString(),
       to: [inviterUser.email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: inviterUser.email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGroupInviteNewUser({
+    email,
+    inviterUser,
+    group,
+    code,
+    groupMembers = [],
+    expiresInDays,
+  }: {
+    email: string;
+    inviterUser: User;
+    group: Group;
+    code: string;
+    // Not implemented
+    groupMembers?: GroupMember[];
+    expiresInDays: number;
+  }): Promise<boolean> {
+    // Stub for local development
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const payload: GroupInviteNewUserMessageData = {
+      code,
+      inviterUser: {
+        id: inviterUser.id,
+        firstName: inviterUser.profile.firstName,
+        lastName: inviterUser.profile.lastName,
+      },
+      group: {
+        id: group.id,
+        name: group.name,
+        members: groupMembers.map((member) => {
+          return {
+            firstName: member.user.profile.firstName,
+            lastName: member.user.profile.lastName,
+          };
+        }),
+      },
+    };
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGroupInviteNewUser.toString(),
+      to: [email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: inviterUser.email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendGroupInviteExistingUser({
+    inviteeUser,
+    inviterUser,
+    group,
+    code,
+    // Not implemented
+    groupMembers = [],
+    expiresInDays,
+  }: {
+    inviteeUser: User;
+    inviterUser: User;
+    group: Group;
+    code: string;
+    groupMembers?: GroupMember[];
+    expiresInDays: number;
+  }): Promise<boolean> {
+    // Stub for local development
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const payload: GroupInviteExistingUserMessageData = {
+      code,
+      inviteeUser: {
+        firstName: inviteeUser.profile.firstName,
+      },
+      inviterUser: {
+        id: inviterUser.id,
+        firstName: inviterUser.profile.firstName,
+        lastName: inviterUser.profile.lastName,
+      },
+      group: {
+        id: group.id,
+        name: group.name,
+        members: groupMembers.map((member) => {
+          return {
+            firstName: member.user.profile.firstName,
+            lastName: member.user.profile.lastName,
+          };
+        }),
+      },
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendGroupInviteExistingUser.toString(),
+      to: [inviteeUser.email],
       emailTemplatePayload: {
         ...payload,
         transport: {

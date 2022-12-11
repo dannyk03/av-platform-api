@@ -6,27 +6,46 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
+  EnumAddGroupMemberType,
+  EnumGroupInviteStatus,
   EnumGroupRole,
   EnumGroupStatusCodeError,
+  EnumMessagingStatusCodeError,
   IResponseData,
   IResponsePagingData,
 } from '@avo/type';
 
 import { isEmail } from 'class-validator';
+import { DataSource, Equal } from 'typeorm';
 
+import { GroupInviteMemberLink, GroupMember } from '../entity';
 import { User } from '@/user/entity';
 
-import { GroupMemberService, GroupService } from '../service';
+import {
+  GroupInviteLinkService,
+  GroupInviteMemberLinkService,
+  GroupMemberService,
+  GroupService,
+} from '../service';
+import { EmailService } from '@/messaging/email/service';
 import { SocialConnectionService } from '@/networking/service';
 import { UserService } from '@/user/service';
+import {
+  HelperDateService,
+  HelperHashService,
+  HelperPromiseService,
+} from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { CanAccessAsGroupMember } from '../decorator';
@@ -40,6 +59,8 @@ import {
 import { AclGuard } from '@/auth/guard';
 import { RequestParamGuard } from '@/utils/request/guard';
 
+import { DeepPartial } from 'utility-types';
+
 import {
   GroupCreateDto,
   GroupDesiredSkillsListDto,
@@ -48,6 +69,9 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
+import { GroupInviteAcceptRefDto } from '../dto/group.add-member.dto';
+import { GroupInviteListDto } from '../dto/group.invite-member-list.dto';
+import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
@@ -56,10 +80,12 @@ import {
   GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
+  GroupInviteListSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
 
+import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
 
 @Controller({
@@ -67,12 +93,44 @@ import { EnumLogAction } from '@/log/constant';
 })
 export class GroupCommonController {
   constructor(
+    @InjectDataSource(ConnectionNames.Default)
+    private defaultDataSource: DataSource,
     private readonly groupService: GroupService,
     private readonly userService: UserService,
     private readonly groupMemberService: GroupMemberService,
+    private readonly groupInviteMemberLinkService: GroupInviteMemberLinkService,
+    private readonly groupInviteLinkService: GroupInviteLinkService,
     private readonly paginationService: PaginationService,
     private readonly socialConnectionService: SocialConnectionService,
+    private readonly helperHashService: HelperHashService,
+    private readonly helperDateService: HelperDateService,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
+    private readonly helperPromiseService: HelperPromiseService,
   ) {}
+
+  private async mapGroupInvitePromiseBasedResultToResponseReport(
+    result: PromiseSettledResult<DeepPartial<GroupInviteMemberLink>>[],
+  ) {
+    return result.reduce((acc, promiseValue) => {
+      if ('value' in promiseValue) {
+        acc[
+          promiseValue.value?.['inviteeUser']?.['email'] ||
+            promiseValue.value?.['tempEmail'] ||
+            // existing group member
+            promiseValue.value?.['user']?.['email']
+        ] = 'success';
+      } else if ('reason' in promiseValue) {
+        acc[
+          promiseValue.reason?.['inviteeUser']?.['email'] ||
+            promiseValue.reason?.['tempEmail'] ||
+            // existing group member
+            promiseValue.reason?.['user']?.['email']
+        ] = 'fail';
+      }
+      return acc;
+    }, {});
+  }
 
   @ClientResponse('group.create', {
     classSerialization: GroupGetSerialization,
@@ -83,7 +141,7 @@ export class GroupCommonController {
   })
   @AclGuard()
   @Post()
-  async create(
+  async createGroup(
     @ReqAuthUser()
     reqAuthUser: User,
     @Body()
@@ -98,18 +156,87 @@ export class GroupCommonController {
       });
     }
 
-    const createOwner = await this.groupMemberService.create({
-      user: reqAuthUser,
-      role: EnumGroupRole.Owner,
+    const saveGroupRes = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const createOwner = await this.groupMemberService.create({
+          user: reqAuthUser,
+          role: EnumGroupRole.Owner,
+        });
+
+        const createGroup = await this.groupService.create({
+          name,
+          description,
+          members: [createOwner],
+        });
+
+        const createInviteLink = await this.groupInviteLinkService.create({
+          group: createGroup,
+        });
+
+        await transactionalEntityManager.save(createInviteLink);
+
+        return this.groupService.save(createGroup);
+      },
+    );
+
+    return saveGroupRes;
+  }
+
+  @ClientResponsePaging('group.inviteList')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @Get('/invite-list')
+  async inviteList(
+    @ReqAuthUser()
+    { id: userId }: User,
+    @Query()
+    {
+      page,
+      perPage,
+      sort,
+      search,
+      availableSort,
+      availableSearch,
+      status,
+      type,
+    }: GroupInviteListDto,
+  ): Promise<IResponsePagingData> {
+    const skip: number = await this.paginationService.skip(page, perPage);
+
+    const invites = await this.groupInviteMemberLinkService.paginatedSearchBy({
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+      status,
+      search,
+      type,
+      userId,
     });
 
-    const createGroup = await this.groupService.create({
-      name,
-      description,
-      members: [createOwner],
+    const totalData = await this.groupInviteMemberLinkService.getTotal({
+      status,
+      search,
+      type,
+      userId,
     });
 
-    return this.groupService.save(createGroup);
+    const totalPage: number = await this.paginationService.totalPage(
+      totalData,
+      perPage,
+    );
+
+    return {
+      totalData,
+      totalPage,
+      currentPage: page,
+      perPage,
+      availableSearch,
+      availableSort,
+      data: invites,
+    };
   }
 
   @ClientResponse('group.active')
@@ -120,7 +247,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('active/:id')
-  async activeProduct(
+  async activeGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -156,7 +283,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('inactive/:id')
-  async inactiveProduct(
+  async inactiveGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -193,7 +320,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Patch('/:id')
-  async update(
+  async updateGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -224,7 +351,7 @@ export class GroupCommonController {
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Delete('/:id')
-  async deleteProduct(
+  async deleteGroup(
     @ReqAuthUser()
     { id: userId }: User,
     @Param('id') groupId: string,
@@ -460,10 +587,9 @@ export class GroupCommonController {
                 user2Email: u.email,
               },
             );
-          console.log(isConnectedUser);
           return isConnectedUser;
         }),
-      ).then((results) => users.filter((_v, index) => results[index]));
+      ).then((results) => users.filter((_, index) => results[index]));
     }
 
     return {
@@ -522,5 +648,600 @@ export class GroupCommonController {
     }
 
     return findGroup;
+  }
+
+  @ClientResponse('group.inviteAccept')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteAccept, {
+    tags: ['group', 'invite', 'accept'],
+  })
+  @AclGuard()
+  @Post('/invite-accept')
+  async inviteAccept(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Query() { code, type }: GroupInviteAcceptRefDto,
+  ): Promise<IResponseData> {
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        if (type == EnumAddGroupMemberType.PersonalInvite) {
+          const findGroupInviteMemberLink =
+            await this.groupInviteMemberLinkService.findOne({
+              where: [
+                {
+                  code,
+                  status: EnumGroupInviteStatus.Pending,
+                  inviteeUser: Equal(reqAuthUser.id),
+                },
+                {
+                  code,
+                  status: EnumGroupInviteStatus.Pending,
+                  tempEmail: reqAuthUser.email,
+                },
+              ],
+              relations: {
+                group: true,
+                inviteeUser: true,
+              },
+              select: {
+                id: true,
+                code: true,
+                status: true,
+                expiresAt: true,
+                tempEmail: true,
+                group: {
+                  id: true,
+                },
+                inviteeUser: {
+                  id: true,
+                },
+              },
+            });
+
+          if (!findGroupInviteMemberLink) {
+            throw new BadRequestException({
+              statusCode:
+                EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+              message: 'group.error.invite.unprocessable',
+            });
+          }
+
+          const now = this.helperDateService.create();
+          const expiresAt = this.helperDateService.create({
+            date: findGroupInviteMemberLink.expiresAt,
+          });
+
+          if (expiresAt && now > expiresAt) {
+            throw new BadRequestException({
+              statusCode: EnumGroupStatusCodeError.GroupInviteExpiredError,
+              message: 'group.error.inviteExpired',
+            });
+          }
+          const createGroupMember = await this.groupMemberService.create({
+            role: EnumGroupRole.Basic,
+            user: reqAuthUser,
+            group: {
+              id: findGroupInviteMemberLink.group.id,
+            },
+          });
+
+          await transactionalEntityManager.update(
+            GroupInviteMemberLink,
+            { code },
+            {
+              status: EnumGroupInviteStatus.Accepted,
+              ...(!findGroupInviteMemberLink?.inviteeUser?.id && {
+                inviteeUser: reqAuthUser,
+              }),
+            },
+          );
+
+          return transactionalEntityManager.save(createGroupMember);
+        } else {
+          const findGroupInviteLink = await this.groupInviteLinkService.findOne(
+            {
+              where: { code },
+              relations: {
+                group: true,
+              },
+              select: {
+                id: true,
+                group: {
+                  id: true,
+                },
+              },
+            },
+          );
+
+          if (!findGroupInviteLink) {
+            throw new BadRequestException({
+              statusCode:
+                EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+              message: 'group.error.invite.unprocessable',
+            });
+          }
+
+          const createGroupMember = await this.groupMemberService.create({
+            role: EnumGroupRole.Basic,
+            user: {
+              id: reqAuthUser.id,
+            },
+            group: {
+              id: findGroupInviteLink?.group.id,
+            },
+          });
+
+          return transactionalEntityManager.save(createGroupMember);
+        }
+      },
+    );
+
+    return { dev: result };
+  }
+
+  @ClientResponse('group.inviteReject')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteReject, {
+    tags: ['group', 'invite', 'reject'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-reject/:id')
+  async inviteReject(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Param('id') inviteId: string,
+  ): Promise<IResponseData> {
+    const invite = await this.groupInviteMemberLinkService.findOne({
+      where: {
+        id: inviteId,
+        status: EnumGroupInviteStatus.Pending,
+        inviteeUser: Equal(reqAuthUser.id),
+      },
+    });
+
+    if (!invite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
+
+    const { affected } =
+      await this.groupInviteMemberLinkService.updateInviteStatus({
+        inviteId,
+        inviteStatus: EnumGroupInviteStatus.Rejected,
+      });
+
+    return {
+      dev: {
+        affected,
+      },
+    };
+  }
+
+  @ClientResponse('group.inviteCancel')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteCancel, {
+    tags: ['group', 'invite', 'cancel'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-cancel/:id')
+  async inviteCancel(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Param('id') inviteId: string,
+  ): Promise<IResponseData> {
+    const findInvite = await this.groupInviteMemberLinkService.findOne({
+      where: {
+        inviterUser: {
+          id: reqAuthUser.id,
+        },
+        id: inviteId,
+        status: EnumGroupInviteStatus.Pending,
+      },
+    });
+
+    if (!findInvite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.unprocessable',
+      });
+    }
+
+    const { affected } =
+      await this.groupInviteMemberLinkService.updateInviteStatus({
+        inviteId,
+        inviteStatus: EnumGroupInviteStatus.Canceled,
+      });
+
+    return {
+      dev: {
+        affected,
+      },
+    };
+  }
+
+  @ClientResponse('group.inviteResend')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteResend, {
+    tags: ['group', 'invite', 'send'],
+  })
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Post('/invite-resend/:id')
+  async inviteResend(
+    @ReqAuthUser()
+    reqAuthUser: User,
+    @Param('id') inviteId: string,
+  ): Promise<IResponseData> {
+    const findInvite = await this.groupInviteMemberLinkService.findOne({
+      where: {
+        id: inviteId,
+        inviterUser: {
+          id: reqAuthUser.id,
+        },
+        status: EnumGroupInviteStatus.Pending,
+      },
+      relations: {
+        inviteeUser: {
+          profile: true,
+        },
+        inviterUser: {
+          profile: true,
+        },
+        group: true,
+      },
+      select: {
+        id: true,
+        tempEmail: true,
+        group: {
+          id: true,
+          name: true,
+        },
+        inviteeUser: {
+          id: true,
+          email: true,
+          profile: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        inviterUser: {
+          id: true,
+          email: true,
+          profile: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    if (!findInvite) {
+      throw new BadRequestException({
+        statusCode: EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+        message: 'group.error.invite.unprocessable',
+      });
+    }
+
+    const { affected } = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const expiresInDays = this.configService.get<number>(
+          'group.groupInviteCodeExpiresInDays',
+        );
+
+        const inviteeUser = findInvite.inviteeUser;
+        const inviterUser = findInvite.inviterUser;
+        const group = findInvite.group;
+        const code = findInvite.code;
+
+        const emailSent = inviteeUser
+          ? await this.emailService.sendGroupInviteExistingUser({
+              inviteeUser,
+              inviterUser,
+              group,
+              code,
+              expiresInDays,
+            })
+          : await this.emailService.sendGroupInviteNewUser({
+              email: findInvite.tempEmail,
+              inviterUser,
+              group,
+              code,
+              expiresInDays,
+            });
+
+        if (!emailSent) {
+          throw new InternalServerErrorException({
+            statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+            message: 'messaging.error.email.send',
+          });
+        }
+
+        return transactionalEntityManager.update(
+          GroupInviteMemberLink,
+          { id: inviteId },
+          { expiresAt: this.helperDateService.forwardInDays(expiresInDays) },
+        );
+      },
+    );
+
+    return { dev: { affected } };
+  }
+
+  @ClientResponse('group.inviteMember')
+  @HttpCode(HttpStatus.OK)
+  @LogTrace(EnumLogAction.GroupInviteSend, {
+    tags: ['group', 'invite', 'send'],
+  })
+  @AclGuard({
+    relations: ['profile'],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Post('/:id/invite-member')
+  async inviteMember(
+    @ReqAuthUser()
+    reqUser: User,
+    @Body()
+    { invitees }: GroupInviteMemberDto,
+    @Param('id') groupId: string,
+  ): Promise<IResponseData> {
+    const findGroup = await this.groupService.findGroup({
+      isOwner: false,
+      groupId,
+      userId: reqUser.id,
+    });
+
+    if (!findGroup) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    const result = await this.defaultDataSource.transaction(
+      'SERIALIZABLE',
+      async (transactionalEntityManager) => {
+        const expiresInDays = this.configService.get<number>(
+          'group.groupInviteCodeExpiresInDays',
+        );
+
+        const inviteMembersData = await Promise.all(
+          invitees.map(async (invitee) => {
+            const potentialMemberUser = await this.userService.findOne({
+              where: {
+                email: invitee.email,
+              },
+              relations: {
+                profile: true,
+              },
+              select: {
+                id: true,
+                email: true,
+                profile: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            });
+
+            if (potentialMemberUser) {
+              const existingMember = await this.groupMemberService.findOne({
+                where: {
+                  group: {
+                    id: groupId,
+                  },
+                  user: {
+                    id: potentialMemberUser.id,
+                  },
+                },
+                relations: {
+                  user: true,
+                  group: true,
+                },
+                select: {
+                  id: true,
+                  role: true,
+                  user: {
+                    id: true,
+                    email: true,
+                  },
+                  group: {
+                    id: true,
+                  },
+                },
+              });
+
+              if (existingMember) {
+                return Promise.resolve(existingMember);
+              }
+            }
+
+            const existingInvite =
+              await this.groupInviteMemberLinkService.findOne({
+                where: {
+                  status: EnumGroupInviteStatus.Pending,
+                  group: {
+                    id: groupId,
+                  },
+                  ...(potentialMemberUser
+                    ? {
+                        inviteeUser: {
+                          id: potentialMemberUser?.id,
+                        },
+                      }
+                    : { tempEmail: invitee.email }),
+                },
+                relations: {
+                  group: true,
+                  inviteeUser: true,
+                },
+                select: {
+                  id: true,
+                  code: true,
+                  group: {
+                    id: true,
+                    name: true,
+                  },
+                  tempEmail: true,
+                  inviterUser: {
+                    email: true,
+                    id: true,
+                  },
+                  inviteeUser: {
+                    id: true,
+                    email: true,
+                  },
+                },
+              });
+
+            if (existingInvite) {
+              return Promise.resolve(existingInvite);
+            }
+
+            return Promise.resolve({
+              inviteeUser: potentialMemberUser,
+              tempEmail: potentialMemberUser ? null : invitee.email,
+              group: findGroup,
+              inviterUser: {
+                id: reqUser.id,
+                email: reqUser.email,
+                profile: {
+                  firstName: reqUser.profile?.firstName,
+                  lastName: reqUser.profile?.lastName,
+                },
+              },
+              role: EnumGroupRole.Basic,
+              expiresAt: this.helperDateService.forwardInDays(expiresInDays),
+            });
+          }),
+        );
+
+        const {
+          resolved,
+          nonExistingUserInvitesData,
+          existingUsersInvitesDat,
+        } = inviteMembersData.reduce(
+          (acc, curr) => {
+            if (
+              curr instanceof GroupInviteMemberLink ||
+              curr instanceof GroupMember
+            ) {
+              acc.resolved.push(curr);
+            } else if (Boolean(curr.tempEmail)) {
+              acc.nonExistingUserInvitesData.push(curr);
+            } else {
+              acc.existingUsersInvitesDat.push(curr);
+            }
+            return acc;
+          },
+          {
+            resolved: [],
+            nonExistingUserInvitesData: [],
+            existingUsersInvitesDat: [],
+          },
+        );
+
+        const nonExistingUsersRes = await Promise.allSettled(
+          nonExistingUserInvitesData.map(async (inviteData) => {
+            const createInvite = await this.groupInviteMemberLinkService.create(
+              inviteData,
+            );
+
+            const saveInvite = await transactionalEntityManager.save(
+              createInvite,
+            );
+
+            const { id, code, inviteeUser, group, inviterUser, tempEmail } =
+              saveInvite;
+
+            const emailSent = await this.emailService.sendGroupInviteNewUser({
+              email: createInvite.tempEmail,
+              inviterUser,
+              group,
+              code,
+              expiresInDays,
+            });
+
+            const inviteDate = {
+              id,
+              code,
+              inviteeUser,
+              inviterUser,
+              group,
+              tempEmail,
+            };
+
+            if (!emailSent) {
+              return Promise.reject(inviteDate);
+            }
+            return Promise.resolve(inviteDate);
+          }),
+        );
+
+        const existingUsersRes = await Promise.allSettled(
+          existingUsersInvitesDat.map(async (inviteData) => {
+            const createInvite = await this.groupInviteMemberLinkService.create(
+              inviteData,
+            );
+
+            const saveInvite = await transactionalEntityManager.save(
+              createInvite,
+            );
+
+            const emailSent =
+              await this.emailService.sendGroupInviteExistingUser({
+                inviteeUser: saveInvite.inviteeUser,
+                inviterUser: reqUser,
+                group: saveInvite.group,
+                code: saveInvite.code,
+                expiresInDays,
+              });
+
+            if (!emailSent) {
+              return Promise.reject(saveInvite);
+            }
+            return Promise.resolve(saveInvite);
+          }),
+        );
+
+        const resolvedRes = await Promise.allSettled(
+          resolved.map((inviteData) => Promise.resolve(inviteData)),
+          // It's possible to resend email here, skip for now if already email sent once
+        );
+
+        return { resolvedRes, existingUsersRes, nonExistingUsersRes };
+      },
+    );
+
+    return {
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.nonExistingUsersRes,
+      )),
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.existingUsersRes,
+      )),
+      ...(await this.mapGroupInvitePromiseBasedResultToResponseReport(
+        result.resolvedRes,
+      )),
+      dev: [
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.nonExistingUsersRes,
+        )),
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.existingUsersRes,
+        )),
+        ...(await this.helperPromiseService.mapSettledPromiseData(
+          result.resolvedRes,
+        )),
+      ],
+    };
   }
 }

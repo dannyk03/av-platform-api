@@ -168,9 +168,9 @@ export class ResponseDefaultInterceptor<T = any>
                   ? serialization
                   : null;
 
-              // For local development/testing
-              const isDevelopment =
-                this.configService.get<boolean>('app.isDevelopment');
+              // For local/staging/development/testing
+              const isProduction =
+                this.configService.get<boolean>('app.isProduction');
               const isSecureMode: boolean =
                 this.configService.get<boolean>('app.isSecureMode');
 
@@ -181,7 +181,7 @@ export class ResponseDefaultInterceptor<T = any>
                 result: this.isPlainDevResponse(data)
                   ? undefined
                   : serialization,
-                ...((isDevelopment || !isSecureMode) && { dev }),
+                ...((!isProduction || !isSecureMode) && { dev }),
               };
             }
 

@@ -10,10 +10,26 @@
   "desiredSkills": "Group desired skills list success",
   "funFacts": "Group fun facts list success",
   "userSearch": "Users search success",
+  "addMember": "Add member success",
+  "inviteMember": "Invite member success",
+  "inviteAccept": "Invite accept success",
+  "inviteReject": "Invite reject success",
+  "inviteResend": "Invite resend success",
+  "inviteCancel": "Invite cancel success",
+  "inviteList": "Invite list success",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",
     "exists": "Group already exists",
-    "unprocessable": "Unprocessable"
+    "memberExists": "Group member already exists",
+    "inviteExpired": "Group member invite expired",
+    "inviteNotExists": "Group member invite expired",
+    "inviteAlreadyExists": "Group member already invited",
+    "groupCode": "Group shareable code is incorrect",
+    "unprocessable": "Unprocessable",
+    "alreadyMember": "The user is already a member of the group.",
+    "invite": {
+      "unprocessable": "Unprocessable invite"
+    }
   }
 }
