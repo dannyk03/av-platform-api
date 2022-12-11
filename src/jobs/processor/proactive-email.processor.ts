@@ -15,11 +15,14 @@ export class ProactiveEmailProcessor extends WorkerHost {
     super();
   }
 
+  // TODO [A20-205] here is the queue processor (Consider whether we should use the same function, depends on the email template)
   process(job: Job<any, any, string>): Promise<any> {
     switch (job.name) {
       case EnumJobsCronName.NextWeekBirthday:
-        // return this.proactiveEmailService.sendBirthdayNotification(job.data);
-        return Promise.resolve();
+        return this.proactiveEmailService.sendBirthdayReminderEmail(job.data);
+
+      case EnumJobsCronName.NextDayBirthday:
+        return this.proactiveEmailService.sendBirthdayReminderEmail(job.data);
 
       default:
         break;

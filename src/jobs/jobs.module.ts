@@ -8,12 +8,11 @@ import { name } from 'package.json';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
-import { ProactiveEmailService } from './service';
+import { ProactiveEmailDataService, ProactiveEmailService } from './service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
 import { ProactiveEmailProcessor } from './processor';
-// import { ProactiveEmailProcessor } from './processor';
 import { ProactiveEmailProducer } from './producer';
 import { JobsRouterModule } from './router';
 
@@ -25,6 +24,7 @@ export class JobsModule {
         module: JobsModule,
         providers: [
           ProactiveEmailService,
+          ProactiveEmailDataService,
           ProactiveEmailProducer,
           ProactiveEmailProcessor,
         ],
@@ -52,6 +52,7 @@ export class JobsModule {
               },
             }),
           }),
+          // TODO [A20-205] here is the data queue initialization
           BullModule.registerQueue({
             name: EnumJobsQueue.ProactiveEmail,
           }),

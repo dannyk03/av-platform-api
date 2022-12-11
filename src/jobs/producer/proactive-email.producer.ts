@@ -6,7 +6,7 @@ import { EnumGroupUpcomingMilestoneType } from '@avo/type';
 
 import { Queue } from 'bullmq';
 
-import { ProactiveEmailService } from '../service';
+import { ProactiveEmailDataService } from '../service';
 
 import { EnumJobsCronName } from '../constant';
 import { EnumJobsQueue } from '@/queue/constant';
@@ -14,23 +14,26 @@ import { EnumJobsQueue } from '@/queue/constant';
 @Injectable()
 export class ProactiveEmailProducer {
   constructor(
+    // TODO [A20-205] here is the queue
     @InjectQueue(EnumJobsQueue.ProactiveEmail)
     private readonly proactiveEmailQueue: Queue,
-    private readonly proactiveEmailService: ProactiveEmailService,
+    private readonly proactiveEmailDataService: ProactiveEmailDataService,
   ) {}
 
-  // TODO change to CronExpression.EVERY_DAY_AT_1PM
+  // TODO [A20-205] change to CronExpression.EVERY_DAY_AT_1PM
   @Cron(CronExpression.EVERY_MINUTE, {
     name: EnumJobsCronName.NextWeekBirthday,
   })
   async handleNextWeekBirthdayProactiveNotification() {
+    const inDays = 7;
     try {
-      const data = await this.proactiveEmailService.getMilestoneInXDaysData(
-        7,
+      const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
+        inDays,
         EnumGroupUpcomingMilestoneType.Birthday,
       );
 
       data.forEach(async (birthDayData) =>
+        // TODO [A20-205] here is the data producer for the queue
         this.proactiveEmailQueue.add(
           EnumJobsCronName.NextWeekBirthday,
           birthDayData,
@@ -41,20 +44,22 @@ export class ProactiveEmailProducer {
     }
   }
 
-  // TODO change to CronExpression.EVERY_DAY_AT_1PM
+  // TODO [A20-205] change to CronExpression.EVERY_DAY_AT_1PM
   @Cron(CronExpression.EVERY_MINUTE, {
     name: EnumJobsCronName.NextWeekBirthday,
   })
   async handleNextDayBirthdayProactiveNotification() {
+    const inDays = 1;
     try {
-      const data = await this.proactiveEmailService.getMilestoneInXDaysData(
-        1,
+      const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
+        inDays,
         EnumGroupUpcomingMilestoneType.Birthday,
       );
 
       data.forEach(async (birthDayData) =>
+        // TODO [A20-205] here is the data producer for the queue
         this.proactiveEmailQueue.add(
-          EnumJobsCronName.NextWeekBirthday,
+          EnumJobsCronName.NextDayBirthday,
           birthDayData,
         ),
       );
