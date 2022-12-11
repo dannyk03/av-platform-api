@@ -103,8 +103,12 @@ export class AppRouterModule {
                 module: RouterPaymentModule,
               },
               {
-                path: '/group',
-                module: RouterGroupModule,
+                ...(process.env.APP_ENV !== EnumAppEnv.Production
+                  ? {
+                      path: '/group',
+                      module: RouterGroupModule,
+                    }
+                  : null),
               },
               {
                 path: '/public',
