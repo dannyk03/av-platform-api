@@ -1,23 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectDataSource } from '@nestjs/typeorm';
-
-import { EnumGroupUpcomingMilestoneType } from '@avo/type';
-
-import { DataSource } from 'typeorm';
-
-import { ConnectionNames } from '@/database/constant';
-
-const columnsMap = {
-  [EnumGroupUpcomingMilestoneType.WorkAnniversary]: {
-    day: 'work_anniversary_day',
-    month: 'work_anniversary_month',
-  },
-  [EnumGroupUpcomingMilestoneType.Birthday]: {
-    day: 'birth_day',
-    month: 'birth_month',
-  },
-};
 
 @Injectable()
 export class ProactiveEmailService {
