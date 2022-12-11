@@ -142,7 +142,7 @@ Version of the main packages and main tools.
     docker compose --profile redis --profile monitor up
   ```
 
-  redis-commander => `http://localhost:8081/`
+  redis-commander => `http://localhost:8081`
 
 <!-- BADGE LINKS -->
 

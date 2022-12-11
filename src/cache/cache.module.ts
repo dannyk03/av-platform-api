@@ -4,10 +4,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-store';
 import { isEmpty } from 'class-validator';
 
-import { RedisServerModule } from '@/cache/redis/redis-server/redis-server.module';
-
-import { RedisServerService } from './redis/redis-server/service';
-
 @Module({})
 export class AppCacheModule {
   static register(): DynamicModule {
@@ -21,33 +17,6 @@ export class AppCacheModule {
         exports: [],
         controllers: [],
         imports: [],
-      };
-    }
-
-    if (process.env.REDIS_HOST === '0.0.0.0') {
-      return {
-        module: AppCacheModule,
-        providers: [],
-        imports: [
-          CacheModule.registerAsync({
-            isGlobal: true,
-            imports: [RedisServerModule.register()],
-            inject: [RedisServerService],
-            useFactory: async (redisServerService: RedisServerService) => {
-              const store = await redisStore({
-                socket: {
-                  host: await redisServerService?.getHost(),
-                  port: await redisServerService?.getPort(),
-                },
-              } as any);
-
-              return {
-                store: store as unknown as CacheStore,
-                ttl: 60 * 60 * 24 * 7,
-              };
-            },
-          }),
-        ],
       };
     }
 

@@ -40,4 +40,26 @@ export class ProactiveEmailProducer {
       console.error(error);
     }
   }
+
+  // TODO change to CronExpression.EVERY_DAY_AT_1PM
+  @Cron(CronExpression.EVERY_MINUTE, {
+    name: EnumJobsCronName.NextWeekBirthday,
+  })
+  async handleNextDayBirthdayProactiveNotification() {
+    try {
+      const data = await this.proactiveEmailService.getMilestoneInXDaysData(
+        1,
+        EnumGroupUpcomingMilestoneType.Birthday,
+      );
+
+      data.forEach(async (birthDayData) =>
+        this.proactiveEmailQueue.add(
+          EnumJobsCronName.NextWeekBirthday,
+          birthDayData,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

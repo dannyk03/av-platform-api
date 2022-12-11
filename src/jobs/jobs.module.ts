@@ -5,12 +5,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { name } from 'package.json';
 
-import { RedisServerModule } from '@/cache/redis/redis-server/redis-server.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { UserModule } from '@/user/user.module';
 
 import { ProactiveEmailService } from './service';
-import { RedisServerService } from '@/cache/redis/redis-server/service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
@@ -36,20 +34,13 @@ export class JobsModule {
           JobsRouterModule,
           ScheduleModule.forRoot(),
           BullModule.forRootAsync({
-            imports: [ConfigModule, RedisServerModule.register()],
-            inject: [ConfigService, RedisServerService],
-            useFactory: async (
-              configService: ConfigService,
-              redisServerService: RedisServerService,
-            ) => ({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
               prefix: name,
               redis: {
-                host:
-                  (await redisServerService?.getHost()) ??
-                  configService.get('redis.host'),
-                port:
-                  (await redisServerService?.getPort()) ??
-                  configService.get('redis.port'),
+                host: configService.get('redis.host'),
+                port: configService.get('redis.port'),
               },
               defaultJobOptions: {
                 removeOnComplete: true,
