@@ -208,6 +208,7 @@ export type SurveyCompletedMessageData = {
 };
 
 export type GroupInviteNewUserMessageData = {
+  code: string;
   inviterUser: {
     id: string;
     firstName: string;
@@ -224,6 +225,7 @@ export type GroupInviteNewUserMessageData = {
 };
 
 export type GroupInviteExistingUserMessageData = {
+  code: string;
   inviteeUser: {
     firstName: string;
   };

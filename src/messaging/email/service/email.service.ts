@@ -701,92 +701,28 @@ export class EmailService {
     return sendResult.status === EmailStatus.success;
   }
 
-  async sendGroupInviteEmailNewUser({
+  async sendGroupInviteNewUser({
     email,
-    code,
-    expiresInDays,
-    path = '/group-invite',
-  }: {
-    email: string;
-    code: string;
-    expiresInDays: number;
-    path?: string;
-  }): Promise<boolean> {
-    // TODO remove staging stub after tests
-    // Stub for local development
-    if (this.isDevelopment || this.isStaging) {
-      return true;
-    }
-
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGroupInviteNewUser.toString(),
-      to: [email],
-      emailTemplatePayload: {
-        path,
-        code,
-        transport: {
-          origin: this.origin,
-        },
-      },
-      identifier: { id: email },
-    });
-
-    return sendResult.status === EmailStatus.success;
-  }
-
-  async sendGroupInviteEmailExistingUser({
-    email,
-    code,
-    firstName,
-    expiresInDays,
-    path = '/group-invite',
-  }: {
-    email: string;
-    code: string;
-    firstName: string;
-    expiresInDays: number;
-    path?: string;
-  }): Promise<boolean> {
-    // Stub for local development
-    // TODO remove staging stub after tests
-    if (this.isDevelopment || this.isStaging) {
-      return true;
-    }
-
-    const sendResult = await this.customerIOService.sendEmail({
-      template: EmailTemplate.SendGroupInviteExistingUser.toString(),
-      to: [email],
-      emailTemplatePayload: {
-        path,
-        code,
-        user: { firstName },
-        transport: {
-          origin: this.origin,
-        },
-      },
-      identifier: { id: email },
-    });
-
-    return sendResult.status === EmailStatus.success;
-  }
-
-  async sendGroupInviteNewUsers({
-    inviteesAddresses,
     inviterUser,
     group,
-    groupMembers,
+    code,
+    groupMembers = [],
+    expiresInDays,
   }: {
-    inviteesAddresses: string[];
+    email: string;
     inviterUser: User;
     group: Group;
-    groupMembers: GroupMember[];
+    code: string;
+    groupMembers?: GroupMember[];
+    expiresInDays: number;
   }): Promise<boolean> {
     // Stub for local development
-    if (this.isDevelopment) {
-      return true;
-    }
+    // if (this.isDevelopment) {
+    //   return true;
+    // }
 
     const payload: GroupInviteNewUserMessageData = {
+      code,
       inviterUser: {
         id: inviterUser.id,
         firstName: inviterUser.profile.firstName,
@@ -805,7 +741,7 @@ export class EmailService {
     };
     const sendResult = await this.customerIOService.sendEmail({
       template: EmailTemplate.SendGroupInviteNewUser.toString(),
-      to: inviteesAddresses,
+      to: [email],
       emailTemplatePayload: {
         ...payload,
         transport: {
@@ -822,19 +758,25 @@ export class EmailService {
     inviteeUser,
     inviterUser,
     group,
-    groupMembers,
+    code,
+    groupMembers = [],
+    expiresInDays,
   }: {
     inviteeUser: User;
     inviterUser: User;
     group: Group;
-    groupMembers: GroupMember[];
+    code: string;
+    groupMembers?: GroupMember[];
+    expiresInDays: number;
   }): Promise<boolean> {
+    // TODO remove staging stub after customer io templates ready
     // Stub for local development
-    if (this.isDevelopment) {
-      return true;
-    }
+    // if (this.isDevelopment || this.isStaging) {
+    //   return true;
+    // }
 
     const payload: GroupInviteExistingUserMessageData = {
+      code,
       inviteeUser: {
         firstName: inviteeUser.profile.firstName,
       },

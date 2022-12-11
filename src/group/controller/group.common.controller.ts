@@ -116,12 +116,16 @@ export class GroupCommonController {
       if ('value' in promiseValue) {
         acc[
           promiseValue.value?.['inviteeUser']?.['email'] ||
-            promiseValue.value?.['tempEmail']
+            promiseValue.value?.['tempEmail'] ||
+            // existing group member
+            promiseValue.value?.['user']?.['email']
         ] = 'success';
       } else if ('reason' in promiseValue) {
         acc[
           promiseValue.reason?.['inviteeUser']?.['email'] ||
-            promiseValue.reason?.['tempEmail']
+            promiseValue.reason?.['tempEmail'] ||
+            // existing group member
+            promiseValue.reason?.['user']?.['email']
         ] = 'fail';
       }
       return acc;
@@ -885,16 +889,34 @@ export class GroupCommonController {
         inviteeUser: {
           profile: true,
         },
+        inviterUser: {
+          profile: true,
+        },
+        group: true,
       },
       select: {
         id: true,
         tempEmail: true,
+        group: {
+          id: true,
+          name: true,
+        },
         inviteeUser: {
           id: true,
           email: true,
           profile: {
             id: true,
             firstName: true,
+            lastName: true,
+          },
+        },
+        inviterUser: {
+          id: true,
+          email: true,
+          profile: {
+            id: true,
+            firstName: true,
+            lastName: true,
           },
         },
       },
@@ -915,17 +937,23 @@ export class GroupCommonController {
         );
 
         const inviteeUser = findInvite.inviteeUser;
+        const inviterUser = findInvite.inviterUser;
+        const group = findInvite.group;
+        const code = findInvite.code;
 
         const emailSent = inviteeUser
-          ? await this.emailService.sendGroupInviteEmailExistingUser({
-              email: inviteeUser.email,
-              code: findInvite.code,
+          ? await this.emailService.sendGroupInviteExistingUser({
+              inviteeUser,
+              inviterUser,
+              group,
+              code,
               expiresInDays,
-              firstName: inviteeUser?.profile.firstName,
             })
-          : await this.emailService.sendGroupInviteEmailNewUser({
+          : await this.emailService.sendGroupInviteNewUser({
               email: findInvite.tempEmail,
-              code: findInvite.code,
+              inviterUser,
+              group,
+              code,
               expiresInDays,
             });
 
@@ -952,20 +980,22 @@ export class GroupCommonController {
   @LogTrace(EnumLogAction.GroupInviteSend, {
     tags: ['group', 'invite', 'send'],
   })
-  @AclGuard()
+  @AclGuard({
+    relations: ['profile'],
+  })
   @RequestParamGuard(IdParamDto)
   @Post('/:id/invite-member')
   async inviteMember(
     @ReqAuthUser()
-    { id: userId }: User,
+    reqUser: User,
     @Body()
     { invitees }: GroupInviteMemberDto,
     @Param('id') groupId: string,
   ): Promise<IResponseData> {
     const findGroup = await this.groupService.findGroup({
       isOwner: false,
-      userId,
       groupId,
+      userId: reqUser.id,
     });
 
     if (!findGroup) {
@@ -997,6 +1027,7 @@ export class GroupCommonController {
                 profile: {
                   id: true,
                   firstName: true,
+                  lastName: true,
                 },
               },
             });
@@ -1057,9 +1088,11 @@ export class GroupCommonController {
                   code: true,
                   group: {
                     id: true,
+                    name: true,
                   },
                   tempEmail: true,
                   inviterUser: {
+                    email: true,
                     id: true,
                   },
                   inviteeUser: {
@@ -1075,12 +1108,15 @@ export class GroupCommonController {
 
             return Promise.resolve({
               inviteeUser: potentialMemberUser,
-              tempEmail: potentialMemberUser?.email ?? invitee.email,
-              group: {
-                id: groupId,
-              },
+              tempEmail: potentialMemberUser ? null : invitee.email,
+              group: findGroup,
               inviterUser: {
-                id: userId,
+                id: reqUser.id,
+                email: reqUser.email,
+                profile: {
+                  firstName: reqUser.profile?.firstName,
+                  lastName: reqUser.profile?.lastName,
+                },
               },
               role: EnumGroupRole.Basic,
               expiresAt: this.helperDateService.forwardInDays(expiresInDays),
@@ -1126,12 +1162,13 @@ export class GroupCommonController {
             const { id, code, inviteeUser, group, inviterUser, tempEmail } =
               saveInvite;
 
-            const emailSent =
-              await this.emailService.sendGroupInviteEmailNewUser({
-                email: tempEmail,
-                code,
-                expiresInDays,
-              });
+            const emailSent = await this.emailService.sendGroupInviteNewUser({
+              email: createInvite.tempEmail,
+              inviterUser,
+              group,
+              code,
+              expiresInDays,
+            });
 
             const inviteDate = {
               id,
@@ -1159,26 +1196,11 @@ export class GroupCommonController {
               createInvite,
             );
 
-            const findInviteeUser = await this.userService.findOne({
-              where: {
-                id: saveInvite.inviteeUser?.id,
-              },
-              relations: {
-                profile: true,
-              },
-              select: {
-                id: true,
-                profile: {
-                  id: true,
-                  firstName: true,
-                },
-              },
-            });
-
             const emailSent =
-              await this.emailService.sendGroupInviteEmailExistingUser({
-                email: saveInvite.inviteeUser?.email,
-                firstName: findInviteeUser.profile.firstName,
+              await this.emailService.sendGroupInviteExistingUser({
+                inviteeUser: saveInvite.inviteeUser,
+                inviterUser: reqUser,
+                group: saveInvite.group,
                 code: saveInvite.code,
                 expiresInDays,
               });
