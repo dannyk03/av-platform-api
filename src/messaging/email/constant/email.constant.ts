@@ -220,6 +220,7 @@ export type GroupInviteNewUserMessageData = {
     members: {
       firstName: string;
       lastName: string;
+      abbreviation: string;
     }[];
   };
 };
@@ -240,6 +241,7 @@ export type GroupInviteExistingUserMessageData = {
     members: {
       firstName: string;
       lastName: string;
+      abbreviation: string;
     }[];
   };
 };
