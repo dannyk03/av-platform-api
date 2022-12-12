@@ -47,6 +47,13 @@ export class EmailService {
     private readonly customerIOService: CustomerIOService,
   ) {}
 
+  getAbbreviation(userProfile) {
+    if (userProfile.firstName?.length && userProfile.lastName?.length) {
+      return `${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`;
+    }
+    return null;
+  }
+
   async sendNetworkJoinInvite({
     email,
     fromUser,
@@ -734,6 +741,7 @@ export class EmailService {
           return {
             firstName: member.user.profile.firstName,
             lastName: member.user.profile.lastName,
+            abbreviation: this.getAbbreviation(member.user.profile),
           };
         }),
       },
@@ -791,6 +799,7 @@ export class EmailService {
           return {
             firstName: member.user.profile.firstName,
             lastName: member.user.profile.lastName,
+            abbreviation: this.getAbbreviation(member.user.profile),
           };
         }),
       },
