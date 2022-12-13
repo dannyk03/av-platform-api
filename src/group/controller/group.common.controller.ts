@@ -132,6 +132,37 @@ export class GroupCommonController {
     }, {});
   }
 
+  private async getGroupMembers(
+    groupId: string,
+    inviterUserId: string,
+    count: number,
+  ) {
+    const inviterMember = await this.groupMemberService.findOne({
+      where: {
+        group: {
+          id: groupId,
+        },
+        user: {
+          id: inviterUserId,
+        },
+      },
+      relations: ['user', 'user.profile'],
+    });
+
+    if (count == 1) {
+      return [inviterMember];
+    }
+
+    const groupMembers = await this.groupMemberService.findRandomGroupMembers({
+      groupId,
+      count: --count,
+      exclude: [inviterMember.id],
+    });
+
+    groupMembers.unshift(inviterMember);
+    return groupMembers;
+  }
+
   @ClientResponse('group.create', {
     classSerialization: GroupGetSerialization,
   })
@@ -940,14 +971,12 @@ export class GroupCommonController {
         const inviterUser = findInvite.inviterUser;
         const group = findInvite.group;
         const code = findInvite.code;
-        const groupMembers = await this.groupMemberService.find({
-          where: {
-            group: {
-              id: group.id,
-            },
-          },
-          relations: ['user'],
-        });
+
+        const groupMembers = await this.getGroupMembers(
+          group.id,
+          inviterUser.id,
+          3,
+        );
 
         const emailSent = inviteeUser
           ? await this.emailService.sendGroupInviteExistingUser({
@@ -1159,14 +1188,7 @@ export class GroupCommonController {
           },
         );
 
-        const groupMembers = await this.groupMemberService.find({
-          where: {
-            group: {
-              id: groupId,
-            },
-          },
-          relations: ['user'],
-        });
+        const groupMembers = await this.getGroupMembers(groupId, reqUser.id, 3);
 
         const nonExistingUsersRes = await Promise.allSettled(
           nonExistingUserInvitesData.map(async (inviteData) => {
