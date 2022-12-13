@@ -132,6 +132,37 @@ export class GroupCommonController {
     }, {});
   }
 
+  private async getGroupMembers(
+    groupId: string,
+    inviterUserId: string,
+    count: number,
+  ) {
+    const inviterMember = await this.groupMemberService.findOne({
+      where: {
+        group: {
+          id: groupId,
+        },
+        user: {
+          id: inviterUserId,
+        },
+      },
+      relations: ['user', 'user.profile'],
+    });
+
+    if (count == 1) {
+      return [inviterMember];
+    }
+
+    const groupMembers = await this.groupMemberService.findRandomGroupMembers({
+      groupId,
+      count: --count,
+      exclude: [inviterMember.id],
+    });
+
+    groupMembers.unshift(inviterMember);
+    return groupMembers;
+  }
+
   @ClientResponse('group.create', {
     classSerialization: GroupGetSerialization,
   })
@@ -941,12 +972,19 @@ export class GroupCommonController {
         const group = findInvite.group;
         const code = findInvite.code;
 
+        const groupMembers = await this.getGroupMembers(
+          group.id,
+          inviterUser.id,
+          3,
+        );
+
         const emailSent = inviteeUser
           ? await this.emailService.sendGroupInviteExistingUser({
               inviteeUser,
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             })
           : await this.emailService.sendGroupInviteNewUser({
@@ -954,6 +992,7 @@ export class GroupCommonController {
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             });
 
@@ -1149,6 +1188,8 @@ export class GroupCommonController {
           },
         );
 
+        const groupMembers = await this.getGroupMembers(groupId, reqUser.id, 3);
+
         const nonExistingUsersRes = await Promise.allSettled(
           nonExistingUserInvitesData.map(async (inviteData) => {
             const createInvite = await this.groupInviteMemberLinkService.create(
@@ -1167,6 +1208,7 @@ export class GroupCommonController {
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             });
 
@@ -1202,6 +1244,7 @@ export class GroupCommonController {
                 inviterUser: reqUser,
                 group: saveInvite.group,
                 code: saveInvite.code,
+                groupMembers,
                 expiresInDays,
               });
 

@@ -5,6 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import {
   DataSource,
   DeepPartial,
+  FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
@@ -41,6 +42,10 @@ export class GroupMemberService {
 
   async saveBulk(members: DeepPartial<GroupMember>[]): Promise<GroupMember[]> {
     return this.groupMemberRepository.save(members);
+  }
+
+  async find(find: FindManyOptions<GroupMember>): Promise<GroupMember[]> {
+    return this.groupMemberRepository.find(find);
   }
 
   async findOne(find?: FindOneOptions<GroupMember>): Promise<GroupMember> {
