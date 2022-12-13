@@ -940,6 +940,14 @@ export class GroupCommonController {
         const inviterUser = findInvite.inviterUser;
         const group = findInvite.group;
         const code = findInvite.code;
+        const groupMembers = await this.groupMemberService.find({
+          where: {
+            group: {
+              id: group.id,
+            },
+          },
+          relations: ['user'],
+        });
 
         const emailSent = inviteeUser
           ? await this.emailService.sendGroupInviteExistingUser({
@@ -947,6 +955,7 @@ export class GroupCommonController {
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             })
           : await this.emailService.sendGroupInviteNewUser({
@@ -954,6 +963,7 @@ export class GroupCommonController {
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             });
 
@@ -1149,6 +1159,15 @@ export class GroupCommonController {
           },
         );
 
+        const groupMembers = await this.groupMemberService.find({
+          where: {
+            group: {
+              id: groupId,
+            },
+          },
+          relations: ['user'],
+        });
+
         const nonExistingUsersRes = await Promise.allSettled(
           nonExistingUserInvitesData.map(async (inviteData) => {
             const createInvite = await this.groupInviteMemberLinkService.create(
@@ -1167,6 +1186,7 @@ export class GroupCommonController {
               inviterUser,
               group,
               code,
+              groupMembers,
               expiresInDays,
             });
 
@@ -1202,6 +1222,7 @@ export class GroupCommonController {
                 inviterUser: reqUser,
                 group: saveInvite.group,
                 code: saveInvite.code,
+                groupMembers,
                 expiresInDays,
               });
 
