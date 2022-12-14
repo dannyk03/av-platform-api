@@ -674,7 +674,6 @@ export class GroupCommonController {
             where: {
               id: inviteId,
               status: EnumGroupInviteStatus.Pending,
-              inviteeUser: Equal(reqAuthUser.id),
             },
             relations: {
               group: true,
