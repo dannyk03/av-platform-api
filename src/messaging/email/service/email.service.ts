@@ -711,7 +711,7 @@ export class EmailService {
     inviterUser,
     group,
     code,
-    groupMembers = [],
+    groupMembers,
     expiresInDays,
   }: {
     email: string;
@@ -766,8 +766,7 @@ export class EmailService {
     inviterUser,
     group,
     code,
-    // Not implemented
-    groupMembers = [],
+    groupMembers,
     expiresInDays,
   }: {
     inviteeUser: User;
