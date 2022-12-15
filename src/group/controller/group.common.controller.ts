@@ -201,13 +201,15 @@ export class GroupCommonController {
           members: [createOwner],
         });
 
+        const savedGroup = await this.groupService.save(createGroup);
+
         const createInviteLink = await this.groupInviteLinkService.create({
-          group: createGroup,
+          group: savedGroup,
         });
 
         await transactionalEntityManager.save(createInviteLink);
 
-        return this.groupService.save(createGroup);
+        return savedGroup;
       },
     );
 
