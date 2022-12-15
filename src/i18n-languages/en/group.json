@@ -17,6 +17,7 @@
   "inviteResend": "Invite resend success",
   "inviteCancel": "Invite cancel success",
   "inviteList": "Invite list success",
+  "getCode": "Get group code success",
   "error": {
     "notFound": "Group not found",
     "inactive": "Group not active",
