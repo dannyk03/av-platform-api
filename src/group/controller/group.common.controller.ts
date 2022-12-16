@@ -83,7 +83,6 @@ import {
   GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
-  GroupInviteListSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
@@ -727,7 +726,7 @@ export class GroupCommonController {
   })
   @AclGuard()
   @Post('/invite-accept')
-// TODO:  will be refactored with the rest of the signup flows
+  // TODO:  will be refactored with the rest of the signup flows
   async inviteAccept(
     @ReqAuthUser()
     reqAuthUser: User,

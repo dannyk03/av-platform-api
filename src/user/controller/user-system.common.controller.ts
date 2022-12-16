@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  SerializeOptions,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
