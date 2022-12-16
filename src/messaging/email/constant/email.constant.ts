@@ -31,6 +31,8 @@ export enum EmailTemplate {
   SendNetworkNewConnectionRequest = 'SendNetworkNewConnectionRequest', // TODO: verify the context
   SendGiftSurvey = 'Survey Confirmation', // TODO: verify the context
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
+  SendGroupInviteNewUser = 'Group Invite - New User', // TODO: verify the context
+  SendGroupInviteExistingUser = 'Group Invite - Existing User', // TODO: verify the context
 }
 
 export enum EmailStatus {
@@ -203,4 +205,43 @@ export type SurveyCompletedMessageData = {
     firstName: string;
   };
   socialConnectionRequestId: string; // TODO: delete
+};
+
+export type GroupInviteNewUserMessageData = {
+  code: string;
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+      abbreviation: string;
+    }[];
+  };
+};
+
+export type GroupInviteExistingUserMessageData = {
+  code: string;
+  inviteeUser: {
+    firstName: string;
+  };
+  inviterUser: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    members: {
+      firstName: string;
+      lastName: string;
+      abbreviation: string;
+    }[];
+  };
 };

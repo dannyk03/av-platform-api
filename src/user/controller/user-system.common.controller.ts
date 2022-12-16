@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  SerializeOptions,
 } from '@nestjs/common';
 
 import { Action, Subjects } from '@avo/casl';
@@ -39,6 +40,7 @@ import {
   UserGetSerialization,
   UserProfileGetSerialization,
 } from '../serialization';
+import { EnumUserSerializationGroup } from '../serialization/constant';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -55,6 +57,7 @@ export class UserSystemCommonController {
 
   @ClientResponsePaging('user.list', {
     classSerialization: UserGetSerialization,
+    classSerializationOptions: { groups: [EnumUserSerializationGroup.System] },
   })
   @HttpCode(HttpStatus.OK)
   @AclGuard({
