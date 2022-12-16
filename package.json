@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@avo/casl": "^0.0.31",
-    "@avo/type": "^0.0.171",
+    "@avo/type": "^0.0.172",
     "@aws-sdk/client-s3": "^3.226.0",
     "@faker-js/faker": "^7.6.0",
     "@nestjs/axios": "^1.0.0",

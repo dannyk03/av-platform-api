@@ -204,13 +204,15 @@ export class GroupCommonController {
           members: [createOwner],
         });
 
+        const savedGroup = await this.groupService.save(createGroup);
+
         const createInviteLink = await this.groupInviteLinkService.create({
-          group: createGroup,
+          group: savedGroup,
         });
 
         await transactionalEntityManager.save(createInviteLink);
 
-        return this.groupService.save(createGroup);
+        return savedGroup;
       },
     );
 
@@ -682,6 +684,40 @@ export class GroupCommonController {
     }
 
     return findGroup;
+  }
+
+  @ClientResponse('group.getCode')
+  @HttpCode(HttpStatus.OK)
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/code/:id')
+  async getInviteCode(@Param('id') groupId: string): Promise<IResponseData> {
+    const findGroupLink = await this.groupInviteLinkService.findOne({
+      where: {
+        group: {
+          id: groupId,
+        },
+      },
+      relations: {
+        group: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        group: {
+          id: true,
+        },
+      },
+    });
+
+    if (!findGroupLink) {
+      throw new NotFoundException({
+        statusCode: EnumGroupStatusCodeError.GroupInviteNotFoundError,
+        message: 'group.error.notFound',
+      });
+    }
+
+    return findGroupLink;
   }
 
   @ClientResponse('group.inviteAccept')

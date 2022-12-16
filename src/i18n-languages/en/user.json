@@ -21,7 +21,7 @@
     "exists": "User exists",
     "code": "Invalid sign up code",
     "signUpLink": "Invalid sign up link",
-    "verified": "User not verified",
+    "verified": "Please verify your account",
     "profileForbidden": "User profile forbidden"
   }
 }
