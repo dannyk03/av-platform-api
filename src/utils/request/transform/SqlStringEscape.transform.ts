@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 
 import { Expose, Transform } from 'class-transformer';
-import { IsString, isString } from 'class-validator';
+import { isString } from 'class-validator';
 import SqlString from 'sqlstring';
 
 import { TrimTransform } from './Trim.transform';
