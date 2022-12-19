@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { name } from 'package.json';
 
 import { MessagingModule } from '@/messaging/messaging.module';
+import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
 import { ProactiveEmailDataService, ProactiveEmailService } from './service';
@@ -30,30 +31,34 @@ export class JobsModule {
         ],
         imports: [
           UserModule,
+          NetworkingModule,
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
           BullModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
-              prefix: name,
-              redis: {
+            useFactory: async (configService: ConfigService) => {
+              const redis = {
                 host: configService.get('redis.host'),
                 port: configService.get('redis.port'),
-              },
-              defaultJobOptions: {
-                removeOnComplete: true,
-                attempts: 3,
-                backoff: {
-                  type: 'exponential',
-                  delay: 10000,
+              };
+
+              return {
+                prefix: name,
+                redis,
+                defaultJobOptions: {
+                  removeOnComplete: true,
+                  attempts: 3,
+                  backoff: {
+                    type: 'exponential',
+                    delay: 10000,
+                  },
                 },
-              },
-            }),
+              };
+            },
           }),
-          // TODO [A20-205] here is the data queue initialization
-          BullModule.registerQueue({
+          BullModule.registerQueueAsync({
             name: EnumJobsQueue.ProactiveEmail,
           }),
         ],

@@ -25,7 +25,7 @@ jobs:
       APP_PORT: 8080
       APP_VERSIONING: true
       APP_HTTP_ON: true
-      APP_JOB_ON: false
+      APP_JOB_ON: true
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
