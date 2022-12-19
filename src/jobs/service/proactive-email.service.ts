@@ -23,6 +23,7 @@ export class ProactiveEmailService {
   ) {}
 
   private get origin(): string {
+    // TODO: deal with feature-branches
     if (this.isDevelopment) {
       return 'http://localhost:3000';
     }
