@@ -149,6 +149,7 @@ export class GroupService {
       },
       select: {
         id: true,
+        name: true,
         members: {
           role: true,
           user: {

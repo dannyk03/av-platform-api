@@ -15,6 +15,7 @@ import DatabaseConfig from './database.config';
 import DebuggerConfig from './debugger.config';
 import DefaultConfig from './default.config';
 import FileConfig from './file.config';
+import GroupConfig from './group.config';
 import HelperConfig from './helper.config';
 import MiddlewareConfig from './middleware.config';
 import OrganizationConfig from './organization.config';
@@ -40,6 +41,7 @@ export const Configs = [
   DebuggerConfig,
   DefaultConfig,
   RedisConfig,
+  GroupConfig,
 ];
 
 export const ConfigDynamicModule = ConfigModule.forRoot({
@@ -109,8 +111,8 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           TWILIO_API_KEY: Joi.string().required(),
           TWILIO_API_SECRET_KEY: Joi.string().required(),
 
-          REDIS_HOST: Joi.string().allow('').optional(),
-          REDIS_PORT: Joi.number().allow('').optional().port(),
+          // REDIS_HOST: Joi.string().allow('').optional(),
+          // REDIS_PORT: Joi.number().allow('').optional().port(),
         }),
   validationOptions: {
     allowUnknown: true,
