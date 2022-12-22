@@ -151,6 +151,10 @@ export class UserProfileGetSerialization
   readonly desiredSkills?: string[];
 
   @Expose()
+  @Transform(({ obj }) => obj.profile?.upcomingMilestones)
+  readonly upcomingMilestones?: object;
+
+  @Expose()
   @Transform(({ obj }) =>
     plainToInstance(InvitationLink, obj.invitationLink?.id),
   )

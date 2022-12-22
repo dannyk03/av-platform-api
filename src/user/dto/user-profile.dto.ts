@@ -243,6 +243,10 @@ export class SurveyPersonalDto {
   @MaxLength(200, { each: true })
   @ApiProperty()
   readonly desiredSkills: string[];
+
+  @Allow()
+  @ApiProperty()
+  readonly upcomingMilestones: object;
 }
 
 export class UserProfileDto {

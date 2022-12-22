@@ -421,6 +421,7 @@ export class AuthCommonController {
         jobRole,
         jobType,
         department,
+        upcomingMilestones,
       },
       personas,
       dietary,
@@ -489,6 +490,7 @@ export class AuthCommonController {
               jobType,
               department,
             },
+            upcomingMilestones,
           },
           authConfig: {
             password: passwordHash,
