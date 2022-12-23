@@ -114,6 +114,13 @@ export class UserProfile extends BaseEntity<UserProfile> {
   })
   dietary?: object;
 
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+    default: [],
+  })
+  upcomingMilestones?: object;
+
   @OneToOne(() => User, (user) => user.profile, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',

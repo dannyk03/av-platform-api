@@ -69,7 +69,10 @@ import {
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
 } from '../dto';
-import { GroupInviteAcceptRefDto } from '../dto/group.add-member.dto';
+import {
+  GroupInviteAcceptByIdDto,
+  GroupInviteAcceptRefDto,
+} from '../dto/group.add-member.dto';
 import { GroupInviteListDto } from '../dto/group.invite-member-list.dto';
 import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
 import { UserListDto } from '@/user/dto';
@@ -80,7 +83,6 @@ import {
   GroupFunFactsListSerialization,
   GroupGetSerialization,
   GroupGetWithPreviewSerialization,
-  GroupInviteListSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
 import { GroupUserSerialization } from '@/group/serialization';
@@ -724,14 +726,67 @@ export class GroupCommonController {
   })
   @AclGuard()
   @Post('/invite-accept')
+  // TODO:  will be refactored with the rest of the signup flows
   async inviteAccept(
     @ReqAuthUser()
     reqAuthUser: User,
+    @Body() { inviteId }: GroupInviteAcceptByIdDto,
     @Query() { code, type }: GroupInviteAcceptRefDto,
   ): Promise<IResponseData> {
     const result = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {
+        if (inviteId) {
+          const invite = await this.groupInviteMemberLinkService.findOne({
+            where: {
+              id: inviteId,
+              status: EnumGroupInviteStatus.Pending,
+            },
+            relations: {
+              group: true,
+              inviteeUser: true,
+            },
+            select: {
+              id: true,
+              status: true,
+              group: {
+                id: true,
+              },
+              inviteeUser: {
+                id: true,
+              },
+            },
+          });
+
+          if (!invite) {
+            throw new BadRequestException({
+              statusCode:
+                EnumGroupStatusCodeError.GroupUnprocessableInviteError,
+              message: 'group.error.unprocessable',
+            });
+          }
+
+          const createGroupMember = await this.groupMemberService.create({
+            role: EnumGroupRole.Basic,
+            user: reqAuthUser,
+            group: {
+              id: invite.group.id,
+            },
+          });
+
+          await transactionalEntityManager.update(
+            GroupInviteMemberLink,
+            { id: inviteId },
+            {
+              status: EnumGroupInviteStatus.Accepted,
+              ...(!invite?.inviteeUser?.id && {
+                inviteeUser: reqAuthUser,
+              }),
+            },
+          );
+
+          return transactionalEntityManager.save(createGroupMember);
+        }
         if (type == EnumAddGroupMemberType.PersonalInvite) {
           const findGroupInviteMemberLink =
             await this.groupInviteMemberLinkService.findOne({

@@ -116,6 +116,7 @@ export class UserCommonController {
         department,
         funFacts,
         desiredSkills,
+        upcomingMilestones,
       },
       personas,
       dietary,
@@ -143,6 +144,7 @@ export class UserCommonController {
             kidFriendlyActivities,
             funFacts,
             desiredSkills,
+            upcomingMilestones,
           })
           .where('id = :userProfileId', { userProfileId: reqUser.profile.id })
           .execute();
