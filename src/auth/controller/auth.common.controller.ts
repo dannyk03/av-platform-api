@@ -589,14 +589,13 @@ export class AuthCommonController {
                 await this.emailService.sendSurveyCompletedToInviter({
                   inviterUser: inviterUserWithProfile,
                   inviteeUser: saveUser,
-                  socialConnectionRequestId: saveSocialConnectionRequest.id,
                 });
               }
             }
           } else if (type == EnumNetworkingConnectionType.ShareableLink) {
             const invitationLink = await this.invitationLinkService.findOne({
               where: { id: ref },
-              relations: ['user'],
+              relations: ['user', 'user.profile'],
               select: {
                 id: true,
                 user: {
@@ -614,6 +613,11 @@ export class AuthCommonController {
                 );
 
               await transactionalEntityManager.save(socialConnection);
+
+              await this.emailService.sendSurveyCompletedToInviter({
+                inviterUser: invitationLink.user,
+                inviteeUser: saveUser,
+              });
             }
           }
         }
