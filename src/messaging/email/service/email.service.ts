@@ -688,7 +688,6 @@ export class EmailService {
       inviterUser: {
         firstName: inviterUser.profile.firstName,
       },
-      socialConnectionRequestId,
     };
 
     const sendResult = await this.customerIOService.sendEmail({
