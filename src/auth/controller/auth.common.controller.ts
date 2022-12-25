@@ -600,6 +600,7 @@ export class AuthCommonController {
                 id: true,
                 user: {
                   id: true,
+                  email: true,
                 },
               },
             });
