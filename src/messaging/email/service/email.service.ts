@@ -669,11 +669,9 @@ export class EmailService {
   async sendSurveyCompletedToInviter({
     inviteeUser,
     inviterUser,
-    socialConnectionRequestId,
   }: {
     inviteeUser: User;
     inviterUser: User;
-    socialConnectionRequestId: string;
   }): Promise<boolean> {
     // Stub for local development
     if (this.isDevelopment) {

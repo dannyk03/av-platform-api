@@ -589,7 +589,6 @@ export class AuthCommonController {
                 await this.emailService.sendSurveyCompletedToInviter({
                   inviterUser: inviterUserWithProfile,
                   inviteeUser: saveUser,
-                  socialConnectionRequestId: saveSocialConnectionRequest.id,
                 });
               }
             }
