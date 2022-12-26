@@ -205,7 +205,6 @@ export type SurveyCompletedMessageData = {
   inviterUser: {
     firstName: string;
   };
-  socialConnectionRequestId: string; // TODO: delete
 };
 
 export type GroupInviteNewUserMessageData = {
