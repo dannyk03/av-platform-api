@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { plainToInstance } from 'class-transformer';
+import { isNumber } from 'lodash';
 import {
+  Brackets,
   DataSource,
   DeepPartial,
   FindManyOptions,
@@ -13,7 +15,11 @@ import {
 
 import { GroupMember } from '../entity';
 
+import { HelperStringService } from '@/utils/helper/service';
+
 import { ConnectionNames } from '@/database/constant';
+
+import { IPaginationOptions } from '@/utils/pagination';
 
 import { CommonGroupsTransformRowQuery } from '../transform';
 
@@ -24,6 +30,7 @@ export class GroupMemberService {
     private readonly defaultDataSource: DataSource,
     @InjectRepository(GroupMember, ConnectionNames.Default)
     private readonly groupMemberRepository: Repository<GroupMember>,
+    private readonly helperStringService: HelperStringService,
   ) {}
 
   async create(member: DeepPartial<GroupMember>): Promise<GroupMember> {
@@ -83,6 +90,53 @@ export class GroupMemberService {
       .orderBy('RANDOM()')
       .limit(count);
 
+    return builder.getMany();
+  }
+
+  async findGroupMembers({
+    groupId,
+    options,
+    search,
+  }: {
+    groupId: string;
+    options: IPaginationOptions;
+    search: string;
+  }): Promise<GroupMember[]> {
+    const builder = await this.groupMemberRepository
+      .createQueryBuilder('member')
+      .leftJoinAndSelect('member.user', 'memberUser')
+      .leftJoinAndSelect('memberUser.profile', 'userProfile')
+      .leftJoinAndSelect('member.group', 'memberGroup')
+      .select([
+        'member.id',
+        'member.role',
+        'memberUser.id',
+        'userProfile.firstName',
+        'userProfile.lastName',
+      ])
+      .setParameters({ groupId })
+      .where('memberGroup.id = :groupId');
+
+    if (options.order) {
+      builder.orderBy(options.order);
+    }
+
+    if (isNumber(options.take) && isNumber(options.skip)) {
+      builder.take(options.take).skip(options.skip);
+    }
+
+    if (search) {
+      const formattedSearch = this.helperStringService.tsQueryParam(search);
+
+      builder.andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            `to_tsvector('english', CONCAT_WS(' ', userProfile.firstName, userProfile.lastName)) @@ to_tsquery('english', :search)`,
+            { search: `${formattedSearch}` },
+          );
+        }),
+      );
+    }
     return builder.getMany();
   }
 

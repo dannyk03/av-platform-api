@@ -68,6 +68,7 @@ import {
   GroupListDto,
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
+  MemberListDto,
 } from '../dto';
 import {
   GroupInviteAcceptByIdDto,
@@ -85,6 +86,7 @@ import {
   GroupGetWithPreviewSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
+import { GroupMembersListSerialization } from '../serialization/group.members.list.serialization';
 import { GroupUserSerialization } from '@/group/serialization';
 
 import { ConnectionNames } from '@/database/constant';
@@ -1376,6 +1378,39 @@ export class GroupCommonController {
           result.resolvedRes,
         )),
       ],
+    };
+  }
+
+  @ClientResponsePaging('group.members', {
+    classSerialization: GroupMembersListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/members')
+  async groupMembers(
+    @Param('id') groupId: string,
+    @Query()
+    { page, perPage, sort, search }: MemberListDto,
+  ): Promise<IResponseData> {
+    const skip = await this.paginationService.skip(page, perPage);
+
+    const members = await this.groupMemberService.findGroupMembers({
+      groupId,
+      search,
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+    });
+    console.log(members[0]);
+
+    return {
+      currentPage: page,
+      perPage,
+      data: members,
     };
   }
 }
