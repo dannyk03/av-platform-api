@@ -15,7 +15,7 @@ export default registerAs(
         EnumRequestMethod.PATCH,
         EnumRequestMethod.POST,
       ],
-      allowOriginProduction: [/^https:\/\/gifting\.avonow\.com$/],
+      allowOriginProduction: [/^https:\/\/connect\.avonow\.com$/],
       allowOriginStaging: [/^https:\/\/staging--avo-gifting\.netlify\.app$/],
       allowOriginFeatureBranches: [
         /^https:\/\[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
