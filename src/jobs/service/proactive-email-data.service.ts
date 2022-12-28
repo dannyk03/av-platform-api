@@ -34,7 +34,7 @@ export class ProactiveEmailDataService {
     const dayColumn = columnsMap[type].day;
     const monthColumn = columnsMap[type].month;
 
-    // TODO [A20-205] refactor query
+    // TODO [A20-205] refactor query https://avonow.atlassian.net/browse/A20-358
     return this.defaultDataSource.query(
       `
       SELECT
