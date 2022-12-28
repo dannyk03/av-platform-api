@@ -113,7 +113,7 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
 
           REDIS_HOST: Joi.when('APP_JOB_ON', {
             is: true,
-            then: Joi.string().allow('redis', 'localhost').required(),
+            then: Joi.string().allow('').required(),
             otherwise: Joi.optional(),
           }),
           REDIS_PORT: Joi.when('APP_JOB_ON', {
