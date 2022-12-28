@@ -111,8 +111,25 @@ export const ConfigDynamicModule = ConfigModule.forRoot({
           TWILIO_API_KEY: Joi.string().required(),
           TWILIO_API_SECRET_KEY: Joi.string().required(),
 
-          // REDIS_HOST: Joi.string().allow('').optional(),
-          // REDIS_PORT: Joi.number().allow('').optional().port(),
+          REDIS_HOST: Joi.when('APP_JOB_ON', {
+            is: true,
+            then: Joi.string().allow('redis', 'localhost').required(),
+            otherwise: Joi.optional(),
+          }),
+          REDIS_PORT: Joi.when('APP_JOB_ON', {
+            is: true,
+            then: Joi.number().port().default(6379).required(),
+            otherwise: Joi.optional(),
+          }),
+          FE_ORIGIN: Joi.when('APP_JOB_ON', {
+            is: true,
+            then: Joi.valid(
+              'http://localhost:3000',
+              'https://gifting.avonow.com',
+              'https://staging--avo-gifting.netlify.app',
+            ).required(),
+            otherwise: Joi.optional(),
+          }),
         }),
   validationOptions: {
     allowUnknown: true,

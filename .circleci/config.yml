@@ -46,6 +46,9 @@ jobs:
       AUTH_JWT_REFRESH_TOKEN_EXPIRED: 7d
       AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: 30d
       AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: 30m
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      FE_ORIGIN: https://gifting.avonow.com
     steps:
       - checkout
       - node/install-packages:
