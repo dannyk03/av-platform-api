@@ -19,91 +19,69 @@ export class ProactiveEmailProducer {
     private readonly proactiveEmailDataService: ProactiveEmailDataService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.NextWeekBirthday,
-  })
-  async handleNextWeekBirthdayProactiveNotification() {
-    const inDays = 7;
+  private async addUpcomingMilestoneJob(
+    type: EnumGroupUpcomingMilestoneType,
+    jobName: EnumJobsCronName,
+    inDays: number,
+  ) {
     try {
       const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
         inDays,
-        EnumGroupUpcomingMilestoneType.Birthday,
+        type,
       );
 
       await this.proactiveEmailQueue.addBulk(
-        data.map((birthDayData) => ({
-          name: EnumJobsCronName.NextWeekBirthday,
-          data: birthDayData,
+        data.map((jobData) => ({
+          name: jobName,
+          data: jobData,
         })),
       );
     } catch (error) {
       console.error(error);
     }
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
+    name: EnumJobsCronName.NextWeekBirthday,
+  })
+  async handleNextWeekBirthdayProactiveNotification() {
+    await this.addUpcomingMilestoneJob(
+      EnumGroupUpcomingMilestoneType.Birthday,
+      EnumJobsCronName.NextWeekBirthday,
+      7,
+    );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM, {
     name: EnumJobsCronName.NextDayBirthday,
   })
   async handleNextDayBirthdayProactiveNotification() {
-    const inDays = 1;
-    try {
-      const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
-        inDays,
-        EnumGroupUpcomingMilestoneType.Birthday,
-      );
-
-      await this.proactiveEmailQueue.addBulk(
-        data.map((birthDayData) => ({
-          name: EnumJobsCronName.NextDayBirthday,
-          data: birthDayData,
-        })),
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await this.addUpcomingMilestoneJob(
+      EnumGroupUpcomingMilestoneType.Birthday,
+      EnumJobsCronName.NextDayBirthday,
+      1,
+    );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM, {
     name: EnumJobsCronName.NextWeekWorkAnniversary,
   })
   async handleNextWeekWorkAnniversaryProactiveNotification() {
-    const inDays = 7;
-    try {
-      const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
-        inDays,
-        EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      );
-
-      await this.proactiveEmailQueue.addBulk(
-        data.map((workAnniversaryData) => ({
-          name: EnumJobsCronName.NextWeekWorkAnniversary,
-          data: workAnniversaryData,
-        })),
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await this.addUpcomingMilestoneJob(
+      EnumGroupUpcomingMilestoneType.WorkAnniversary,
+      EnumJobsCronName.NextWeekWorkAnniversary,
+      7,
+    );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM, {
     name: EnumJobsCronName.NextDayWorkAnniversary,
   })
   async handleNextDayWorkAnniversaryProactiveNotification() {
-    const inDays = 1;
-    try {
-      const data = await this.proactiveEmailDataService.getMilestoneInXDaysData(
-        inDays,
-        EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      );
-
-      await this.proactiveEmailQueue.addBulk(
-        data.map((workAnniversaryData) => ({
-          name: EnumJobsCronName.NextDayWorkAnniversary,
-          data: workAnniversaryData,
-        })),
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await this.addUpcomingMilestoneJob(
+      EnumGroupUpcomingMilestoneType.WorkAnniversary,
+      EnumJobsCronName.NextDayWorkAnniversary,
+      1,
+    );
   }
 }
