@@ -15,25 +15,12 @@ import { UpcomingMileStoneNotificationDto } from '@/jobs/producer/transform';
 export class ProactiveEmailService {
   private readonly isDevelopment =
     this.configService.get<boolean>('app.isDevelopment');
-  private readonly isStaging = this.configService.get<boolean>('app.isStaging');
+  private readonly origin = this.configService.get('app.frontEndOrigin');
 
   constructor(
     private readonly configService: ConfigService,
     private readonly customerIOService: CustomerIOService,
   ) {}
-
-  private get origin(): string {
-    // TODO: deal with feature-branches
-    if (this.isDevelopment) {
-      return 'http://localhost:3000';
-    }
-
-    if (this.isStaging) {
-      return 'https://staging--avo-gifting.netlify.app';
-    }
-
-    return `https://gifting.avonow.com`;
-  }
 
   private sendEmail(data: SendEmailDto) {
     if (this.isDevelopment) {
