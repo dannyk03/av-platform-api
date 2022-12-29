@@ -43,14 +43,15 @@ export class JobsModule {
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
-              const redis = {
-                host: configService.get('redis.host'),
-                port: configService.get('redis.port'),
-              };
+              const host = configService.get('redis.host');
+              const port = configService.get('redis.port');
 
               return {
                 prefix: name,
-                redis,
+                connection: {
+                  host,
+                  port,
+                },
                 defaultJobOptions: {
                   removeOnComplete: true,
                   attempts: 3,
