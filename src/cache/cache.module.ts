@@ -2,13 +2,12 @@ import { CacheModule, CacheStore, DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { redisStore } from 'cache-manager-redis-store';
-import { isEmpty } from 'class-validator';
 
 @Module({})
 export class AppCacheModule {
   static register(): DynamicModule {
     if (
-      isEmpty(process.env.REDIS_HOST) ||
+      process.env.APP_CACHE_ON !== 'true' ||
       process.env.INTEGRATION_TEST === 'true' ||
       process.env.UNIT_TEST === 'true'
     ) {

@@ -25,7 +25,8 @@ jobs:
       APP_PORT: 8080
       APP_VERSIONING: true
       APP_HTTP_ON: true
-      APP_JOB_ON: true
+      APP_JOB_ON: false
+      APP_CACHE_ON: false
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${CIRCLE_PROJECT_REPONAME}
@@ -46,7 +47,6 @@ jobs:
       AUTH_JWT_REFRESH_TOKEN_EXPIRED: 7d
       AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: 30d
       AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: 30m
-      FE_ORIGIN: https://gifting.avonow.com
     steps:
       - checkout
       - node/install-packages:
