@@ -33,6 +33,7 @@ export enum EmailTemplate {
   SendSenderGiftShipped = 'Gift Shipped - Sender', // TODO: verify the context
   SendGroupInviteNewUser = 'Group Invite - New User', // TODO: verify the context
   SendGroupInviteExistingUser = 'Group Invite - Existing User', // TODO: verify the context
+  SendUpcomingMilestoneNotification = 'Upcoming Milestone Notification',
 }
 
 export enum EmailStatus {

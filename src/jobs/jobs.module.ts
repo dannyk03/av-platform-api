@@ -5,12 +5,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { name } from 'package.json';
 
-import { RedisServerModule } from '@/cache/redis/redis-server/redis-server.module';
 import { MessagingModule } from '@/messaging/messaging.module';
+import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
-import { ProactiveEmailService } from './service';
-import { RedisServerService } from '@/cache/redis/redis-server/service';
+import { ProactiveEmailDataService, ProactiveEmailService } from './service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
@@ -21,46 +20,49 @@ import { JobsRouterModule } from './router';
 @Module({})
 export class JobsModule {
   static register(): DynamicModule {
-    if (process.env.APP_JOB_ON === 'true') {
+    if (
+      process.env.APP_JOB_ON === 'true' &&
+      process.env.INTEGRATION_TEST !== 'true' &&
+      process.env.UNIT_TEST !== 'true'
+    ) {
       return {
         module: JobsModule,
         providers: [
           ProactiveEmailService,
+          ProactiveEmailDataService,
           ProactiveEmailProducer,
           ProactiveEmailProcessor,
         ],
         imports: [
           UserModule,
+          NetworkingModule,
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
           BullModule.forRootAsync({
-            imports: [ConfigModule, RedisServerModule.register()],
-            inject: [ConfigService, RedisServerService],
-            useFactory: async (
-              configService: ConfigService,
-              redisServerService: RedisServerService,
-            ) => ({
-              prefix: name,
-              redis: {
-                host:
-                  (await redisServerService?.getHost()) ??
-                  configService.get('redis.host'),
-                port:
-                  (await redisServerService?.getPort()) ??
-                  configService.get('redis.port'),
-              },
-              defaultJobOptions: {
-                removeOnComplete: true,
-                attempts: 3,
-                backoff: {
-                  type: 'exponential',
-                  delay: 10000,
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
+              const redis = {
+                host: configService.get('redis.host'),
+                port: configService.get('redis.port'),
+              };
+
+              return {
+                prefix: name,
+                redis,
+                defaultJobOptions: {
+                  removeOnComplete: true,
+                  attempts: 3,
+                  backoff: {
+                    type: 'exponential',
+                    delay: 10000,
+                  },
                 },
-              },
-            }),
+              };
+            },
           }),
-          BullModule.registerQueue({
+          BullModule.registerQueueAsync({
             name: EnumJobsQueue.ProactiveEmail,
           }),
         ],

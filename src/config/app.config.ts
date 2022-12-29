@@ -34,5 +34,6 @@ export default registerAs(
 
     httpOn: process.env.APP_HTTP_ON === 'true',
     jobOn: process.env.APP_JOB_ON === 'true',
+    frontEndOrigin: process.env.FE_ORIGIN || 'http://localhost:3000',
   }),
 );
