@@ -102,14 +102,18 @@ export class GroupInviteMemberLinkService {
       .leftJoinAndSelect('groupInviteMember.inviteeUser', 'inviteeUser')
       .leftJoinAndSelect('inviteeUser.profile', 'inviteeUserProfile')
       .leftJoinAndSelect('groupInviteMember.inviterUser', 'inviterUser')
+      .leftJoinAndSelect('groupInviteMember.group', 'group')
       .leftJoinAndSelect('inviterUser.profile', 'inviterUserProfile')
       .select([
         'groupInviteMember.id',
         'groupInviteMember.role',
         'groupInviteMember.expiresAt',
         'groupInviteMember.createdAt',
+        'groupInviteMember.tempEmail',
         'inviteeUser.id',
         'inviterUser.id',
+        'group.id',
+        'group.name',
         'inviterUserProfile.firstName',
         'inviterUserProfile.lastName',
         'inviteeUserProfile.firstName',
