@@ -9,7 +9,8 @@ export class AppCacheModule {
   static register(): DynamicModule {
     if (
       isEmpty(process.env.REDIS_HOST) ||
-      process.env.INTEGRATION_TEST === 'true'
+      process.env.INTEGRATION_TEST === 'true' ||
+      process.env.UNIT_TEST === 'true'
     ) {
       return {
         module: AppCacheModule,

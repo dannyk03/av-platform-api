@@ -22,7 +22,8 @@ export class JobsModule {
   static register(): DynamicModule {
     if (
       process.env.APP_JOB_ON === 'true' &&
-      process.env.INTEGRATION_TEST !== 'true'
+      process.env.INTEGRATION_TEST !== 'true' &&
+      process.env.UNIT_TEST !== 'true'
     ) {
       return {
         module: JobsModule,
