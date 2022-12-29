@@ -20,7 +20,10 @@ import { JobsRouterModule } from './router';
 @Module({})
 export class JobsModule {
   static register(): DynamicModule {
-    if (process.env.APP_JOB_ON === 'true') {
+    if (
+      process.env.APP_JOB_ON === 'true' &&
+      process.env.INTEGRATION_TEST !== 'true'
+    ) {
       return {
         module: JobsModule,
         providers: [
