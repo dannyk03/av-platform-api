@@ -19,4 +19,11 @@ export class GroupMembersListSerialization
   @Expose()
   @Transform(({ obj }) => obj.user?.profile?.lastName)
   readonly lastName: string;
+
+  @Expose()
+  @Transform(({ obj }) => {
+    const personas = obj?.user?.profile?.personas;
+    return personas ?? {};
+  })
+  readonly personas: object;
 }

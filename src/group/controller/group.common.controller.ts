@@ -88,6 +88,7 @@ import {
 } from '../serialization';
 import { GroupMembersListSerialization } from '../serialization/group.members.list.serialization';
 import { GroupUserSerialization } from '@/group/serialization';
+import { UserConnectionProfileGetSerialization } from '@/user/serialization';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
@@ -1411,5 +1412,23 @@ export class GroupCommonController {
       perPage,
       data: members,
     };
+  }
+
+  @ClientResponse('group.member', {
+    classSerialization: UserConnectionProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard({
+    relations: ['profile'],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/members/:memberId')
+  async getConnectionProfile(
+    @Param('memberId') memberId: string,
+  ): Promise<IResponseData> {
+    const member = await this.groupMemberService.findGroupMemberById(memberId);
+
+    return member.user;
   }
 }

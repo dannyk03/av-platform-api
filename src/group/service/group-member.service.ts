@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+
+import { EnumGroupStatusCodeError } from '@avo/type';
 
 import { plainToInstance } from 'class-transformer';
 import { isNumber } from 'lodash';
@@ -113,6 +115,7 @@ export class GroupMemberService {
         'memberUser.id',
         'userProfile.firstName',
         'userProfile.lastName',
+        'userProfile.personas',
       ])
       .setParameters({ groupId })
       .where('memberGroup.id = :groupId');
@@ -138,6 +141,29 @@ export class GroupMemberService {
       );
     }
     return builder.getMany();
+  }
+
+  async findGroupMemberById(memberId: string): Promise<GroupMember> {
+    const member = await this.groupMemberRepository.findOne({
+      where: {
+        id: memberId,
+      },
+      relations: [
+        'user',
+        'user.profile',
+        'user.profile.home',
+        'user.profile.shipping',
+      ],
+    });
+
+    if (!member) {
+      throw new UnprocessableEntityException({
+        statusCode: EnumGroupStatusCodeError.GroupMemberNotFoundError,
+        message: 'group.member.error.notFound',
+      });
+    }
+
+    return member;
   }
 
   async findCommonGroups({
