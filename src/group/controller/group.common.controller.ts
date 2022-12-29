@@ -1405,7 +1405,6 @@ export class GroupCommonController {
         order: sort,
       },
     });
-    console.log(members[0]);
 
     return {
       currentPage: page,
