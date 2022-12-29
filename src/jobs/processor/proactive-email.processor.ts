@@ -15,13 +15,9 @@ export class ProactiveEmailProcessor extends WorkerHost {
     super();
   }
 
-  process(job: Job<any, any, string>): Promise<any> {
-    switch (job.name) {
-      case EnumJobsCronName.NextWeekBirthday:
-        return this.proactiveEmailService.sendBirthdayNotification(job.data);
-
-      default:
-        break;
-    }
+  process(job: Job<any, any, EnumJobsCronName>): Promise<boolean> {
+    return this.proactiveEmailService.sendUpcomingMilestoneReminderEmail(
+      Object.assign({}, job.data, { type: job.name }),
+    );
   }
 }
