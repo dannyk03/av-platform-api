@@ -68,6 +68,7 @@ import {
   GroupListDto,
   GroupUpcomingMilestonesListDto,
   GroupUpdateDto,
+  MemberListDto,
 } from '../dto';
 import {
   GroupInviteAcceptByIdDto,
@@ -85,7 +86,9 @@ import {
   GroupGetWithPreviewSerialization,
   GroupUpcomingMilestonesListSerialization,
 } from '../serialization';
+import { GroupMembersListSerialization } from '../serialization/group.members.list.serialization';
 import { GroupUserSerialization } from '@/group/serialization';
+import { UserConnectionProfileGetSerialization } from '@/user/serialization';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumLogAction } from '@/log/constant';
@@ -1377,5 +1380,55 @@ export class GroupCommonController {
         )),
       ],
     };
+  }
+
+  @ClientResponsePaging('group.members', {
+    classSerialization: GroupMembersListSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard()
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/members')
+  async groupMembers(
+    @Param('id') groupId: string,
+    @Query()
+    { page, perPage, sort, search }: MemberListDto,
+  ): Promise<IResponseData> {
+    const skip = await this.paginationService.skip(page, perPage);
+
+    const members = await this.groupMemberService.findGroupMembers({
+      groupId,
+      search,
+      options: {
+        skip: skip,
+        take: perPage,
+        order: sort,
+      },
+    });
+
+    return {
+      currentPage: page,
+      perPage,
+      data: members,
+    };
+  }
+
+  @ClientResponse('group.member', {
+    classSerialization: UserConnectionProfileGetSerialization,
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessAsGroupMember()
+  @AclGuard({
+    relations: ['profile'],
+  })
+  @RequestParamGuard(IdParamDto)
+  @Get('/:id/members/:memberId')
+  async getConnectionProfile(
+    @Param('memberId') memberId: string,
+  ): Promise<IResponseData> {
+    const member = await this.groupMemberService.findGroupMemberById(memberId);
+
+    return member.user;
   }
 }
