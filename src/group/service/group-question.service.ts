@@ -11,7 +11,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { GroupQuestion } from '@/group/entity';
+import { Group, GroupQuestion } from '@/group/entity';
 import { User } from '@/user/entity';
 
 import { GroupService } from '@/group/service/group.service';
@@ -20,6 +20,7 @@ import { PaginationService } from '@/utils/pagination/service';
 import { IGroupQuestionSearch } from '@/group/type';
 
 import { GroupQuestionListDto } from '@/group/dto';
+import { GroupQuestionCreateDto } from '@/group/dto/group-question.create.dto';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -68,17 +69,32 @@ export class GroupQuestionService {
     return this.groupQuestionRepository.findOneBy({ ...find });
   }
 
+  async createGroupQuestion(
+    user: User,
+    dto: GroupQuestionCreateDto,
+    group: Group,
+  ) {
+    const groupQuestion = this.groupQuestionRepository.create({
+      ...dto,
+      createdBy: user,
+      group,
+    });
+
+    // todo - A20-414 send email to groupMembers
+    return this.groupQuestionRepository.save(groupQuestion);
+  }
+
   async getGroupPaginatedList(
     user: User,
     dto: GroupQuestionListDto,
-    groupId: string,
+    group: Group,
   ) {
     const { page, perPage, sort, availableSort, availableSearch } = dto;
 
     const skip: number = await this.paginationService.skip(page, perPage);
 
     const groupQuestions = await this.paginatedSearchBy({
-      groupId: groupId,
+      groupId: group.id,
       options: {
         skip,
         take: perPage,
@@ -86,7 +102,7 @@ export class GroupQuestionService {
       },
     });
 
-    const totalData = await this.getTotal({ groupId });
+    const totalData = await this.getTotal({ groupId: group.id });
 
     const totalPage = await this.paginationService.totalPage(
       totalData,
