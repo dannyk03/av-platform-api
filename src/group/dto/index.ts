@@ -5,3 +5,4 @@ export * from './group.upcoming-milestones.list.dto';
 export * from './group.desired-skills.list.dto';
 export * from './group.fun-facts.list.dto';
 export * from './group.list-members.dto';
+export * from './group-question.list.dto';

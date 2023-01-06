@@ -9,12 +9,15 @@ import {
   GroupInviteLink,
   GroupInviteMemberLink,
   GroupMember,
+  GroupQuestion,
 } from './entity';
+import { GroupQuestionAnswer } from '@/group/entity/group-question-answer.entity';
 
 import {
   GroupInviteLinkService,
   GroupInviteMemberLinkService,
   GroupMemberService,
+  GroupQuestionService,
   GroupService,
 } from './service';
 
@@ -23,7 +26,14 @@ import { ConnectionNames } from '@/database/constant';
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Group, GroupMember, GroupInviteMemberLink, GroupInviteLink],
+      [
+        Group,
+        GroupMember,
+        GroupInviteMemberLink,
+        GroupInviteLink,
+        GroupQuestion,
+        GroupQuestionAnswer,
+      ],
       ConnectionNames.Default,
     ),
     UserModule,
@@ -34,12 +44,14 @@ import { ConnectionNames } from '@/database/constant';
     GroupMemberService,
     GroupInviteMemberLinkService,
     GroupInviteLinkService,
+    GroupQuestionService,
   ],
   providers: [
     GroupService,
     GroupMemberService,
     GroupInviteMemberLinkService,
     GroupInviteLinkService,
+    GroupQuestionService,
   ],
   controllers: [],
 })
