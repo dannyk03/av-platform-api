@@ -19,7 +19,8 @@
   "inviteList": "Invite list success",
   "getCode": "Get group code success",
   "question": {
-    "list": "List group questions success"
+    "list": "List group questions success",
+    "create": "Create group question success"
   },
   "error": {
     "notFound": "Group not found",
