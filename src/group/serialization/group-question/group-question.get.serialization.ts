@@ -1,6 +1,6 @@
 import { IGroupQuestionGetSerialization } from '@avo/type';
 
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
 @Exclude()
 export class GroupQuestionGetSerialization
@@ -13,11 +13,12 @@ export class GroupQuestionGetSerialization
   readonly data: string;
 
   @Expose()
+  @Transform(({ value }) => value || 0)
   readonly answersCount: number;
 
   @Expose()
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @Expose()
-  updatedAt: Date;
+  readonly updatedAt: Date;
 }
