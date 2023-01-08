@@ -20,8 +20,8 @@ export default registerAs(
         /^https:\/\/connect\.avonow\.com$/,
       ],
       allowOriginStaging: [
-        /^https:\/\/staging--avo-*\.netlify\.app$/,
-        /^https:\/\/*--avo-connect-staging\.netlify\.app$/,
+        /^https:\/\/staging--avo-gifting\.netlify\.app$/,
+        /^https:\/\/.*--avo-connect-staging\.netlify\.app$/,
       ],
       allowOriginFeatureBranches: [
         /^https:\/\[a-z0-9-._]+--avo-gifting\.netlify\.app$/,
