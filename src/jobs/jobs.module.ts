@@ -3,7 +3,6 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 
-// import { TypeOrmModule } from '@nestjs/typeorm';
 import { name } from 'package.json';
 
 import { GroupModule } from '@/group/group.module';
@@ -11,10 +10,8 @@ import { MessagingModule } from '@/messaging/messaging.module';
 import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
-// import { Group, GroupMember, GroupQuestion } from '@/group/entity';
 import { ProactiveEmailDataService, ProactiveEmailService } from './service';
 
-// import { ConnectionNames } from '@/database/constant';
 import { EnumJobsQueue } from '@/queue/constant';
 
 import {
@@ -50,10 +47,6 @@ export class JobsModule {
           JobsRouterModule,
           ScheduleModule.forRoot(),
           GroupModule,
-          // TypeOrmModule.forFeature(
-          //   [Group, GroupMember, GroupQuestion],
-          //   ConnectionNames.Default,
-          // ),
           BullModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
