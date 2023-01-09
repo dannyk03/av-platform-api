@@ -19,8 +19,7 @@ import { PaginationService } from '@/utils/pagination/service';
 
 import { IGroupQuestionSearch } from '@/group/type';
 
-import { GroupQuestionListDto } from '@/group/dto';
-import { GroupQuestionCreateDto } from '@/group/dto/group-question.create.dto';
+import { GroupQuestionCreateDto, GroupQuestionListDto } from '@/group/dto';
 
 import { ConnectionNames } from '@/database/constant';
 
@@ -69,6 +68,10 @@ export class GroupQuestionService {
     return this.groupQuestionRepository.findOneBy({ ...find });
   }
 
+  async remove(question: GroupQuestion): Promise<GroupQuestion> {
+    return this.groupQuestionRepository.remove(question);
+  }
+
   async createGroupQuestion(
     user: User,
     dto: GroupQuestionCreateDto,
@@ -91,47 +94,26 @@ export class GroupQuestionService {
   ) {
     const { page, perPage, sort, availableSort, availableSearch } = dto;
 
-    const skip: number = await this.paginationService.skip(page, perPage);
-
-    const groupQuestions = await this.paginatedSearchBy({
+    const queryBuilder = await this.getListSearchBuilder({
       groupId: group.id,
+    });
+
+    const paginatedResult = await this.paginationService.getPaginatedData({
+      queryBuilder,
       options: {
-        skip,
         take: perPage,
         order: sort,
+        page,
       },
     });
 
-    const totalData = await this.getTotal({ groupId: group.id });
-
-    const totalPage = await this.paginationService.totalPage(
-      totalData,
-      perPage,
-    );
-
     return {
-      totalData,
-      totalPage,
       currentPage: page,
       perPage,
       availableSearch,
       availableSort,
-      data: groupQuestions,
+      ...paginatedResult,
     };
-  }
-
-  private paginatedSearchBy({ groupId, options }: IGroupQuestionSearch) {
-    const builder = this.getListSearchBuilder({ groupId });
-
-    if (options.order) {
-      builder.orderBy(options.order);
-    }
-
-    if (isNumber(options.take) && isNumber(options.skip)) {
-      builder.take(options.take).skip(options.skip);
-    }
-
-    return builder.getMany();
   }
 
   private getListSearchBuilder({ groupId }: IGroupQuestionSearch) {
@@ -146,9 +128,30 @@ export class GroupQuestionService {
       .where('groupQuestion.group_id = :groupId');
   }
 
-  getTotal({ groupId }: IGroupQuestionSearch) {
-    return this.getListSearchBuilder({
-      groupId,
-    }).getCount();
+  findGroupQuestion({
+    userId,
+    groupId,
+    groupQuestionId,
+  }: {
+    userId?: string;
+    groupId: string;
+    groupQuestionId: string;
+  }) {
+    const where: FindOneOptions<GroupQuestion>['where'] = {
+      group: {
+        id: groupId,
+      },
+      id: groupQuestionId,
+    };
+
+    if (userId) {
+      where.createdBy = {
+        id: userId,
+      };
+    }
+
+    return this.groupQuestionRepository.findOne({
+      where,
+    });
   }
 }

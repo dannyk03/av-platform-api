@@ -48,7 +48,7 @@ import {
 } from '@/utils/helper/service';
 import { PaginationService } from '@/utils/pagination/service';
 
-import { CanAccessAsGroupMember } from '../decorator';
+import { CanAccessGroupAsGroupMember } from '../decorator';
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
 import {
@@ -73,9 +73,9 @@ import {
 import {
   GroupInviteAcceptByIdDto,
   GroupInviteAcceptRefDto,
-} from '../dto/group.add-member.dto';
-import { GroupInviteListDto } from '../dto/group.invite-member-list.dto';
-import { GroupInviteMemberDto } from '../dto/group.invite-member.dto';
+  GroupInviteListDto,
+  GroupInviteMemberDto,
+} from '@/group/dto';
 import { UserListDto } from '@/user/dto';
 import { IdParamDto } from '@/utils/request/dto';
 
@@ -495,7 +495,7 @@ export class GroupCommonController {
     classSerialization: GroupUpcomingMilestonesListSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/upcoming-milestones')
@@ -530,7 +530,7 @@ export class GroupCommonController {
     classSerialization: GroupFunFactsListSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/fun-facts')
@@ -563,7 +563,7 @@ export class GroupCommonController {
     classSerialization: GroupDesiredSkillsListSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/desired-skills')
@@ -1386,7 +1386,7 @@ export class GroupCommonController {
     classSerialization: GroupMembersListSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @RequestParamGuard(IdParamDto)
   @Get('/:id/members')
@@ -1418,7 +1418,7 @@ export class GroupCommonController {
     classSerialization: UserConnectionProfileGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard({
     relations: ['profile'],
   })

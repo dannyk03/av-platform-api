@@ -4,6 +4,7 @@ export interface IPaginationOptions {
   take?: number;
   skip?: number;
   order?: IPaginationSort;
+  page?: number;
 }
 
 export interface IPaginationFilterOptions {

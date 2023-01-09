@@ -17,6 +17,7 @@ import {
   GroupInviteLinkService,
   GroupInviteMemberLinkService,
   GroupMemberService,
+  GroupQuestionAnswerService,
   GroupQuestionService,
   GroupService,
 } from './service';
@@ -45,6 +46,7 @@ import { ConnectionNames } from '@/database/constant';
     GroupInviteMemberLinkService,
     GroupInviteLinkService,
     GroupQuestionService,
+    GroupQuestionAnswerService,
   ],
   providers: [
     GroupService,
@@ -52,6 +54,7 @@ import { ConnectionNames } from '@/database/constant';
     GroupInviteMemberLinkService,
     GroupInviteLinkService,
     GroupQuestionService,
+    GroupQuestionAnswerService,
   ],
   controllers: [],
 })

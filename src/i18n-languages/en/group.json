@@ -20,7 +20,21 @@
   "getCode": "Get group code success",
   "question": {
     "list": "List group questions success",
-    "create": "Create group question success"
+    "create": "Create group question success",
+    "update": "Update group question success",
+    "remove": "Remove group question success",
+    "error": {
+      "notFound": "Group question not found"
+    },
+    "answer": {
+      "list": "List group question answers success",
+      "create": "Create group question answers success",
+      "remove": "Remove group question answr success",
+      "update": "Update group question answer success",
+      "error": {
+        "notFound": "Group question answer not found"
+      }
+    }
   },
   "error": {
     "notFound": "Group not found",

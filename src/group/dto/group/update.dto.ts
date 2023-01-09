@@ -1,3 +1,3 @@
-import { GroupCreateDto } from './group.create.dto';
+import { GroupCreateDto } from './create.dto';
 
 export class GroupUpdateDto extends GroupCreateDto {}
