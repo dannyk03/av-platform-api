@@ -1,21 +1,25 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 
 import { IResponseData, IResponsePagingData } from '@avo/type';
 
-import { Group } from '@/group/entity';
+import { Group, GroupQuestion } from '@/group/entity';
 import { User } from '@/user/entity';
 
 import { GroupQuestionService } from '@/group/service';
 
-import { CanAccessAsGroupMember, ReqGroup } from '@/group/decorator';
+import { CanAccessGroupAsGroupMember, ReqGroup } from '@/group/decorator';
+import { ReqGroupQuestion } from '@/group/decorator/group-question-request.decorator';
+import { CanAccessGroupQuestion } from '@/group/decorator/group-question.decorator';
 import { LogTrace } from '@/log/decorator';
 import { ReqAuthUser } from '@/user/decorator';
 import {
@@ -25,8 +29,11 @@ import {
 
 import { AclGuard } from '@/auth/guard';
 
-import { GroupQuestionListDto } from '@/group/dto';
-import { GroupQuestionCreateDto } from '@/group/dto/group-question.create.dto';
+import {
+  GroupQuestionCreateDto,
+  GroupQuestionListDto,
+  GroupQuestionUpdateDto,
+} from '@/group/dto';
 
 import { GroupQuestionGetSerialization } from '@/group/serialization';
 
@@ -42,7 +49,7 @@ export class GroupQuestionController {
     classSerialization: GroupQuestionGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @Get()
   list(
@@ -63,7 +70,7 @@ export class GroupQuestionController {
     tags: ['group', 'question', 'create'],
   })
   @HttpCode(HttpStatus.OK)
-  @CanAccessAsGroupMember()
+  @CanAccessGroupAsGroupMember()
   @AclGuard()
   @Post()
   createQuestion(
@@ -75,5 +82,44 @@ export class GroupQuestionController {
     dto: GroupQuestionCreateDto,
   ): Promise<IResponseData> {
     return this.groupQuestionService.createGroupQuestion(user, dto, group);
+  }
+
+  @ClientResponse('group.question.update', {
+    classSerialization: GroupQuestionGetSerialization,
+  })
+  @LogTrace(EnumLogAction.UpdateGroupQuestion, {
+    tags: ['group', 'question', 'update'],
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessGroupQuestion({ owner: true })
+  @AclGuard()
+  @Patch('/:id')
+  updateQuestion(
+    @Body()
+    { data }: GroupQuestionUpdateDto,
+    @ReqGroupQuestion()
+    groupQuestion: GroupQuestion,
+  ): Promise<IResponseData> {
+    return this.groupQuestionService.save({
+      ...groupQuestion,
+      data,
+    });
+  }
+
+  @ClientResponse('group.question.remove', {
+    classSerialization: GroupQuestionGetSerialization,
+  })
+  @LogTrace(EnumLogAction.UpdateGroupQuestion, {
+    tags: ['group', 'question', 'remove'],
+  })
+  @HttpCode(HttpStatus.OK)
+  @CanAccessGroupQuestion({ owner: true })
+  @AclGuard()
+  @Delete('/:id')
+  deleteQuestion(
+    @ReqGroupQuestion()
+    groupQuestion: GroupQuestion,
+  ): Promise<IResponseData> {
+    return this.groupQuestionService.remove(groupQuestion);
   }
 }

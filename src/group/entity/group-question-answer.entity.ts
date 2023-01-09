@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@/database/entity';
-import { GroupQuestion } from '@/group/entity/group-question.entity';
+import { GroupQuestion } from '@/group/entity';
 import { User } from '@/user/entity';
 
 @Entity()
@@ -20,6 +20,7 @@ export class GroupQuestionAnswer extends BaseEntity<GroupQuestionAnswer> {
   })
   question: GroupQuestion;
 
+  @ManyToOne(() => User)
   @JoinColumn()
   createdBy: User;
 }

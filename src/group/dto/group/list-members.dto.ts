@@ -9,7 +9,7 @@ import {
   GROUP_MEMBER_DEFAULT_PER_PAGE,
   GROUP_MEMBER_DEFAULT_SORT,
   GroupMemberOrderByNestingAliasMap,
-} from '../constant';
+} from '@/group/constant';
 
 import {
   PaginationAvailableSearch,

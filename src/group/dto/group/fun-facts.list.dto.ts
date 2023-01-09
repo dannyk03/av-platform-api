@@ -8,7 +8,7 @@ import {
   GROUP_FUN_FACTS_DEFAULT_PAGE,
   GROUP_FUN_FACTS_DEFAULT_PER_PAGE,
   GROUP_FUN_FACTS_DEFAULT_SORT,
-} from '../constant';
+} from '@/group/constant';
 
 import {
   PaginationAvailableSearch,
