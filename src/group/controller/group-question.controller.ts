@@ -71,7 +71,9 @@ export class GroupQuestionController {
   })
   @HttpCode(HttpStatus.OK)
   @CanAccessGroupAsGroupMember()
-  @AclGuard()
+  @AclGuard({
+    relations: ['profile'],
+  })
   @Post()
   createQuestion(
     @ReqAuthUser()

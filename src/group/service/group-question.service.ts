@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
-import { isNumber } from 'class-validator';
 import {
   DataSource,
   DeepPartial,
@@ -23,6 +22,8 @@ import { GroupQuestionCreateDto, GroupQuestionListDto } from '@/group/dto';
 
 import { ConnectionNames } from '@/database/constant';
 
+import { GroupQuestionEmailProducer } from '@/jobs/producer/group/group-question/group-question-email.producer';
+
 @Injectable()
 export class GroupQuestionService {
   constructor(
@@ -32,6 +33,7 @@ export class GroupQuestionService {
     private readonly groupQuestionRepository: Repository<GroupQuestion>,
     private readonly groupService: GroupService,
     private readonly paginationService: PaginationService,
+    private readonly groupQuestionEmailProducer: GroupQuestionEmailProducer,
   ) {}
 
   async create(props: DeepPartial<GroupQuestion>): Promise<GroupQuestion> {
@@ -83,8 +85,11 @@ export class GroupQuestionService {
       group,
     });
 
-    // todo - A20-414 send email to groupMembers
-    return this.groupQuestionRepository.save(groupQuestion);
+    const savedGroupQuestion = await this.groupQuestionRepository.save(
+      groupQuestion,
+    );
+    this.groupQuestionEmailProducer.groupCreatedEmail(savedGroupQuestion);
+    return savedGroupQuestion;
   }
 
   async getGroupPaginatedList(
