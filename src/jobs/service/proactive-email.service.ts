@@ -5,11 +5,14 @@ import { plainToInstance } from 'class-transformer';
 
 import { CustomerIOService } from '@/messaging/customer-io/service';
 
+import { GroupQuestionCreateJobPayload } from '@/group/type';
+
 import { SendEmailDto } from '@/messaging/email/dto';
 
 import { EmailStatus, EmailTemplate } from '@/messaging/email/constant';
 
 import { UpcomingMileStoneNotificationDto } from '@/jobs/producer/transform';
+import { GroupQuestionCreatedEmailTransform } from '@/jobs/producer/transform/group-question-created-email.transform';
 
 @Injectable()
 export class ProactiveEmailService {
@@ -35,6 +38,26 @@ export class ProactiveEmailService {
 
     const sendResult = await this.sendEmail({
       template: EmailTemplate.SendUpcomingMilestoneNotification.toString(),
+      to: [payload.recipient.email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: payload.recipient.email },
+    });
+
+    return sendResult?.status === EmailStatus.success;
+  }
+
+  async sendGroupQuestionCreatedEmail(
+    data: GroupQuestionCreateJobPayload,
+  ): Promise<boolean> {
+    const payload = plainToInstance(GroupQuestionCreatedEmailTransform, data);
+
+    const sendResult = await this.sendEmail({
+      template: EmailTemplate.SendGroupQuestionCreatedNotification.toString(),
       to: [payload.recipient.email],
       emailTemplatePayload: {
         ...payload,

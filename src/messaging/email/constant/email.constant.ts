@@ -34,6 +34,7 @@ export enum EmailTemplate {
   SendGroupInviteNewUser = 'Group Invite - New User', // TODO: verify the context
   SendGroupInviteExistingUser = 'Group Invite - Existing User', // TODO: verify the context
   SendUpcomingMilestoneNotification = 'Upcoming Milestone Notification',
+  SendGroupQuestionCreatedNotification = 'Group Questions - New Group Question ',
 }
 
 export enum EmailStatus {

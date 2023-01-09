@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { JobsModule } from '@/jobs/jobs.module';
 import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
@@ -26,6 +27,7 @@ import { ConnectionNames } from '@/database/constant';
 
 @Module({
   imports: [
+    JobsModule.register(),
     TypeOrmModule.forFeature(
       [
         Group,
