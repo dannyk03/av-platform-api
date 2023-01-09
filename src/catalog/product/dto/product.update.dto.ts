@@ -126,7 +126,6 @@ export class ProductUpdateDto {
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
-  @IsOptional()
   @Min(0)
   @Type(() => Number)
   price?: number;
