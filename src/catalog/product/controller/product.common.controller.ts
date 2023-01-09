@@ -92,12 +92,7 @@ export class ProductCommonController {
   @UploadFileMultiple('images')
   @Post()
   async create(
-    @UploadedFiles(
-      FileRequiredPipe,
-      FileSizeImagePipe,
-      FileMaxFilesImagePipe,
-      FileTypeImagePipe,
-    )
+    @UploadedFiles(FileSizeImagePipe, FileMaxFilesImagePipe, FileTypeImagePipe)
     images: IFile[],
     @Body()
     {
