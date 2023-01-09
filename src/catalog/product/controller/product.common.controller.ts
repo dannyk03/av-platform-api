@@ -56,7 +56,6 @@ import { EnumLogAction } from '@/log/constant';
 
 import {
   FileMaxFilesImagePipe,
-  FileRequiredPipe,
   FileSizeImagePipe,
   FileTypeImagePipe,
 } from '@/utils/file/pipes';
