@@ -310,23 +310,38 @@ export class GiftIntentService {
       });
     }
 
-    const emailSent = await this.emailService.sendSenderTheGiftIsOnItsWay({
-      email:
-        /*
+    const emailSentToSender =
+      await this.emailService.sendSenderTheGiftIsOnItsWay({
+        email:
+          /*
         TODO:
           1. verify if there's an option the email is empty
           2. there should also be a mail for the sender  
       */
-        giftIntent.sender?.user?.email ||
-        giftIntent.sender?.additionalData['email'],
-      giftIntent,
-    });
+          giftIntent.sender?.user?.email ||
+          giftIntent.sender?.additionalData['email'],
+        giftIntent,
+      });
 
-    if (!emailSent) {
+    const emailSentToRecipient =
+      await this.emailService.sendRecipientTheGiftIsOnItsWay({
+        recipientUser: giftIntent.recipient?.user,
+        senderUser: giftIntent.sender?.user,
+      });
+
+    if (!emailSentToSender) {
       throw new InternalServerErrorException({
         statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
         message: 'messaging.error.email.send',
-        error: `Failed to send 'gift shipped' email. GiftIntent id: ${giftIntent.id}`,
+        error: `Failed to send 'gift shipped' email to sender. GiftIntent id: ${giftIntent.id}`,
+      });
+    }
+
+    if (!emailSentToRecipient) {
+      throw new InternalServerErrorException({
+        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+        message: 'messaging.error.email.send',
+        error: `Failed to send 'gift shipped' email to recipient. GiftIntent id: ${giftIntent.id}`,
       });
     }
 
