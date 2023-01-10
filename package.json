@@ -63,7 +63,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "@types/sqlstring": "^2.3.0",
     "bcrypt": "^5.1.0",
-    "bullmq": "^3.5.3",
+    "bullmq": "^3.5.4",
     "bytes": "^3.1.2",
     "cache-manager": "^5.1.4",
     "cache-manager-redis-store": "^3.0.1",
