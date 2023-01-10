@@ -330,19 +330,27 @@ export class GiftIntentService {
       });
 
     if (!emailSentToSender) {
-      throw new InternalServerErrorException({
-        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-        message: 'messaging.error.email.send',
-        error: `Failed to send 'gift shipped' email to sender. GiftIntent id: ${giftIntent.id}`,
-      });
+      // TODO: will be handled as part of A20-501
+      // throw new InternalServerErrorException({
+      //   statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+      //   message: 'messaging.error.email.send',
+      //   error: `Failed to send 'gift shipped' email to sender. GiftIntent id: ${giftIntent.id}`,
+      // });
+      console.error(
+        `Failed to send 'gift shipped' email to sender. GiftIntent id: ${giftIntent.id}`,
+      );
     }
 
     if (!emailSentToRecipient) {
-      throw new InternalServerErrorException({
-        statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
-        message: 'messaging.error.email.send',
-        error: `Failed to send 'gift shipped' email to recipient. GiftIntent id: ${giftIntent.id}`,
-      });
+      // TODO: will be handled as part of A20-501
+      // throw new InternalServerErrorException({
+      //   statusCode: EnumMessagingStatusCodeError.MessagingEmailSendError,
+      //   message: 'messaging.error.email.send',
+      //   error: `Failed to send 'gift shipped' email to recipient. GiftIntent id: ${giftIntent.id}`,
+      // });
+      console.error(
+        `Failed to send 'gift shipped' email to recipient. GiftIntent id: ${giftIntent.id}`,
+      );
     }
 
     if (markAsShipped) {
