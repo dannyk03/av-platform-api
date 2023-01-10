@@ -87,7 +87,7 @@
     "helmet": "^6.0.1",
     "iso-639-1": "^2.1.15",
     "joi": "^17.7.0",
-    "libphonenumber-js": "^1.10.16",
+    "libphonenumber-js": "^1.10.17",
     "lodash": "^4.17.21",
     "maskdata": "^1.2.0",
     "moment-timezone": "^0.5.40",
