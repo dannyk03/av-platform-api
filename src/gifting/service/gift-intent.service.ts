@@ -325,8 +325,8 @@ export class GiftIntentService {
 
     const emailSentToRecipient =
       await this.emailService.sendRecipientTheGiftIsOnItsWay({
-        recipientUser: giftIntent.recipient?.user,
-        senderUser: giftIntent.sender?.user,
+        recipientUser: giftIntent.recipient.user,
+        senderUser: giftIntent.sender.user,
       });
 
     if (!emailSentToSender) {
