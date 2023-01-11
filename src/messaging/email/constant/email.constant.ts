@@ -6,6 +6,8 @@ export enum EmailTemplate {
   SendSignUpEmailVerification = 'Email Verification',
   // - gift is on the way (sender)
   SendSenderGiftIsOnItsWay = "Gift is on it's Way - Sender",
+  // - gift is on the way (recipient)
+  SendRecipientGiftIsOnItsWay = "Gift is on it's Way - Recipient",
   // - reset password
   SendResetPassword = 'Reset Password',
   // - gift delivered (sender)
@@ -244,5 +246,14 @@ export type GroupInviteExistingUserMessageData = {
       lastName: string;
       abbreviation: string;
     }[];
+  };
+};
+
+export type RecipientGiftIsOnItsWayMessageData = {
+  recipient: {
+    firstName: string;
+  };
+  sender: {
+    firstName: string;
   };
 };
