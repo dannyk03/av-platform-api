@@ -31,7 +31,7 @@ export class ProactiveEmailProducer {
       );
 
       await this.proactiveEmailQueue.addBulk(
-        data.map((jobData) => ({
+        data.map((jobData: any) => ({
           name: jobName,
           data: jobData,
         })),
@@ -42,46 +42,54 @@ export class ProactiveEmailProducer {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.NextWeekBirthday,
+    name: EnumJobsCronName.Cron10DaysBeforeBirthday,
   })
-  async handleNextWeekBirthdayProactiveNotification() {
+  async handle10DaysBeforeBirthdayProactiveNotification() {
+    const inDays = 10;
+
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.Birthday,
-      EnumJobsCronName.NextWeekBirthday,
-      7,
+      EnumJobsCronName.Cron10DaysBeforeBirthday,
+      inDays,
     );
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.NextDayBirthday,
+  @Cron(CronExpression.EVERY_MINUTE, {
+    name: EnumJobsCronName.Cron1DayBeforeBirthday,
   })
-  async handleNextDayBirthdayProactiveNotification() {
+  async handle1DayBeforeBirthdayProactiveNotification() {
+    const inDays = 1;
+
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.Birthday,
-      EnumJobsCronName.NextDayBirthday,
-      1,
+      EnumJobsCronName.Cron1DayBeforeBirthday,
+      inDays,
     );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.NextWeekWorkAnniversary,
+    name: EnumJobsCronName.Cron10DaysBeforeWorkAnniversary,
   })
-  async handleNextWeekWorkAnniversaryProactiveNotification() {
+  async handle10DaysBeforeWorkAnniversaryProactiveNotification() {
+    const inDays = 10;
+
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      EnumJobsCronName.NextWeekWorkAnniversary,
-      7,
+      EnumJobsCronName.Cron10DaysBeforeWorkAnniversary,
+      inDays,
     );
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.NextDayWorkAnniversary,
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+    name: EnumJobsCronName.Cron1DayBeforeWorkAnniversary,
   })
-  async handleNextDayWorkAnniversaryProactiveNotification() {
+  async handle1DayBeforeWorkAnniversaryProactiveNotification() {
+    const inDays = 1;
+
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      EnumJobsCronName.NextDayWorkAnniversary,
-      1,
+      EnumJobsCronName.Cron1DayBeforeWorkAnniversary,
+      inDays,
     );
   }
 }

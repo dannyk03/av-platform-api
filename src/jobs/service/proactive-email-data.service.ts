@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import { EnumGroupUpcomingMilestoneType } from '@avo/type';
@@ -24,7 +23,6 @@ export class ProactiveEmailDataService {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private readonly defaultDataSource: DataSource,
-    private readonly configService: ConfigService,
   ) {}
 
   async getMilestoneInXDaysData(
