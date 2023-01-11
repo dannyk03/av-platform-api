@@ -10,7 +10,7 @@ import { EnumGroupQuestionStatusCodeError } from '@avo/type';
 
 import { GroupQuestionService } from '../service';
 
-import { GROUP_QUESTION_OWNER } from '@/group/constant';
+import { GROUP_QUESTION_LOAD_QUESTION_OWNER_META_KEY } from '@/group/constant';
 
 @Injectable()
 export class GroupQuestionGuard implements CanActivate {
@@ -27,7 +27,7 @@ export class GroupQuestionGuard implements CanActivate {
     if (!__user || !__group) return false;
 
     const userIsOwner = this.reflector.getAllAndOverride<boolean>(
-      GROUP_QUESTION_OWNER,
+      GROUP_QUESTION_LOAD_QUESTION_OWNER_META_KEY,
       [context.getHandler(), context.getClass()],
     );
 
