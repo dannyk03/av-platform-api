@@ -92,14 +92,14 @@ export class GroupQuestionService {
     return savedGroupQuestion;
   }
 
-  async getGroupPaginatedList(
+  async getGroupQuestionPaginatedList(
     user: User,
     dto: GroupQuestionListDto,
     group: Group,
   ) {
     const { page, perPage, sort, availableSort, availableSearch } = dto;
 
-    const queryBuilder = await this.getListSearchBuilder({
+    const queryBuilder = this.getListSearchBuilder({
       groupId: group.id,
     });
 

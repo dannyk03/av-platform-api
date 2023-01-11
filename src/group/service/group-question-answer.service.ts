@@ -94,7 +94,7 @@ export class GroupQuestionAnswerService {
   }) {
     const { page, perPage, sort, availableSort, availableSearch } = dto;
 
-    const queryBuilder = await this.getListSearchBuilder({
+    const queryBuilder = this.getListSearchBuilder({
       groupId: group.id,
       groupQuestionId: groupQuestion.id,
     });
