@@ -12,8 +12,7 @@ import {
   Repository,
 } from 'typeorm';
 
-import { Group, GroupQuestion } from '@/group/entity';
-import { GroupQuestionAnswer } from '@/group/entity';
+import { Group, GroupQuestion, GroupQuestionAnswer } from '@/group/entity';
 import { User } from '@/user/entity';
 
 import { GroupQuestionService, GroupService } from '@/group/service';
