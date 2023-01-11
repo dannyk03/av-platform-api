@@ -60,7 +60,11 @@ export class GroupQuestionController {
     @ReqGroup()
     group: Group,
   ): Promise<IResponsePagingData> {
-    return this.groupQuestionService.getGroupPaginatedList(user, dto, group);
+    return this.groupQuestionService.getGroupQuestionPaginatedList(
+      user,
+      dto,
+      group,
+    );
   }
 
   @ClientResponse('group.question.create', {
