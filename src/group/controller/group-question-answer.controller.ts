@@ -66,7 +66,7 @@ export class GroupQuestionAnswerController {
     @ReqGroupQuestion()
     groupQuestion: GroupQuestion,
   ) {
-    return this.groupQuestionAnswerService.getGroupPaginatedList({
+    return this.groupQuestionAnswerService.getGroupQuestionAnswerPaginatedList({
       groupQuestion,
       group,
       dto,

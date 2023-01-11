@@ -82,7 +82,7 @@ export class GroupQuestionAnswerService {
     return this.groupQuestionAnswerRepository.findOneBy({ ...find });
   }
 
-  async getGroupPaginatedList({
+  async getGroupQuestionAnswerPaginatedList({
     dto,
     group,
     groupQuestion,
