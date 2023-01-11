@@ -8,4 +8,5 @@ export const GroupQuestionOrderByNestingAliasMap = {
   createdAt: 'groupQuestion.createdAt',
 };
 
-export const GROUP_QUESTION_OWNER = 'GROUP_QUESTION_OWNER';
+export const GROUP_QUESTION_LOAD_QUESTION_OWNER_META_KEY =
+  'GROUP_QUESTION_LOAD_QUESTION_OWNER_META_KEY';
