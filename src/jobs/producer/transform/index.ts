@@ -1,1 +1,1 @@
-export * from './proactive-emil.raw-data.transform';
+export * from './proactive-email.raw-data.transform';
