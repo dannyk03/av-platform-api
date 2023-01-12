@@ -90,9 +90,6 @@ export class Milestone {
 @Exclude()
 export class UpcomingMileStoneNotificationDto {
   @Expose()
-  @Transform(({ obj }) => {
-    return obj.notificationType;
-  })
   notificationType: EnumJobsCronName;
 
   @Expose()
