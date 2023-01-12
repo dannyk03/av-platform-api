@@ -57,7 +57,7 @@ export class ProactiveEmailProducer {
   @Cron(CronExpression.EVERY_DAY_AT_10AM, {
     name: EnumJobsCronName.NotificationTodayBirthday,
   })
-  async handle1DayBeforeBirthdayProactiveNotification() {
+  async handleTodayBirthdayProactiveNotification() {
     const inDays = 0;
 
     await this.addUpcomingMilestoneJob(
@@ -83,7 +83,7 @@ export class ProactiveEmailProducer {
   @Cron(CronExpression.EVERY_DAY_AT_10AM, {
     name: EnumJobsCronName.NotificationTodayWorkAnniversary,
   })
-  async handle1DayBeforeWorkAnniversaryProactiveNotification() {
+  async handleTodayWorkAnniversaryProactiveNotification() {
     const inDays = 0;
 
     await this.addUpcomingMilestoneJob(
