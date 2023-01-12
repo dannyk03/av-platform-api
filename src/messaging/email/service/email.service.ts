@@ -25,6 +25,7 @@ import {
   GiftStatusUpdateMessageData,
   GroupInviteExistingUserMessageData,
   GroupInviteNewUserMessageData,
+  RecipientGiftIsOnItsWayMessageData,
   SurveyCompletedMessageData,
   SurveyInvitationMessageData,
 } from '../constant';
@@ -811,6 +812,41 @@ export class EmailService {
         },
       },
       identifier: { id: inviterUser.email },
+    });
+
+    return sendResult.status === EmailStatus.success;
+  }
+
+  async sendRecipientTheGiftIsOnItsWay({
+    recipientUser,
+    senderUser,
+  }: {
+    recipientUser: User;
+    senderUser: User;
+  }): Promise<boolean> {
+    if (this.isDevelopment) {
+      return true;
+    }
+
+    const payload: RecipientGiftIsOnItsWayMessageData = {
+      recipient: {
+        firstName: recipientUser.profile.firstName,
+      },
+      sender: {
+        firstName: senderUser.profile.firstName,
+      },
+    };
+
+    const sendResult = await this.customerIOService.sendEmail({
+      template: EmailTemplate.SendRecipientGiftIsOnItsWay.toString(),
+      to: [recipientUser.email],
+      emailTemplatePayload: {
+        ...payload,
+        transport: {
+          origin: this.origin,
+        },
+      },
+      identifier: { id: recipientUser.email },
     });
 
     return sendResult.status === EmailStatus.success;

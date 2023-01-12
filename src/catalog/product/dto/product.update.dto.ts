@@ -7,7 +7,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
@@ -119,7 +118,6 @@ export class ProductUpdateDto {
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
-  @IsPositive()
   @Min(0)
   @Type(() => Number)
   shippingCost?: number;
@@ -127,8 +125,6 @@ export class ProductUpdateDto {
   @IsNumber({ allowNaN: false })
   @IsNotEmpty()
   @IsOptional()
-  @IsOptional()
-  @IsPositive()
   @Min(0)
   @Type(() => Number)
   price?: number;
