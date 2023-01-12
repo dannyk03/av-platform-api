@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { EnumWorkType } from '@avo/type';
 
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   Allow,
   IsArray,
@@ -27,6 +27,7 @@ import {
   IsIsAcceptableEmail,
   IsPhoneNumber,
   IsValidDayOfMonth,
+  IsValidMonth,
   NotAfterThisYear,
 } from '@/utils/request/validation';
 
@@ -127,10 +128,13 @@ export class SurveyPersonalDto {
     padString: '0',
     targetLength: 2,
   })
+  @IsValidMonth()
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Type(() => String)
+  @Transform(({ obj, value }) => {
+    return value && !obj.birthDay ? undefined : value;
+  })
   readonly birthMonth?: string;
 
   @IsOptional()
@@ -143,7 +147,9 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Type(() => String)
+  @Transform(({ obj, value }) => {
+    return value && !obj.birthMonth ? undefined : value;
+  })
   readonly birthDay?: string;
 
   @IsOptional()
@@ -163,6 +169,7 @@ export class SurveyPersonalDto {
     padString: '0',
     targetLength: 2,
   })
+  @IsValidMonth()
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
@@ -181,6 +188,9 @@ export class SurveyPersonalDto {
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @Transform(({ obj, value }) => {
+    return value && !obj.workAnniversaryMonth ? undefined : value;
+  })
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
