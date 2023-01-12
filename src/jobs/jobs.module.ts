@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { name } from 'package.json';
 
+import { GroupModule } from '@/group/group.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
@@ -13,8 +14,11 @@ import { ProactiveEmailDataService, ProactiveEmailService } from './service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
-import { ProactiveEmailProcessor } from './processor';
-import { ProactiveEmailProducer } from './producer';
+import {
+  GroupQuestionEmailProcessor,
+  ProactiveEmailProcessor,
+} from './processor';
+import { GroupQuestionEmailProducer, ProactiveEmailProducer } from './producer';
 import { JobsRouterModule } from './router';
 
 @Module({})
@@ -32,13 +36,17 @@ export class JobsModule {
           ProactiveEmailDataService,
           ProactiveEmailProducer,
           ProactiveEmailProcessor,
+          GroupQuestionEmailProducer,
+          GroupQuestionEmailProcessor,
         ],
+        exports: [GroupQuestionEmailProducer],
         imports: [
           UserModule,
           NetworkingModule,
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
+          GroupModule,
           BullModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -63,10 +71,16 @@ export class JobsModule {
               };
             },
           }),
-          BullModule.registerQueueAsync({
-            name: EnumJobsQueue.ProactiveEmail,
-          }),
+          BullModule.registerQueue(
+            {
+              name: EnumJobsQueue.ProactiveEmail,
+            },
+            {
+              name: EnumJobsQueue.GroupQuestionCreated,
+            },
+          ),
         ],
+        global: true,
       };
     }
 

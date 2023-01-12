@@ -4,3 +4,7 @@ export enum EnumJobsCronName {
   Notification10DaysBeforeWorkAnniversary = 'Notification10DaysBeforeWorkAnniversary',
   NotificationTodayWorkAnniversary = 'NotificationTodayWorkAnniversary',
 }
+
+export enum EnumGroupJobsName {
+  GroupQuestionCreated = 'GroupQuestionCreated',
+}

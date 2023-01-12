@@ -9,7 +9,7 @@ import {
   GROUP_UPCOMING_MILESTONES_DEFAULT_PAGE,
   GROUP_UPCOMING_MILESTONES_DEFAULT_PER_PAGE,
   GROUP_UPCOMING_MILESTONES_DEFAULT_SORT,
-} from '../constant';
+} from '@/group/constant';
 
 import {
   PaginationAvailableSearch,

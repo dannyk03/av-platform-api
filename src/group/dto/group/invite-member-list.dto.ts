@@ -6,7 +6,7 @@ import {
   IPaginationSort,
 } from '@avo/type';
 
-import { EnumGroupInviteType } from '../type';
+import { EnumGroupInviteType } from '@/group/type';
 
 import {
   GROUP_INVITE_DEFAULT_AVAILABLE_SEARCH,
@@ -15,7 +15,7 @@ import {
   GROUP_INVITE_DEFAULT_PER_PAGE,
   GROUP_INVITE_DEFAULT_SORT,
   GroupInviteOrderByNestingAliasMap,
-} from '../constant';
+} from '@/group/constant';
 
 import {
   PaginationAvailableSearch,

@@ -2,6 +2,7 @@ import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 import { GroupMember } from './group-member.entity';
 import { BaseEntity } from '@/database/entity';
+import { GroupQuestion } from '@/group/entity/group-question.entity';
 
 @Entity()
 export class Group extends BaseEntity<Group> {
@@ -27,4 +28,9 @@ export class Group extends BaseEntity<Group> {
     cascade: true,
   })
   members: GroupMember[];
+
+  @OneToMany(() => GroupQuestion, (question) => question.group, {
+    cascade: true,
+  })
+  questions: GroupQuestion[];
 }

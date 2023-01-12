@@ -21,12 +21,12 @@ import {
 } from 'typeorm';
 import { snakeCase } from 'typeorm/util/StringUtils';
 
-import { Group } from '../entity';
+import { Group } from '@/group/entity';
 
-import { GroupMemberService } from './group-member.service';
+import { GroupMemberService } from '@/group/service/group-member.service';
 import { HelperStringService } from '@/utils/helper/service';
 
-import { IGroupSearch } from '../type';
+import { IGroupSearch } from '@/group/type';
 
 import { ConnectionNames } from '@/database/constant';
 

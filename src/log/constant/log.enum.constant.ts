@@ -60,4 +60,10 @@ export enum EnumLogAction {
   GroupInviteCancel = 'GROUP_INVITE_CANCEL',
   GroupInviteSend = 'GROUP_INVITE_SEND',
   GroupInviteResend = 'GROUP_INVITE_RESEND',
+  // Group Questions
+  CreateGroupQuestion = 'CREATE_GROUP_QUESTION',
+  UpdateGroupQuestion = 'UPDATE_GROUP_QUESTION',
+  // Group Questions
+  CreateGroupQuestionAnswer = 'CREATE_GROUP_QUESTION_ANSWER',
+  UpdateGroupQuestionAnswer = 'UPDATE_GROUP_QUESTION_ANSWER',
 }
