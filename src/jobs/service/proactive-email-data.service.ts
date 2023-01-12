@@ -46,7 +46,7 @@ export class ProactiveEmailDataService {
 	      data.email AS user2_email,
 	      data.first_name AS user2_first_name,
 	      data.last_name AS user2_last_name,
-	      e_date
+        target_date
       FROM public.social_connections AS conn
       INNER JOIN
         (
@@ -63,13 +63,13 @@ export class ProactiveEmailDataService {
 			          make_date(upcoming_event_year(
 			            CAST(up.${dayColumn} AS INT), CAST(up.${monthColumn} AS INT)), CAST(up.${monthColumn} AS INT), CAST(up.${dayColumn} AS INT)
 			          ) AS e_date,
-			          (NOW() + (${inDays} || 'DAY')::INTERVAL) AS target_day
+			          (NOW() + (${inDays} || 'DAY')::INTERVAL) AS target_date
   	        FROM public.users AS u
   	        LEFT JOIN public.user_profiles AS up
   	          ON up.user_id = u.id
   	        WHERE up.${dayColumn} IS NOT NULL AND up.${monthColumn} IS NOT NULL
 		      ) AS data_temp
-	        WHERE e_date = make_date(CAST(Extract(year from target_day) AS INT), CAST(Extract(month from target_day) AS INT), CAST(Extract(day from target_day) AS INT))
+	        WHERE e_date = make_date(CAST(Extract(year from target_date) AS INT), CAST(Extract(month from target_date) AS INT), CAST(Extract(day from target_date) AS INT))
 	        AND user_id IN (SELECT user2_id FROM public.social_connections AS conn)
         ) AS data
 	      ON conn.user2_id = user_id

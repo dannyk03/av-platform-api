@@ -41,54 +41,54 @@ export class ProactiveEmailProducer {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.Cron10DaysBeforeBirthday,
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+    name: EnumJobsCronName.Notification10DaysBeforeBirthday,
   })
   async handle10DaysBeforeBirthdayProactiveNotification() {
     const inDays = 10;
 
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.Birthday,
-      EnumJobsCronName.Cron10DaysBeforeBirthday,
+      EnumJobsCronName.Notification10DaysBeforeBirthday,
       inDays,
     );
   }
 
-  @Cron(CronExpression.EVERY_MINUTE, {
-    name: EnumJobsCronName.Cron1DayBeforeBirthday,
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+    name: EnumJobsCronName.NotificationTodayBirthday,
   })
   async handle1DayBeforeBirthdayProactiveNotification() {
-    const inDays = 1;
+    const inDays = 0;
 
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.Birthday,
-      EnumJobsCronName.Cron1DayBeforeBirthday,
+      EnumJobsCronName.NotificationTodayBirthday,
       inDays,
     );
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1PM, {
-    name: EnumJobsCronName.Cron10DaysBeforeWorkAnniversary,
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+    name: EnumJobsCronName.Notification10DaysBeforeWorkAnniversary,
   })
   async handle10DaysBeforeWorkAnniversaryProactiveNotification() {
     const inDays = 10;
 
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      EnumJobsCronName.Cron10DaysBeforeWorkAnniversary,
+      EnumJobsCronName.Notification10DaysBeforeWorkAnniversary,
       inDays,
     );
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_10AM, {
-    name: EnumJobsCronName.Cron1DayBeforeWorkAnniversary,
+    name: EnumJobsCronName.NotificationTodayWorkAnniversary,
   })
   async handle1DayBeforeWorkAnniversaryProactiveNotification() {
-    const inDays = 1;
+    const inDays = 0;
 
     await this.addUpcomingMilestoneJob(
       EnumGroupUpcomingMilestoneType.WorkAnniversary,
-      EnumJobsCronName.Cron1DayBeforeWorkAnniversary,
+      EnumJobsCronName.NotificationTodayWorkAnniversary,
       inDays,
     );
   }

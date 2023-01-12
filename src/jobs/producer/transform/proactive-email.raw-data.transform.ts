@@ -70,13 +70,31 @@ export class TargetUser {
 export class Milestone {
   @Expose()
   @Transform(({ obj }) => {
-    return obj.type;
+    const dateObj = new Date(obj.target_date);
+    const day = dateObj.getUTCDate().toString().padStart(2, '0');
+
+    return day;
   })
-  type: EnumJobsCronName;
+  day: string;
+
+  @Expose()
+  @Transform(({ obj }) => {
+    const dateObj = new Date(obj.target_date);
+    const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0');
+
+    return month;
+  })
+  month: string;
 }
 
 @Exclude()
 export class UpcomingMileStoneNotificationDto {
+  @Expose()
+  @Transform(({ obj }) => {
+    return obj.notificationType;
+  })
+  notificationType: EnumJobsCronName;
+
   @Expose()
   @Type(() => Recipient)
   @Transform(({ obj }) => {
