@@ -1,8 +1,8 @@
 export enum EnumJobsCronName {
-  NextWeekBirthday = 'NextWeekBirthday',
-  NextDayBirthday = 'NextDayBirthday',
-  NextDayWorkAnniversary = 'NextDayWorkAnniversary',
-  NextWeekWorkAnniversary = 'NextWeekWorkAnniversary',
+  Notification10DaysBeforeBirthday = 'Notification10DaysBeforeBirthday',
+  NotificationTodayBirthday = 'NotificationTodayBirthday',
+  Notification10DaysBeforeWorkAnniversary = 'Notification10DaysBeforeWorkAnniversary',
+  NotificationTodayWorkAnniversary = 'NotificationTodayWorkAnniversary',
 }
 
 export enum EnumGroupJobsName {

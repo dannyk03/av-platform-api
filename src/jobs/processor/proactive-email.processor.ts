@@ -17,7 +17,7 @@ export class ProactiveEmailProcessor extends WorkerHost {
 
   process(job: Job<any, any, EnumJobsCronName>): Promise<boolean> {
     return this.proactiveEmailService.sendUpcomingMilestoneReminderEmail(
-      Object.assign({}, job.data, { type: job.name }),
+      Object.assign({}, job.data, { notificationType: job.name }),
     );
   }
 }
