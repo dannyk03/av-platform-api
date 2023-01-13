@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { EnumWorkType } from '@avo/type';
 
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   Allow,
   IsArray,
@@ -17,6 +17,7 @@ import {
 } from 'class-validator';
 
 import {
+  BlankIfPropNotExistsTransform,
   ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
@@ -132,9 +133,7 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Transform(({ obj, value }) => {
-    return value && !obj.birthDay ? undefined : value;
-  })
+  @BlankIfPropNotExistsTransform('birthDay')
   readonly birthMonth?: string;
 
   @IsOptional()
@@ -147,9 +146,7 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Transform(({ obj, value }) => {
-    return value && !obj.birthMonth ? undefined : value;
-  })
+  @BlankIfPropNotExistsTransform('birthMonth')
   readonly birthDay?: string;
 
   @IsOptional()
@@ -188,9 +185,7 @@ export class SurveyPersonalDto {
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  @Transform(({ obj, value }) => {
-    return value && !obj.workAnniversaryMonth ? undefined : value;
-  })
+  @BlankIfPropNotExistsTransform('workAnniversaryMonth')
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
