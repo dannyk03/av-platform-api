@@ -43,5 +43,6 @@
   "isRFC3339": "{property} is not valid RFC3339 timestamp",
   "IsValidDayOfMonthConstraint": "{property} is not valid day of month",
   "IsAcceptableEmailConstraint": "{property} is not acceptable email",
-  "NotAfterThisYearConstraint": "{property} is not acceptable year value"
+  "NotAfterThisYearConstraint": "{property} is not acceptable year value",
+  "IsValidMonthConstraint": "{property} is not acceptable month value"
 }

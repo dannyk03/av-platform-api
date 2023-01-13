@@ -13,3 +13,4 @@ export * from './ConsecutiveWhitespace.transform';
 export * from './ParsePhoneNumberFromString.transform';
 export * from './PadWith.transform';
 export * from './SqlStringEscape.transform';
+export * from './BlankIfPropNotExists.transform';

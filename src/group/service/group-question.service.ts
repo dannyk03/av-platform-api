@@ -90,6 +90,7 @@ export class GroupQuestionService {
       groupQuestion,
     );
     this.groupQuestionEmailProducer?.groupCreatedEmail(savedGroupQuestion);
+
     return savedGroupQuestion;
   }
 

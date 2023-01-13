@@ -17,6 +17,7 @@ import {
 } from 'class-validator';
 
 import {
+  BlankIfPropNotExistsTransform,
   ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
@@ -27,6 +28,7 @@ import {
   IsIsAcceptableEmail,
   IsPhoneNumber,
   IsValidDayOfMonth,
+  IsValidMonth,
   NotAfterThisYear,
 } from '@/utils/request/validation';
 
@@ -127,10 +129,11 @@ export class SurveyPersonalDto {
     padString: '0',
     targetLength: 2,
   })
+  @IsValidMonth()
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Type(() => String)
+  @BlankIfPropNotExistsTransform('birthDay')
   readonly birthMonth?: string;
 
   @IsOptional()
@@ -143,7 +146,7 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @Type(() => String)
+  @BlankIfPropNotExistsTransform('birthMonth')
   readonly birthDay?: string;
 
   @IsOptional()
@@ -163,6 +166,7 @@ export class SurveyPersonalDto {
     padString: '0',
     targetLength: 2,
   })
+  @IsValidMonth()
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
@@ -181,6 +185,7 @@ export class SurveyPersonalDto {
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
+  @BlankIfPropNotExistsTransform('workAnniversaryMonth')
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
