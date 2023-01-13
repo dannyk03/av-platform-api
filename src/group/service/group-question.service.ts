@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import {
@@ -33,6 +33,7 @@ export class GroupQuestionService {
     private readonly groupQuestionRepository: Repository<GroupQuestion>,
     private readonly groupService: GroupService,
     private readonly paginationService: PaginationService,
+    @Optional()
     private readonly groupQuestionEmailProducer: GroupQuestionEmailProducer,
   ) {}
 
@@ -88,7 +89,7 @@ export class GroupQuestionService {
     const savedGroupQuestion = await this.groupQuestionRepository.save(
       groupQuestion,
     );
-    this.groupQuestionEmailProducer.groupCreatedEmail(savedGroupQuestion);
+    this.groupQuestionEmailProducer?.groupCreatedEmail(savedGroupQuestion);
     return savedGroupQuestion;
   }
 
