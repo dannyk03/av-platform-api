@@ -13,13 +13,16 @@ import { GroupService } from '../service';
 export class GroupMemberGuard implements CanActivate {
   constructor(private readonly groupService: GroupService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { __user, params } = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest();
+    const { __user, params } = request;
 
-    if (!__user && (params?.id || params?.groupId)) return false;
+    const groupId = params?.groupId || params.id;
+
+    if (!__user && groupId) return false;
 
     const findGroup = await this.groupService.findGroup({
       userId: __user?.id,
-      groupId: params?.id || params?.groupId,
+      groupId,
     });
 
     if (!findGroup) {
@@ -28,6 +31,8 @@ export class GroupMemberGuard implements CanActivate {
         message: 'group.error.notFound',
       });
     }
+
+    request.__group = findGroup;
 
     return true;
   }

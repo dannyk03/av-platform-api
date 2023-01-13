@@ -10,6 +10,8 @@ import { RouterCatalogModule } from '@/router/router.catalog.module';
 import { RouterCommonModule } from '@/router/router.common.module';
 import { RouterGiftingModule } from '@/router/router.gifting.module';
 import { RouterGiftingSystemModule } from '@/router/router.gifting.system.module';
+import { RouterGroupQuestionAnswerModule } from '@/router/router.group-question-answer.module';
+import { RouterGroupQuestionModule } from '@/router/router.group-question.module';
 import { RouterGroupModule } from '@/router/router.group.module';
 import { RouterHealthModule } from '@/router/router.health.module';
 import { RouterNetworkingModule } from '@/router/router.networking.module';
@@ -48,6 +50,8 @@ export class AppRouterModule {
           RouterAppModule,
           RouterWebhookModule,
           RouterGroupModule,
+          RouterGroupQuestionModule,
+          RouterGroupQuestionAnswerModule,
           RouterModule.register(
             compact([
               {
@@ -105,6 +109,18 @@ export class AppRouterModule {
               {
                 path: '/group',
                 module: RouterGroupModule,
+                children: [
+                  {
+                    path: '/:groupId/question',
+                    module: RouterGroupQuestionModule,
+                    children: [
+                      {
+                        path: '/:questionId/answer',
+                        module: RouterGroupQuestionAnswerModule,
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 path: '/public',

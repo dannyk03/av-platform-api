@@ -8,7 +8,7 @@ import {
   GROUP_DESIRED_SKILLS_DEFAULT_PAGE,
   GROUP_DESIRED_SKILLS_DEFAULT_PER_PAGE,
   GROUP_DESIRED_SKILLS_DEFAULT_SORT,
-} from '../constant';
+} from '@/group/constant';
 
 import {
   PaginationAvailableSearch,
