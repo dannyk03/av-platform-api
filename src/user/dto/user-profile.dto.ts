@@ -17,7 +17,7 @@ import {
 } from 'class-validator';
 
 import {
-  // BlankIfPropNotExistsTransform,
+  BlankIfPropNotExistsTransform,
   ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
@@ -133,7 +133,8 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  // @BlankIfPropNotExistsTransform('birthDay')
+  @BlankIfPropNotExistsTransform('birthDay')
+  @Type(() => String)
   readonly birthMonth?: string;
 
   @IsOptional()
@@ -146,7 +147,8 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  // @BlankIfPropNotExistsTransform('birthMonth')
+  @BlankIfPropNotExistsTransform('birthMonth')
+  @Type(() => String)
   readonly birthDay?: string;
 
   @IsOptional()
@@ -185,7 +187,7 @@ export class SurveyPersonalDto {
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  // @BlankIfPropNotExistsTransform('workAnniversaryMonth')
+  @BlankIfPropNotExistsTransform('workAnniversaryMonth')
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
