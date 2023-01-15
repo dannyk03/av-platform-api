@@ -17,7 +17,7 @@ import {
 } from 'class-validator';
 
 import {
-  BlankIfPropNotExistsTransform,
+  // BlankIfPropNotExistsTransform,
   ConsecutiveWhitespaceTransform,
   EmptyStringToUndefinedTransform,
   NormalizeEmail,
@@ -185,7 +185,7 @@ export class SurveyPersonalDto {
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
-  @BlankIfPropNotExistsTransform('workAnniversaryMonth')
+  // @BlankIfPropNotExistsTransform('workAnniversaryMonth')
   @ApiProperty({ required: false })
   readonly workAnniversaryDay?: string;
 
