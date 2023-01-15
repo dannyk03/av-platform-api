@@ -133,7 +133,7 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @BlankIfPropNotExistsTransform('birthDay')
+  // @BlankIfPropNotExistsTransform('birthDay')
   readonly birthMonth?: string;
 
   @IsOptional()
@@ -146,7 +146,7 @@ export class SurveyPersonalDto {
   @IsNumberString({ no_symbols: true })
   @EmptyStringToUndefinedTransform()
   @NormalizeStringInputTransform()
-  @BlankIfPropNotExistsTransform('birthMonth')
+  // @BlankIfPropNotExistsTransform('birthMonth')
   readonly birthDay?: string;
 
   @IsOptional()
