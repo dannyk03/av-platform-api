@@ -2,15 +2,21 @@ import { BullModule } from '@nestjs/bullmq';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { name } from 'package.json';
 
-import { GroupModule } from '@/group/group.module';
 import { MessagingModule } from '@/messaging/messaging.module';
 import { NetworkingModule } from '@/networking/networking.module';
 import { UserModule } from '@/user/user.module';
 
-import { ProactiveEmailDataService, ProactiveEmailService } from './service';
+import { Group, GroupMember, GroupQuestion } from '@/group/entity';
+
+import {
+  GroupQuestionDataService,
+  ProactiveEmailDataService,
+  ProactiveEmailService,
+} from './service';
 
 import { EnumJobsQueue } from '@/queue/constant';
 
@@ -38,15 +44,16 @@ export class JobsModule {
           ProactiveEmailProcessor,
           GroupQuestionEmailProducer,
           GroupQuestionEmailProcessor,
+          GroupQuestionDataService,
         ],
         exports: [GroupQuestionEmailProducer],
         imports: [
+          TypeOrmModule.forFeature([Group, GroupMember, GroupQuestion]),
           UserModule,
           NetworkingModule,
           MessagingModule,
           JobsRouterModule,
           ScheduleModule.forRoot(),
-          GroupModule,
           BullModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

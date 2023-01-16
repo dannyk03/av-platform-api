@@ -2,11 +2,10 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 
 import { Queue } from 'bullmq';
-import { Equal, Not } from 'typeorm';
 
 import { GroupQuestion } from '@/group/entity';
 
-import { GroupMemberService } from '@/group/service/group-member.service';
+import { GroupQuestionDataService } from '@/jobs/service';
 
 import { EnumGroupJobsName } from '@/jobs/constant';
 import { EnumJobsQueue } from '@/queue/constant';
@@ -16,22 +15,15 @@ export class GroupQuestionEmailProducer {
   constructor(
     @InjectQueue(EnumJobsQueue.GroupQuestionCreated)
     private readonly groupQuestionQueue: Queue,
-    private readonly groupMemberService: GroupMemberService,
+    private readonly groupMemberService: GroupQuestionDataService,
   ) {}
 
   async groupCreatedEmail(groupQuestion: GroupQuestion) {
     try {
-      const members = await this.groupMemberService.find({
-        where: {
-          group: {
-            id: groupQuestion.group.id,
-          },
-          user: {
-            id: Not(Equal(groupQuestion.createdBy.id)),
-          },
-        },
-        relations: ['user', 'user.profile'],
-      });
+      const members =
+        await this.groupMemberService.getGroupMembersToSendGroupQuestion(
+          groupQuestion,
+        );
 
       await this.groupQuestionQueue.addBulk(
         members.map((member) => ({
