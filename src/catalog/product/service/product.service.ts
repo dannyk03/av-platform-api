@@ -44,12 +44,8 @@ export class ProductService {
     return this.productRepository.create(props);
   }
 
-  async save(product: Product): Promise<Product> {
-    return this.productRepository.save<Product>(product);
-  }
-
-  async saveBulk(products: DeepPartial<Product>[]): Promise<Product[]> {
-    return this.productRepository.save(products);
+  async save(data: Product): Promise<Product> {
+    return this.productRepository.save<Product>(data);
   }
 
   async findOneBy(find: FindOptionsWhere<Product>): Promise<Product> {
@@ -281,13 +277,5 @@ export class ProductService {
     };
 
     return this.productRepository.save(getProduct);
-  }
-
-  async getAllProductsQueryBuilder(): Promise<SelectQueryBuilder<Product>> {
-    const qb = this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.displayOptions', 'displayOptions');
-
-    return qb;
   }
 }

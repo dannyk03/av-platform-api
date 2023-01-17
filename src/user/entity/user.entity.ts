@@ -1,4 +1,12 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { UserProfile } from './user-profile.entity';
 import { UserAuthConfig } from '@/auth/entity';
@@ -62,4 +70,9 @@ export class User extends BaseEntity<User> {
     cascade: true,
   })
   stripe: StripePayment;
+
+  @BeforeInsert()
+  beforeInsert() {
+    this.email = this.email?.toLowerCase();
+  }
 }

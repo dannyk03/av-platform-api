@@ -17,7 +17,7 @@ import { HelperDateService } from '@/utils/helper/service';
 import { EnumSystemRole } from '@/access-control-list/role/constant';
 import { ConnectionNames } from '@/database/constant/database.constant';
 
-import { systemSeedData } from '../../data';
+import { systemSeedData } from '../data';
 
 @Injectable()
 export class SystemSeedService {

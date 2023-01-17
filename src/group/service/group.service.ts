@@ -103,12 +103,12 @@ export class GroupService {
     return this.groupRepository.create(props);
   }
 
-  async save(group: DeepPartial<Group>): Promise<Group> {
-    return this.groupRepository.save(group);
+  async save(props: DeepPartial<Group>): Promise<Group> {
+    return this.groupRepository.save(props);
   }
 
-  async saveBulk(groups: DeepPartial<Group>[]): Promise<Group[]> {
-    return this.groupRepository.save(groups);
+  async saveBulk(props: DeepPartial<Group>[]): Promise<Group[]> {
+    return this.groupRepository.save(props);
   }
 
   async findOne(find?: FindOneOptions<Group>): Promise<Group> {
@@ -360,11 +360,5 @@ export class GroupService {
     `,
       [groupId, days],
     );
-  }
-
-  async getAllGroupsQueryBuilder(): Promise<SelectQueryBuilder<Group>> {
-    const qb = this.groupRepository.createQueryBuilder('group');
-
-    return qb;
   }
 }

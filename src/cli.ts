@@ -3,10 +3,10 @@ import { NestFactory } from '@nestjs/core';
 
 import { CommandModule, CommandService } from 'nestjs-command';
 
-import { CommandsModule } from './database/commands/commands.module';
+import { SeedsModule } from './database/seed/seeds.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(CommandsModule, {
+  const app = await NestFactory.createApplicationContext(SeedsModule, {
     logger: ['error'],
   });
 
