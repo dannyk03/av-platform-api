@@ -1,6 +1,14 @@
-import { IGroupQuestionGetSerialization } from '@avo/type';
+import {
+  IGroupQuestionGetSerialization,
+  IGroupQuestionResponderGetSerialization,
+  IGroupQuestionWithPreviewGetSerialization,
+} from '@avo/type';
 
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
+
+import { GroupQuestion } from '@/group/entity';
+
+import { UserGetSerialization } from '@/user/serialization';
 
 @Exclude()
 export class GroupQuestionGetSerialization
@@ -21,4 +29,26 @@ export class GroupQuestionGetSerialization
 
   @Expose()
   readonly updatedAt: Date;
+
+  @Expose()
+  @Type(() => UserGetSerialization)
+  readonly createdBy: UserGetSerialization;
+}
+
+@Exclude()
+export class GroupQuestionWithPreviewGetSerialization
+  extends GroupQuestionGetSerialization
+  implements IGroupQuestionWithPreviewGetSerialization
+{
+  @Expose()
+  @Transform(({ obj }: { obj: GroupQuestion }) => {
+    return obj.answers.map(({ createdBy }) => {
+      return {
+        id: createdBy?.id,
+        firstName: createdBy?.profile?.firstName,
+        lastName: createdBy?.profile?.lastName,
+      };
+    });
+  })
+  respondersPreview: IGroupQuestionResponderGetSerialization[];
 }

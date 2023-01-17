@@ -35,7 +35,10 @@ import {
   GroupQuestionUpdateDto,
 } from '@/group/dto';
 
-import { GroupQuestionGetSerialization } from '@/group/serialization';
+import {
+  GroupQuestionGetSerialization,
+  GroupQuestionWithPreviewGetSerialization,
+} from '@/group/serialization';
 
 import { EnumLogAction } from '@/log/constant';
 
@@ -46,7 +49,7 @@ export class GroupQuestionController {
   constructor(private readonly groupQuestionService: GroupQuestionService) {}
 
   @ClientResponsePaging('group.question.list', {
-    classSerialization: GroupQuestionGetSerialization,
+    classSerialization: GroupQuestionWithPreviewGetSerialization,
   })
   @HttpCode(HttpStatus.OK)
   @CanAccessGroupAsGroupMember()

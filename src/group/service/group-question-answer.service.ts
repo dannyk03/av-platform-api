@@ -15,7 +15,6 @@ import {
 import { Group, GroupQuestion, GroupQuestionAnswer } from '@/group/entity';
 import { User } from '@/user/entity';
 
-import { GroupQuestionService, GroupService } from '@/group/service';
 import { PaginationService } from '@/utils/pagination/service';
 
 import { IGroupQuestionAnswerSearch } from '@/group/type';
@@ -35,8 +34,6 @@ export class GroupQuestionAnswerService {
     private readonly defaultDataSource: DataSource,
     @InjectRepository(GroupQuestionAnswer, ConnectionNames.Default)
     private readonly groupQuestionAnswerRepository: Repository<GroupQuestionAnswer>,
-    private readonly groupService: GroupService,
-    private readonly groupQuestionService: GroupQuestionService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -195,5 +192,33 @@ export class GroupQuestionAnswerService {
     }
 
     return this.groupQuestionAnswerRepository.remove(answer);
+  }
+
+  async findRandomGroupQuestions({
+    questionIds,
+    count = 3,
+    exclude,
+  }: {
+    questionIds: string[];
+    count?: number;
+    exclude?: string[];
+  }) {
+    const builder = this.groupQuestionAnswerRepository
+      .createQueryBuilder('answer')
+      .leftJoinAndSelect('answer.createdBy', 'createdBy')
+      .leftJoinAndSelect('answer.question', 'question')
+      .leftJoinAndSelect('createdBy.profile', 'profile')
+      .setParameters({ questionIds })
+      .where('answer.group_question_id IN (:...questionIds)')
+      .distinctOn(['createdBy.id'])
+      .limit(count);
+
+    if (exclude) {
+      builder
+        .setParameters({ exclude })
+        .andWhere('createdBy NOT IN (:...exclude)');
+    }
+
+    return builder.getMany();
   }
 }
