@@ -42,6 +42,10 @@ export class UserService {
     return this.userRepository.save<User>(user);
   }
 
+  async saveBulk(data: User[]): Promise<User[]> {
+    return this.userRepository.save<User>(data);
+  }
+
   async findOne(find: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(find);
   }
@@ -299,5 +303,16 @@ export class UserService {
       .where('id = :id', { id })
       .andWhere('isActive != :isActive', { isActive })
       .execute();
+  }
+
+  async getAllUsersQueryBuilder(): Promise<SelectQueryBuilder<User>> {
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.company', 'company')
+      .leftJoinAndSelect('profile.shipping', 'shipping')
+      .leftJoinAndSelect('profile.home', 'home');
+
+    return qb;
   }
 }

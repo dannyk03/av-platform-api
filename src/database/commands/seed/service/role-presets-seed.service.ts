@@ -15,7 +15,7 @@ import { AclSubjectService } from '@/access-control-list/subject/service';
 
 import { ConnectionNames } from '@/database/constant/database.constant';
 
-import { rolePresetsSeedData } from '../data';
+import { rolePresetsSeedData } from '../../data';
 
 @Injectable()
 export class RolePresetsSeedService {

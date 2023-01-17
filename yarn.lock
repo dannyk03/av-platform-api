@@ -8206,6 +8206,11 @@ stripe@^11.6.0:
     "@types/node" ">=8.1.0"
     qs "^6.11.0"
 
+striptags@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/striptags/-/striptags-3.2.0.tgz#cc74a137db2de8b0b9a370006334161f7dd67052"
+  integrity sha512-g45ZOGzHDMe2bdYMdIvdAfCQkCTDMGBazSw1ypMowwGIee7ZQ5dU0rBJ8Jqgl+jAKIv4dbeE1jscZq9wid1Tkw==
+
 strnum@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/strnum/-/strnum-1.0.5.tgz#5c4e829fe15ad4ff0d20c3db5ac97b73c9b072db"
@@ -8589,6 +8594,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
+
+typeorm-cursor-pagination@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/typeorm-cursor-pagination/-/typeorm-cursor-pagination-0.10.0.tgz#13385ba8dbc45a2dbb2e716224be6812c55c7256"
+  integrity sha512-TogheQrqi+DwsxUadryCxfbyEm4aNtnj0Qf+MYWOi45jlwmguptDFFXz9ldUqdfXot4n3HHMe92RXoPn/+vXWg==
 
 typeorm-extension@^2.4.1:
   version "2.4.1"
