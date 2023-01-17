@@ -6,5 +6,8 @@ updates:
       interval: 'weekly'
     ignore:
       - dependency-name: 'nanoid'
-        # For nanoid, ignore all updates for major version (in v4 no support for cjs, only esm)
+        # For nanoid, ignore all updates for major version (no support for cjs, only esm)
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'file-type'
+        # For file-type, ignore all updates for major version (no support for cjs, only esm)
         update-types: ['version-update:semver-major']
