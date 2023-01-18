@@ -9,8 +9,16 @@ import { v5 as uuidv5 } from 'uuid';
 
 import { IHelperHashService } from '../type/helper.hash-service.interface';
 
+export const magicNanoIdLength = 21;
 const magicNanoId = customAlphabet(
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+  magicNanoIdLength,
+);
+
+export const easilyReadableCodeLength = 21;
+const easilyReadableCodeNanoId = customAlphabet(
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  easilyReadableCodeLength,
 );
 
 @Injectable()
@@ -52,7 +60,22 @@ export class HelperHashService implements IHelperHashService {
   }
 
   async magicCode(): Promise<string> {
+    /* 
+      ID length: 21 characters
+      Speed: 1000 IDs per second
+      ~30 million years needed, in order to have a 1% probability of at least one collision.
+     */
     return magicNanoId();
+  }
+
+  async easilyReadableCode(): Promise<string> {
+    /* 
+      ID length: 21 characters
+      Speed: 1000 IDs per second
+      ~99 thousand years, in order to have a 1% probability of at least one collision.
+     */
+    // It's better not to use it in sensitive areas because of the collision probability.
+    return easilyReadableCodeNanoId();
   }
 
   async uuidV5(value: string): Promise<string> {
