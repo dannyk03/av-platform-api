@@ -120,6 +120,8 @@ export class GroupQuestionAnswerService {
   }: IGroupQuestionAnswerSearch) {
     return this.groupQuestionAnswerRepository
       .createQueryBuilder('groupQuestionAnswer')
+      .leftJoinAndSelect('groupQuestionAnswer.createdBy', 'createdBy')
+      .leftJoinAndSelect('createdBy.profile', 'profile')
       .innerJoin('groupQuestionAnswer.question', 'question')
       .innerJoin('question.group', 'group')
       .setParameters({ groupId, groupQuestionId })
