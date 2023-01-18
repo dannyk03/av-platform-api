@@ -1,8 +1,9 @@
 import { IGroupQuestionAnswerGetSerialization } from '@avo/type';
 
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 
 import { GroupQuestionGetSerialization } from '@/group/serialization/';
+import { UserGetSerialization } from '@/user/serialization';
 
 @Exclude()
 export class GroupQuestionAnswerGetSerialization
@@ -22,4 +23,8 @@ export class GroupQuestionAnswerGetSerialization
 
   @Expose()
   readonly question: GroupQuestionGetSerialization;
+
+  @Expose()
+  @Type(() => UserGetSerialization)
+  readonly createdBy: UserGetSerialization;
 }

@@ -10,9 +10,10 @@ import {
   Repository,
 } from 'typeorm';
 
-import { Group, GroupQuestion } from '@/group/entity';
+import { Group, GroupQuestion, GroupQuestionAnswer } from '@/group/entity';
 import { User } from '@/user/entity';
 
+import { GroupQuestionAnswerService } from '@/group/service/group-question-answer.service';
 import { GroupService } from '@/group/service/group.service';
 import { PaginationService } from '@/utils/pagination/service';
 
@@ -31,6 +32,7 @@ export class GroupQuestionService {
     private readonly defaultDataSource: DataSource,
     @InjectRepository(GroupQuestion, ConnectionNames.Default)
     private readonly groupQuestionRepository: Repository<GroupQuestion>,
+    private readonly groupQuestionAnswerService: GroupQuestionAnswerService,
     private readonly groupService: GroupService,
     private readonly paginationService: PaginationService,
     @Optional()
@@ -105,28 +107,58 @@ export class GroupQuestionService {
       groupId: group.id,
     });
 
-    const paginatedResult = await this.paginationService.getPaginatedData({
-      queryBuilder,
-      options: {
-        take: perPage,
-        order: sort,
-        page,
-      },
-    });
+    const { totalData, totalPage, data } =
+      await this.paginationService.getPaginatedData({
+        queryBuilder,
+        options: {
+          take: perPage,
+          order: sort,
+          page,
+        },
+      });
+
+    const randomGroupQuestions =
+      await this.groupQuestionAnswerService.findRandomGroupQuestions({
+        questionIds: data?.map((group) => group.id),
+      });
+
+    const mappedGroupsToRandomAnswers = this.mapGroupAnswersToQuestion(
+      data,
+      randomGroupQuestions,
+    );
 
     return {
       currentPage: page,
       perPage,
       availableSearch,
       availableSort,
-      ...paginatedResult,
+      totalData,
+      totalPage,
+      data: mappedGroupsToRandomAnswers,
     };
+  }
+
+  private mapGroupAnswersToQuestion(
+    groupQuestions: GroupQuestion[],
+    answers: GroupQuestionAnswer[],
+  ) {
+    return groupQuestions.map((groupQuestion) => {
+      const groupAnswers = answers.filter(
+        (answer) => answer.question.id === groupQuestion.id,
+      );
+      return {
+        ...groupQuestion,
+        answers: groupAnswers,
+      };
+    });
   }
 
   private getListSearchBuilder({ groupId }: IGroupQuestionSearch) {
     return this.groupQuestionRepository
       .createQueryBuilder('groupQuestion')
       .select(['groupQuestion'])
+      .leftJoinAndSelect('groupQuestion.createdBy', 'createdBy')
+      .leftJoinAndSelect('createdBy.profile', 'profile')
       .setParameters({ groupId })
       .loadRelationCountAndMap(
         'groupQuestion.answersCount',
