@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Command } from 'nestjs-command';
 
-import { RolePresetsSeedService } from './service';
+import { RolePresetsSeedService } from './seed/service';
 
 @Injectable()
 export class RolePresetsSeed {

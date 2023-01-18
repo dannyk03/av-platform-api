@@ -13,9 +13,9 @@ import { AclPolicyService } from '@/access-control-list/policy/service';
 import { AclRolePresetService } from '@/access-control-list/role/service';
 import { AclSubjectService } from '@/access-control-list/subject/service';
 
-import { ConnectionNames } from '@/database/constant/database.constant';
+import { ConnectionNames } from '@/database/constant';
 
-import { rolePresetsSeedData } from '../data';
+import { rolePresetsSeedData } from '../../data';
 
 @Injectable()
 export class RolePresetsSeedService {

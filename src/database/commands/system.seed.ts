@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Command } from 'nestjs-command';
 
-import { SystemSeedService } from './service';
+import { SystemSeedService } from './seed/service';
 
 @Injectable()
 export class SystemSeed {

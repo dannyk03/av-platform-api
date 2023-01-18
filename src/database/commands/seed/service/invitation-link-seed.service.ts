@@ -7,7 +7,7 @@ import { DataSource } from 'typeorm';
 import { InvitationLinkService } from '@/networking/service';
 import { UserService } from '@/user/service';
 
-import { ConnectionNames } from '@/database/constant/database.constant';
+import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
 export class InvitationLinkSeedService {

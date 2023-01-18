@@ -1,25 +1,21 @@
 import { applyDecorators } from '@nestjs/common';
+import { isString } from '@nestjs/common/utils/shared.utils';
 
 import { Expose, Transform } from 'class-transformer';
-import { isString } from 'class-validator';
+import striptags from 'striptags';
 
 import { ITransformOptions } from './transform.interface';
 
-const consecutiveWhitespaceFunc = (input: string) =>
-  input?.replace?.(/\s+/g, ' ');
-
-export function ConsecutiveWhitespaceTransform(
-  options?: ITransformOptions,
-): any {
+export function StripHtmlTagsTransform(options?: ITransformOptions): any {
   const each = options?.each;
 
   return applyDecorators(
     Expose(),
     Transform(({ value }) =>
       each && Array.isArray(value)
-        ? value.map((v) => (isString(v) ? consecutiveWhitespaceFunc(v) : v))
+        ? value.map((v) => (isString(v) ? striptags(v) : v))
         : isString(value)
-        ? consecutiveWhitespaceFunc(value)
+        ? striptags(value)
         : value,
     ),
   );
