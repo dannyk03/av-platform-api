@@ -183,15 +183,6 @@ export class GroupCommonController {
     @Body()
     { name, description }: GroupCreateDto,
   ): Promise<IResponseData> {
-    const isExists = await this.groupService.checkExistsByName(name);
-
-    if (isExists) {
-      throw new BadRequestException({
-        statusCode: EnumGroupStatusCodeError.GroupExistsError,
-        message: 'group.error.exists',
-      });
-    }
-
     const saveGroupRes = await this.defaultDataSource.transaction(
       'SERIALIZABLE',
       async (transactionalEntityManager) => {

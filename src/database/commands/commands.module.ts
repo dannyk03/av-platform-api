@@ -17,6 +17,7 @@ import { AclRoleModule } from '@acl/role/acl-role.module';
 import { AclSubjectModule } from '@acl/subject/acl-subject.module';
 
 import {
+  GroupShortCodePopulateCommandService,
   StringEscapeRevertGroupsCommandService,
   StringEscapeRevertProductsCommandService,
   StringEscapeRevertUsersCommandService,
@@ -58,6 +59,7 @@ import { SystemSeed } from './system.seed';
     StringEscapeRevertUsersCommandService,
     StringEscapeRevertGroupsCommandService,
     StringEscapeRevertProductsCommandService,
+    GroupShortCodePopulateCommandService,
   ],
   exports: [],
 })

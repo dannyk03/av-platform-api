@@ -16,4 +16,6 @@ export interface IHelperHashService {
   nanoId(length?: number): Promise<string>;
 
   magicCode(): Promise<string>;
+
+  easilyReadableCode(): Promise<string>;
 }

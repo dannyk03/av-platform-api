@@ -16,6 +16,9 @@ export class GroupGetSerialization implements IGroupGetSerialization {
   readonly name: string;
 
   @Expose()
+  readonly code: string;
+
+  @Expose()
   readonly description: string;
 
   @Expose()
