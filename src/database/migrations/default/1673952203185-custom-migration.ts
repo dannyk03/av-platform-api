@@ -10,8 +10,8 @@ import {
   StringEscapeRevertUsersCommandService,
 } from '@/database/commands/command/service';
 
-export class customMigration1673874531746 implements MigrationInterface {
-  name = 'customMigration1673874531746';
+export class customMigration1673952203185 implements MigrationInterface {
+  name = 'customMigration1673952203185';
 
   public async up(): Promise<void> {
     const app = await NestFactory.createApplicationContext(CommandsModule);
