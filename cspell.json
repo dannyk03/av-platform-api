@@ -40,7 +40,8 @@
     "tsvector",
     "tsquery",
     "sqlstring",
-    "abac"
+    "abac",
+    "striptags"
   ],
   "ignorePaths": [
     "node_modules/**",

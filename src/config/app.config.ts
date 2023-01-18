@@ -11,6 +11,7 @@ export default registerAs(
     isStaging: process.env.APP_ENV === EnumAppEnv.Staging,
     isDevelopment: process.env.APP_ENV === EnumAppEnv.Development,
     isCI: process.env.CI === 'true',
+    isMigration: process.env.MIGRATION === 'true',
     isSecureMode: process.env.APP_MODE === EnumAppMode.Secure,
     runSeeds: true,
     name: process.env.APP_NAME || 'platform',

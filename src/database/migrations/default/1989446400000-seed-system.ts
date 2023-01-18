@@ -2,15 +2,15 @@ import { NestFactory } from '@nestjs/core';
 
 import { MigrationInterface } from 'typeorm';
 
-import { SeedsModule } from '@/database/seed/seeds.module';
+import { CommandsModule } from '@/database/commands/commands.module';
 
-import { SystemSeedService } from '@/database/seed/service';
+import { SystemSeedService } from '@/database/commands/seed/service';
 
-export class seed1665493242697 implements MigrationInterface {
-  name = 'seed1665493242697';
+export class seed1989446400000 implements MigrationInterface {
+  name = 'seed1989446400000';
 
   public async up(): Promise<void> {
-    const app = await NestFactory.createApplicationContext(SeedsModule);
+    const app = await NestFactory.createApplicationContext(CommandsModule);
 
     try {
       await app.get(SystemSeedService).insert();
