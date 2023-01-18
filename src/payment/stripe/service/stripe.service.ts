@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
@@ -18,18 +18,16 @@ import { GiftIntent } from '@/gifting/entity';
 import { GiftOrderService } from '@/order/service';
 import { HelperDateService } from '@/utils/helper/service';
 
-import { InjectStripe } from '../decorator';
+import { InjectStripeClient } from '../decorator';
 
 import { ConnectionNames } from '@/database/constant';
 import { EnumPaymentIntentStatus } from '@/order/order.constants';
 
 @Injectable()
-export class StripeService {
+export class StripeService implements OnModuleInit {
   constructor(
     @InjectDataSource(ConnectionNames.Default)
     private defaultDataSource: DataSource,
-    @InjectStripe()
-    private readonly stripeClient: Stripe,
     @InjectRepository(StripePayment, ConnectionNames.Default)
     private stripePaymentRepository: Repository<StripePayment>,
     @InjectRepository(StripeWebhookEvent)
@@ -37,7 +35,17 @@ export class StripeService {
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
     private readonly giftOrderService: GiftOrderService,
+    @InjectStripeClient()
+    private readonly stripeClient: Stripe,
   ) {}
+
+  onModuleInit() {
+    const isMigration = this.configService.get<boolean>('app.isMigration');
+    if (!(this.stripeClient || isMigration)) {
+      // Only during the migrations phase (CI/CD), it can be uninitialized, any other case is a development error.
+      throw Error('Stripe client is not initialized');
+    }
+  }
 
   async create(props: DeepPartial<StripePayment>): Promise<StripePayment> {
     return this.stripePaymentRepository.create(props);

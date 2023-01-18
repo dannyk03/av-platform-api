@@ -1,24 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectDataSource } from '@nestjs/typeorm';
 
 import TwilioClient from 'twilio/lib/rest/Twilio';
-import { DataSource } from 'typeorm';
 
-import { InjectTwilio } from '../decorator';
+import { InjectTwilioClient } from '../decorator';
 
 import { EnumTwilioVerificationCheckStatus } from '../constant';
-import { ConnectionNames } from '@/database/constant';
 
 @Injectable()
-export class TwilioService {
+export class TwilioService implements OnModuleInit {
   constructor(
-    @InjectDataSource(ConnectionNames.Default)
-    private defaultDataSource: DataSource,
-    @InjectTwilio()
-    private readonly twilioClient: TwilioClient,
     private readonly configService: ConfigService,
+    @InjectTwilioClient()
+    private readonly twilioClient: TwilioClient,
   ) {}
+
+  onModuleInit() {
+    const isMigration = this.configService.get<boolean>('app.isMigration');
+    if (!(this.twilioClient || isMigration)) {
+      // Only during the migrations phase (CI/CD), it can be uninitialized, any other case is a development error.
+      throw Error('Twilio client is not initialized');
+    }
+  }
 
   async createVerificationsSmsOPT({ phoneNumber }: { phoneNumber: string }) {
     const otpServiceSID = this.configService.get<string>(

@@ -38,8 +38,12 @@ export class UserService {
     return this.userRepository.create(props);
   }
 
-  async save(user: User): Promise<User> {
-    return this.userRepository.save<User>(user);
+  async save(user: DeepPartial<User>): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
+  async saveBulk(data: DeepPartial<User>[]): Promise<User[]> {
+    return this.userRepository.save(data);
   }
 
   async findOne(find: FindOneOptions<User>): Promise<User> {
@@ -299,5 +303,16 @@ export class UserService {
       .where('id = :id', { id })
       .andWhere('isActive != :isActive', { isActive })
       .execute();
+  }
+
+  async getAllUsersQueryBuilder(): Promise<SelectQueryBuilder<User>> {
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.company', 'company')
+      .leftJoinAndSelect('profile.shipping', 'shipping')
+      .leftJoinAndSelect('profile.home', 'home');
+
+    return qb;
   }
 }

@@ -1,7 +1,7 @@
-import { Inject } from '@nestjs/common';
-
 import { STRIPE_TOKEN } from '../constant';
 
-export function InjectStripe() {
-  return Inject(STRIPE_TOKEN);
+import { InjectThirdPartyProviderByToken } from '@/utils/third-party-provider';
+
+export function InjectStripeClient() {
+  return InjectThirdPartyProviderByToken(STRIPE_TOKEN);
 }

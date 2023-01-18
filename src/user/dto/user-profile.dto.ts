@@ -55,30 +55,35 @@ export class SurveyPersonalAddressDto {
 export class SurveyAddressDto {
   @IsOptional()
   @MaxLength(200)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine1: string;
 
   @IsOptional()
   @MaxLength(200)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly addressLine2?: string;
 
   @MaxLength(100)
   @IsOptional()
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly city?: string;
 
   @IsOptional()
   @MaxLength(100)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly state?: string;
 
   @MaxLength(100)
   @IsOptional()
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly country?: string;
@@ -93,6 +98,7 @@ export class SurveyAddressDto {
 export class SurveyPersonalShippingDto extends SurveyAddressDto {
   @IsOptional()
   @MaxLength(1000)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly deliveryInstructions: string;
@@ -105,12 +111,14 @@ export class SurveyPersonalDto {
 
   @IsNotEmpty()
   @Length(1, 50)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly firstName: string;
 
   @IsNotEmpty()
   @Length(1, 50)
+  @ConsecutiveWhitespaceTransform()
   @NormalizeStringInputTransform()
   @Type(() => String)
   readonly lastName: string;
@@ -248,6 +256,8 @@ export class SurveyPersonalDto {
   @IsArray()
   @IsString({ each: true })
   @MaxLength(200, { each: true })
+  @ConsecutiveWhitespaceTransform({ each: true })
+  @NormalizeStringInputTransform()
   @ApiProperty()
   readonly desiredSkills: string[];
 
