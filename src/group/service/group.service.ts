@@ -24,7 +24,7 @@ import { snakeCase } from 'typeorm/util/StringUtils';
 import { Group } from '@/group/entity';
 
 import { GroupMemberService } from '@/group/service/group-member.service';
-import { HelperStringService } from '@/utils/helper/service';
+import { HelperHashService, HelperStringService } from '@/utils/helper/service';
 
 import { IGroupSearch } from '@/group/type';
 
@@ -41,6 +41,7 @@ export class GroupService {
     private readonly groupRepository: Repository<Group>,
     private readonly helperStringService: HelperStringService,
     private readonly groupMemberService: GroupMemberService,
+    private readonly helperHashService: HelperHashService,
   ) {}
 
   async findCommonGroups({
@@ -95,12 +96,26 @@ export class GroupService {
     );
   }
 
-  async create(props: DeepPartial<Group>): Promise<Group> {
-    return this.groupRepository.create(props);
+  async create(props: DeepPartial<Omit<Group, 'code'>>): Promise<Group> {
+    return this.groupRepository.create({
+      ...props,
+      code: await this.helperHashService.easilyReadableCode(),
+    });
   }
 
-  async createMany(props: DeepPartial<Group>[]): Promise<Group[]> {
-    return this.groupRepository.create(props);
+  async createMany(
+    props: DeepPartial<Omit<Group, 'code'>>[],
+  ): Promise<Group[]> {
+    const propsWithCode = await Promise.all(
+      props.map(async (item) => {
+        return {
+          ...item,
+          code: await this.helperHashService.easilyReadableCode(),
+        };
+      }),
+    );
+
+    return this.groupRepository.create(propsWithCode);
   }
 
   async save(group: DeepPartial<Group>): Promise<Group> {

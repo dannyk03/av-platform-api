@@ -4,14 +4,21 @@ import { GroupMember } from './group-member.entity';
 import { BaseEntity } from '@/database/entity';
 import { GroupQuestion } from '@/group/entity/group-question.entity';
 
+import { easilyReadableCodeLength } from '@/utils/helper/service';
+
 @Entity()
 export class Group extends BaseEntity<Group> {
   @Index()
   @Column({
-    unique: true,
     length: 300,
   })
   name!: string;
+
+  @Column({
+    unique: true,
+    length: easilyReadableCodeLength,
+  })
+  code!: string;
 
   @Column({
     nullable: true,
