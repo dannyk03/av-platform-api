@@ -113,7 +113,7 @@
     "tsconfig-paths": "^4.1.2",
     "twilio": "^3.84.1",
     "typeorm": "^0.3.11",
-    "typeorm-cursor-pagination": "^0.10.0",
+    "typeorm-cursor-pagination": "^0.10.1",
     "typeorm-extension": "^2.4.2",
     "ua-parser-js": "^1.0.32",
     "validator": "^13.7.0",
