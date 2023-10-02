@@ -80,7 +80,7 @@
     "customerio-node": "^3.4.1",
     "dayjs": "^1.11.7",
     "disposable-email-domains": "^1.0.62",
-    "express-rate-limit": "^6.7.0",
+    "express-rate-limit": "^7.0.2",
     "file-type": "16.5.4",
     "free-email-domains": "^1.0.28",
     "geolib": "^3.3.3",
